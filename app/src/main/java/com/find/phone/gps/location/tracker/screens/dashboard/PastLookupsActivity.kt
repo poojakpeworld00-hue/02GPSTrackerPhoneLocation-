@@ -67,11 +67,11 @@ class PastLookupsActivity : FoundationActivity<PageHistoryBinding>() {
     private fun wireRow(row: CardRecentSearchBinding, recent: PastLookup, index: Int, divider: Boolean) {
         val (tile, tint) = TILE_PALETTE[index % TILE_PALETTE.size]
         row.iconTileVw.setBackgroundResource(tile)
-        row.icon.imageTintList = ContextCompat.getColorStateList(this, tint)
+        row.iconTileVw.setTextColor(ContextCompat.getColor(this, tint))
+        row.iconTileVw.text = recent.iso2.uppercase(java.util.Locale.ROOT)
         row.lblNumber.text = recent.display
         val country = RegionZones.byIso(recent.iso2)?.name ?: recent.iso2
         row.lblMeta.text = getString(R.string.ds_recent_meta, RegionZones.flag(recent.iso2), country, relativeTime(recent.searchedAt))
-        row.rowDividerVw.isVisible = divider
         row.rowVw.setOnClickListener { pick(recent) }
         row.rowVw.setOnLongClickListener {
             remove(recent)

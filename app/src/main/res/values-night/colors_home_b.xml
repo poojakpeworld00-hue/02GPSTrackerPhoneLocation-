@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hb_band_start">#FF2F4CC0</color>
+    <color name="hb_band_mid">#FF223EAE</color>
+    <color name="hb_band_end">#FF18297A</color>
+    <color name="hb_page">#FF0F1520</color>
+    <color name="hb_card">#FF1A2236</color>
+    <color name="hb_border">#FF27324A</color>
+    <color name="hb_field">#FF121A2A</color>
+    <color name="hb_ink">#FFE8F1F8</color>
+    <color name="hb_muted">#FF9AABB8</color>
+    <color name="hb_chevron">#FF6B7A90</color>
+    <color name="hb_primary">#FF7D9BFF</color>
+    <color name="hb_primary_tint">#FF22305A</color>
+    <color name="hb_amber_bg">#FF3A2A14</color>
+    <color name="hb_amber_ink">#FFFFB869</color>
+    <color name="hb_purple">#FF9F94FF</color>
+    <color name="hb_purple_tint">#FF2C2852</color>
+    <color name="hb_red">#FFFF6B72</color>
+    <color name="hb_red_tint">#FF3E2228</color>
+    <color name="hb_sim1_badge">#FF3A4B66</color>
+    <color name="hb_shadow">#CC000000</color>
+</resources>

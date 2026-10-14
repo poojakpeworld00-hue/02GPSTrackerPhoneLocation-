@@ -7,6 +7,11 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -20,15 +25,80 @@ import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import com.find.phone.gps.location.tracker.repo.simcard.OwnSimLines
 import com.find.phone.gps.location.tracker.databinding.PartMyNumberCardBinding
 import com.find.phone.gps.location.tracker.databinding.CardMyNumberSimBinding
+import com.find.phone.gps.location.tracker.databinding.CardHomeSimBinding
+import com.find.phone.gps.location.tracker.databinding.PartHomeMyNumberBinding
 import com.find.phone.gps.location.tracker.screens.simcard.OwnNumberActivity
 import com.find.phone.gps.location.tracker.helpers.SimLineJournal
 
-class OwnNumberTile(
+class OwnNumberTile private constructor(
     private val activity: AppCompatActivity,
-    private val views: PartMyNumberCardBinding,
+    private val views: Views,
     private val prefs: SecurePrefsKeeper,
     private val requestPermissions: (Array<String>) -> Unit,
 ) {
+
+    class SimRow(val root: View, val badge: TextView, val number: TextView, val region: TextView, val copy: ImageView)
+
+    class Views(
+        val root: View,
+        val padManage: View,
+        val padMyNumber: TextView,
+        val lblMyNumberSub: TextView,
+        val simRowsVw: LinearLayout,
+        val prompt: View?,
+        val inflateRow: (LayoutInflater, ViewGroup) -> SimRow,
+        val styleBadge: (TextView, Boolean) -> Unit,
+        val inkColor: Int = R.color.ds_ink_fixed,
+        val mutedColor: Int = R.color.ds_muted_fixed,
+    )
+
+    constructor(
+        activity: AppCompatActivity,
+        views: PartMyNumberCardBinding,
+        prefs: SecurePrefsKeeper,
+        requestPermissions: (Array<String>) -> Unit,
+    ) : this(
+        activity,
+        Views(
+            views.root, views.padManage, views.padMyNumber, views.lblMyNumberSub, views.simRowsVw, null,
+            { inflater, parent ->
+                CardMyNumberSimBinding.inflate(inflater, parent, false).run {
+                    SimRow(root, lblSimBadge, lblSimNumber, lblSimRegion, padCopySim)
+                }
+            },
+            { badge, primary ->
+                badge.setBackgroundResource(if (primary) R.drawable.vs_sim_badge_primary else R.drawable.vs_sim_badge_tint)
+                badge.setTextColor(ContextCompat.getColor(badge.context, if (primary) R.color.white else R.color.ds_splash_blue))
+            },
+        ),
+        prefs,
+        requestPermissions,
+    )
+
+    constructor(
+        activity: AppCompatActivity,
+        views: PartHomeMyNumberBinding,
+        prefs: SecurePrefsKeeper,
+        requestPermissions: (Array<String>) -> Unit,
+    ) : this(
+        activity,
+        Views(
+            views.root, views.padManage, views.padMyNumber, views.lblMyNumberSub, views.simRowsVw, views.promptCardVw,
+            { inflater, parent ->
+                CardHomeSimBinding.inflate(inflater, parent, false).run {
+                    SimRow(root, lblSimBadge, lblSimNumber, lblSimRegion, padCopySim)
+                }
+            },
+            { badge, primary ->
+                badge.setBackgroundResource(if (primary) R.drawable.hb_badge_sim1_r6 else R.drawable.hb_badge_sim2_r6)
+                badge.setTextColor(ContextCompat.getColor(badge.context, R.color.white))
+            },
+            R.color.hb_ink,
+            R.color.hb_muted,
+        ),
+        prefs,
+        requestPermissions,
+    )
 
     init {
         views.padMyNumber.setOnClickListener { onButton() }
@@ -54,6 +124,7 @@ class OwnNumberTile(
         views.padMyNumber.setText(if (isPermanentlyDenied()) R.string.my_number_settings else R.string.my_number_show)
 
         views.lblMyNumberSub.isVisible = !showing
+        views.prompt?.isVisible = !showing
         views.lblMyNumberSub.setText(R.string.my_number_sub)
 
         views.simRowsVw.removeAllViews()
@@ -101,33 +172,28 @@ class OwnNumberTile(
         }
     }
 
-    private fun wireRow(inflater: LayoutInflater, context: Context, line: OwnSimLines.SimSlotLine) =
-        CardMyNumberSimBinding.inflate(inflater, views.simRowsVw, false).apply {
+    private fun wireRow(inflater: LayoutInflater, context: Context, line: OwnSimLines.SimSlotLine): View {
+        val row = views.inflateRow(inflater, views.simRowsVw)
+        val primarySlot = line.slot <= 1
+        row.badge.text = context.getString(R.string.my_number_sim_badge, line.slot)
+        views.styleBadge(row.badge, primarySlot)
 
-            val primarySlot = line.slot <= 1
-            lblSimBadge.text = context.getString(R.string.my_number_sim_badge, line.slot)
-            lblSimBadge.setBackgroundResource(
-                if (primarySlot) R.drawable.vs_sim_badge_primary else R.drawable.vs_sim_badge_tint
-            )
-            lblSimBadge.setTextColor(
-                ContextCompat.getColor(context, if (primarySlot) R.color.white else R.color.ds_splash_blue)
-            )
+        val number = line.number
+        if (number != null) {
+            row.number.text = number
+            row.number.setTextColor(ContextCompat.getColor(context, views.inkColor))
+            row.copy.setOnClickListener { copy(context, number) }
+        } else {
+            row.number.setText(R.string.my_number_not_stored)
+            row.number.setTextColor(ContextCompat.getColor(context, views.mutedColor))
+        }
+        row.copy.isVisible = number != null
 
-            val number = line.number
-            if (number != null) {
-                lblSimNumber.text = number
-                lblSimNumber.setTextColor(ContextCompat.getColor(context, R.color.ds_ink_fixed))
-                padCopySim.setOnClickListener { copy(context, number) }
-            } else {
-                lblSimNumber.setText(R.string.my_number_not_stored)
-                lblSimNumber.setTextColor(ContextCompat.getColor(context, R.color.ds_muted_fixed))
-            }
-            padCopySim.isVisible = number != null
-
-            val region = line.region
-            lblSimRegion.text = if (!region.isNullOrBlank()) "${line.carrier} · $region" else line.carrier
-            lblSimRegion.isVisible = lblSimRegion.text.isNotBlank()
-        }.root
+        val region = line.region
+        row.region.text = if (!region.isNullOrBlank()) "${line.carrier} · $region" else line.carrier
+        row.region.isVisible = row.region.text.isNotBlank()
+        return row.root
+    }
 
     private fun copy(context: Context, number: String) {
         val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return

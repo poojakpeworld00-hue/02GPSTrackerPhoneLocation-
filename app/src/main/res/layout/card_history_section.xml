@@ -20,7 +20,6 @@
         android:id="@+id/rowsVw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/vs_card_border_r18"
         android:orientation="vertical"
-        android:paddingVertical="4dp" />
+        android:paddingTop="2dp" />
 </LinearLayout>

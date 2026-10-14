@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.databinding.CardRecentSearchBinding
 import com.find.phone.gps.location.tracker.screens.finder.RegionZones
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class PastLookupAdapter(
@@ -44,11 +45,11 @@ class PastLookupAdapter(
         val (tile, tint) = TILE_PALETTE[position % TILE_PALETTE.size]
         with(holder.binding) {
             iconTileVw.setBackgroundResource(tile)
-            ImageViewCompat.setImageTintList(icon, ContextCompat.getColorStateList(ctx, tint))
+            iconTileVw.setTextColor(ContextCompat.getColor(ctx, tint))
+            iconTileVw.text = item.iso2.uppercase(Locale.ROOT)
             lblNumber.text = item.display
             val country = RegionZones.byIso(item.iso2)?.name ?: item.iso2
             lblMeta.text = ctx.getString(R.string.ds_recent_meta, RegionZones.flag(item.iso2), country, relativeTime(ctx, item.searchedAt))
-            rowDividerVw.isVisible = position < items.lastIndex
         }
     }
 
@@ -70,9 +71,9 @@ class PastLookupAdapter(
 
     private companion object {
         val TILE_PALETTE = listOf(
-            R.drawable.vs_tile_tint_r14 to R.color.ds_primary,
-            R.drawable.vs_tile_green_r14 to R.color.ds_success,
-            R.drawable.vs_tile_purple_r14 to R.color.ds_purple,
+            R.drawable.hb_circle_blue to R.color.hb_primary,
+            R.drawable.hb_circle_red to R.color.hb_red,
+            R.drawable.hb_circle_purple to R.color.hb_purple,
         )
     }
 }

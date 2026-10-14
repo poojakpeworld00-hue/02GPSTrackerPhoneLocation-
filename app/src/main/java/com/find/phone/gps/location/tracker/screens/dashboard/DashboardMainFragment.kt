@@ -14,6 +14,7 @@ import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
@@ -70,7 +71,11 @@ class DashboardMainFragment : Fragment() {
     private val animators = mutableListOf<Animator>()
     private var glowAnimator: Animator? = null
     private var proShine: Animator? = null
-    private var heroAnimator: ValueAnimator? = null
+    private var myNumberTile: OwnNumberTile? = null
+
+    private val phonePermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+        myNumberTile?.onPermissionResult(result)
+    }
 
     private var countryIso: String = "US"
 
@@ -244,6 +249,13 @@ class DashboardMainFragment : Fragment() {
         }
         renewRecents()
 
+        binding.searchCardVw.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> syncHero() }
+
+        (activity as? AppCompatActivity)?.let { host ->
+            myNumberTile = OwnNumberTile(host, binding.myNumberHomeVw, prefs) { phonePermission.launch(it) }
+                .also { it.render() }
+        }
+
         binding.adNativeCardVw.isVisible = false
         binding.root.findViewById<View>(R.id.bannerAdFrameVw)?.isVisible = false
         if (onScreen) paintAds()
@@ -254,6 +266,7 @@ class DashboardMainFragment : Fragment() {
 
         wireProChip()
         wireQuota()
+        myNumberTile?.render()
     }
 
     private fun wireProChip() {
@@ -285,7 +298,7 @@ class DashboardMainFragment : Fragment() {
 
     override fun onDestroyView() {
         proShine = null
-        heroAnimator?.cancel()
+        myNumberTile = null
         VisualTweens.cancelAll(animators)
         glowAnimator = null
         _binding = null
@@ -372,20 +385,15 @@ class DashboardMainFragment : Fragment() {
         binding.phoneFieldVw.setBackgroundResource(if (typing) R.drawable.vs_field_focus_r16 else R.drawable.vs_field_rest_r16)
         binding.fieldHaloVw.isInvisible = !typing
         binding.capGps.isVisible = !typing
-        binding.lblHeadline.textSize = if (typing) 24f else 26f
-        val from = binding.heroBoxVw.layoutParams.height
-        val to = dp(if (typing) 230 else 300)
-        heroAnimator?.cancel()
-        heroAnimator = ValueAnimator.ofInt(from, to).apply {
-            duration = 250L
-            interpolator = VisualTweens.EASE_IN_OUT
-            addUpdateListener {
-                val b = _binding ?: return@addUpdateListener
-                b.heroBoxVw.layoutParams.height = it.animatedValue as Int
-                b.heroBoxVw.requestLayout()
-            }
-            start()
-        }
+        binding.lblHeadline.textSize = if (typing) 22f else 24f
+    }
+
+    private fun syncHero() {
+        val b = _binding ?: return
+        val height = b.searchCardVw.top + dp(HERO_OVERLAP_DP)
+        if (height <= 0 || b.heroBoxVw.layoutParams.height == height) return
+        b.heroBoxVw.layoutParams.height = height
+        b.heroBoxVw.requestLayout()
     }
 
     private fun pickContact() {
@@ -484,7 +492,9 @@ class DashboardMainFragment : Fragment() {
         if (unlimited) return
         val limit = LookupAllowance.limit(context)
         val left = LookupAllowance.remaining(context)
-        b.lblQuota.text = getString(R.string.ds_quota_left, left, limit)
+        b.lblQuota.text = getString(R.string.hb_quota_short, left, limit)
+        b.padUnlimited.contentDescription =
+            getString(R.string.ds_quota_left, left, limit) + ". " + getString(R.string.ds_quota_unlimited)
         b.quotaBarVw.progress = (100 * left.coerceAtMost(limit) / limit.coerceAtLeast(1))
     }
 
@@ -532,6 +542,7 @@ class DashboardMainFragment : Fragment() {
 
     private companion object {
         const val MIN_DIGITS = 6
+        const val HERO_OVERLAP_DP = 54
 
         val LOCATION_PERMISSIONS = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,

@@ -1,37 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:paddingBottom="10dp">
 
     <LinearLayout
         android:id="@+id/rowVw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
+        android:background="@drawable/hb_row_r18"
+        android:foreground="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="14dp"
         android:paddingVertical="12dp">
 
-        <FrameLayout
+        <TextView
             android:id="@+id/iconTileVw"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:background="@drawable/vs_tile_tint_r14">
-
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:contentDescription="@null"
-                android:src="@drawable/vs_ic_pin"
-                app:tint="@color/ds_primary" />
-        </FrameLayout>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/hb_circle_blue"
+            android:fontFamily="@font/nunito_extrabold"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:textColor="@color/hb_primary"
+            android:textSize="13sp"
+            tools:text="IN" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -48,36 +44,29 @@
                 android:fontFamily="@font/figtree_bold"
                 android:fontFeatureSettings="tnum"
                 android:maxLines="1"
-                android:textColor="@color/ds_ink"
-                android:textSize="14sp"
-                tools:text="+1 212 555 0198" />
+                android:textColor="@color/hb_ink"
+                android:textSize="15sp"
+                tools:text="+91 98765 43210" />
 
             <TextView
                 android:id="@+id/lblMeta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="3dp"
                 android:ellipsize="end"
                 android:fontFamily="@font/figtree_medium"
                 android:maxLines="1"
-                android:textColor="@color/ds_muted"
+                android:textColor="@color/hb_muted"
                 android:textSize="12sp"
-                tools:text="🇺🇸 United States · 2h ago" />
+                tools:text="India · 2h ago" />
         </LinearLayout>
 
         <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_marginStart="12dp"
             android:contentDescription="@null"
             android:src="@drawable/vs_ic_arrow_right"
-            app:tint="@color/ds_arrow_muted" />
+            app:tint="@color/hb_chevron" />
     </LinearLayout>
-
-    <View
-        android:id="@+id/rowDividerVw"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/ds_divider" />
-
-</LinearLayout>
+</FrameLayout>

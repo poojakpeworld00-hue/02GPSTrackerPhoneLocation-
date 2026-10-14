@@ -11,17 +11,6 @@ import androidx.core.graphics.drawable.toBitmap
 import java.io.File
 import java.io.FileOutputStream
 
-/**
- * Remembers each app's label, version and icon **while it is still installed**, so the uninstall
- * result screen can show them after the package is gone.
- *
- * A removed package cannot be queried: by the time `ACTION_PACKAGE_REMOVED` arrives the app is
- * already uninstalled and the PackageManager knows nothing about it. So [remember] caches one app,
- * [seedAll] caches every installed launchable app once (and prunes ones that have gone), and [read]
- * returns whatever was cached.
- *
- * Label and version live in a small prefs file; the icon is a downscaled PNG under `pkg_icons/`.
- */
 object InstallInfoMemo {
 
     private const val PREFS = "package_meta"
@@ -31,7 +20,6 @@ object InstallInfoMemo {
 
     data class Meta(val label: String, val version: String, val iconFile: File?)
 
-    /** Caches [pkg]'s label, version and icon. Meant for a background thread; never throws out. */
     fun remember(context: Context, pkg: String) {
         val app = context.applicationContext
         if (pkg.isBlank() || pkg == app.packageName) return
@@ -47,7 +35,6 @@ object InstallInfoMemo {
         }
     }
 
-    /** The cached metadata for [pkg], or null if nothing was cached before it was removed. */
     fun read(context: Context, pkg: String): Meta? {
         val app = context.applicationContext
         val data = settings(app)
@@ -56,11 +43,6 @@ object InstallInfoMemo {
         return Meta(label, version, iconFile(app, pkg).takeIf { it.exists() })
     }
 
-    /**
-     * Caches every currently-installed launchable app that is not cached yet and prunes entries for
-     * apps that are no longer installed. Runs once per launch on a background thread — the
-     * per-package "already cached" skip keeps every run after the first cheap.
-     */
     fun seedAll(context: Context) {
         val app = context.applicationContext
         runCatching {
@@ -78,7 +60,6 @@ object InstallInfoMemo {
         }
     }
 
-    /** Drops the cache for [pkg] — its icon file and prefs entries. */
     fun forget(context: Context, pkg: String) {
         val app = context.applicationContext
         runCatching {

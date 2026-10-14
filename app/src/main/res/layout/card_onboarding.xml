@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    One onboarding page (design 2a): the hero illustration card (392dp at 780dp tall, ~66% of the
-    page, shrinking on short screens) and the copy under it. The scene layout for the page is
-    inflated into artContainer and brings its own rounded background.
 
-    The copy always gets its full height: the two sit in a packed chain where the card takes what
-    is left, up to its 66% / 392dp size. With the native ad on screen the page is much shorter, and
-    a card at a fixed 66% pushed the description under the page dots.
--->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

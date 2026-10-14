@@ -2,25 +2,21 @@ package com.find.phone.gps.location.tracker.alarms
 
 import java.util.Calendar
 
-/**
- * One reminder. [dateTime] is when it fires next (moved by Snooze); [baseTime] is the time the
- * user picked, which a repeating reminder keeps returning to. Persisted as JSON by [AlarmRepository].
- */
 data class AlarmEntry(
     val id: Long = System.currentTimeMillis(),
     val title: String,
-    /** Optional number: the alert's main button calls it. */
+
     val number: String = "",
     val note: String = "",
     val dateTime: Long,
     val baseTime: Long = dateTime,
     val repeat: String = Repeat.ONCE,
-    /** The list's switch: off keeps the reminder but nothing is scheduled. */
+
     val enabled: Boolean = true,
-    /** A one-off reminder that has fired (or was marked Done). */
+
     val done: Boolean = false,
 ) {
-    /** Gson leaves fields absent from older JSON as null even when Kotlin says otherwise. */
+
     val repeatOrOnce: String get() = repeat.ifBlank { Repeat.ONCE }
 
     val isActive: Boolean get() = enabled && !done
@@ -31,10 +27,6 @@ object Repeat {
     const val DAILY = "daily"
     const val WEEKDAYS = "weekdays"
 
-    /**
-     * The first time after [after] that a [repeat] reminder picked for [base] falls on: the same
-     * hour and minute, on the next day (daily) or next Monday–Friday (weekdays). Null for once.
-     */
     fun nextAfter(repeat: String, base: Long, after: Long): Long? {
         if (repeat != DAILY && repeat != WEEKDAYS) return null
         val pick = Calendar.getInstance().apply { timeInMillis = base }

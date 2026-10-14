@@ -1,11 +1,9 @@
 <resources>
-    <!-- App -->
+    
     <string name="dash">&#8211;</string>
 
-    <!-- Splash -->
     <string name="splash_footer">แอปนี้อาจแสดงโฆษณา</string>
 
-    <!-- Language -->
     <string name="language_title">เลือกภาษาที่ใช้</string>
     <string name="language_continue">ไปต่อ</string>
     <string name="language_search_hint">หาภาษา</string>
@@ -15,7 +13,6 @@
     <string name="language_info_msg">เมื่อเปลี่ยนภาษา หน้าตาของแอปจะถูกปรับตามทันที และบางฟีเจอร์ตามภูมิภาคอาจเปลี่ยนไปตามภาษาที่คุณเลือก</string>
     <string name="language_info_got_it">รับทราบ</string>
 
-    <!-- Terms &amp; Conditions -->
     <string name="terms_title">เงื่อนไขการใช้งาน</string>
     <string name="terms_agree">ฉันอ่านและยอมรับข้อกำหนดการใช้งานรวมถึงนโยบายความเป็นส่วนตัวเรียบร้อยแล้ว</string>
     <string name="terms_accept">ยอมรับแล้วไปต่อ</string>
@@ -24,12 +21,10 @@
     <string name="overlay_system_permission">การอนุญาตระดับระบบ</string>
     <string name="overlay_permission_desc">เมื่อเปิดการแสดงเหนือแอปอื่น แอปจะโชว์ข้อมูลผู้โทรได้แม้คุณกำลังใช้แอปอื่นอยู่</string>
 
-    <!-- Onboarding -->
     <string name="onboarding_skip">ข้าม</string>
     <string name="onboarding_next">ถัดไป</string>
     <string name="onboarding_get_started">เริ่มเลย</string>
 
-    <!-- Home -->
     <string name="home_title">คุณปลอดภัยแล้ว</string>
     <string name="home_subtitle">ระบบแสดงตัวตนผู้โทรและกันสแปมกำลังทำงานอยู่</string>
     <string name="home_greeting">สวัสดีตอนเช้า</string>
@@ -40,44 +35,37 @@
     <string name="home_recent_activity">ความเคลื่อนไหวล่าสุด</string>
     <string name="see_all">แสดงทั้งหมด</string>
 
-    <!-- Quick actions -->
     <string name="quick_dialer">ปุ่มกดโทร</string>
     <string name="quick_lookup">ค้นหา</string>
     <string name="quick_blocklist">รายชื่อที่บล็อก</string>
     <string name="quick_tools">เครื่องมือ</string>
 
-    <!-- Bottom navigation -->
     <string name="nav_home">หน้าแรก</string>
     <string name="nav_recents">ล่าสุด</string>
     <string name="nav_contacts">รายชื่อ</string>
     <string name="nav_lookup">ค้นหา</string>
     <string name="nav_settings">ตั้งค่า</string>
 
-    <!-- Recents -->
     <string name="recents_today">วันนี้</string>
     <string name="recents_yesterday">เมื่อวาน</string>
     <string name="recents_this_week">สัปดาห์นี้</string>
     <string name="recents_earlier">ก่อนหน้านี้</string>
     <string name="recents_empty">ยังไม่มีสายล่าสุด</string>
 
-    <!-- Call filters -->
     <string name="filter_all">ทั้งหมด</string>
     <string name="filter_incoming">สายเข้า</string>
     <string name="filter_outgoing">สายออก</string>
     <string name="filter_missed">สายพลาด</string>
 
-    <!-- Call type labels -->
     <string name="type_incoming">สายเข้า</string>
     <string name="type_outgoing">สายออก</string>
     <string name="type_missed">สายพลาด</string>
     <string name="type_blocked">ถูกบล็อก</string>
 
-    <!-- Call log permission -->
     <string name="perm_calllog_title">แสดงสายล่าสุดของคุณ</string>
     <string name="perm_calllog_message">ให้สิทธิ์เข้าถึงบันทึกการโทร เพื่อแสดงสายล่าสุดในหน้านี้</string>
     <string name="action_grant">ให้สิทธิ์</string>
 
-    <!-- Lookup -->
     <string name="lookup_hint">ใส่เบอร์โทรศัพท์</string>
     <string name="lookup_verified_business">ธุรกิจที่ผ่านการตรวจสอบ</string>
     <string name="lookup_organization">องค์กร</string>
@@ -95,13 +83,11 @@
     <string name="lookup_international">เบอร์ต่างประเทศ</string>
     <string name="lookup_carrier">ผู้ให้บริการ</string>
 
-    <!-- Contacts -->
     <string name="contacts_search_hint">หาจากรายชื่อติดต่อ</string>
     <string name="contacts_empty">ไม่มีรายชื่อติดต่อ</string>
     <string name="perm_contacts_title">แสดงรายชื่อติดต่อของคุณ</string>
     <string name="perm_contacts_message">ให้สิทธิ์เข้าถึงรายชื่อติดต่อ เพื่อแสดงในหน้านี้</string>
 
-    <!-- Settings actions -->
     <string name="language_dialog_title">เลือกภาษาที่ใช้</string>
     <string name="blocklist_add">เพิ่มเบอร์</string>
     <string name="blocklist_empty">ยังไม่มีเบอร์ที่ถูกบล็อก</string>
@@ -114,7 +100,6 @@
     <string name="action_cancel">ยกเลิก</string>
     <string name="action_remove">เอาออก</string>
 
-    <!-- Settings -->
     <string name="settings_language">ภาษา</string>
     <string name="settings_language_sub">ภาษาที่ใช้แสดงในแอป</string>
     <string name="settings_blocklist">รายชื่อที่บล็อก</string>
@@ -128,7 +113,6 @@
     <string name="theme_dark">มืด</string>
     <string name="theme_system">ตามระบบ</string>
 
-    <!-- Call states -->
     <string name="call_incoming">มีสายเข้า…</string>
     <string name="call_decline">ไม่รับ</string>
     <string name="call_accept">รับ</string>
@@ -137,7 +121,6 @@
     <string name="label_spam">สแปม</string>
     <string name="label_verified">ยืนยันแล้ว</string>
 
-    <!-- Added translations -->
     <string name="app_name_overlay">Caller ID</string>
     <string name="number_lookup">ตรวจสอบเบอร์</string>
     <string name="enter_a_number">พิมพ์เบอร์โทร</string>
@@ -255,7 +238,6 @@
     </plurals>
     <string name="battery_activity_title">รายละเอียดแบตเตอรี่</string>
 
-    <!-- Localization batch (th) -->
     <string name="overlay_banner_desc">แสดงข้อมูลผู้โทรเหนือแอปอื่น ๆ</string>
     <string name="home_brand">CallerID</string>
     <string name="home_brand_sub">ตรวจสอบเบอร์โทร</string>
@@ -435,7 +417,7 @@
     <string name="incall_calls">%1$d สาย</string>
     <string name="incall_service_active">ระบบแสดงตัวตนผู้โทรเปิดอยู่</string>
     <string name="call_screening_hint_tip">เปิดไว้เพื่อให้รู้ว่าใครโทรมาและกันสแปม</string>
-    <!-- FSI intro Activity/Dialog + Home permission hint -->
+    
     <string name="home_perm_hint">สิทธิ์บางรายการยังปิดอยู่ เปิดให้ครบเพื่อให้ระบบแสดงตัวตนผู้โทรทำงานเต็มที่</string>
     <string name="home_perm_manage">ตั้งค่า</string>
     <string name="fsi_incoming_call">มีสายโทรเข้า</string>

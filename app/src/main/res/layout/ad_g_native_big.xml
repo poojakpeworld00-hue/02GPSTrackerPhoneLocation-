@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Big native (Claude Design "Ads Redesign" · big native): 44dp r12 icon, headline + Ad badge,
-     "★ 4.6 · Free" line, body, 150dp r13 media, dark Install button. IDs are the ones
-     NativeADs / BS_NativeAds bind (the latter through AdGNativeBigBinding). -->
+
 <com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

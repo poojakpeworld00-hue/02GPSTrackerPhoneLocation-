@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Home hero panel: a deep-blue diagonal base with a soft light glow toward the
-     top-right, and a smoothly rounded bottom edge that the search bar overlaps. -->
+
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Base brand gradient -->
     <item>
         <shape android:shape="rectangle">
             <gradient
@@ -16,7 +14,6 @@
         </shape>
     </item>
 
-    <!-- Soft radial highlight, top-right -->
     <item>
         <shape android:shape="rectangle">
             <gradient

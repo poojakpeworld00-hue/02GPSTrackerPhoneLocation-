@@ -31,10 +31,6 @@ class FullscreenOnAction {
 
     companion object {
 
-        /**
-         * The app-wide interstitial's own placement name, so its link-first / `ad_flow` /
-         * `inter_fallback` keys live under `app_…` like every other placement's.
-         */
         private const val APP_PLACEMENT = "app"
 
         private var _isInterShow: Boolean = false
@@ -45,12 +41,6 @@ class FullscreenOnAction {
             }
         private var googleInterAd: InterstitialAd? = null
 
-        /**
-         * Whether a show right now would play an interstitial that is already loaded. In Google
-         * preload mode that means the preloaded ad is in hand; any other setup (on-demand,
-         * Facebook, custom) is left to [presentInterAds] to decide. For moments that must not sit
-         * behind a loader or fall back to another format — they show a ready ad or nothing.
-         */
         fun hasReadyInter(context: Context): Boolean {
             val pref = AdPrefsStore.getInstance(context)
             val googlePreload = AdFormatKind.fromString(pref.getString("IsAdType")) == AdFormatKind.GOOGLE &&
@@ -59,7 +49,7 @@ class FullscreenOnAction {
         }
         private var preloadedFbAd: com.facebook.ads.InterstitialAd? = null
         private var isFbPreloading = false
-        // Forwarding callbacks — set just before ad.show(), fired by the preload listener
+
         private var fbOnDismissed: (() -> Unit)? = null
         private var fbOnFail: (() -> Unit)? = null
         var isOpened = false
@@ -71,7 +61,7 @@ class FullscreenOnAction {
             onTabClosed?.invoke()
             onTabClosed = null
 
-            releaseSession(context) // 🔥 ADD THIS
+            releaseSession(context)
         }
         private var customTabsClient: CustomTabsClient? = null
         private var customTabsSession: CustomTabsSession? = null
@@ -113,7 +103,7 @@ class FullscreenOnAction {
                         }
                         override fun onInterstitialDismissed(ad: com.facebook.ads.Ad?) {
                             AdPulse.close(context, "interstitial", AdPulse.FACEBOOK)
-                            prefetchFbAd(context)   // replenish
+                            prefetchFbAd(context)
                             fbOnDismissed?.invoke()
                             fbOnDismissed = null
                             fbOnFail = null
@@ -135,8 +125,6 @@ class FullscreenOnAction {
                 return
             }
 
-            // `DirectLinkType` webview / browser: DeepLinkRouter owns those. Only the custom tab
-            // path below needs the close tracking, so it alone stays here.
             if (DeepLinkRouter.mode(context) != DeepLinkRouter.Mode.CUSTOM_TAB) {
                 DeepLinkRouter.open(context, url)
                 onClosed()
@@ -162,7 +150,6 @@ class FullscreenOnAction {
             }
         }
 
-        // Use CustomTabsSession to track tab close
         private fun getSession(
             context: Context,
             onReady: (CustomTabsSession?) -> Unit
@@ -207,11 +194,11 @@ class FullscreenOnAction {
                     addCategory(Intent.CATEGORY_BROWSABLE)
                 }
                 context.startActivity(intent)
-//                safeLog("browser_opened")
+
             } catch (e: Exception) {
-//                context.safeLog("browser_open_failed")
+
             } finally {
-                // Ensure callback is always called
+
                 isOpened = false
                 onTabClosed?.invoke()
                 onTabClosed = null
@@ -219,19 +206,14 @@ class FullscreenOnAction {
             }
         }
 
-
     }
 
-
-    // ----------------------------------------------------------------------
-    // LOAD INTER AD (Google)
-    // ----------------------------------------------------------------------
     fun fetchInterAds(activity: Activity) {
         val pref = AdPrefsStore.getInstance(activity)
         if (!pref.getBoolean("IsAdsON")) return
-        // Firebase "InterAds" master switch — disable interstitial loading entirely
+
         if (!pref.getBoolean("InterAds")) return
-        // Only preload when is_preload_ads = true; on-demand path loads at show time
+
         if (!pref.getBoolean("is_preload_ads")) return
 
         val adType = AdFormatKind.fromString(pref.getString("IsAdType"))
@@ -263,16 +245,10 @@ class FullscreenOnAction {
         }
     }
 
-    // ----------------------------------------------------------------------
-    // PUBLIC SHOW METHOD
-    // ----------------------------------------------------------------------
     fun presentInterAds(activity: Activity?, adsClose: () -> Unit) {
         presentAdInternal(activity, adsClose)
     }
 
-    // ----------------------------------------------------------------------
-    // MAIN INTER AD SHOW
-    // ----------------------------------------------------------------------
     private fun presentAdInternal(activity: Activity?, adsClose: () -> Unit) {
         val act = activity ?: return adsClose()
         act.safeLog("inter_request_start")
@@ -284,16 +260,14 @@ class FullscreenOnAction {
             if (hasClosed) return
             hasClosed = true
             act.safeLog("inter_closed_$reason")
-            adsClose()   // OPEN NEXT ACTIVITY INSTANTLY
+            adsClose()
         }
 
-        // Network check
         if (!isNetworkConnected(act)) return safeClose("no_network")
         if (!pref.getBoolean("IsAdsON")) return safeClose("ads_off")
-        // Firebase "InterAds" master switch — skip showing interstitials entirely
+
         if (!pref.getBoolean("InterAds")) return safeClose("inter_ads_disabled")
 
-        // Counter logic
         val target = pref.getInt("InterCounter")
         if (interCounter != target) {
             interCounter++
@@ -303,12 +277,11 @@ class FullscreenOnAction {
         interCounter = 0
         act.safeLog("inter_counter_triggered")
 
-        // `app_link_first_then` + `app_DirectLink`: the links first, then the listed follow-ups.
         if (HomeSlotAds.presentLinkFirst(act, APP_PLACEMENT) { safeClose("link_first") }) {
             act.safeLog("inter_link_first")
             return
         }
-        // `app_ad_flow`: the whole chain, in the configured order, instead of the interstitial.
+
         if (HomeSlotAds.presentAdFlow(act, APP_PLACEMENT) { safeClose("ad_flow") }) {
             act.safeLog("inter_ad_flow")
             return
@@ -321,8 +294,7 @@ class FullscreenOnAction {
             AdFormatKind.GOOGLE -> {
                 act.safeLog("inter_type_google")
                 if (isPreload) {
-                    // A preloaded ad has no load time of its own; `Inter_Loader_Ms` can still put a
-                    // short loader in front of it. Nothing to put it in front of when none is ready.
+
                     if (googleInterAd != null) {
                         BlockingLoaderDialog.beforeShow(act) { presentGoogleInterstitial(act, pref, ::safeClose) }
                     } else {
@@ -369,9 +341,6 @@ class FullscreenOnAction {
         }
     }
 
-    // ----------------------------------------------------------------------
-    // GOOGLE INTERSTITIAL
-    // ----------------------------------------------------------------------
     private fun presentGoogleInterstitial(
         activity: Activity,
         pref: AdPrefsStore,
@@ -384,7 +353,6 @@ class FullscreenOnAction {
             return processGoogleFail(activity, pref, safeClose)
         }
 
-        // Log load
         activity.trackEvent("google_inter_show_attempt")
 
         if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
@@ -428,9 +396,6 @@ class FullscreenOnAction {
         }
     }
 
-    // ----------------------------------------------------------------------
-    // GOOGLE ON-DEMAND (is_preload_ads = false)
-    // ----------------------------------------------------------------------
     private fun fetchAndShowGoogleOnDemand(
         activity: Activity,
         pref: AdPrefsStore,
@@ -464,9 +429,6 @@ class FullscreenOnAction {
         )
     }
 
-    // ----------------------------------------------------------------------
-    // FACEBOOK PRELOADED SHOW (is_preload_ads = true)
-    // ----------------------------------------------------------------------
     private fun presentPreloadedFbAd(
         activity: Activity,
         onDismissed: () -> Unit,
@@ -479,7 +441,7 @@ class FullscreenOnAction {
             return
         }
         preloadedFbAd = null
-        // Wire forwarding callbacks (listener was set at load time in prefetchFbAd)
+
         fbOnDismissed = onDismissed
         fbOnFail = onFail
         try {
@@ -516,7 +478,7 @@ class FullscreenOnAction {
                 }
             )
         } else if (HomeSlotAds.hasFallback(activity, APP_PLACEMENT)) {
-            // `inter_fallback`: rewarded / full-screen native / … before giving up on the slot.
+
             activity.safeLog("google_fail_fallback_chain")
             HomeSlotAds.runFallback(activity, APP_PLACEMENT) { safeClose("google_fail_fallback") }
         } else {
@@ -527,9 +489,6 @@ class FullscreenOnAction {
         }
     }
 
-    // ----------------------------------------------------------------------
-    // FACEBOOK INTERSTITIAL
-    // ----------------------------------------------------------------------
     fun fetchAndShowFacebookInter(
         context: Context,
         onDismissed: () -> Unit,
@@ -543,8 +502,6 @@ class FullscreenOnAction {
 
         val inter = com.facebook.ads.InterstitialAd(context, fbId)
 
-        // ⬅ FULLSCREEN LOADER (only if Activity)
-        // Show loader only if isLoader == true
         if (context is Activity) BlockingLoaderDialog.show(context, isLoader)
 
         AdPulse.req(context, "interstitial", AdPulse.FACEBOOK)
@@ -610,9 +567,6 @@ class FullscreenOnAction {
         else safeClose("fb_fail_no_custom")
     }
 
-    // ----------------------------------------------------------------------
-    // SAFE LOG WRAPPER
-    // ----------------------------------------------------------------------
     private fun Context.safeLog(event: String) {
         try {
             trackEvent(event)

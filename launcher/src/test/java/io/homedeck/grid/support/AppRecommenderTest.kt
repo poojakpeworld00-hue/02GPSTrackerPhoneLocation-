@@ -21,9 +21,9 @@ class AppRecommenderTest {
     fun recentAndFrequentOutrankStaleAndOneOff() {
         val installed = listOf("a", "b", "c", "d").map { app(it) }
         val usage = listOf(
-            used("a", 2, 1 * day),      // twice, yesterday
-            used("b", 20, 30 * day),    // often, a month ago
-            used("c", 1, 7 * day),      // once, a week ago
+            used("a", 2, 1 * day),
+            used("b", 20, 30 * day),
+            used("c", 1, 7 * day),
         )
         val ranked = AppRecommender.rank(installed, usage, facts(), now, limit = 8).map { it.packageName }
         assertEquals(listOf("a", "b", "c"), ranked.take(3))

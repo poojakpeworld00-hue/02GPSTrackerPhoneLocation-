@@ -7,7 +7,6 @@ import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 
-/** Encodes text (e.g. a `tel:` link) into a square QR [Bitmap]. Generation only — no scanner. */
 object QuickCodeMaker {
 
     fun encode(text: String, sizePx: Int, dark: Int = Color.BLACK, light: Int = Color.WHITE): Bitmap {

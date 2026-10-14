@@ -14,11 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.databinding.CardLanguageBinding
 
-/**
- * Language rows (design 4c). The selected row gets the tint background, a primary code tile
- * and the filled radio; only the two affected rows are rebound on a change, with a payload,
- * so the radio can pop instead of snapping.
- */
 class LanguageListAdapter(
     private val onClick: (LanguageEntry) -> Unit,
 ) : RecyclerView.Adapter<LanguageListAdapter.VH>() {
@@ -26,7 +21,6 @@ class LanguageListAdapter(
     private val items = mutableListOf<LanguageEntry>()
     private var selectedTag: String = ""
 
-    /** The language currently applied; its row shows "Current language". */
     private var currentTag: String = ""
 
     @SuppressLint("NotifyDataSetChanged")
@@ -62,7 +56,6 @@ class LanguageListAdapter(
             }
         }
 
-        /** Quick press-in / release bounce so the tap registers immediately. */
         private fun tapFeedback(view: View) {
             view.animate().cancel()
             view.animate()
@@ -117,7 +110,7 @@ class LanguageListAdapter(
         val item = items[position]
         with(holder.binding) {
             val ctx = root.context
-            // The language's flag in the badge (the short code is gone: the name says it).
+
             lblCode.text = item.flag
             lblNative.text = item.nativeName
             lblName.text = if (item.tag == currentTag) ctx.getString(R.string.ds_current_language) else item.name

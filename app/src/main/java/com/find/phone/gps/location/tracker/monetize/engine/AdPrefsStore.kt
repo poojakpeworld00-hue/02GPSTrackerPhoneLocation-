@@ -16,7 +16,6 @@ class AdPrefsStore constructor(context: Context) {
         const val IsFirsttime = "IsFirsttime"
         const val IS_PERMISSION = "isPermission"
 
-        // ⭐ NEW FIELDS (From AppPreferences)
         var VD_SELECTED_LANGUAGE = "VD_selected_app_language"
         private const val VD_SELECTED_THEME = "VD_selected_theme"
         private const val VD_PERMISSIONS_GRANTED = "VD_permissions_granted"
@@ -37,17 +36,8 @@ class AdPrefsStore constructor(context: Context) {
             }
         }
 
-        /**
-         * The already-initialised instance, or null if [getInstance] was never
-         * called. Lets context-less callers (e.g. GrantOrigin) read a
-         * flag such as `OnMaketing` — it's initialised early in the launch flow.
-         */
         fun getOrNull(): AdPrefsStore? = instance
     }
-
-    // ------------------------------------------------
-    // OLD PROPERTIES
-    // ------------------------------------------------
 
     var IsIntro: Boolean
         get() = preferences.getBoolean(IS_INTRO, false)
@@ -65,24 +55,16 @@ class AdPrefsStore constructor(context: Context) {
         get() = preferences.getBoolean(IS_PERMISSION, false)
         set(value) = preferences.edit { putBoolean(IS_PERMISSION, value) }
 
-
-    // ------------------------------------------------
-    // ⭐ NEW PROPERTIES FROM AppPreferences
-    // ------------------------------------------------
-
-    // Language
     var selectedLanguage: String
         get() = preferences.getString(VD_SELECTED_LANGUAGE, "") ?: ""
         set(value) {
-            preferences.edit().putString(VD_SELECTED_LANGUAGE, value).apply() // asynchronous
+            preferences.edit().putString(VD_SELECTED_LANGUAGE, value).apply()
         }
 
-    // Permissions
     var permissionsGranted: Boolean
         get() = preferences.getBoolean(VD_PERMISSIONS_GRANTED, false)
         set(value) = preferences.edit { putBoolean(VD_PERMISSIONS_GRANTED, value) }
 
-    // Save country
     var userCountry: String
         get() = preferences.getString("user_country", "") ?: ""
         set(value) = preferences.edit { putString("user_country", value) }
@@ -94,23 +76,10 @@ class AdPrefsStore constructor(context: Context) {
         get() = preferences.getString("user_City", "") ?: ""
         set(value) = preferences.edit { putString("user_City", value) }
 
-    /**
-     * True when this device's IP location fell inside `CountryList_Counter_NShow` (see
-     * MonetizeGateActivity). The literal `all` in that list matches every location, so it turns
-     * this on worldwide.
-     *
-     * Surfaces that must stay quiet in those regions read this instead of re-resolving
-     * the location. The overlay permission has no pref gate of its own, so
-     * `OverlayToolbox.isOfferable` reads this.
-     *
-     * Persisted, so it is already correct from the second launch onward; on a cold first
-     * run it stays false until the IP lookup lands.
-     */
     var isNShowLocation: Boolean
         get() = preferences.getBoolean("country_nshow_match", false)
         set(value) = preferences.edit { putBoolean("country_nshow_match", value) }
 
-    // termssPermissions
     var termssPermissions: Boolean
         get() = preferences.getBoolean(VD_TERMS_PERMISSIONS_GRANTED, false)
         set(value) = preferences.edit { putBoolean(VD_TERMS_PERMISSIONS_GRANTED, value) }
@@ -127,10 +96,6 @@ class AdPrefsStore constructor(context: Context) {
     fun update(block: SharedPreferences.Editor.() -> Unit) {
         preferences.edit().apply(block).apply()
     }
-
-    // ------------------------------------------------
-    // UTILITY METHODS
-    // ------------------------------------------------
 
     fun putString(key: String?, value: String?) {
         return preferences.edit().putString(key, value).apply()
@@ -183,6 +148,5 @@ class AdPrefsStore constructor(context: Context) {
     fun clear() {
         preferences.edit().clear().apply()
     }
-
 
 }

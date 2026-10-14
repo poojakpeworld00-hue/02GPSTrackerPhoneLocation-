@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    The install / uninstall screen. Shown by InstallEventObserver on ACTION_PACKAGE_ADDED /
-    ACTION_PACKAGE_REMOVED: a privacy check of the new app's permissions on install, a storage and
-    memory check on uninstall. Every figure shown is read from the device.
 
-    One layout serves both outcomes: InstallOutcomeActivity swaps the hero wash, the badge glyph and
-    the status pill between installed (green) and removed (red), and hides "Open app" when there is
-    nothing left to open. Colours are literals from colors_package_result.xml so the page reads the
-    same whatever the app's light/dark setting is.
--->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -28,7 +19,6 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.30" />
 
-        <!-- ============ HERO ============ -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/pkgresHeroNode"
             android:layout_width="0dp"
@@ -110,7 +100,6 @@
             </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- ============ STATUS + COPY ============ -->
         <TextView
             android:id="@+id/pkgresStatusNode"
             android:layout_width="wrap_content"
@@ -166,9 +155,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pkgresTitleNode" />
 
-        <!-- ============ CHECK ============ -->
-        <!-- The check runs in two phases: a short progress while the real figures are read, then a
-             card of results (rows added in code: row_pkgres_check). -->
         <LinearLayout
             android:id="@+id/pkgresBodyNode"
             android:layout_width="0dp"
@@ -221,7 +207,6 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <!-- The body native; shown only when the config asks for it. -->
         <FrameLayout
             android:id="@+id/adNativeFrameVw"
             android:layout_width="0dp"
@@ -245,7 +230,6 @@
             </com.facebook.shimmer.ShimmerFrameLayout>
         </FrameLayout>
 
-        <!-- ============ ACTIONS ============ -->
         <LinearLayout
             android:id="@+id/pkgresActionsNode"
             android:layout_width="0dp"

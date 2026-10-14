@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Resources ported with the reference app's ad flow screens. -->
+
 <resources>
     <color name="ad_sk">#24443E</color>
     <color name="ad_green">#12B76A</color>

@@ -11,11 +11,6 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Overlay
 
-/**
- * The number's registered area on the map: a tinted circle of [radiusMeters] (skipped when 0,
- * i.e. only the country is known), a ring that keeps pulsing out from the centre, and the
- * centre dot with a white rim.
- */
 class ZoneRippleOverlay(
     private val map: MapView,
     private val center: GeoPoint,
@@ -67,7 +62,6 @@ class ZoneRippleOverlay(
             canvas.drawCircle(cx, cy, areaPx, edge)
         }
 
-        // The pulse grows to the area edge, or to a fixed 48dp when the area is tiny / unknown.
         val pulseMax = areaPx.coerceAtLeast(48 * density)
         pulse.alpha = ((1f - phase) * 200).toInt()
         canvas.drawCircle(cx, cy, 8 * density + (pulseMax - 8 * density) * phase, pulse)

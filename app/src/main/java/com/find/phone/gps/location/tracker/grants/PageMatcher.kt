@@ -1,24 +1,5 @@
 package com.find.phone.gps.location.tracker.grants
 
-/**
- * Decides which [GrantPolicy]s apply to a given Activity.
- *
- * Matching is done on the Activity's *simple class name*, case-insensitively,
- * so Remote Config stays readable and refactors that only move a class between
- * packages don't break targeting.
- *
- * [LEGACY_NAMES] maps every name an earlier build used to the current class names,
- * so Remote Config documents written against any of them keep matching. Two
- * renames have happened across generations, and the table is chained: a first-generation name maps
- * straight to today's class, not to the intermediate one.
- *
- * The value is a list because one old name can now mean two screens: the original
- * app's single MainActivity became this app's AppHubActivity, and the launcher
- * module later brought its own MainActivity, which is now HomeDeckActivity. A rule
- * targeting "MainActivity" has always applied to both, and still does.
- *
- * Drop an entry once the server-side rule has been updated.
- */
 object PageMatcher {
 
     private val LEGACY_NAMES: Map<String, List<String>> = mapOf(
@@ -164,24 +145,11 @@ object PageMatcher {
         "WidgetsSurface" to listOf("WidgetPickerFragment"),
     )
 
-    /**
-     * True when a Remote Config screen name refers to [activitySimpleName], directly
-     * or through [LEGACY_NAMES].
-     *
-     * Every name-keyed lookup in the app goes through here, so a class rename only
-     * has to be recorded in [LEGACY_NAMES] once instead of being chased across the
-     * permission engine, the splash primer and the per-screen ad config.
-     */
     fun matches(configuredName: String, activitySimpleName: String): Boolean =
         configuredName.equals(activitySimpleName, ignoreCase = true) ||
             LEGACY_NAMES[configuredName]
                 ?.any { it.equals(activitySimpleName, ignoreCase = true) } == true
 
-    /**
-     * The key in [keys] that refers to [activitySimpleName], or null. For config
-     * objects keyed by screen name (`ScreenAds`), where the key on the server may be
-     * a name from an earlier build.
-     */
     fun keyFor(keys: Iterator<String>, activitySimpleName: String): String? {
         while (keys.hasNext()) {
             val key = keys.next()
@@ -190,10 +158,6 @@ object PageMatcher {
         return null
     }
 
-    /**
-     * Returns the enabled rules that target [activitySimpleName], preserving
-     * the caller's ordering (the queue applies priority afterwards).
-     */
     fun rulesFor(
         activitySimpleName: String,
         allRules: List<GrantPolicy>,

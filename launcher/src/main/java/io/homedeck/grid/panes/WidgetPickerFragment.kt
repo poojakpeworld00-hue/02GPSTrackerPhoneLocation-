@@ -99,7 +99,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
         }
 
         if (ignoreTouches) {
-            // some devices ACTION_MOVE keeps triggering for the whole long press duration, but we are interested in real moves only, when coords change
+
             if (lastTouchCoords.first != event.x || lastTouchCoords.second != event.y) {
                 touchDownY = -1
                 return true
@@ -109,8 +109,6 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
         lastTouchCoords = Pair(event.x, event.y)
         var shouldIntercept = false
 
-        // pull the whole fragment down if it is scrolled way to the top and the users pulls it even further.
-        // has to clear the touch slop, otherwise the drift of a held finger cancels the long press on a widget
         if (touchDownY != -1) {
             shouldIntercept =
                 event.y.toInt() - touchDownY > touchSlop && binding.widgetsListView.computeVerticalScrollOffset() == 0
@@ -126,20 +124,12 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
         return shouldIntercept
     }
 
-    /**
-     * A widget's preview decoded no larger than [maxSide]. `loadPreviewImage` decodes the full
-     * resource, and some apps ship multi-megapixel previews (one is 3780x4099, ~62 MB) - every widget
-     * is loaded at start-up, so that churn ran GC pauses into the drawer's first scroll. Bitmap
-     * previews are decoded straight at the bounded size; anything else (a vector, a drawable XML)
-     * goes through the framework as before.
-     */
     private fun fetchPreview(info: AppWidgetProviderInfo, maxSide: Int): Drawable? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && info.previewImage != 0) {
             runCatching {
                 val res = context.packageManager.getResourcesForApplication(info.provider.packageName)
                 return ImageDecoder.decodeDrawable(ImageDecoder.createSource(res, info.previewImage)) { decoder, image, _ ->
-                    // A hardware bitmap (the default) cannot be read back, and both the list's
-                    // Glide transform and the drag shadow do; such a preview drew blank.
+
                     decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
                     val longest = max(image.size.width, image.size.height)
                     if (longest > maxSide) {
@@ -155,13 +145,12 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
         return info.loadPreviewImage(context, resources.displayMetrics.densityDpi)
     }
 
-    /** True once the widget list has been built at least once. */
     fun hasWidgets() = binding.widgetsListView.adapter != null
 
     @SuppressLint("WrongConstant")
     fun getAppWidgets() {
         ensureBackgroundThread {
-            // get the casual widgets
+
             var appWidgets = ArrayList<DeskWidgetInfo>()
             appWidgets.addAll(getPseudoWidgets())
             val previewMaxPx = resources.getDimensionPixelSize(R.dimen.launcher_widget_preview_size) * PREVIEW_OVERSAMPLE
@@ -196,7 +185,6 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
                 appWidgets.add(widget)
             }
 
-            // show also the widgets that are technically shortcuts
             val intent = Intent(Intent.ACTION_CREATE_SHORTCUT, null)
             val list =
                 packageManager.queryIntentActivities(intent, PackageManager.PERMISSION_GRANTED)
@@ -240,7 +228,6 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    // widgets we render ourselves on the grid, they have no provider to be listed from
     private fun getPseudoWidgets(): List<DeskWidgetInfo> {
         val appMetadata = getAppMetadataFromPackage(context.packageName) ?: return emptyList()
         return listOf(
@@ -378,7 +365,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
             page = 0,
             packageName = appWidget.appPackageName,
             activityName = "",
-            // pseudo widgets have no provider to read an accessibility label from later on
+
             title = if (appWidget.className.startsWith(PSEUDO_WIDGET_PREFIX)) {
                 appWidget.widgetTitleUi
             } else {
@@ -403,7 +390,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
     }
 
     private companion object {
-        /** Previews are kept at twice the list's tile so the drag shadow on the home screen stays sharp. */
+
         const val PREVIEW_OVERSAMPLE = 2
     }
 }

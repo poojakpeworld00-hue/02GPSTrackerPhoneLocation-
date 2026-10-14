@@ -1,9 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!--
-        Dark counterpart of values/themes.xml. Every colour comes from the design tokens, which
-        values-night/colors_design.xml flips, so the only things restated here are the theme items
-        that cannot follow a token: the light-icon flags on the system bars.
-    -->
+    
     <style name="Base.Theme.GpsTracker" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:fontFamily">@font/figtree_regular</item>
         <item name="fontFamily">@font/figtree_regular</item>

@@ -3,26 +3,21 @@
     <color name="launcher_semitransparent_navigation">#33000000</color>
 
     <color name="launcher_all_app_bg">#80000000</color>
-    <!-- Behind every app name drawn over the wallpaper, so white reads as white on any of them.
-         Matches the shadow DeskGrid paints under the home screen's own labels. -->
+    
     <color name="launcher_app_label_shadow">#b3000000</color>
     <color name="launcher_all_app_search_bg">#33ffffff</color>
-    <!-- The drawer's search pill: a flat, neutral 16% white - quiet enough to sit under the apps
-         rather than compete with them - see lnch_drawer_search_bg. -->
+    
     <color name="launcher_drawer_search_fill">#29ffffff</color>
-    <!-- The search screen's cards: a faint fill and a hairline edge, and their section titles in a
-         dimmer white than the app names under them. -->
+    
     <color name="launcher_search_card_fill">#14ffffff</color>
     <color name="launcher_search_card_edge">#1affffff</color>
     <color name="launcher_search_card_title">#b3ffffff</color>
-    <!-- Its hint and icon: a soft white, never pure white. -->
+    
     <color name="launcher_drawer_search_hint">#b3ffffff</color>
     <color name="launcher_panel_search_fill">#19ffffff</color>
     <color name="launcher_panel_search_stroke">#33ffffff</color>
     <color name="launcher_panel_divider">#dabababa</color>
 
-    <!-- Onboarding palette, converted from the design's OKLCH values (Message Launcher design
-         project). A fixed light look, regardless of the user's chosen theme. -->
     <color name="launcher_onboarding_bg">#ffffff</color>
     <color name="launcher_onboarding_bg_elevated">#ffffff</color>
     <color name="launcher_onboarding_accent">#148A6C</color>
@@ -30,7 +25,7 @@
     <color name="launcher_onboarding_text">#141414</color>
     <color name="launcher_onboarding_text_muted">#6d7277</color>
     <color name="launcher_onboarding_text_faint">#9a9fa5</color>
-    <!-- text drawn on top of the accent, e.g. the CTA label -->
+    
     <color name="launcher_onboarding_on_accent">#ffffff</color>
 
     <color name="launcher_onboarding_cta_start">#2BA886</color>
@@ -84,18 +79,15 @@
     <color name="launcher_welcome_card_shadow">#262C5047</color>
     <color name="launcher_welcome_cta_shadow">#59228A71</color>
 
-    <!-- The messages side panel's ground: the inbox theme's window background (light / night), not the
-         launcher theme's - HomeDeskPane reads this colour to pick the status bar icon colour. -->
     <color name="lnch_host_panel_bg">#FFFFFFFF</color>
-    <!-- Formerly expected from the host; defined here so the module links on its own. A host may
-         still override any of them by declaring the same name. -->
+    
     <color name="launcher_drawer_fade_mid">#40000000</color>
     <color name="launcher_drawer_fade_end">@color/launcher_all_app_bg</color>
     <color name="primary_gradient_start">#FF1FA490</color>
     <color name="primary_gradient_end">#FF177C6D</color>
-    <!-- The matched part of an app name in the drawer search: a saturated blue that reads on the scrim, as One UI tints it. -->
+    
     <color name="lnch_search_highlight">#3FBBA2</color>
-    <!-- Our drawn Google search bar: Google's light pill and hint grey. -->
+    
     <color name="launcher_google_bar_bg">#F2FFFFFF</color>
     <color name="launcher_google_bar_hint">#5F6368</color>
 </resources>

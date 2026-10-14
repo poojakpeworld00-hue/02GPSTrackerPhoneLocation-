@@ -35,14 +35,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
-/**
- * The contact list (design 8a / 8b): account filter with count, tools and add, search, a small
- * native ad, the Favorites row, A–Z cards with Locate and Call, and a letter rail. Every number
- * in the phone book, searchable by name or digits.
- *
- * Opened from Home as a picker: Locate hands the number back as [EXTRA_NUMBER]. Without the
- * Contacts permission the 8b state asks for it in place.
- */
 class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
 
     override val layoutId: Int = R.layout.page_contact_picker
@@ -52,7 +44,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     private val prefs by lazy { SecurePrefsKeeper(this) }
 
     private var all: List<PersonPhone> = emptyList()
-    private var account: String? = null // null = all accounts
+    private var account: String? = null
     private var descending = false
 
     private val permission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -85,12 +77,9 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         if (hasPermission()) onGranted() else presentPermissionState()
     }
 
-    // ===== permission (8b) =====
-
     private fun hasPermission(): Boolean =
         ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
 
-    /** First ask through the system dialog; once it stops showing (denied twice), app settings. */
     private fun promptPermission() {
         val perm = Manifest.permission.READ_CONTACTS
         when {
@@ -107,7 +96,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
 
     override fun onResume() {
         super.onResume()
-        // Back from app settings with the grant in hand.
+
         if (binding.permissionStateVw.isVisible && hasPermission()) onGranted()
     }
 
@@ -124,11 +113,9 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         load()
     }
 
-    // ===== data =====
-
     private fun load() {
         binding.pbLoadingVw.isVisible = true
-        binding.lblAccountCount.isVisible = false // no count until the phone book is read
+        binding.lblAccountCount.isVisible = false
         lifecycleScope.launch {
             all = withContext(Dispatchers.IO) { runCatching { HandsetPeople.load(this@PeopleSelectActivity) }.getOrDefault(emptyList()) }
             binding.pbLoadingVw.isVisible = false
@@ -145,7 +132,6 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         binding.lblAccountCount.isVisible = true
     }
 
-    /** Account scope, then name contains the text or — when it has digits — the number does. */
     private fun imprintFilter() {
         if (binding.pbLoadingVw.isVisible) return
         val query = binding.searchInputVw.text?.toString()?.trim().orEmpty()
@@ -162,7 +148,6 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
             composeRail()
         }
 
-        // Favorites: the starred contacts of the scope, hidden while searching (design 8a).
         val favs = scoped.filter { it.starred }.distinctBy { it.contactId }
         favorites.submitList(favs)
         binding.favoritesGroupVw.isVisible = query.isEmpty() && favs.isNotEmpty()
@@ -182,9 +167,6 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         binding.emptyStateVw.isVisible = true
     }
 
-    // ===== menus =====
-
-    /** "All accounts" plus every account the phone book has, each with its contact count. */
     private fun presentAccountMenu() {
         val people = all.distinctBy { it.contactId }
         val counts = people.groupingBy { it.account }.eachCount()
@@ -216,7 +198,6 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         imprintFilter()
     }
 
-    /** The tools button: sort direction and a refresh. */
     private fun presentToolsMenu() {
         VisualPopup(this)
             .add(
@@ -227,9 +208,6 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
             .show(binding.padTools, Gravity.END)
     }
 
-    // ===== actions =====
-
-    /** Locate: the number goes back to Home, which fills the field. */
     private fun pick(contact: PersonPhone) {
         setResult(RESULT_OK, Intent().putExtra(EXTRA_NUMBER, contact.number))
         finish()
@@ -239,16 +217,11 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         runCatching { startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${contact.number}"))) }
     }
 
-    // ===== small native ad =====
-
-    /** The small native card under the search field (`ScreenAds.PeopleSelectActivity`). */
     private fun paintAd() {
         val show = AdPrefsStore.getInstance(this).getBoolean("IsAdsON") && PageSponsorSettings.resolve(this, javaClass.simpleName).show
         binding.adCardVw.isVisible = show
         if (show) InlineSponsorStrip().presentNativeBannerNative(this, binding.adNativeFrameVw, binding.adShimmerVw)
     }
-
-    // ===== letter rail =====
 
     private fun composeRail() {
         binding.railVw.removeAllViews()
@@ -266,7 +239,6 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         }
     }
 
-    /** Touch or drag along the rail scrolls the list to that letter. */
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareRail() {
         binding.railVw.setOnTouchListener { v, event ->

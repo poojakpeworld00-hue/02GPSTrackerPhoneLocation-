@@ -4,10 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Behind the status bar on the workspace: the bar draws white icons over the wallpaper, and
-         a wallpaper can be any colour, so this keeps them readable. Declared first, so the grid,
-         the banner and every panel draw over it; the panels and the drawer bring their own
-         surface and their own icon colour. -->
     <View
         android:id="@+id/status_scrimView"
         android:layout_width="match_parent"
@@ -15,8 +11,6 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/hdk_status_scrim" />
 
-    <!-- sits below the grid the same way the reference app stacks it: the grid is transparent, so
-         the banner shows through, and opening the drawer or a side panel covers it -->
     <include
         android:id="@+id/default_launcher_bannerView"
         layout="@layout/hdk_default_launcher_banner"
@@ -48,15 +42,6 @@
         layout="@layout/hdk_host_panel"
         android:visibility="gone" />
 
-    <!--
-        The guide's scrim. Deliberately not clickable: HomeDeskPane receives touches at the Activity
-        level, so both the swipe it teaches and the tap-to-perform shortcut still land even though
-        nothing here consumes them. Making it clickable would swallow the drag and silently break
-        the very gesture step three teaches.
-
-        Declared after the panels and the drawer so it draws above them, and taken down the moment
-        any of them starts moving — see hideSwipeHint's callers.
-    -->
     <LinearLayout
         android:id="@+id/swipe_hintView"
         android:layout_width="match_parent"
@@ -66,11 +51,6 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <!--
-            The chevron run. Orientation, drawable and per-child alpha are all set in code for the
-            current step; the alpha ramp always leads in the direction of travel so the run reads as
-            motion rather than as three identical arrows.
-        -->
         <LinearLayout
             android:id="@+id/swipe_hint_chevronsView"
             android:layout_width="wrap_content"

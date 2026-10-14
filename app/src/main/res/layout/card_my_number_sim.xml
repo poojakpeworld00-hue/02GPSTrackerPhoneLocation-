@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One SIM inside the drawer "My number" card (design 1a): a SIM{slot} badge, the resolved name,
-     the number and "carrier · region", and a copy button. Fixed colors: the card is always white
-     on the blue drawer header, in both light and dark mode. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

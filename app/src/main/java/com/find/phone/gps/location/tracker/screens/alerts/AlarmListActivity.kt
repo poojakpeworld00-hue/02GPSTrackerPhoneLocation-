@@ -45,11 +45,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-/**
- * Reminders (design 2): Upcoming and Done, a switch per reminder, "+ New reminder". Opened from
- * the drawer. Also the host of the "Turn on reminders" prompt, which appears after the user saves
- * their first reminder (design 4), so the ask always comes with a reason.
- */
 class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
 
     override val layoutId: Int = R.layout.page_reminder_list
@@ -63,10 +58,8 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         pendingNumber = null
     }
 
-    /** Whatever the answer, carry on: the reminder is saved either way. */
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        // Deferred: the result lands around the resume that follows the system dialog, and
-        // opening Settings inside it races onResume / onHostResume.
+
         val next = afterNotificationAsk
         afterNotificationAsk = null
         window.decorView.post { next?.invoke() }
@@ -84,7 +77,6 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         binding.padNewReminder.setOnClickListener { unfoldSheet(null) }
         trackEvent("Reminders_Open")
 
-        // Bottom mid native (ScreenAds["AlarmListActivity"].show turns it off).
         InlineSponsor().presentMidNative(this, binding.adNativeFrameVw, binding.adShimmerVw)
         binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)
     }
@@ -102,8 +94,6 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         AlarmAskDialog.retireIfShowing()
         super.onDestroy()
     }
-
-    // ───────────────────────────── list ─────────────────────────────
 
     private fun render() {
         val container = binding.rollReminders
@@ -141,7 +131,6 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         lblNumber.isVisible = item.number.isNotBlank()
         lblRepeat.text = AlarmFormatter.repeatLabel(this@AlarmListActivity, item.repeatOrOnce)
 
-        // A number makes it a call-back (phone, purple); otherwise a plain reminder (bell, blue).
         val call = item.number.isNotBlank()
         iconTileVw.setBackgroundResource(if (call) R.drawable.vs_tile_purple_r12 else R.drawable.vs_tile_tint_r12)
         icon.setImageResource(if (call) R.drawable.vs_ic_call else R.drawable.gp_ic_bell)
@@ -162,7 +151,7 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
     }.root
 
     private fun onToggle(item: AlarmEntry, on: Boolean) {
-        // Turning a finished one-off back on needs a new time: open it instead.
+
         if (on && item.repeatOrOnce == Repeat.ONCE && item.dateTime <= System.currentTimeMillis()) {
             render()
             unfoldSheet(item)
@@ -172,8 +161,6 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         trackEvent(if (on) "Reminder_Enable" else "Reminder_Disable")
         render()
     }
-
-    // ───────────────────────────── edit / delete ─────────────────────────────
 
     private fun unfoldSheet(item: AlarmEntry?) {
         AlarmEditorSheet(
@@ -200,12 +187,6 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         }
     }
 
-    /**
-     * After a save: the "Turn on reminders" prompt (Remote Config gated). Its button first asks
-     * for notifications when they are off (13+), then opens the reminders setting. When the
-     * prompt does not show but notifications are off, ask for those anyway: nothing can be shown
-     * without them.
-     */
     private fun promptAfterSave(item: AlarmEntry) {
         AlarmGrant.prime(
             activity = this,
@@ -228,7 +209,6 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
             .onFailure { afterNotificationAsk = null; then() }
     }
 
-    /** The primary return path: Settings sits in this task, so this Activity may bring itself back. */
     private fun kickAccessPoll() {
         accessPollJob?.cancel()
         accessPollJob = lifecycleScope.launch {

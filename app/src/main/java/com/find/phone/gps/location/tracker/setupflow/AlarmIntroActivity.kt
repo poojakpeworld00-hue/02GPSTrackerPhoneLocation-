@@ -25,17 +25,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.fossify.commons.extensions.viewBinding
 
-/**
- * Reminders intro (reminders design 5). Two ways in:
- * - first run: the `reminders` step of `launcher_ads.onboarding.order` (default after Welcome);
- * - later launches: the Splash → Language → Terms → Intro chain, right after Intro and before
- *   Premium / Home, gated by `intro_display.reminders_intro` ([wrap]); the screen that would have
- *   come next travels along as [EXTRA_NEXT].
- * "Turn on reminders" asks for notifications (13+), then opens the reminders
- * setting with auto-return; either way the flow then moves on. Skip moves on straight away.
- * Only reached while [HomeRoleJourney] finds the step applicable (`is_intro_screen`, something to
- * allow, country not excluded).
- */
 class AlarmIntroActivity : ShellHubActivity() {
 
     private val binding by viewBinding(PageReminderIntroBinding::inflate)
@@ -43,7 +32,6 @@ class AlarmIntroActivity : ShellHubActivity() {
     private var awaitingAccess = false
     private var accessPollJob: Job? = null
 
-    /** Whatever the answer, continue to the reminders setting (deferred past the resume). */
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         window.decorView.post { unfoldAccessOrNext() }
     }
@@ -70,7 +58,6 @@ class AlarmIntroActivity : ShellHubActivity() {
             }
         })
 
-        // The "Step n of m" header belongs to the first-run onboarding only.
         if (HomeRoleJourney.isOnboardingActive(this)) {
             HomeRoleJourney.bindStepHeader(this, HomeAdsSettings.OnboardScreen.REMINDERS, binding.root)
         } else {
@@ -78,7 +65,6 @@ class AlarmIntroActivity : ShellHubActivity() {
         }
         TourUnveilRules.markShown(this, TourUnveilSettings.REMINDERS_INTRO)
 
-        // Bottom mid native, `launcher_ads.onboarding.reminders.slot` (off there → frame hidden).
         HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.REMINDERS),
@@ -111,7 +97,7 @@ class AlarmIntroActivity : ShellHubActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Back from Settings: brought forward once granted, or the user pressed Back.
+
         if (awaitingAccess) {
             awaitingAccess = false
             accessPollJob?.cancel()
@@ -120,7 +106,6 @@ class AlarmIntroActivity : ShellHubActivity() {
         }
     }
 
-    /** The primary return path: Settings sits in this task, so this Activity may bring itself back. */
     private fun kickAccessPoll() {
         accessPollJob?.cancel()
         accessPollJob = lifecycleScope.launch {
@@ -134,7 +119,6 @@ class AlarmIntroActivity : ShellHubActivity() {
         }
     }
 
-    /** The phone floats, the chips drift out of phase (the onboarding's `floaty`). */
     private fun playMotion() {
         if (VisualTweens.animationsDisabled(this)) return
         animators += VisualTweens.floaty(binding.introPhoneVw, amplitudeDp = 6f)
@@ -148,7 +132,7 @@ class AlarmIntroActivity : ShellHubActivity() {
         if (leaving) return
         leaving = true
         accessPollJob?.cancel()
-        // The step's exit interstitial, if `launcher_ads.onboarding.reminders` asks for one.
+
         HomeAdsSettings.runOnboardingInter(this, HomeAdsSettings.OnboardScreen.REMINDERS) {
             val next = nextIntent()
             when {
@@ -173,11 +157,6 @@ class AlarmIntroActivity : ShellHubActivity() {
     companion object {
         private const val EXTRA_NEXT = "reminders_intro_next"
 
-        /**
-         * The later-launches chain: [next] itself, or this intro first (carrying [next] on) when
-         * [TourUnveilRules.shouldShowRemindersIntro] says so. Never during the first-run
-         * onboarding, which has its own `reminders` step.
-         */
         fun wrap(activity: android.app.Activity, next: Intent): Intent =
             if (!HomeRoleJourney.isOnboardingActive(activity) && TourUnveilRules.shouldShowRemindersIntro(activity)) {
                 Intent(activity, AlarmIntroActivity::class.java).putExtra(EXTRA_NEXT, next)

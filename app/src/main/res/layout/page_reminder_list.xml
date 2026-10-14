@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Reminders list (reminders design 2): Upcoming / Done sections built in code, an empty state,
-     the floating "New reminder" button, and the bottom mid native ad. -->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -48,7 +47,6 @@
                     android:textSize="22sp" />
             </LinearLayout>
 
-            <!-- The list area: cards, the empty state and the floating button (kept above the ad). -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -61,7 +59,6 @@
                     android:clipToPadding="false"
                     android:paddingBottom="96dp">
 
-                    <!-- Section labels and reminder cards are added here by the activity. -->
                     <LinearLayout
                         android:id="@+id/rollReminders"
                         android:layout_width="match_parent"
@@ -70,7 +67,6 @@
                         android:paddingHorizontal="16dp" />
                 </androidx.core.widget.NestedScrollView>
 
-                <!-- Empty state: bell, title, body. -->
                 <LinearLayout
                     android:id="@+id/emptyStateVw"
                     android:layout_width="match_parent"
@@ -143,7 +139,6 @@
                     app:iconTint="@color/white" />
             </FrameLayout>
 
-            <!-- Bottom mid native ad (shimmer placeholder until it loads). -->
             <View
                 android:id="@+id/ad_native_dividerVw"
                 android:layout_width="match_parent"

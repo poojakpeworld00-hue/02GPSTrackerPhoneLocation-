@@ -16,19 +16,6 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import io.homedeck.grid.bridge.HomeAdsPort
 import io.homedeck.grid.bridge.HomeGlyphPort
 
-/**
- * The launcher module's ad surface, backed by this app's own ad layer (admesh).
- *
- * Everything comes from this app's `launcher_ads`, one block per moment (see
- * [HomeAdsSettings.HomeDeskFragment]): the gesture ads run `app_click` / `left_panel.open_ad` /
- * `right_panel.open_ad` with their own sequence and counter, and the inline slots are:
- *
- *  - [HomeAdsPort.SLOT_PANEL_BOTTOM] ← `left_panel.native_bottom`
- *  - [HomeAdsPort.SLOT_PANEL_MID]    ← `left_panel.native_mid`
- *  - [HomeAdsPort.SLOT_DRAWER_TOP]   ← `app_drawer.bottom_native`
- *
- * On top of that, each slot answers to its `ScreenAds.<name>.show` switch like every app screen.
- */
 class TrackerHomeAds : HomeAdsPort {
 
     override fun isReady(): Boolean =
@@ -51,10 +38,6 @@ class TrackerHomeAds : HomeAdsPort {
             return
         }
 
-        // The launcher never goes through this app's Activities, so the native preload those do
-        // has not run — on a device booted straight into the home screen the cache is empty, and
-        // an empty frame asked to render with nothing cached stays blank for good. Request one and
-        // paint when it lands; the second pass has a cached ad and cannot come back here.
         val emptyFrame = container.childCount == 0
         if (slot.needsNativePreload && emptyFrame && !InlineSponsor.hasPreloadedNative()) {
             InlineSponsor().fetchNativeADs(activity, object : InlineSponsor.InlineAdCallback {
@@ -72,19 +55,13 @@ class TrackerHomeAds : HomeAdsPort {
     }
 
     private fun paint(activity: Activity, slot: HomeAdsSettings.Slot, container: FrameLayout, key: String) {
-        // renewSlot keeps an ad already on screen rather than swapping it for a blank when the
-        // shared native cache is momentarily empty.
+
         HomeAdsSettings.renewSlot(activity, slot, container)
-        // A slot that was GONE at the last inset dispatch has no nav-bar padding yet.
+
         ViewCompat.requestApplyInsets(container)
         if (key == HomeAdsPort.SLOT_DRAWER_TOP) shapeAdIcon(container)
     }
 
-    /**
-     * The drawer slot sits among app icons, and a native ad's icon arrives square: give it the same
-     * device shape as the tiles around it. Once now and once after layout, since the ad view may be
-     * bound a frame later.
-     */
     private fun shapeAdIcon(container: FrameLayout) {
         val apply = {
             (container.locateNativeAdView()?.iconView as? ImageView)?.let(HomeGlyphPort::applyTo)
@@ -100,11 +77,6 @@ class TrackerHomeAds : HomeAdsPort {
         return null
     }
 
-    /**
-     * A panel is opening (`left_panel.open_ad` / `right_panel.open_ad`) or Back was pressed on the
-     * home screen (`home_back`): that block's own sequence and counter. [onDone] (the panel opening,
-     * or nothing for Back) runs exactly once whatever happens.
-     */
     override fun showInterstitial(activity: Activity, tag: String, onDone: () -> Unit) {
         val surface = when (tag) {
             LEFT_SWIPE_TAG -> HomeAdsSettings.HomeDeskFragment.LEFT_PANEL
@@ -116,11 +88,6 @@ class TrackerHomeAds : HomeAdsPort {
         HomeAdsSettings.runSurface(activity, surface, onDone)
     }
 
-    /**
-     * An app is being opened: `home_click` from the home screen, `drawer_click` from the drawer
-     * (each falling back to `app_click` when Remote Config has no block for it), and `app_click`
-     * from anywhere else (the apps panel and its search). Then the app.
-     */
     override fun showFullNative(activity: Activity, tag: String, onDone: () -> Unit) {
         val surface = when (tag) {
             APP_LAUNCH_TAG -> HomeAdsSettings.HomeDeskFragment.APP_CLICK
@@ -131,19 +98,14 @@ class TrackerHomeAds : HomeAdsPort {
         HomeAdsSettings.runSurface(activity, surface, onDone)
     }
 
-    /** Sponsored drawer tiles open through the same opener as every direct link (`link_open_in`, default WebView). */
     override fun openSponsored(activity: Activity, url: String) {
         val mode = DeepLinkRouter.modeOf(AdPrefsStore.getInstance(activity).getString("link_open_in"))
             ?: DeepLinkRouter.Mode.WEBVIEW
         DeepLinkRouter.open(activity, url, mode)
     }
 
-    /**
-     * The `ScreenAds` entry that switches [key], named for where the slot actually is. A key the
-     * launcher adds later keeps its own name, so it is switchable the moment it exists.
-     */
     private companion object {
-        /** The module's gesture tags (`io.homedeck.grid.sponsor.HomeAdsSettings`). */
+
         const val APP_LAUNCH_TAG = "appLaunch"
         const val HOME_LAUNCH_TAG = "homeLaunch"
         const val DRAWER_LAUNCH_TAG = "drawerLaunch"

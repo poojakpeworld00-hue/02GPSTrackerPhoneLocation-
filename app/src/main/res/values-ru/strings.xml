@@ -1,11 +1,9 @@
 <resources>
-    <!-- App -->
+    
     <string name="dash">&#8211;</string>
 
-    <!-- Splash -->
     <string name="splash_footer">В приложении возможна реклама</string>
 
-    <!-- Language -->
     <string name="language_title">Выбор языка</string>
     <string name="language_continue">Далее</string>
     <string name="language_search_hint">Найти язык</string>
@@ -15,7 +13,6 @@
     <string name="language_info_msg">После смены языка интерфейс приложения обновится. От выбранного языка могут зависеть и некоторые региональные возможности.</string>
     <string name="language_info_got_it">Ясно</string>
 
-    <!-- Terms &amp; Conditions -->
     <string name="terms_title">Условия сервиса</string>
     <string name="terms_agree">Я ознакомился(ась) с Условиями использования и Политикой конфиденциальности и согласен(на) с ними.</string>
     <string name="terms_accept">Согласиться и продолжить</string>
@@ -24,12 +21,10 @@
     <string name="overlay_system_permission">Разрешение системы</string>
     <string name="overlay_permission_desc">Благодаря отображению поверх других окон приложение сможет выводить данные о звонящем, когда вы работаете в других программах.</string>
 
-    <!-- Onboarding -->
     <string name="onboarding_skip">Пропустить</string>
     <string name="onboarding_next">Далее</string>
     <string name="onboarding_get_started">Приступить</string>
 
-    <!-- Home -->
     <string name="home_title">Вы защищены</string>
     <string name="home_subtitle">Определение номеров и фильтр спама работают</string>
     <string name="home_greeting">Доброе утро</string>
@@ -40,44 +35,37 @@
     <string name="home_recent_activity">Последние события</string>
     <string name="see_all">Все</string>
 
-    <!-- Quick actions -->
     <string name="quick_dialer">Клавиатура</string>
     <string name="quick_lookup">Найти</string>
     <string name="quick_blocklist">Блокировка</string>
     <string name="quick_tools">Инструменты</string>
 
-    <!-- Bottom navigation -->
     <string name="nav_home">Главная</string>
     <string name="nav_recents">Недавние</string>
     <string name="nav_contacts">Контакты</string>
     <string name="nav_lookup">Найти</string>
     <string name="nav_settings">Настройки</string>
 
-    <!-- Recents -->
     <string name="recents_today">Сегодня</string>
     <string name="recents_yesterday">Вчера</string>
     <string name="recents_this_week">На этой неделе</string>
     <string name="recents_earlier">Ранее</string>
     <string name="recents_empty">Список звонков пуст</string>
 
-    <!-- Call filters -->
     <string name="filter_all">Все</string>
     <string name="filter_incoming">Входящие</string>
     <string name="filter_outgoing">Исходящие</string>
     <string name="filter_missed">Пропущенные</string>
 
-    <!-- Call type labels -->
     <string name="type_incoming">Входящий</string>
     <string name="type_outgoing">Исходящий</string>
     <string name="type_missed">Пропущенный</string>
     <string name="type_blocked">Заблокирован</string>
 
-    <!-- Call log permission -->
     <string name="perm_calllog_title">Показать последние звонки</string>
     <string name="perm_calllog_message">Откройте доступ к журналу вызовов, и последние звонки появятся на этом экране.</string>
     <string name="action_grant">Дать доступ</string>
 
-    <!-- Lookup -->
     <string name="lookup_hint">Номер телефона</string>
     <string name="lookup_verified_business">Подтверждённый бизнес</string>
     <string name="lookup_organization">Организация</string>
@@ -95,13 +83,11 @@
     <string name="lookup_international">Зарубежный номер</string>
     <string name="lookup_carrier">Оператор</string>
 
-    <!-- Contacts -->
     <string name="contacts_search_hint">Найти контакт</string>
     <string name="contacts_empty">Контактов нет</string>
     <string name="perm_contacts_title">Показать контакты</string>
     <string name="perm_contacts_message">Откройте доступ к контактам, и они появятся на этом экране.</string>
 
-    <!-- Settings actions -->
     <string name="language_dialog_title">Выбор языка</string>
     <string name="blocklist_add">Новый номер</string>
     <string name="blocklist_empty">Заблокированных номеров пока нет</string>
@@ -114,7 +100,6 @@
     <string name="action_cancel">Отмена</string>
     <string name="action_remove">Удалить</string>
 
-    <!-- Settings -->
     <string name="settings_language">Язык</string>
     <string name="settings_language_sub">Язык интерфейса приложения</string>
     <string name="settings_blocklist">Чёрный список</string>
@@ -128,7 +113,6 @@
     <string name="theme_dark">Тёмная</string>
     <string name="theme_system">Системная</string>
 
-    <!-- Call states -->
     <string name="call_incoming">Идёт входящий вызов…</string>
     <string name="call_decline">Отклонить</string>
     <string name="call_accept">Принять</string>
@@ -137,7 +121,6 @@
     <string name="label_spam">Спам</string>
     <string name="label_verified">Проверено</string>
 
-    <!-- Added translations -->
     <string name="app_name_overlay">Caller ID</string>
     <string name="number_lookup">Проверка номера</string>
     <string name="enter_a_number">Укажите номер</string>
@@ -261,7 +244,6 @@
     </plurals>
     <string name="battery_activity_title">Сведения об аккумуляторе</string>
 
-    <!-- Localization batch: ru -->
     <string name="home_brand">CallerID</string>
     <string name="home_brand_sub">Проверка номеров</string>
     <string name="home_quick_actions">Быстрый доступ</string>
@@ -271,14 +253,12 @@
     <string name="action_more">Ещё</string>
     <string name="recents_search_hint">Найти звонок</string>
 
-    <!-- Recents sort menu -->
     <string name="sort_title">Порядок</string>
     <string name="sort_newest">От новых к старым</string>
     <string name="sort_oldest">От старых к новым</string>
     <string name="sort_name_asc">Имя (А–Я)</string>
     <string name="sort_name_desc">Имя (Я–А)</string>
 
-    <!-- Lookup -->
     <string name="lookup_detail_title">Данные номера</string>
     <string name="lookup_city">Город</string>
     <string name="lookup_spam_type">Тип спама</string>
@@ -291,7 +271,6 @@
     <string name="lookup_history_empty">Проверок пока не было</string>
     <string name="action_back">Назад</string>
 
-    <!-- Call details -->
     <string name="call_detail_title">Данные звонка</string>
     <string name="action_message">Сообщение</string>
     <string name="action_block">Заблокировать</string>
@@ -325,13 +304,11 @@
     <string name="detail_yesterday">Вчера, %1$s</string>
     <string name="detail_dot_join">%1$s · %2$s</string>
 
-    <!-- Dialer -->
     <string name="dialer_search_contacts">Найти контакт</string>
     <string name="dialer_favorites">Избранное</string>
     <string name="dialer_view_all">Показать все</string>
     <string name="dialer_voice_search">Поиск голосом</string>
 
-    <!-- Blocklist -->
     <string name="blocklist_empty_subtitle">Не принимайте вызовы с выбранных номеров или по заданным маскам</string>
     <string name="blocklist_choose_title">Блокировка номера</string>
     <string name="blocklist_method_add_title">Новый номер</string>
@@ -349,14 +326,12 @@
     <string name="blocklist_no_contacts">Контактов нет</string>
     <string name="blocklist_perm_contacts">Чтобы выбрать контакт, нужен доступ к контактам</string>
 
-    <!-- Tools: compass / signal -->
     <string name="compass_activity_title">Компас</string>
     <string name="compass_signal">Мощность сигнала: %1$s</string>
     <string name="signal_strong">Высокая</string>
     <string name="signal_medium">Умеренная</string>
     <string name="signal_weak">Низкая</string>
 
-    <!-- Speed test -->
     <string name="speedtest_pill">Квантово-устойчивый AES-512</string>
     <string name="speedtest_stable">Защищённое подключение работает устойчиво</string>
     <string name="speedtest_error">Сбой подключения — коснитесь для повтора</string>
@@ -367,7 +342,6 @@
     <string name="speedtest_mbps">%1$s Mbps</string>
     <string name="speedtest_ms">%1$d ms</string>
 
-    <!-- Flashlight -->
     <string name="flashlight_integrity">Проверка оборудования пройдена</string>
     <string name="flashlight_lumen">Яркость в люменах</string>
     <string name="flashlight_brightness">Настройка яркости</string>
@@ -375,7 +349,6 @@
     <string name="flashlight_mode_strobe">Мигание</string>
     <string name="flashlight_lm">%1$d lm</string>
 
-    <!-- Bubble level -->
     <string name="level_current_tilt">Наклон сейчас</string>
     <string name="level_dual_axis">Показания по двум осям</string>
     <string name="level_x_axis">X-Axis</string>
@@ -384,7 +357,6 @@
     <string name="level_adjusting">Подстройка</string>
     <string name="level_level">Горизонтально</string>
 
-    <!-- Battery -->
     <string name="battery_activity_sub">Следите за расходом энергии и состоянием устройства. Смотрите актуальные показатели и статус защищённого соединения.</string>
     <string name="battery_secured">Под защитой, работа оптимизируется</string>
     <string name="battery_health_great">Хорошее</string>
@@ -393,7 +365,6 @@
     <string name="battery_health_dead">Вышла из строя</string>
     <string name="battery_health_over">Повышенное напряжение</string>
 
-    <!-- Sound meter -->
     <string name="sound_peak">Максимальный уровень</string>
     <string name="sound_average">Усреднённый уровень</string>
     <string name="sound_spectrum">Спектр частот</string>
@@ -406,7 +377,6 @@
     <string name="sound_cat_very_loud">Очень шумно</string>
     <string name="sound_cat_dangerous">Вредно для слуха</string>
 
-    <!-- Light meter -->
     <string name="light_capture">Зафиксировать</string>
     <string name="light_resume">Возобновить</string>
     <string name="light_zero">Сбросить</string>
@@ -415,7 +385,6 @@
     <string name="light_max">Наибольшее</string>
     <string name="light_lx">%1$d lx</string>
 
-    <!-- Stopwatch -->
     <string name="stopwatch_active">Идёт отсчёт</string>
     <string name="stopwatch_lap">Круг</string>
     <string name="stopwatch_history">Журнал кругов</string>
@@ -424,13 +393,11 @@
     <string name="stopwatch_total">Итого отметок</string>
     <string name="stopwatch_lap_n">Круг %1$d</string>
 
-    <!-- Timer -->
     <string name="timer_tool">Таймер</string>
     <string name="timer_tool_sub">Обратный отсчёт</string>
     <string name="timer_minutes">Минуты</string>
     <string name="timer_seconds">Секунды</string>
 
-    <!-- Incoming-call overlay -->
     <string name="incall_incoming">Звонок</string>
     <string name="incall_known">Контакт из записной книжки</string>
     <string name="incall_unknown">Неизвестно</string>
@@ -438,21 +405,17 @@
     <string name="incall_calls">%1$d звонков</string>
     <string name="incall_service_active">Определитель номера включён</string>
 
-    <!-- Contacts tabs -->
     <string name="contacts_tab_all">Все</string>
     <string name="contacts_tab_favorites">Избранное</string>
     <string name="contacts_tab_recents">Недавние</string>
     <string name="contacts_tab_groups">Списки</string>
 
-    <!-- Settings -->
     <string name="call_screening">Окно определителя номера</string>
     <string name="call_screening_desc">Выводить сведения о звонящем во время разговора</string>
     <string name="settings_section_call">ЗАЩИТА ВЫЗОВОВ</string>
 
-    <!-- Call states -->
     <string name="please_wait">Пожалуйста, ждите...</string>
 
-    <!-- Post-call (callback) screen -->
     <string name="pc_recent_calls_empty">Звонков не было</string>
     <string name="recent">Недавние</string>
     <string name="message">Сообщение</string>
@@ -475,15 +438,13 @@
     <string name="feature_web">Перейти на сайт</string>
     <string name="feature_edit_contact">Править контакт</string>
 
-    <!-- Home search-bar one-time hint -->
     <string name="search_hint_tip">Введите здесь любой номер, и мы подскажем, кто звонит</string>
     <string name="got_it">Ясно</string>
 
-    <!-- App-redirect dialog -->
     <string name="app_unavailable">Приложения нет на устройстве</string>
     <string name="app_redirect_desc">Это приложение не установлено. Перейти к нему в Play Store?</string>
     <string name="call_screening_hint_tip">Включите, чтобы знать, кто звонит, и отсекать спам</string>
-    <!-- FSI intro Activity/Dialog + Home permission hint -->
+    
     <string name="home_perm_hint">Часть разрешений отключена. Включите их, чтобы определитель номера работал полностью.</string>
     <string name="home_perm_manage">Настроить</string>
     <string name="fsi_incoming_call">Звонок</string>

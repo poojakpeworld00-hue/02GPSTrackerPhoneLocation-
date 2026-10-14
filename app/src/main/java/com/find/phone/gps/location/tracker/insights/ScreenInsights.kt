@@ -17,17 +17,6 @@ import androidx.fragment.app.FragmentManager
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import java.lang.ref.WeakReference
 
-/**
- * App-wide screen analytics, installed once from the Application:
- *
- * - `{token}_open` — once per screen creation (not on config-change recreation), for every
- *   Activity, plus the tracked Fragments in [ScreenTokens.FRAGMENTS] when they resume visible.
- * - `{token}_back_press` — a pass-through back observer: logs, then hands the press on to
- *   whatever handled it before, so back behaves exactly as without it.
- * - `{token}_home_press` / `{token}_recents_press` — from the system's own
- *   `ACTION_CLOSE_SYSTEM_DIALOGS` reason, so a full-screen ad or a permission dialog taking
- *   the foreground can never be mistaken for the user pressing Home.
- */
 object ScreenInsights : Application.ActivityLifecycleCallbacks {
 
     private var current: WeakReference<Activity>? = null
@@ -39,7 +28,6 @@ object ScreenInsights : Application.ActivityLifecycleCallbacks {
     private const val LEAVE_GRACE_MS = 1_000L
     private const val DEDUPE_MS = 700L
 
-    /** Token of the screen in front (or just left), for events that aren't tied to one. */
     fun currentToken(): String? =
         (current?.get() ?: lastLeft?.get())?.let { ScreenTokens.of(it) }
 
@@ -79,8 +67,7 @@ object ScreenInsights : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStarted(activity: Activity) {
-        // Registered after the screen's own onCreate, so it sits on top of the callbacks the
-        // screen added there and sees the press first; it then forwards it unchanged.
+
         val owner = activity as? ComponentActivity ?: return
         if (!observed.add(activity)) return
         owner.onBackPressedDispatcher.addCallback(owner, object : OnBackPressedCallback(true) {

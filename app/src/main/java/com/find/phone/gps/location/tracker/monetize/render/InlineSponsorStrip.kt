@@ -41,16 +41,14 @@ class InlineSponsorStrip {
     companion object {
         private var nativeAdBanner: NativeAd? = null
 
-        /** A native banner is cached and ready to show. */
         fun hasPreloadedNativeBanner(): Boolean = nativeAdBanner != null
     }
 
     fun fetchNativeBannerAds(activity: Activity) {
         val adsPref = AdPrefsStore.getInstance(activity)
         if (!adsPref.getBoolean("IsAdsON")) return
-        // Firebase "NativeBanner" master switch — disable native banner loading
-        if (!adsPref.getBoolean("NativeBanner")) return
 
+        if (!adsPref.getBoolean("NativeBanner")) return
 
         when (AdFormatKind.fromString(adsPref.getString("IsAdType"))) {
             AdFormatKind.GOOGLE -> {
@@ -71,7 +69,6 @@ class InlineSponsorStrip {
                         AdPulse.loadFailed(activity, "native_banner", error.code, AdPulse.GOOGLE)
                         Log.e("InlineSponsorStrip", "Ad failed to load: ${error.message}")
                         nativeAdBanner = null
-                        // No retry logic
 
                         try {
                             activity.trackEvent("NativeBanner_fail")
@@ -79,8 +76,6 @@ class InlineSponsorStrip {
                         }
                     }
 
-                    // The cached ad may be shown on a later screen than the one that loaded it,
-                    // so these resolve the screen in front rather than the loading activity.
                     override fun onAdImpression() {
                         super.onAdImpression()
                         AdPulse.impression(activity.applicationContext, "native_banner")
@@ -99,18 +94,17 @@ class InlineSponsorStrip {
             }
 
             AdFormatKind.FACEBOOK -> {
-                // FB ad type → directly try FB
+
                 Log.e(TAG_EVENT, "AdType FaceBook NOt Pre load Google Native")
                 return
             }
 
             AdFormatKind.UNKNOWN, AdFormatKind.CUSTOM -> {
-                // Custom ad type
+
                 Log.e(TAG_EVENT, "AdType Custom NOt Pre load Google Native")
                 return
             }
         }
-
 
     }
 
@@ -120,14 +114,12 @@ class InlineSponsorStrip {
         Log.e("NativeAds", "Google Show: nativeAd")
         val adsPref = AdPrefsStore.getInstance(context)
 
-        // 🔥 CRASH FIX 1: Activity lifecycle safety
         if (context.isFinishing || context.isDestroyed) return
-
 
         if (!isNetworkConnected(context)
             || !adsPref.getBoolean("IsAdsON")
             || !adsPref.getBoolean("NativeBanner")
-            // Per-screen visibility: a screen whose ScreenAds entry is off gets no native banner.
+
             || !PageSponsorSettings.resolve(context, context.javaClass.simpleName).show
         ) {
             layout.removeAllViews()
@@ -171,10 +163,9 @@ class InlineSponsorStrip {
                             fetchNativeBannerAds(context)
                             return@post
                         } else {
-                            // Google failed → FB fallback or Custom
+
                             if (adsPref.getBoolean("IsFail_FB")) {
-                                // With the shimmer: this branch renders the ad itself, so
-                                // without it nothing ever takes the placeholder down.
+
                                 presentFBNativeBannerFallback(context, layout, shimmer)
                             } else {
                                 layout.removeAllViews()
@@ -187,9 +178,7 @@ class InlineSponsorStrip {
                         }
                     } catch (e: Exception) {
                         Log.e("InlineSponsorStrip", "Google NativeBanner failed: ${e.message}")
-                        // Same reason as InlineSponsor.wipeToEmpty: the ad view is built
-                        // before the shimmer comes down, so a throw here would otherwise
-                        // leave the placeholder running over an empty frame.
+
                         runCatching {
                             shimmer?.stopShimmer()
                             shimmer?.isVisible = false
@@ -217,7 +206,7 @@ class InlineSponsorStrip {
     private fun wireGoogleNativeAd(
         nativeAd: NativeAd, binding: AdGNativeStripBinding, context: Activity
     ) {
-        // Log load
+
         context.trackEvent("NativeBanner_Show_Google")
 
         if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(context)
@@ -233,8 +222,6 @@ class InlineSponsorStrip {
             mainNativeadViewVw.iconView = adAppIconVw
 
             (adHeadlineVw as TextView).text = nativeAd.headline
-            // Remote Config ad colours (theme fallback) are applied in InlineAdSkin.bind.
-
 
             if (nativeAd.body != null) {
                 adBodyVw.visibility = View.VISIBLE
@@ -274,7 +261,6 @@ class InlineSponsorStrip {
             Color.parseColor(defaultColor)
         }
     }
-
 
     private fun presentFBNativeBannerFallback(
         context: Activity, layout: FrameLayout, shimmer: ShimmerFrameLayout? = null
@@ -335,26 +321,21 @@ class InlineSponsorStrip {
         activity: Activity,
         adSize: String? = null
     ) {
-        // ✅ Make sure container is visible
+
         viewGroup.isVisible = true
 
-        // Unregister any old ad view
         nativeAd.unregisterView()
 
-        // ✅ Inflate layout with ViewBinding
         val binding =
             AdMNativeStripBinding.inflate(LayoutInflater.from(activity), viewGroup, false)
 
-        // Clear old views and add new ad view
         viewGroup.removeAllViews()
         viewGroup.addView(binding.root)
 
-        // ✅ Add AdChoicesView
         val adOptionsView = AdOptionsView(activity, nativeAd, binding.nativviewVw)
         binding.adChoicesContainerVw.removeAllViews()
         binding.adChoicesContainerVw.addView(adOptionsView, 0)
 
-        // ✅ Bind ad data to views
         binding.promoAdTitle.text = nativeAd.advertiserName
         binding.promoAdSocialContext.text = nativeAd.adSocialContext
         binding.promoAdSponsoredLabel.text = nativeAd.sponsoredTranslation
@@ -384,7 +365,6 @@ class InlineSponsorStrip {
             binding.promoAdCallToAction.isVisible = false
         }
 
-        // ✅ Register clickable views
         val clickableViews = listOf(binding.promoAdTitle, binding.promoAdCallToAction)
 
         nativeAd.registerViewForInteraction(

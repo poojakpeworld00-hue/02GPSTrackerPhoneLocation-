@@ -12,11 +12,6 @@
         android:elevation="@dimen/launcher_drawer_search_z"
         app:applyWindowInsets="false" />
 
-    <!--
-        The grid scrolls itself: the drawer's native slot is not a sibling here but a full-width
-        row inside it (see AppTrayFragment.adSlot), so it scrolls away with the apps while the
-        grid keeps recycling and HomeDeskPane's drag-to-close still reads a real scroll offset.
-    -->
     <io.homedeck.grid.canvas.DissolveGridView
         android:id="@+id/all_apps_gridView"
         android:layout_width="match_parent"
@@ -32,10 +27,6 @@
         app:layoutManager="org.fossify.commons.views.MyGridLayoutManager"
         app:spanCount="@integer/launcher_portrait_column_count" />
 
-    <!--
-        The paged (Samsung-style) drawer: one grid page per swipe, dots underneath. Shown instead of
-        the scrolling grid above when Config.drawerMode is PAGED - see AppTrayFragment.setupAdapter.
-    -->
     <LinearLayout
         android:id="@+id/all_apps_page_dotsView"
         android:layout_width="match_parent"
@@ -57,12 +48,6 @@
         android:layout_marginEnd="@dimen/smaller_margin"
         android:visibility="gone" />
 
-    <!--
-        The search's own surface, shown instead of the grid / pages while the search bar is open:
-        "Suggested apps" (the launcher's own most / recently opened, AppRecommender) before anything
-        is typed, "Searched apps" plus the top match's shortcuts once there is a query. Anchored
-        against the search bar whichever edge it sits on (AppTrayFragment.applySearchPosition).
-    -->
     <LinearLayout
         android:id="@+id/search_panelView"
         android:layout_width="match_parent"

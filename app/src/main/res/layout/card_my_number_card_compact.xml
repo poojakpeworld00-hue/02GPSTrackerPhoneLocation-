@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- A side-by-side, selectable SIM card on the My number page. Two visual states (selected =
-     gradient, unselected = white) are applied in code; the selected SIM drives the SIM tools. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

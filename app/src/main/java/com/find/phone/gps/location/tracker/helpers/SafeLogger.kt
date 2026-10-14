@@ -8,20 +8,12 @@ object SafeLogger {
 
     private const val TAG = "SafeLogger"
 
-    /** Logs only in Debug mode */
     fun log(tag: String = TAG, message: String) {
         if (BuildConfig.DEBUG) {
             Log.d(tag, message)
         }
     }
 
-    /**
-     * Logs an error (still safe in Release).
-     *
-     * In release the message goes to Crashlytics: as a breadcrumb always, and as a non-fatal
-     * report when there is a [throwable]. Every call is guarded — this is the path crash handling
-     * itself reports through ([FaultCatcher]), so it must not be able to throw.
-     */
     fun error(tag: String = TAG, message: String, throwable: Throwable? = null) {
         if (BuildConfig.DEBUG) {
             Log.e(tag, message, throwable)
@@ -35,7 +27,6 @@ object SafeLogger {
         }
     }
 
-    /** Executes a block only in Debug builds */
     inline fun runDebug(block: () -> Unit) {
         if (BuildConfig.DEBUG) block()
     }

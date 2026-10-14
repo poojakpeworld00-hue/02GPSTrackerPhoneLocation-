@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Home (design 3a/3b/3e): the shared home content (fragment_home_core.xml, DashboardMainFragment)
-    inside a DrawerLayout whose left drawer is the 3e menu (piece_home_drawer.xml).
--->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -16,7 +13,6 @@
         android:background="@color/ds_canvas"
         tools:context=".ui.MainHubActivity">
 
-        <!-- the home content, shared with the launcher panel (see DashboardMainFragment) -->
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/homeContainerVw"
             android:name="com.find.phone.gps.location.tracker.screens.dashboard.DashboardMainFragment"
@@ -24,7 +20,6 @@
             android:layout_height="match_parent"
             tools:layout="@layout/pane_home_core" />
 
-        <!-- 3e: the left drawer menu (Language, Theme, Rate us, Share, Privacy, Terms) -->
         <include
             android:id="@+id/drawerMenuVw"
             layout="@layout/part_home_drawer"

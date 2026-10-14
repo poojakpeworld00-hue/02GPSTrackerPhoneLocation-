@@ -11,11 +11,6 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Locale
 import kotlin.coroutines.resume
 
-/**
- * Turns a registered area (pincode / city / state / country) into a map point with the
- * platform [Geocoder]: no API key, no location permission. Tries the most precise query first,
- * then looser ones; answers are cached per query.
- */
 object ZoneGeocoder {
 
     private const val PREFS = "area_geocode_cache"
@@ -43,12 +38,6 @@ object ZoneGeocoder {
         ).filter { it.isNotEmpty() }.distinct()
     }
 
-    /**
-     * One geocoder query, never throwing. The platform call itself can fail synchronously — on
-     * some OnePlus / OPPO builds (ColorOS 15+, Android 16) the system geocoder service throws a
-     * NullPointerException over Binder from `forwardGeocode`, which surfaces here as a plain
-     * exception from [Geocoder.getFromLocationName] — so every path treats a throw as "no answer".
-     */
     private suspend fun geocode(context: Context, query: String): MapMarkerPoint? {
         if (!runCatching { Geocoder.isPresent() }.getOrDefault(false)) return null
         val geocoder = runCatching { Geocoder(context, Locale.ENGLISH) }.getOrNull() ?: return null

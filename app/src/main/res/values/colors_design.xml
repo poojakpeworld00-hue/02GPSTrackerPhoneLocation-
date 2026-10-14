@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Design tokens from "GPS Tracker Design" (Claude Design). Generated: keep in step with the design. -->
+
 <resources>
     <color name="ds_primary">#0F9D8A</color>
     <color name="ds_pressed">#067C6C</color>
@@ -87,26 +87,26 @@
     <color name="ds_cyan50">#8032B5A3</color>
     <color name="ds_cyan2_45">#734CC1B1</color>
     <color name="ds_success12">#1F1E8E5A</color>
-    <!-- number detail: spam / unverified pills -->
+    
     <color name="ds_danger12">#1FD93B3B</color>
     <color name="ds_warn12">#1FE5920A</color>
-    <!-- premium paywall (design 10a) -->
+    
     <color name="ds_gold_start">#FFD466</color>
     <color name="ds_gold_end">#F5A524</color>
     <color name="ds_gold_ink">#5A3A00</color>
     <color name="ds_plan_selected">#F1F8FC</color>
     <color name="ds_success18">#2E1E8E5A</color>
-    <!-- surfaces (cards, fields, sheets, the drawer): white in light, a step above the canvas in dark -->
+    
     <color name="ds_surface">#FFFFFF</color>
     <color name="ds_card_glass">#EBFFFFFF</color>
     <color name="ds_hint_row_bg">#F1F8FC</color>
     <color name="ds_hint_row_border">#BFE0F0</color>
-    <!-- contact list (8a) avatar gradient ends -->
+    
     <color name="ds_green_light">#34C38F</color>
     <color name="ds_purple_light">#8B7CF6</color>
     <color name="ds_amber_light">#F5B942</color>
     <color name="ds_red_light">#F06767</color>
-    <!-- Splash redesign (Map Light redesign): red map pin, blue→cyan progress, globe glow. -->
+    
     <color name="ds_pin_red_light">#FF6B6B</color>
     <color name="ds_pin_red">#E5303A</color>
     <color name="ds_pin_red_shadow">#73961E1E</color>
@@ -114,22 +114,21 @@
     <color name="ds_splash_blue">#0EA281</color>
     <color name="ds_splash_cyan">#00B8D0</color>
     <color name="ds_globe_glow">#7342BC9C</color>
-    <!-- Fixed (non-adapting) ink/muted for the white "My number" card that sits on the always-blue
-         drawer header — the theme ds_ink/ds_muted flip light in dark mode and would vanish there. -->
+    
     <color name="ds_ink_fixed">#0D2B23</color>
     <color name="ds_muted_fixed">#5B6971</color>
-    <!-- snackbar: ink bar in light, a raised dark surface at night -->
+    
     <color name="ds_snackbar_bg">#0D2B23</color>
-    <!-- drawer menu (3e) -->
+    
     <color name="ds_amber_soft">#FEF3E2</color>
     <color name="ds_white85">#D9FFFFFF</color>
-    <!-- search result (design 11a–11d) -->
+    
     <color name="ds_gold_soft">#FFF4DC</color>
     <color name="ds_gold_soft_ink">#8A5A00</color>
     <color name="ds_white90_surface">#E6FFFFFF</color>
-    <!-- search limit (design 9a / 9b) -->
+    
     <color name="ds_amber_ink">#B77400</color>
-    <!-- Onboarding step header ("STEP n OF m" pill + progress track): readable in both modes. -->
+    
     <color name="ds_step_pill_text">#067C6C</color>
     <color name="ds_step_pill_bg">#E6EAFF</color>
     <color name="ds_step_track">#DCE7EE</color>

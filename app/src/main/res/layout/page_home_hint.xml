@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Hint dialog 5a "Default home · centred card" (Hint Dialogs design). Drawn by HomeRoleTipActivity
-    over the system "Default home app" list: a 70% scrim, a centred r28 card that mirrors this
-    app's row and animates the one tap the user needs. Tap anywhere dismisses.
--->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -37,9 +33,6 @@
             android:textColor="@color/ds_muted"
             android:textSize="14sp" />
 
-        <!-- the mirrored row, with the pulsing glow ring drawn 6dp outside it -->
-        <!-- 80dp = the 68dp row + the 6dp glow ring on each side; a fixed height keeps the
-             match_parent glow from growing to the screen. -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
@@ -106,7 +99,6 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- the tap composition: ripple, radio, hand -->
                 <FrameLayout
                     android:layout_width="56dp"
                     android:layout_height="60dp"

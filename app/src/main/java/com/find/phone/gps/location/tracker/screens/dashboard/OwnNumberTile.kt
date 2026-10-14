@@ -23,17 +23,6 @@ import com.find.phone.gps.location.tracker.databinding.CardMyNumberSimBinding
 import com.find.phone.gps.location.tracker.screens.simcard.OwnNumberActivity
 import com.find.phone.gps.location.tracker.helpers.SimLineJournal
 
-/**
- * The "My number" card in the drawer header (design 1a, "SIMs visible"): the phone's own SIMs with
- * their number, carrier and region (no name).
- *
- * Phone access is asked here, when the user taps the card's button, so the system dialog appears
- * next to the feature that needs it. Denied twice (Android stops showing its dialog), the button
- * opens this app's settings instead. The card is hidden on a phone with no ready SIM.
- *
- * The host activity owns the permission launcher (it must be registered before the view exists)
- * and forwards its result to [onPermissionResult].
- */
 class OwnNumberTile(
     private val activity: AppCompatActivity,
     private val views: PartMyNumberCardBinding,
@@ -49,7 +38,6 @@ class OwnNumberTile(
         }
     }
 
-    /** Redraws from the current SIM / permission state; call on view creation and on resume. */
     fun render() {
         val context: Context = activity
         if (!OwnSimLines.hasReadySim(context)) {
@@ -61,10 +49,10 @@ class OwnNumberTile(
         val lines = OwnSimLines.read(context)
         val showing = lines.isNotEmpty()
         views.padMyNumber.isVisible = !showing
-        // SIMs visible → offer "Manage" (the My number page); otherwise the "Show" button.
+
         views.padManage.isVisible = showing
         views.padMyNumber.setText(if (isPermanentlyDenied()) R.string.my_number_settings else R.string.my_number_show)
-        // Only the "ask for access" state needs the subtitle; once the SIMs show, the rows say it all.
+
         views.lblMyNumberSub.isVisible = !showing
         views.lblMyNumberSub.setText(R.string.my_number_sub)
 
@@ -96,7 +84,6 @@ class OwnNumberTile(
         }
     }
 
-    /** Asked before and Android no longer shows its dialog: only Settings can grant it now. */
     private fun isPermanentlyDenied(): Boolean {
         val permission = OwnSimLines.PERMISSIONS.first()
         return !OwnSimLines.isGranted(activity) &&
@@ -116,7 +103,7 @@ class OwnNumberTile(
 
     private fun wireRow(inflater: LayoutInflater, context: Context, line: OwnSimLines.SimSlotLine) =
         CardMyNumberSimBinding.inflate(inflater, views.simRowsVw, false).apply {
-            // Badge "SIM1" / "SIM2": slot 1 filled primary, the rest a light tint.
+
             val primarySlot = line.slot <= 1
             lblSimBadge.text = context.getString(R.string.my_number_sim_badge, line.slot)
             lblSimBadge.setBackgroundResource(
@@ -137,7 +124,6 @@ class OwnNumberTile(
             }
             padCopySim.isVisible = number != null
 
-            // Secondary line: "carrier · region", e.g. "Jio · Gujarat, India".
             val region = line.region
             lblSimRegion.text = if (!region.isNullOrBlank()) "${line.carrier} · $region" else line.carrier
             lblSimRegion.isVisible = lblSimRegion.text.isNotBlank()

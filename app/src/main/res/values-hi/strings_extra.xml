@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Hindi: every default string the earlier translation set lacked (design screens, launcher, lookup, premium). -->
+
 <resources>
     <string name="app_name">GPS Tracker Phone Location</string>
     <string name="app_label">GPS Tracker Phone Location</string>

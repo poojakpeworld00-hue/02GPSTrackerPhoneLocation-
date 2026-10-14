@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Native banner (Claude Design "Ads Redesign" · native banner): white r18 card, 44dp r12 icon,
-     headline + Ad badge, two-line body, dark Install button. IDs are the ones NativeBanner binds. -->
+
 <com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

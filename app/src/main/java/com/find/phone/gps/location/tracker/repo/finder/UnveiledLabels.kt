@@ -3,10 +3,6 @@ package com.find.phone.gps.location.tracker.repo.finder
 import android.content.Context
 import java.util.Locale
 
-/**
- * "Also known as" names the user has revealed with a rewarded ad, per number, so a reopened
- * result keeps them readable. Stored as "e164|name" entries in one string set.
- */
 object UnveiledLabels {
 
     private const val PREFS = "revealed_names"

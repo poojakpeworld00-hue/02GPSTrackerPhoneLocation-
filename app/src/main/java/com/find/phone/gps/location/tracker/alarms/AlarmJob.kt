@@ -19,14 +19,6 @@ import com.find.phone.gps.location.tracker.screens.alerts.AlarmPopupActivity
 import com.find.phone.gps.location.tracker.screens.alerts.AlarmListActivity
 import com.find.phone.gps.location.tracker.helpers.SafeLogger
 
-/**
- * Fires one reminder. Posts a high-importance notification whose full-screen target is
- * [AlarmPopupActivity]; that screen cancels the notification once it is up.
- *
- * Product decision: reminders only show while the phone is locked. In use, the full-screen
- * target would only surface as a heads-up banner, so the reminder is not shown at all. Either way
- * the reminder moves on: a one-off is marked done, a repeating one is scheduled for its next time.
- */
 class AlarmJob(context: Context, params: WorkerParameters) : Worker(context, params) {
 
     override fun doWork(): Result {
@@ -44,7 +36,6 @@ class AlarmJob(context: Context, params: WorkerParameters) : Worker(context, par
         return Result.success()
     }
 
-    /** One-off → done; repeating → its next time. */
     private fun advance(ctx: Context, item: AlarmEntry) {
         val next = Repeat.nextAfter(item.repeatOrOnce, item.baseTime, System.currentTimeMillis())
         if (next == null) AlarmRepository.upsert(ctx, item.copy(done = true))
@@ -65,7 +56,6 @@ class AlarmJob(context: Context, params: WorkerParameters) : Worker(context, par
         }
         guaranteeChannel(ctx)
 
-        // `is_enhanced_mode` off (or the country is excluded): a plain notification into the list.
         val fullScreen = AlarmSettings.get(ctx).isEnhancedMode && AlarmSettings.isCountryAllowed(ctx)
         val notifId = item.id.hashCode()
         val target = if (fullScreen) AlarmPopupActivity.intent(ctx, item.id, notifId)

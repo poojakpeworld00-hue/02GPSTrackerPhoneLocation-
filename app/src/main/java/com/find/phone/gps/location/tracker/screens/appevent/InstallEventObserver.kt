@@ -17,27 +17,6 @@ import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import java.lang.ref.WeakReference
 import kotlin.concurrent.thread
 
-/**
- * Shows [InstallOutcomeActivity] when an app is installed or removed, the way the reference app does
- * it: from a foreground Activity with a plain `startActivity` — never from a background service and
- * never through a notification.
- *
- * ## Why it works this way
- *
- * An app cannot start an Activity from a true background, and a full-screen-intent notification
- * needs a special grant on Android 14. The reference sidesteps both by only ever showing the screen
- * while one of its own Activities is resumed, and by **queuing** an event that arrives otherwise and
- * draining it the next time a screen resumes. So this:
- *
- *  - registers the package receiver on the **app context at runtime** (the only way to hear
- *    `ACTION_PACKAGE_*` on Android 8+ is a context-registered receiver in a living process — a
- *    manifest receiver is not delivered these implicit broadcasts),
- *  - tracks the currently-resumed Activity through lifecycle callbacks, and
- *  - shows the screen immediately if one is foreground, or queues it for the next resume.
- *
- * Registering is idempotent and cheap; with the screen disabled in Remote Config it hears the events
- * and does nothing but keep the metadata cache warm.
- */
 object InstallEventObserver {
 
     private const val TAG = "PackageEvent"
@@ -48,22 +27,17 @@ object InstallEventObserver {
     private const val KEY_TIME = "pending_time"
     private const val KEY_LAST_SHOWN = "last_shown_at"
 
-    /** A queued event older than this is stale and dropped — an install card an hour later is noise. */
     private const val PENDING_TTL_MS = 10 * 60 * 1000L
 
     private var registered = false
 
-    /** The currently-resumed screen of this app — where the result may be shown from. */
     private var resumed = WeakReference<Activity>(null)
 
-    /** Registers the lifecycle callbacks and the package receiver. Idempotent. */
     fun register(app: Application) {
         if (registered) return
         registered = true
         app.registerActivityLifecycleCallbacks(Callbacks)
 
-        // NOT_EXPORTED: these are protected system broadcasts, so only the system delivers them.
-        // The "package" data scheme is what makes the filter match package events.
         ContextCompat.registerReceiver(
             app,
             Receiver,
@@ -75,8 +49,6 @@ object InstallEventObserver {
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
 
-        // Cache metadata for every installed app up front, so removing any of them — not only ones
-        // installed while we were running — can still show its icon and version.
         thread { InstallInfoMemo.seedAll(app) }
     }
 
@@ -85,14 +57,10 @@ object InstallEventObserver {
             val pkg = intent.data?.schemeSpecificPart
             val app = context.applicationContext
 
-            // Remember a newly installed (or updated) app first, so its metadata is on hand if it is
-            // removed later. Independent of whether the screen is shown.
             if (intent.action == Intent.ACTION_PACKAGE_ADDED && !pkg.isNullOrBlank()) {
                 thread { InstallInfoMemo.remember(app, pkg) }
             }
 
-            // A replace (update) fires REMOVED then ADDED with EXTRA_REPLACING on both — an app
-            // updating is not an install. This app's own package is never an event.
             if (intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) return
             if (pkg.isNullOrBlank() || pkg == app.packageName) return
 
@@ -105,7 +73,6 @@ object InstallEventObserver {
         }
     }
 
-    /** Shows the result now if a screen is foreground, or queues it for the next resume. */
     private fun onEvent(context: Context, installed: Boolean, pkg: String) {
         runCatching {
             if (!gatesPass(context)) return
@@ -119,7 +86,6 @@ object InstallEventObserver {
         }.onFailure { Log.w(TAG, "onEvent($pkg) failed", it) }
     }
 
-    /** Records the throttle and launches the result screen from [activity]. */
     private fun fire(activity: Activity, installed: Boolean, pkg: String) {
         settings(activity).edit { putLong(KEY_LAST_SHOWN, System.currentTimeMillis()) }
         activity.startActivity(
@@ -129,7 +95,6 @@ object InstallEventObserver {
         )
         Log.d(TAG, "showed $pkg (installed=$installed) from ${activity.javaClass.simpleName}")
 
-        // The app is gone, so its cache entry is spent — drop it once the screen has read it.
         if (!installed) {
             val app = activity.applicationContext
             activity.window.decorView.postDelayed({
@@ -138,10 +103,6 @@ object InstallEventObserver {
         }
     }
 
-    /**
-     * Every gate, decided in one place before anything is shown: `IsAdsON`, launcher mode, a
-     * finished onboarding, then the config's `enabled` and its throttle.
-     */
     private fun gatesPass(context: Context): Boolean {
         if (!AdPrefsStore.getInstance(context).getBoolean("IsAdsON")) return false
         if (!HomeModeToggle.isEnabled(context)) return false
@@ -166,7 +127,6 @@ object InstallEventObserver {
         }
     }
 
-    /** The queued event if one is set and still fresh, clearing the slot either way. */
     private fun takePending(context: Context): Pair<Boolean, String>? {
         val data = settings(context)
         val pkg = data.getString(KEY_PACKAGE, null) ?: return null
@@ -182,12 +142,10 @@ object InstallEventObserver {
 
     private object Callbacks : Application.ActivityLifecycleCallbacks {
         override fun onActivityResumed(activity: Activity) {
-            // Never arm off, or drain onto, the result screen itself.
+
             if (activity is InstallOutcomeActivity) return
             resumed = WeakReference(activity)
 
-            // An install that arrived while backgrounded waits here to be shown on the next screen
-            // the user lands on.
             val (installed, pkg) = takePending(activity.applicationContext) ?: return
             runCatching {
                 if (gatesPass(activity.applicationContext)) fire(activity, installed, pkg)
@@ -208,6 +166,5 @@ object InstallEventObserver {
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
     }
 
-    /** Long enough for the screen to have read the cache before it is pruned. */
     private const val FORGET_DELAY_MS = 5_000L
 }

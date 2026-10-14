@@ -9,22 +9,12 @@ import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.dp
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.loop
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.pvh
 
-/**
- * The permission sheet's looping illustrations, ported from the `@keyframes` in
- * "Permission Sheet.dc.html" (`ping`, `bell`, `pop`, `cardA`, `cardB`, `rowIn`, `drop`, and the
- * SIM page's `rev`/`hd`/`wOff`/`wOn`, which [UnveilSplitLayout] owns).
- *
- * Only the page on screen animates ("paused off-screen" in the spec): the sheet calls [start] for
- * the selected page and [stop] for the rest. With system animations off nothing runs and every
- * view keeps its resting frame from the layout.
- */
 object PanelArtwork {
 
-    /** One-time setup after the illustration is inflated into its page. */
     fun bind(page: PanelSlide, root: View) {
         when (page) {
             PanelSlide.CONTACTS -> {
-                // Last four digits per row (2104 / 2114 / 2124).
+
                 listOf(R.id.sub1Vw to "2104", R.id.sub2Vw to "2114", R.id.sub3Vw to "2124").forEach { (id, digits) ->
                     root.findViewById<TextView>(id).text = root.context.getString(R.string.ps_contacts_mobile, digits)
                 }
@@ -32,7 +22,7 @@ object PanelArtwork {
             PanelSlide.SIM -> {
                 val without = root.findViewById<View>(R.id.lblWithout)
                 val with = root.findViewById<View>(R.id.lblWith)
-                // wOff / wOn: the active side reads at full strength, the other at 35%.
+
                 root.findViewById<UnveilSplitLayout>(R.id.revealVw).onFractionChanged = { f ->
                     without.alpha = 1f - 0.65f * f
                     with.alpha = 0.35f + 0.65f * f
@@ -42,7 +32,6 @@ object PanelArtwork {
         }
     }
 
-    /** Starts [page]'s loops; returns them so the caller can [stop] them. */
     fun start(page: PanelSlide, root: View): List<Animator> {
         if (page == PanelSlide.SIM) {
             root.findViewById<UnveilSplitLayout>(R.id.revealVw).start()
@@ -64,7 +53,6 @@ object PanelArtwork {
         resetToRest(root)
     }
 
-    /** Puts every animated view back on its resting frame (what the layout draws). */
     private fun resetToRest(root: View) {
         listOf(R.id.ringVw, R.id.bellVw, R.id.badgeVw, R.id.panelA, R.id.panelB, R.id.row1Vw, R.id.row2Vw, R.id.row3Vw,
             R.id.rowCheckVw, R.id.areaPingVw, R.id.pinVw).forEach { id ->
@@ -76,13 +64,12 @@ object PanelArtwork {
 
     private fun ping(view: View, durationMs: Long): Animator = loop(
         view, durationMs, 0L,
-        // ping: scale .4 → 1.5, opacity .9 → 0, ease-out
+
         pvh(View.SCALE_X, VisualTweens.EASE_OUT, 0f to 0.4f, 1f to 1.5f),
         pvh(View.SCALE_Y, VisualTweens.EASE_OUT, 0f to 0.4f, 1f to 1.5f),
         pvh(View.ALPHA, VisualTweens.EASE_OUT, 0f to 0.9f, 1f to 0f),
     )
 
-    /** pop: 0–10% hidden, 20% overshoot to 1.2, 26% settled. */
     private fun pop(view: View, durationMs: Long): Animator = loop(
         view, durationMs, 0L,
         pvh(View.SCALE_X, VisualTweens.EASE_OUT, 0f to 0f, 0.1f to 0f, 0.2f to 1.2f, 0.26f to 1f, 1f to 1f),
@@ -92,7 +79,7 @@ object PanelArtwork {
     private fun notifications(root: View): List<Animator> {
         val ctx = root.context
         val bell = root.findViewById<View>(R.id.bellVw)
-        // transform-origin: 50% 10% — the bell swings from its hanger.
+
         bell.post { bell.pivotX = bell.width / 2f; bell.pivotY = bell.height * 0.1f }
         val e = VisualTweens.EASE_IN_OUT
         val up12 = ctx.dp(12f)
@@ -121,7 +108,7 @@ object PanelArtwork {
         val shift = root.context.dp(10f)
         val rows = listOf(R.id.row1Vw, R.id.row2Vw, R.id.row3Vw).mapIndexed { i, id ->
             val row = root.findViewById<View>(id)
-            // rowIn, staggered 0 / .2 / .4s; hidden until its delay runs out.
+
             row.alpha = 0f
             loop(
                 row, 3600L, i * 200L,
@@ -136,7 +123,7 @@ object PanelArtwork {
         val ctx = root.context
         return listOf(
             ping(root.findViewById(R.id.areaPingVw), 2600L),
-            // drop: falls 50dp, bounces 4 / -3, settles by 40%.
+
             loop(
                 root.findViewById(R.id.pinVw), 2600L, 0L,
                 pvh(

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Soft blue halo behind the globe (design: box-shadow 0 0 34px rgba(80,170,255,.45)). -->
+
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <gradient
         android:type="radial"

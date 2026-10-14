@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One fact cell of the result sheet (design 11a): r14 gray tile, 11sp caption, 14sp value;
-     locked cells blur the value and show the lock at the top-right. -->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

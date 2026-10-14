@@ -1,11 +1,9 @@
 <resources>
-    <!-- App -->
+    
     <string name="dash">&#8211;</string>
 
-    <!-- Splash -->
     <string name="splash_footer">Des publicités peuvent s\'afficher dans cette application</string>
 
-    <!-- Language -->
     <string name="language_title">Sélectionner la langue</string>
     <string name="language_continue">Poursuivre</string>
     <string name="language_search_hint">Chercher une langue</string>
@@ -15,7 +13,6 @@
     <string name="language_info_msg">Modifier la langue met à jour l\'interface de l\'app. Selon votre choix, certaines fonctions régionales peuvent différer.</string>
     <string name="language_info_got_it">C\'est noté</string>
 
-    <!-- Terms &amp; Conditions -->
     <string name="terms_title">Conditions d\'utilisation générales</string>
     <string name="terms_agree">Je confirme avoir lu les Conditions générales et la Politique de confidentialité, et je les accepte.</string>
     <string name="terms_accept">Accepter et poursuivre</string>
@@ -24,12 +21,10 @@
     <string name="overlay_system_permission">Permission du système</string>
     <string name="overlay_permission_desc">Grâce à l\'affichage au-dessus des autres applications, cette app peut montrer les informations de l\'appelant tandis que vous utilisez d\'autres apps.</string>
 
-    <!-- Onboarding -->
     <string name="onboarding_skip">Passer</string>
     <string name="onboarding_next">Suivant</string>
     <string name="onboarding_get_started">C\'est parti</string>
 
-    <!-- Home -->
     <string name="home_title">Vous êtes à l\'abri</string>
     <string name="home_subtitle">L\'identification des appelants et le filtrage du spam sont en marche</string>
     <string name="home_greeting">Salut</string>
@@ -40,20 +35,17 @@
     <string name="home_recent_activity">Dernière activité</string>
     <string name="see_all">Afficher tout</string>
 
-    <!-- Quick actions -->
     <string name="quick_dialer">Pavé numérique</string>
     <string name="quick_lookup">Recherche</string>
     <string name="quick_blocklist">Liste noire</string>
     <string name="quick_tools">Outils</string>
 
-    <!-- Bottom navigation -->
     <string name="nav_home">Accueil</string>
     <string name="nav_recents">Historique</string>
     <string name="nav_contacts">Contacts</string>
     <string name="nav_lookup">Recherche</string>
     <string name="nav_settings">Paramètres</string>
 
-    <!-- Call states -->
     <string name="call_incoming">Appel en cours d\'arrivée…</string>
     <string name="call_decline">Rejeter</string>
     <string name="call_accept">Répondre</string>
@@ -62,31 +54,26 @@
     <string name="label_spam">Spam</string>
     <string name="label_verified">Confirmé</string>
 
-    <!-- Recents -->
     <string name="recents_today">Aujourd\'hui</string>
     <string name="recents_yesterday">Hier</string>
     <string name="recents_this_week">Cette semaine-ci</string>
     <string name="recents_earlier">Plus tôt</string>
     <string name="recents_empty">Pas d\'appel récent</string>
 
-    <!-- Call filters -->
     <string name="filter_all">Tous</string>
     <string name="filter_incoming">Reçus</string>
     <string name="filter_outgoing">Émis</string>
     <string name="filter_missed">Sans réponse</string>
 
-    <!-- Call type labels -->
     <string name="type_incoming">Reçu</string>
     <string name="type_outgoing">Émis</string>
     <string name="type_missed">Sans réponse</string>
     <string name="type_blocked">Bloqué</string>
 
-    <!-- Call log permission -->
     <string name="perm_calllog_title">Afficher vos derniers appels</string>
     <string name="perm_calllog_message">Donnez accès à votre journal d\'appels pour voir ici vos appels récents.</string>
     <string name="action_grant">Donner l\'accès</string>
 
-    <!-- Lookup -->
     <string name="lookup_hint">Entrez un nom ou un numéro</string>
     <string name="lookup_verified_business">Société vérifiée</string>
     <string name="lookup_organization">Structure</string>
@@ -104,13 +91,11 @@
     <string name="lookup_international">International</string>
     <string name="lookup_carrier">Fournisseur</string>
 
-    <!-- Contacts -->
     <string name="contacts_search_hint">Chercher dans les contacts</string>
     <string name="contacts_empty">Pas de contact trouvé</string>
     <string name="perm_contacts_title">Afficher vos contacts</string>
     <string name="perm_contacts_message">Donnez accès à vos contacts pour les voir ici.</string>
 
-    <!-- Settings -->
     <string name="settings_language">Langue</string>
     <string name="settings_language_sub">Sélectionner la langue de l\'app</string>
     <string name="settings_blocklist">Liste noire</string>
@@ -124,7 +109,6 @@
     <string name="theme_dark">Sombre</string>
     <string name="theme_system">Selon le système</string>
 
-    <!-- Settings actions -->
     <string name="language_dialog_title">Sélectionner la langue</string>
     <string name="blocklist_add">Ajouter un numéro</string>
     <string name="blocklist_empty">Aucun numéro bloqué pour le moment</string>
@@ -137,7 +121,6 @@
     <string name="action_cancel">Annuler</string>
     <string name="action_remove">Supprimer</string>
 
-    <!-- Added translations -->
     <string name="app_name_overlay">Caller ID</string>
     <string name="number_lookup">Recherche d\'un numéro</string>
     <string name="enter_a_number">Entrez un numéro</string>
@@ -257,7 +240,6 @@
     </plurals>
     <string name="battery_activity_title">Détails de la batterie</string>
 
-    <!-- French localization additions -->
     <string name="home_brand">CallerID</string>
     <string name="home_brand_sub">Recherche de numéros</string>
     <string name="overlay_banner_desc">Montrer les données de l\'appelant au-dessus des autres apps</string>
@@ -437,7 +419,7 @@
     <string name="app_redirect_desc">Cette app n\'est pas présente sur votre appareil. Souhaitez-vous la consulter sur le Play Store ?</string>
     <string name="settings_section_call">DÉFENSE DES APPELS</string>
     <string name="call_screening_hint_tip">Activez-la pour voir qui appelle et filtrer le spam</string>
-    <!-- FSI intro Activity/Dialog + Home permission hint -->
+    
     <string name="home_perm_hint">Des permissions sont désactivées. Activez-les pour profiter de toute l\'identification des appels.</string>
     <string name="home_perm_manage">Configurer</string>
     <string name="fsi_incoming_call">Appel en arrivée</string>

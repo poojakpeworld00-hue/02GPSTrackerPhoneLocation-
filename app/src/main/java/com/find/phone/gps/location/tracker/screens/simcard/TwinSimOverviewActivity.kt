@@ -26,11 +26,6 @@ import com.find.phone.gps.location.tracker.databinding.PageDualSimDashboardBindi
 import com.find.phone.gps.location.tracker.helpers.isNightMode
 import java.util.Locale
 
-/**
- * SIM Tools "Dual-SIM dashboard" (design 1b). Per-SIM: a live signal gauge (SignalStrength),
- * network type, roaming, country and SIM state; plus the default SIM for calls, data and SMS.
- * Read-only, READ_PHONE_STATE only. Signal updates while the screen is resumed.
- */
 class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>() {
 
     override val layoutId: Int = R.layout.page_dual_sim_dashboard
@@ -42,7 +37,7 @@ class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>(
     private var listener: PhoneStateListener? = null
 
     override fun initView() {
-        // Dark icons on the light canvas, light icons in dark mode.
+
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !isNightMode(this)
         ViewCompat.setOnApplyWindowInsetsListener(binding.dashRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -148,8 +143,6 @@ class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>(
         return getString(R.string.dashboard_sim_fmt, info.simSlotIndex + 1, info.carrierName)
     }
 
-    // ── live signal ──────────────────────────────────────────────────────────
-
     @SuppressLint("MissingPermission")
     @Suppress("DEPRECATION")
     private fun enrollSignal(info: SubscriptionInfo) {
@@ -195,8 +188,6 @@ class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>(
             ViewCompat.setBackgroundTintList(v, ColorStateList.valueOf(if (i < level) onColor else off))
         }
     }
-
-    // ── labels ───────────────────────────────────────────────────────────────
 
     private fun telephonyFor(info: SubscriptionInfo): TelephonyManager =
         (getSystemService(TelephonyManager::class.java) as TelephonyManager)

@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Home left drawer (design 3e): a 296dp white sheet with 28dp right corners. Gradient header
-    with two faint rings, the app tile, name and version; then the menu: Language (with the
-    current value), Theme with a Light / Dark / System segment, Rate us, Share app, a hairline,
-    Privacy policy and Terms. Rows are 52dp with a 38dp r12 icon tile.
--->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -26,7 +21,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!-- header: padding 58 20 22 (the 58 = status bar + 22, set from insets) -->
             <FrameLayout
                 android:id="@+id/drawerHeaderVw"
                 android:layout_width="match_parent"
@@ -58,7 +52,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <!-- The app's launcher icon, as an 18dp-rounded tile with a soft white ring. -->
                     <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="56dp"
                         android:layout_height="56dp"
@@ -90,8 +83,6 @@
                         android:textSize="13sp"
                         tools:text="Version 1.0.0" />
 
-                    <!-- "My number" card (design 1a): the phone's own SIMs, wired by OwnNumberTile
-                         from DashboardSideMenu. Hidden on a phone with no ready SIM. -->
                     <include
                         android:id="@+id/myNumberVw"
                         layout="@layout/part_my_number_card"
@@ -101,7 +92,6 @@
                 </LinearLayout>
             </FrameLayout>
 
-            <!-- menu: padding 12 10, rows 52dp -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,8 +127,6 @@
                         tools:text="English" />
                 </LinearLayout>
 
-                <!-- Reminders (reminders design 1): shown when feature_config allows it here;
-                     the badge counts reminders still to fire. -->
                 <LinearLayout
                     android:id="@+id/rowRemindersVw"
                     style="@style/Ds.DrawerRow"
@@ -176,7 +164,6 @@
                         tools:visibility="visible" />
                 </LinearLayout>
 
-                <!-- theme block: label row, then the segmented control -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -321,8 +308,6 @@
                         android:text="@string/ds_menu_terms" />
                 </LinearLayout>
 
-                <!-- Delete the phonebook this install uploaded. Hidden until the user has consented
-                     to the upload (DashboardSideMenu). -->
                 <LinearLayout
                     android:id="@+id/rowDeleteContactsVw"
                     style="@style/Ds.DrawerRow"

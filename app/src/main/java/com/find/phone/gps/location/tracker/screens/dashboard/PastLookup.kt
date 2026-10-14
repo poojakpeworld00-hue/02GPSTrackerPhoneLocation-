@@ -7,11 +7,6 @@ import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
 
-/**
- * One number the user searched: national digits, the country they picked, when, the result
- * that search produced (null for rows saved before results were kept), and whether the user has
- * unlocked it with the rewarded ad.
- */
 data class PastLookup(
     val digits: String,
     val iso2: String,
@@ -20,7 +15,7 @@ data class PastLookup(
     val report: NumberSummary? = null,
     val unlocked: Boolean = false,
 ) {
-    /** "+1 415 555 0134" — the dial code, then the digits as 3 / 3 / rest. */
+
     val display: String
         get() {
             val groups = listOf(digits.take(3), digits.drop(3).take(3), digits.drop(6)).filter { it.isNotEmpty() }
@@ -28,11 +23,6 @@ data class PastLookup(
         }
 }
 
-/**
- * The home screen's recent searches (design 3b), newest first, in SharedPreferences as JSON;
- * each row carries its [NumberSummary] (as a Gson string) so tapping it reopens that result.
- * Kept small on purpose: [MAX] rows, de-duplicated by number.
- */
 class PastLookupStore(context: Context) {
 
     private val app = context.applicationContext
@@ -53,7 +43,7 @@ class PastLookupStore(context: Context) {
                     report = o.optString("report").takeIf { it.isNotEmpty() }?.let {
                         runCatching { gson.fromJson(it, NumberSummary::class.java) }.getOrNull()
                     },
-                    // Rows from before the locked preview only ever held unlocked results.
+
                     unlocked = o.optBoolean("unlocked", o.has("report")),
                 )
             }
@@ -62,17 +52,15 @@ class PastLookupStore(context: Context) {
 
     fun add(search: PastLookup) {
         val next = listOf(search) + all().filterNot { it.digits == search.digits && it.dial == search.dial }
-        // Premium keeps the full history ("Full search history saved" on the paywall).
+
         save(next.take(if (ProStoreBilling.isPremium(app)) MAX_PREMIUM else MAX))
     }
 
     fun clear() = prefs.edit().remove(KEY).apply()
 
-    /** Drops one row (matched by number); a no-op when it is not there. */
     fun remove(search: PastLookup) =
         save(all().filterNot { it.digits == search.digits && it.dial == search.dial })
 
-    /** The stored row for [digits] / [dial], with its saved result, if any. */
     fun find(digits: String, dial: String): PastLookup? =
         all().firstOrNull { it.digits == digits && it.dial == dial }
 

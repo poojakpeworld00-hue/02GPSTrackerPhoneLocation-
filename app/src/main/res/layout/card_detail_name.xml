@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One "Also known as" name (design 11c): 30dp avatar (initials once revealed), the name —
-     blurred until revealed — and either "✓ Revealed" or the Reveal button. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

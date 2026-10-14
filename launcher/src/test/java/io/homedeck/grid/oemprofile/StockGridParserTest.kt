@@ -6,7 +6,6 @@ import org.junit.Test
 
 class StockGridParserTest {
 
-    // Integer names as MIUI HyperOS 7.50 and ColorOS 14 launchers declare them (from their APKs).
     private val miui = listOf(
         "THUMBNAIL_VIEW_COLUMN_NUM", "config_cell_count_x", "config_cell_count_x_drawer_mode_large_fold",
         "config_cell_count_x_drawer_mode_small_fold", "config_cell_count_x_max", "config_cell_count_x_min",
@@ -25,7 +24,7 @@ class StockGridParserTest {
     fun miuiNamesRankTheFactoryGridFirst() {
         assertEquals("config_cell_count_x", StockGridParser.rank(StockGridParser.Field.HOME_COLS, miui).first())
         assertEquals("config_cell_count_y", StockGridParser.rank(StockGridParser.Field.HOME_ROWS, miui).first())
-        // variants never make the list at all
+
         assertTrue(StockGridParser.rank(StockGridParser.Field.HOME_COLS, miui).none { it.contains("max") || it.contains("fold") || it.contains("mishow") })
     }
 
@@ -39,7 +38,6 @@ class StockGridParserTest {
         assertTrue(StockGridParser.rank(StockGridParser.Field.HOME_COLS, coloros).none { it.contains("guide") || it.contains("taskbar") || it.contains("responsive") })
     }
 
-    // One UI Home 17.5 (Galaxy A35, One UI 8.5): no home grid in resources at all - only look-alikes.
     private val samsung = listOf(
         "column_count_for_directory_card", "column_count_for_list_card", "desk_column_count", "desk_row_count",
         "suggested_apps_default_grid_x", "suggested_apps_default_grid_y", "suggested_apps_grid_x_fold_main",
@@ -62,10 +60,6 @@ class StockGridParserTest {
         assertEquals(null, StockGridParser.rowSibling("something_else"))
     }
 
-    // One UI Home 17.5 dimen names around icons and labels. `app_icon_size` (63 dp) is the drawn
-    // workspace icon; the `_for_*_device` variants only pick the icon *bitmap* density
-    // (IconBaseInfo.getResId), and `label_text_size` (12.5 sp) belongs to a list - the workspace
-    // label is 11 dp from PhoneItemStyleFactory, not a resource.
     private val samsungDimens = listOf(
         "app_icon_size", "app_icon_size_for_foldable_device", "app_icon_size_for_mass_device", "app_icon_size_for_tablet_device",
         "app_update_badge_icon_size", "badge_icon_size", "card_item_apps_icon_size", "fallback_icon_size_over_medium",

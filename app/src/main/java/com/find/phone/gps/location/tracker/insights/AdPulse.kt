@@ -4,17 +4,6 @@ import android.app.Activity
 import android.content.Context
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 
-/**
- * Ad lifecycle analytics for the shared ad managers (one manager serves many screens), as a
- * bounded set: `ad_{type}_{phase}` with `screen`, `network` and, on failures, `error_code`.
- *
- * type:  banner · native · native_banner · interstitial · back_interstitial · app_open · rewarded
- * phase: req · loaded · no_fill · failed · impression · clicked · show · close
- *
- * Load failures split into `no_fill` (AdMob code 3 / Facebook 1001 — valid request, no demand)
- * and `failed` (anything else). Revenue stays on the reserved `ad_impression` event logged by
- * EarningsTracker; these are separate lifecycle events.
- */
 object AdPulse {
 
     const val GOOGLE = "google"
@@ -27,7 +16,6 @@ object AdPulse {
     fun show(context: Context?, type: String, network: String = GOOGLE) = log(context, type, "show", network)
     fun close(context: Context?, type: String, network: String = GOOGLE) = log(context, type, "close", network)
 
-    /** A load failure: `no_fill` for AdMob 3 / Facebook 1001, else `failed`. */
     fun loadFailed(context: Context?, type: String, errorCode: Int?, network: String = GOOGLE) {
         val noFill = (network == GOOGLE && errorCode == 3) || (network == FACEBOOK && errorCode == 1001)
         log(context, type, if (noFill) "no_fill" else "failed", network, errorCode)

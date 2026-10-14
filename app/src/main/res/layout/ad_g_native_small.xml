@@ -56,7 +56,6 @@
                         android:layout_gravity="center"
                         android:src="@drawable/art_ic_ad"/>
 
-
                     <TextView
                         android:id="@+id/ad_headlineVw"
                         android:layout_width="match_parent"
@@ -101,7 +100,6 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/_13sdp" />
         </LinearLayout>
-
 
     </LinearLayout>
 </com.google.android.gms.ads.nativead.NativeAdView>

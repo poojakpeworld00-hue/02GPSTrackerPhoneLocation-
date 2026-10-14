@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Locating a searched number, full page (design 13a / 13b, Search Result).
-    13a Searching: "Live" pill in the top bar; the 330dp map flies country → state → area while
-    the lookup runs, with the scan (guide rings, radar sweep, ping, centre dot) over its middle
-    and the three stage chips at its top-left; under it the stage card with the spinner line,
-    the progress bar and the three step chips (✓ done · ● active · pending). A mid2 native is
-    docked at the bottom.
-    13b Found: title "Location found" with "Search complete · 100%" under it; the map shrinks to
-    the 150dp approximate-area card; the result card (country tile, locked name, number, region,
-    Valid pill, the 2×2 facts) comes in under it, then Watch Ad · View full details, Not now and
-    Skip with PRO.
--->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -25,7 +14,6 @@
         android:orientation="vertical"
         tools:context=".ui.lookup.PinpointingActivity">
 
-        <!-- top bar -->
         <LinearLayout
             android:id="@+id/crownBar"
             android:layout_width="match_parent"
@@ -63,7 +51,6 @@
                     android:textColor="@color/ds_ink"
                     android:textSize="18sp" />
 
-                <!-- the number while searching; "Search complete · 100%" in green once found -->
                 <TextView
                     android:id="@+id/lblSearchNumber"
                     android:layout_width="wrap_content"
@@ -76,7 +63,6 @@
                     tools:text="+91 704 602 4874" />
             </LinearLayout>
 
-            <!-- 13a: Live pill, hidden once found -->
             <TextView
                 android:id="@+id/livePillVw"
                 android:layout_width="wrap_content"
@@ -107,7 +93,6 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="16dp">
 
-                <!-- the map: 330dp while searching, the 150dp approximate-area card once found -->
                 <FrameLayout
                     android:id="@+id/mapCardVw"
                     android:layout_width="match_parent"
@@ -124,7 +109,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
-                    <!-- 13a: the scan over the map centre (240 / 150 guide rings, sweep, ping, dot) -->
                     <FrameLayout
                         android:id="@+id/scanGroupVw"
                         android:layout_width="match_parent"
@@ -172,7 +156,6 @@
                             android:background="@drawable/vs_scan_dot" />
                     </FrameLayout>
 
-                    <!-- 13a: country · state · area chips (done = primary, active = white, pending = white 70) -->
                     <LinearLayout
                         android:id="@+id/mapChipsVw"
                         android:layout_width="wrap_content"
@@ -209,7 +192,6 @@
                         android:textColor="@color/ds_placeholder"
                         android:textSize="10sp" />
 
-                    <!-- 13b: APPROXIMATE AREA pill -->
                     <TextView
                         android:id="@+id/lblAreaPill"
                         android:layout_width="wrap_content"
@@ -226,7 +208,6 @@
                         android:visibility="gone" />
                 </FrameLayout>
 
-                <!-- ── 13a searching: stage line + progress + step chips ───── -->
                 <LinearLayout
                     android:id="@+id/searchingGroupVw"
                     android:layout_width="match_parent"
@@ -305,7 +286,6 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- ── 13b found, locked ──────────────────────────────── -->
                 <LinearLayout
                     android:id="@+id/resultGroupVw"
                     android:layout_width="match_parent"
@@ -314,7 +294,6 @@
                     android:visibility="gone"
                     tools:visibility="visible">
 
-                    <!-- the result card: country tile · name (locked) · number · region · Valid · facts -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -374,7 +353,6 @@
                                         app:tint="@color/ds_primary" />
                                 </LinearLayout>
 
-                                <!-- one line beside the Valid pill: shrinks from 20sp for long numbers -->
                                 <TextView
                                     android:id="@+id/lblNumber"
                                     android:layout_width="match_parent"
@@ -416,7 +394,6 @@
                                 android:textSize="11sp" />
                         </LinearLayout>
 
-                        <!-- facts, 2×2 -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -456,7 +433,6 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <!-- actions -->
                     <FrameLayout
                         android:id="@+id/padWatchAd"
                         android:layout_width="match_parent"
@@ -507,7 +483,6 @@
                             android:textColor="@color/ds_ink"
                             android:textSize="14sp" />
 
-                        <!-- crown + label centred together (a compound drawable would hug the left edge) -->
                         <FrameLayout
                             android:id="@+id/padSkipPro"
                             android:layout_width="0dp"
@@ -536,11 +511,6 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <!-- the native docked at the bottom, under the scroll: it stays put while the search
-             runs and while the result scrolls above it. ScreenAds["PinpointingActivity"] switches
-             it off (show) and picks its template (nativeType: small = the one-line native banner
-             of 13b; big / mid / mid2 = body natives). The templates carry their own 16dp card
-             margin, so 0dp here puts the card on the same 16dp edge as the cards above. -->
         <FrameLayout
             android:id="@+id/adFrameVw"
             android:layout_width="match_parent"

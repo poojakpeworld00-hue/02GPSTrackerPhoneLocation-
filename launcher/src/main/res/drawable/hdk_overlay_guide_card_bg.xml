@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The hint card's ground: light or dark from launcher_hint_colors (system mode), never the app theme. -->
+
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <solid android:color="@color/hint_card_bg" />
     <stroke

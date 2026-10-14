@@ -9,8 +9,6 @@
     android:clickable="true"
     android:focusable="true">
 
-    <!-- Pinned to the panel's bottom edge. The scroll view stops above it, so the ad never lies on
-         top of the app grids; while it is GONE the scroll view runs to the bottom. -->
     <FrameLayout
         android:id="@+id/panel_native_frameView"
         android:layout_width="match_parent"
@@ -18,7 +16,6 @@
         android:layout_alignParentBottom="true"
         android:visibility="gone" />
 
-    <!-- Everything above the bottom ad scrolls as one: greeting, search, both app grids. -->
     <ScrollView
         android:id="@+id/panel_scrollView"
         android:layout_width="match_parent"
@@ -33,7 +30,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Greeting + date, set by AppTrayPane.onOpened; the first thing the cascade lifts in. -->
             <LinearLayout
                 android:id="@+id/panel_headerView"
                 android:layout_width="match_parent"

@@ -14,37 +14,26 @@ import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper
 import com.find.phone.gps.location.tracker.alarms.AskGatekeeper
 import com.find.phone.gps.location.tracker.alarms.AlarmSettings
 
-/** Why [AlarmGrant.prime] did not show its prompt. */
 enum class AskSkipCause {
-    /** `is_feature_prompt` off, or the country is excluded. */
+
     DISABLED,
-    /** Already allowed, or the device has nothing to allow. */
+
     ALREADY_GRANTED,
-    /** `prompt_frequency` held it back this time. */
+
     FREQUENCY_SUPPRESSED,
 }
 
-/**
- * "Reminder access": whether a due reminder may fill the screen while the phone is locked.
- *
- * The ONLY file that names the platform pieces behind it (the Android 14+ per-app setting, its
- * Settings page, the grant check and the notification builder call). Everything else, and every
- * word the user sees, speaks of reminders.
- */
 object AlarmGrant {
 
     private const val ACTION_MANAGE = "android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT"
 
-    /** True while the user is on the Settings page this object opened. */
     private var armed = false
 
     private fun manageIntent(c: Context) = Intent(ACTION_MANAGE, Uri.parse("package:" + c.packageName))
 
-    /** True when this device has the per-app Settings page for it. */
     fun alertAccessAvailable(c: Context): Boolean =
         runCatching { manageIntent(c).resolveActivity(c.packageManager) != null }.getOrDefault(false)
 
-    /** Android 14+ grant state; below 34 there is nothing to grant (reported false here). */
     fun isGranted(c: Context): Boolean {
         if (Build.VERSION.SDK_INT >= 34) {
             val nm = c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -53,25 +42,15 @@ object AlarmGrant {
         return false
     }
 
-    /** Something to switch on: ungranted on 14+, or a Settings page exists below that. */
     fun shouldOfferManage(c: Context): Boolean =
         if (Build.VERSION.SDK_INT >= 34) !isGranted(c) else alertAccessAvailable(c)
 
-    /** Usable: granted on 14+, allowed by default on 13 and lower. Gate features on this. */
     fun isAllowed(c: Context): Boolean = !shouldOfferManage(c)
 
-    /** The one place the project asks for the full-screen presentation. */
     fun linkAlertIntent(builder: NotificationCompat.Builder, target: PendingIntent) {
         builder.setFullScreenIntent(target, true)
     }
 
-    /**
-     * Opens the Settings page. From an Activity it opens IN-TASK (no NEW_TASK): while the page
-     * sits on top of our own task, Android 15+ still lets that Activity bring itself back with
-     * [returnIntent] once the switch is on. A new task would make the return a blocked background
-     * launch. NO_HISTORY finishes the page as soon as we come back over it, so it never lingers.
-     * The return must not trigger an App Open ad.
-     */
     fun unfoldSettings(c: Context) {
         ResumeAdKeeper.skipNextAppOpenAd = true
         c.trackEvent("Reminder_Access_Settings")
@@ -80,27 +59,11 @@ object AlarmGrant {
         runCatching { c.startActivity(manageIntent(c).addFlags(flags)) }
     }
 
-    /**
-     * Brings [host] back over the Settings page. CLEAR_TOP finishes everything stacked above the
-     * existing [host] in our task (the Settings pages, which NO_HISTORY alone does not remove: the
-     * page we open hands over to an inner one) and SINGLE_TOP reuses that instance instead of
-     * recreating it. Never CLEAR_TASK: if the system refuses the start, nothing of ours is lost.
-     */
     fun returnIntent(c: Context, host: Class<out Activity>): Intent =
         Intent(c, host).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
     fun shouldShowHint(reason: AskSkipCause): Boolean = reason == AskSkipCause.FREQUENCY_SUPPRESSED
 
-    /**
-     * The "Turn on reminders" prompt, in one call. Three gates, in order: `is_feature_prompt`
-     * (and the country filter), something to allow, `prompt_frequency`. Skipped → [onReady] with
-     * the reason. Shown → the button runs [onManage] (if given, e.g. to ask for notifications
-     * first) and then opens Settings, starts [AlarmGrantObserver] and fires [onSettingsOpened]
-     * so the host can poll too. [onClosed] fires when the prompt goes away.
-     *
-     * [reminderTitle] / [reminderTime] fill `{title}` / `{time}` in `feature_desc`; without them
-     * a description that uses placeholders falls back to the generic one.
-     */
     fun prime(
         activity: Activity,
         returnTo: Class<out Activity>,
@@ -148,7 +111,6 @@ object AlarmGrant {
         return remote.replace("{title}", title.orEmpty()).replace("{time}", time.orEmpty())
     }
 
-    /** Host onResume: stops the watcher and closes the prompt once the user is back. */
     fun onHostResume(activity: Activity) {
         if (!armed) return
         armed = false

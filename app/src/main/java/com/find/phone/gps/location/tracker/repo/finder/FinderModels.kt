@@ -3,18 +3,6 @@ package com.find.phone.gps.location.tracker.repo.finder
 import androidx.annotation.Keep
 import java.util.Locale
 
-/**
- * contact-saver `similar-phone-number` response:
- *
- * ```
- * { "success": true, "count": 8, "country": "IN", "spam": false,
- *   "location": { "city": "Junagadh", "state": "Gujarat", "pincode": "362720" },
- *   "data": [ { "name": "…" }, … ] }
- * ```
- *
- * Older servers put `country` / `carrier` / `location` / spam flags on each `data` item, so
- * those are read as a fallback. Everything is nullable: Gson ignores Kotlin defaults.
- */
 @Keep
 data class HandsetReply(
     val success: Boolean? = null,
@@ -26,17 +14,14 @@ data class HandsetReply(
 ) {
     val ok: Boolean get() = success == true
 
-    /** Non-blank names in the server's order (first = best match), without repeats. */
     val names: List<String>
         get() = data.orEmpty().mapNotNull { it?.name?.trim()?.takeIf(String::isNotEmpty) }
             .distinctBy { it.lowercase(Locale.ROOT) }
 
-    /** Registered area: top-level `location`, else the first item that has one. */
     val area: HandsetPlace?
         get() = location?.takeIf { it.hasAny }
             ?: data.orEmpty().firstNotNullOfOrNull { d -> d?.location?.takeIf { it.hasAny } }
 
-    /** ISO code ("IN") or a legacy country name. */
     val countryCode: String?
         get() = country?.trim()?.takeIf { it.isNotEmpty() }
             ?: data.orEmpty().firstNotNullOfOrNull { it?.country?.trim()?.takeIf(String::isNotEmpty) }
@@ -58,7 +43,6 @@ data class HandsetRecord(
     val location: HandsetPlace? = null,
 )
 
-/** Where the number is registered: an area, not a live position. */
 @Keep
 data class HandsetPlace(
     val city: String? = null,

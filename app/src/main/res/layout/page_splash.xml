@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Splash "Map Light redesign" (GPS Tracker Design).
-    Three stages cross-fade on a 6.4s cycle driven by BootTweens: rotating Earth globe
-    (triangulation) → red pin drop → logo. Designed at 360×780: composition box top 180/780,
-    status line top 548/780, progress bar 72dp in from both edges and 80dp up, footer 40dp up.
--->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -51,7 +46,6 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.7026" />
 
-        <!-- The 320dp composition box; each stage is a full-size layer inside it. -->
         <FrameLayout
             android:id="@+id/stageBoxVw"
             android:layout_width="0dp"
@@ -61,7 +55,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/guideStageTopVw">
 
-            <!-- st1e: rotating Earth globe + orbit triangulation -->
             <FrameLayout
                 android:id="@+id/stageSignalVw"
                 android:layout_width="match_parent"
@@ -75,27 +68,23 @@
                     android:layout_gravity="center"
                     android:clipChildren="false">
 
-                    <!-- soft blue halo behind the globe -->
                     <View
                         android:layout_width="236dp"
                         android:layout_height="236dp"
                         android:layout_gravity="center"
                         android:background="@drawable/vs_globe_glow" />
 
-                    <!-- the rotating earth -->
                     <com.find.phone.gps.location.tracker.screens.visual.PlanetSphereView
                         android:layout_width="196dp"
                         android:layout_height="196dp"
                         android:layout_gravity="center" />
 
-                    <!-- dashed orbit, spinning satellites and triangulation lines -->
                     <com.find.phone.gps.location.tracker.screens.visual.OrbiterPathView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </FrameLayout>
             </FrameLayout>
 
-            <!-- st3: dropping pin (red) -->
             <FrameLayout
                 android:id="@+id/stagePinVw"
                 android:layout_width="match_parent"
@@ -103,7 +92,6 @@
                 android:alpha="0"
                 android:clipChildren="false">
 
-                <!-- ground shadow: dark radial under the pin -->
                 <View
                     android:layout_width="120dp"
                     android:layout_height="44dp"
@@ -111,7 +99,6 @@
                     android:layout_marginTop="196dp"
                     android:background="@drawable/vs_pin_ground_shadow_dark" />
 
-                <!-- ground ring: pings every 1.8s, white rim over a red fill -->
                 <com.find.phone.gps.location.tracker.screens.visual.PulseHaloView
                     android:layout_width="150dp"
                     android:layout_height="150dp"
@@ -137,7 +124,6 @@
                     app:pinStartColor="@color/ds_pin_red_light" />
             </FrameLayout>
 
-            <!-- st4: logo -->
             <LinearLayout
                 android:id="@+id/stageLogoVw"
                 android:layout_width="match_parent"
@@ -183,7 +169,6 @@
             </LinearLayout>
         </FrameLayout>
 
-        <!-- The three status lines, stacked; BootTweens cross-fades them with the stages. -->
         <FrameLayout
             android:id="@+id/statusBoxVw"
             android:layout_width="0dp"
@@ -209,7 +194,6 @@
                 android:textColor="@color/ds_ink" />
         </FrameLayout>
 
-        <!-- Progress: 6dp track, blue→cyan fill grows 0 → 100% over the cycle. -->
         <FrameLayout
             android:id="@+id/progTrack"
             android:layout_width="0dp"

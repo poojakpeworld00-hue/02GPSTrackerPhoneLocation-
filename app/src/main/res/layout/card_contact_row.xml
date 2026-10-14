@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One contact card (design 8a): 44dp gradient avatar with initials, name, "label · number",
-     then the Locate (tint) and Call (green) actions. r18 surface card with a hairline border. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

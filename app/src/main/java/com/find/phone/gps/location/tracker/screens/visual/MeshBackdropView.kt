@@ -7,10 +7,6 @@ import android.util.AttributeSet
 import android.view.View
 import com.find.phone.gps.location.tracker.R
 
-/**
- * The design's map grid: `background-image: linear-gradient(<color> 1px, transparent 1px),
- * linear-gradient(90deg, …); background-size: N N` — one hairline every [cell] dp.
- */
 class MeshBackdropView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null,
 ) : View(context, attrs) {
@@ -23,7 +19,7 @@ class MeshBackdropView @JvmOverloads constructor(
         paint.color = a.getColor(R.styleable.MeshBackdropView_gridColor, 0x0F002EFE)
         cell = a.getDimension(R.styleable.MeshBackdropView_gridSize, 30f * resources.displayMetrics.density)
         a.recycle()
-        paint.strokeWidth = resources.displayMetrics.density // 1px in the design ≈ 1dp hairline
+        paint.strokeWidth = resources.displayMetrics.density
     }
 
     override fun onDraw(canvas: Canvas) {

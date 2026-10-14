@@ -24,9 +24,6 @@ import io.homedeck.grid.bridge.HomeServiceLocator
 import io.homedeck.grid.entities.appLauncherComparator
 import kotlin.math.abs
 
-/**
- * Panel sliding in from the side of the home screen, offering app suggestions and a search field.
- */
 class AppTrayPane(
     context: Context,
     attributeSet: AttributeSet,
@@ -40,7 +37,6 @@ class AppTrayPane(
     private lateinit var resultsAdapter: PaneAppsAdapter
     private lateinit var searchInAdapter: PaneAppsAdapter
 
-    // the panel covers the whole screen while open, so HomeDeskPane never sees these events
     private val gestureDetector = GestureDetectorCompat(context, object : SimpleOnGestureListener() {
         override fun onFling(
             e1: MotionEvent?,
@@ -90,27 +86,6 @@ class AppTrayPane(
         }
     }
 
-    /**
-     * Requests both panel slots afresh — the middle one sits between Suggested and Recent, the
-     * bottom one is pinned to the panel's foot, outside the scrolling column.
-     *
-     * Driven by `HomeDeskPane.presentLeftPanel` on every open rather than once from [setupFragment]:
-     * the panel is built at boot and then only parked off screen, so a request made there would
-     * leave the same creative on the panel for as long as the launcher process lives — which, on a
-     * launcher, is until the device restarts. Asking here also means a user who never swipes the
-     * panel open never costs a request.
-     *
-     * A repeat call *is* the refresh: the SDK empties the frame and dispatches a new request each
-     * time, so there is nothing to tear down first — see [io.homedeck.grid.bridge.HomeAdsPort.bindNative].
-     *
-     * Whether the repeat happens at all is the console's call, per placement — see
-     * [HomeAdsSettings.reloadAdOnOpen]. With it off the first open still fills the slot and every
-     * open after that leaves it alone.
-     */
-    /**
-     * Called by the host as the panel starts sliding in: the greeting and date are set for now,
-     * then the header, search pill and cards lift in one after another.
-     */
     fun onOpened() {
         val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
         binding.panelGreetingView.setText(
@@ -145,7 +120,7 @@ class AppTrayPane(
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        // do not swallow the event, the lists still have to scroll
+
         gestureDetector.onTouchEvent(event)
         return super.dispatchTouchEvent(event)
     }
@@ -209,7 +184,7 @@ class AppTrayPane(
 
     private fun fireLauncher(launcher: LaunchableApp) {
         if (launcher.packageName == context.applicationContext.packageName) {
-            // Our own app: unfoldHostApp closes this panel itself.
+
             activity?.unfoldHostApp(launcher.activityName)
             return
         }
@@ -233,7 +208,7 @@ class AppTrayPane(
             activity?.startActivity(intent)
             activity?.concealLeftPanel()
         } catch (_: ActivityNotFoundException) {
-            // the app is installed but cannot handle it, let the system pick a handler
+
             fireLauncher(launcher)
         }
     }

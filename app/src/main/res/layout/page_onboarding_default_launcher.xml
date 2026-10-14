@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    "Set as default home screen" step (design 4b): step header + Skip, a 250dp hero card with a
-    mini phone mock, the floating "Default home app" chooser and a swipe chip, title + lead, the
-    CTA, a native mid ad card and the settings footnote.
--->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -36,7 +32,6 @@
             android:text="@string/ds_skip" />
     </LinearLayout>
 
-    <!-- Everything above the ad scrolls; the native slot and the CTA stay pinned at the bottom. -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -50,7 +45,6 @@
         android:orientation="vertical"
         android:paddingBottom="12dp">
 
-    <!-- hero card 250dp -->
     <FrameLayout
         android:id="@+id/imageHeroVw"
         android:layout_width="match_parent"
@@ -61,7 +55,6 @@
         android:clipChildren="true"
         android:clipToOutline="true">
 
-        <!-- mini phone 124×236 at left 34 top 26 -->
         <FrameLayout
             android:layout_width="124dp"
             android:layout_height="236dp"
@@ -132,7 +125,6 @@
             </FrameLayout>
         </FrameLayout>
 
-        <!-- "Default home app" chooser card: right 16, top 70, 176 wide, floats -->
         <LinearLayout
             android:id="@+id/chooserCardVw"
             android:layout_width="176dp"
@@ -233,7 +225,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- "Swipe right to search" chip: right 28, top 196 -->
         <LinearLayout
             android:id="@+id/flagSwipe"
             android:layout_width="wrap_content"
@@ -269,7 +260,6 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- compact stand-in for the hero while a native ad is up (the reference app's 58dp tile) -->
     <FrameLayout
         android:id="@+id/heroCompactVw"
         android:layout_width="64dp"
@@ -287,7 +277,6 @@
             android:contentDescription="@null"
             android:src="@drawable/vs_ic_home" />
     </FrameLayout>
-
 
     <TextView
         android:id="@+id/onboarding_titleVw"
@@ -310,7 +299,7 @@
         android:gravity="center"
         android:paddingHorizontal="28dp"
         android:text="@string/ds_default_body" />
-        <!-- CTA pinned to the bottom, under the ad; the footnote stays beneath it -->
+        
         <TextView
             android:id="@+id/onboarding_set_defaultVw"
             style="@style/Ds.Button.Primary"
@@ -318,8 +307,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
             android:text="@string/ds_set_default" />
-        <!-- native big ad: the rendered ad brings its own r18 card and 16dp margins (dimens_ads),
-               so the frame itself carries no background — a second one showed as a double card. -->
+        
         <View
             android:id="@+id/ad_native_dividerVw"
             android:layout_width="match_parent"
@@ -342,10 +330,6 @@
         </FrameLayout>
     </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-
-
-
 
     <TextView
         android:id="@+id/onboarding_footnoteVw"

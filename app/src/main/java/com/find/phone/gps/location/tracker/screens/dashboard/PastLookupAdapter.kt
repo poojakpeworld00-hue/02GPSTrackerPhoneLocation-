@@ -13,7 +13,6 @@ import com.find.phone.gps.location.tracker.databinding.CardRecentSearchBinding
 import com.find.phone.gps.location.tracker.screens.finder.RegionZones
 import java.util.concurrent.TimeUnit
 
-/** Recent-search rows (design 3b): the pin tile cycles tint / green / purple down the list. */
 class PastLookupAdapter(
     private val onClick: (PastLookup) -> Unit,
 ) : RecyclerView.Adapter<PastLookupAdapter.VH>() {

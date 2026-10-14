@@ -25,11 +25,6 @@ import com.find.phone.gps.location.tracker.screens.reveal.TourUnveilSettings
 import com.find.phone.gps.location.tracker.screens.reveal.TourUnveilRules
 import kotlin.math.abs
 
-/**
- * The intro carousel (design 2a). Four hero-card pages; the card and CTA stay fixed while the
- * illustration parallaxes at 0.6× and the copy fades over ~200ms of the swipe. The native
- * banner slot (`launcher_ads.onboarding.intro.slot`) sits under the CTA on the third page.
- */
 class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
 
     override val layoutId: Int = R.layout.page_onboarding
@@ -38,11 +33,9 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
     private val pages = TourSlides.all
     private val dots = mutableListOf<View>()
 
-    // Spring settle used by the dot pill stretch and the CTA morph.
     private val spring = PathInterpolator(0.34f, 1.56f, 0.64f, 1f)
     private var wasLast = false
 
-    /** One-shot guard so a first-page back cannot fire the forward flow twice. */
     private var forwarding = false
 
     override fun initView() {
@@ -54,7 +47,6 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
             insets
         }
 
-        // The slot loads once; its container is only revealed on the page that carries it.
         HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.INTRO),
@@ -67,8 +59,6 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
         composeDots()
         updateDots(0)
 
-        // Swipe: the illustration moves at 0.6× the page (parallax), the copy fades out over
-        // the first fifth of the swipe (≈200ms of a 1s page change).
         binding.vuPager.setPageTransformer { page, position ->
             val w = page.width.toFloat()
             page.findViewById<View?>(R.id.artContainerVw)?.translationX = position * w * 0.4f
@@ -97,17 +87,13 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
             }
         }
 
-        // Back walks FORWARD through the pages for paid users (every page is seen before the
-        // user can leave); organic users get a real Back. `back_action: "next_screen"` leaves
-        // for the next screen straight away.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val current = binding.vuPager.currentItem
                 if (!HomeRoleJourney.backMovesForward(this@GuidedTourActivity)) {
                     when {
                         current > 0 -> binding.vuPager.setCurrentItem(current - 1, true)
-                        // A later-launch intro (intro_display) has nothing behind it: land on Home
-                        // instead of closing the app.
+
                         !HomeRoleJourney.isOnboardingActive(this@GuidedTourActivity) ->
                             HomeRoleJourney.goHome(this@GuidedTourActivity)
                         else -> HomeRoleJourney.passBackThrough(this@GuidedTourActivity, this)
@@ -155,7 +141,6 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
         }
     }
 
-    /** Springs a dot's width to [target] (the pill-stretch effect). */
     private fun tweenDotWidth(dot: View, target: Int) {
         val lp = dot.layoutParams as LinearLayout.LayoutParams
         if (lp.width == target) return
@@ -172,7 +157,6 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
         }
     }
 
-    /** Scale spring when the CTA morphs between Next and Get Started. */
     private fun popCta() {
         binding.padNext.animate().cancel()
         binding.padNext.scaleX = 0.94f
@@ -188,13 +172,9 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
         prefs.isOnboardingDone = true
         trackEvent("onboarding_completed")
         GrantOrchestrator.check(this) {
-            // Permission done → this screen's interstitial (`onboarding.intro.inter_enabled`,
-            // the callback fires immediately when there is nothing to show) → THEN navigate.
+
             HomeAdsSettings.runOnboardingInter(this, HomeAdsSettings.OnboardScreen.INTRO) {
-                // The Premium paywall (design 9c) comes next; it continues this same
-                // navigation once it is closed or a plan is bought.
-                // Later launches: the reminders intro sits between this screen and Premium / Home
-                // (wrap() passes the intent straight through during the first-run onboarding).
+
                 if (ProUpgradeActivity.showsAfterIntro(this)) {
                     startActivity(AlarmIntroActivity.wrap(this, ProUpgradeActivity.afterIntro(this, HomeRoleJourney.isOnboarding(this))))
                     finish()

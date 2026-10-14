@@ -18,11 +18,6 @@ import com.find.phone.gps.location.tracker.databinding.PageMapFullBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import kotlin.math.roundToInt
 
-/**
- * Full view of a number's registered area, opened from Number Details (the header's Full view,
- * a tap on the header map, or the Map action). The same OpenStreetMap and pulsing area as the
- * header, but interactive, with zoom, recenter and Directions (hands the place to a maps app).
- */
 class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
 
     override val layoutId: Int = R.layout.page_map_full
@@ -32,7 +27,7 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
     private var topInset = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // osmdroid must be configured before the MapView is inflated (in super.onCreate).
+
         OpenStreetTiles.init(this)
         super.onCreate(savedInstanceState)
     }
@@ -45,7 +40,6 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
         }
         report = given
 
-        // The map runs under the status bar; the top bar sits below it.
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         val topPad = binding.mapTopBarVw.paddingTop
@@ -77,13 +71,12 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
 
         OpenStreetTiles.style(binding.mapViewVw, interactive = true)
         overlay = OpenStreetTiles.place(binding.mapViewVw, r, coarse = false)
-        // No point for the area (country-only result): the whole country's name is all we have.
+
         binding.padRecenter.isEnabled = r.pin != null
         binding.padRecenter.alpha = if (r.pin != null) 1f else 0.4f
         centerPin()
     }
 
-    /** Back to the area at its own zoom, after the user panned or zoomed away. */
     private fun recenter() {
         val pin = report.pin ?: return
         binding.mapViewVw.controller.animateTo(
@@ -91,10 +84,6 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
         )
     }
 
-    /**
-     * The pin goes in the middle of the map left visible between the top bar and the place card
-     * over its bottom — half the difference below centre.
-     */
     private fun centerPin() {
         binding.placeCardVw.post {
             val d = resources.displayMetrics.density

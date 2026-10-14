@@ -1,5 +1,5 @@
 plugins {
-    // No kotlin-android: AGP 9 compiles Kotlin itself. KSP 2.3+ runs on that built-in support.
+
     alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
 }
@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        // The home grid, the adaptive-icon rasteriser and the widget host all assume 26+.
+
         minSdk = 26
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -24,7 +24,7 @@ android {
     }
 
     compileOptions {
-        // 17, not 11: org.fossify:commons ships Java 17 bytecode.
+
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -33,15 +33,13 @@ android {
 kotlin {
     jvmToolchain(17)
     compilerOptions {
-        // org.fossify:commons ships built against a newer Kotlin than most hosts pin.
+
         freeCompilerArgs.add("-Xskip-metadata-version-check")
     }
 }
 
 ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 
-// Fossify Commons pulls a transitive dependency on the long-dead com.android.support
-// artifacts, which collide with AndroidX. AGP 9 removed Jetifier, so this is the fix.
 configurations.configureEach {
     exclude(group = "com.android.support")
 }
@@ -60,15 +58,13 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    // DeskWidgetResizer snapshots the occupied cells while a widget is being dragged.
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.coroutines.android)
 
-    // Icon loading for the drawer and the widget previews.
     implementation(libs.glide)
     implementation(libs.timber)
 
     testImplementation(libs.junit)
-    // Real org.json on the JVM test classpath; android.jar's stub returns null from every call.
+
     testImplementation(libs.org.json)
 }

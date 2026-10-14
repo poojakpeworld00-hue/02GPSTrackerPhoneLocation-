@@ -47,24 +47,6 @@ import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import kotlin.math.roundToInt
 
-/**
- * Locating a searched number, full page (design 13a / 13b, Search Result).
- *
- * Searching (13a): the lookup runs while the map flies from the country to the state to the
- * approximate area under the scan, with the stage line, a progress bar and the three step
- * chips (country · state · area) under it, for at least [MIN_SEARCH_MS] (Premium:
- * [MIN_SEARCH_PREMIUM_MS]); the mid2 native is docked at the bottom of the page meanwhile (not
- * for Premium). The map ends on the report's own area (city or pincode when known), the same
- * point Number Details shows.
- *
- * Found (13b): "Location found · Search complete", the map shrinks to the approximate-area
- * card and the locked result card comes in under it. "Watch Ad · View full details" plays the
- * rewarded ad directly, which unlocks Number Details; "Skip with PRO" goes to the paywall;
- * Premium users, and numbers unlocked before, go straight to Number Details.
- *
- * With [EXTRA_REPORT] set (a locked recent search reopened) it opens at the result, no lookup.
- * The result intent carries [EXTRA_FOUND] once the lookup has answered, so Home can clear the box.
- */
 class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
 
     override val layoutId: Int = R.layout.page_locating
@@ -84,7 +66,7 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // osmdroid must be configured before the MapView is inflated (in super.onCreate).
+
         OpenStreetTiles.init(this)
         super.onCreate(savedInstanceState)
     }
@@ -138,14 +120,8 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         }
     }
 
-    /** The three search stages of design 13a, in order. */
     private enum class Step { COUNTRY, STATE, AREA }
 
-    /**
-     * The step chips under the progress bar and the chips over the map for [current]: the
-     * stages before it are done (✓, green / filled primary), it is active (●, tint / white),
-     * the rest wait (gray / white 70).
-     */
     private fun wireSteps(current: Step) {
         val steps = listOf(
             Triple(binding.stepCountryVw, binding.flagCountry, R.string.ds_step_country),
@@ -180,13 +156,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         }
     }
 
-    // ── Bottom native ─────────────────────────────────────────────────────
-
-    /**
-     * The template of the bottom native, from `ScreenAds.PinpointingActivity.nativeType`: `small`
-     * (or `native_banner`) is the one-line native banner of design 13b, which keeps Not now and
-     * Skip with PRO above the fold; `big` / `mid` / `mid2` are the body natives.
-     */
     private val nativeType: String by lazy {
         PageSponsorSettings.resolve(this, SCREEN_KEY).nativeType.trim().lowercase()
     }
@@ -194,11 +163,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
     private val compactNative: Boolean
         get() = nativeType == "small" || nativeType == "native_banner" || nativeType == "nativebanner"
 
-    /**
-     * The native at the bottom. The shared native pools are filled by the splash chain and
-     * emptied by every screen that shows one, so when the pool is empty here the page loads
-     * its own and shows it once it lands — otherwise the slot would sit blank for the whole search.
-     */
     private fun presentNative() {
         binding.adFrameVw.isVisible = true
         if (nativeReady()) return paintNative()
@@ -210,7 +174,7 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
                 override fun onNativeAdFailed() = Unit
             })
         }
-        // A load already in flight elsewhere doesn't call back here: look again once it may have landed.
+
         NATIVE_RECHECK_MS.forEach { binding.adFrameVw.postDelayed({ populateNativeIfEmpty() }, it) }
     }
 
@@ -231,12 +195,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         }
     }
 
-    // ── Searching ─────────────────────────────────────────────────────────
-
-    /**
-     * Country → state → approximate area, over at least [minMs]. The lookup starts at once; the
-     * country stage covers it, and the state stage only starts once the answer names a state.
-     */
     private fun locate(minMs: Long) = lifecycleScope.launch {
         val started = SystemClock.elapsedRealtime()
         fun at(ms: Long) = (started + ms - SystemClock.elapsedRealtime()).coerceAtLeast(0L)
@@ -244,7 +202,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         val countryName = RegionZones.byIso(search.iso2)?.name ?: search.iso2
         val lookup = async { NumberFinder.run(this@PinpointingActivity, search.digits, search.iso2, search.dial) }
 
-        // Stage 1 — the country, zooming in from further out.
         stage(getString(R.string.ds_locating_country, countryName), toPercent = 30, overMs = minMs * 3 / 10, step = Step.COUNTRY)
         ZoneGeocoder.locate(this@PinpointingActivity, null, null, null, countryName)?.let { pin ->
             val point = GeoPoint(pin.lat, pin.lng)
@@ -258,7 +215,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         report = result
         onFound(result)
 
-        // Stage 2 — the state, when the answer has one the map can find.
         val state = result.state?.takeIf { it.isNotBlank() }
         val statePin = state?.let { ZoneGeocoder.locate(this@PinpointingActivity, null, null, it, result.countryName) }
         if (state != null && statePin != null) {
@@ -268,7 +224,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
             delay(at(minMs * 7 / 10))
         }
 
-        // Stage 3 — the approximate area, pulsing, until the minimum time is up.
         stage(getString(R.string.ds_locating_found, state ?: result.countryName), toPercent = 100, overMs = at(minMs), step = Step.AREA)
         placeArea(result, animate = true, knownState = statePin)
         delay(at(minMs))
@@ -276,7 +231,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         presentResult(result)
     }
 
-    /** The stage line, the step chips at [step], and the progress bar running on to [toPercent] over [overMs]. */
     private fun stage(text: String, toPercent: Int, overMs: Long, step: Step) {
         binding.lblStage.text = text
         wireSteps(step)
@@ -290,12 +244,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         animators += progressAnim!!
     }
 
-    /**
-     * The approximate area with its pulse, on the report's own point: the most precise place the
-     * lookup knows (pincode, city, then state), the same point Number Details shows. Centring on
-     * the state's middle instead put a Surat number near Surendranagar, 250 km away. Falls back to
-     * the state's (or country's) centre only when the report has no point of its own.
-     */
     private suspend fun placeArea(result: NumberSummary, animate: Boolean, knownState: MapMarkerPoint? = null) {
         val state = result.state?.takeIf { it.isNotBlank() }
         val own = result.pin
@@ -306,8 +254,7 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
             state != null -> ZoneAccuracy.STATE
             else -> ZoneAccuracy.COUNTRY
         }
-        // This map ends as the small result card, where a city's circle at its own zoom would
-        // cover the whole card; the card zoom keeps it a ring around the place.
+
         val zoom = OpenStreetTiles.cardZoom(precision)
         if (animate) {
             binding.bigMapVw.controller.animateTo(GeoPoint(pin.lat, pin.lng), zoom, FLY_MS)
@@ -318,25 +265,20 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         overlay = OpenStreetTiles.placeAt(binding.bigMapVw, pin, precision, zoom)
     }
 
-    /** The lookup answered: saved to Recents (locked, unless it was unlocked before). */
     private fun onFound(result: NumberSummary) {
         PastLookupStore(this).add(search.copy(searchedAt = System.currentTimeMillis(), report = result, unlocked = alreadyUnlocked))
         setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_FOUND, true))
     }
 
-    // ── Found ─────────────────────────────────────────────────────────────
-
-    /** The result (design 13b); Premium users and numbers unlocked before go straight through. */
     private fun presentResult(result: NumberSummary) {
         report = result
         if (alreadyUnlocked || ProStoreBilling.isPremium(this)) return unlock(result)
 
-        // Top bar: "Location found · Search complete · 100%", the Live pill gone.
         binding.lblTitle.setText(R.string.ds_location_found)
         binding.lblSearchNumber.setText(R.string.ds_locating_complete)
         binding.lblSearchNumber.setTextColor(ContextCompat.getColor(this, R.color.ds_success))
         binding.livePillVw.isVisible = false
-        // The map keeps only the area pin and its pill: the scan and the stage chips go.
+
         binding.scanGroupVw.isVisible = false
         binding.mapChipsVw.isVisible = false
         binding.searchingGroupVw.isVisible = false
@@ -371,7 +313,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
             .setInterpolator(VisualTweens.EASE_IN_OUT).start()
     }
 
-    /** The big search map settles into the result's area card; the area stays centred. */
     private fun shrinkMap() {
         val from = binding.mapCardVw.height.takeIf { it > 0 } ?: return
         val to = dp(MAP_RESULT_DP)
@@ -388,7 +329,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         }.also { animators += it }
     }
 
-    /** A fact cell; a locked one blurs its value, a missing value just says so (no lock). */
     private fun cell(cell: CardResultCellBinding, @StringRes label: Int, value: String?, locked: Boolean) {
         cell.lblLabel.setText(label)
         val known = !value.isNullOrBlank()
@@ -398,10 +338,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         cell.picLock.isVisible = locked && known
     }
 
-    /**
-     * Watch Ad: the rewarded ad plays straight away (no reveal dialog in between); earned →
-     * Number Details. Closing it early, or cancelling the "try again" dialog, keeps it locked here.
-     */
     private fun reveal() {
         val result = report ?: return
         if (watching) return
@@ -421,7 +357,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         }
     }
 
-    /** Saves the result as unlocked and opens Number Details in this page's place. */
     private fun unlock(result: NumberSummary) {
         if (isFinishing) return
         PastLookupStore(this).add(search.copy(searchedAt = System.currentTimeMillis(), report = result, unlocked = true))
@@ -431,8 +366,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
     }
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).roundToInt()
-
-    // ── Lifecycle ─────────────────────────────────────────────────────────
 
     override fun onResume() {
         super.onResume()
@@ -457,30 +390,20 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         private const val EXTRA_REPORT = "report"
         private const val EXTRA_UNLOCKED = "unlocked"
 
-        /** Result extra: the lookup answered (the search box can be cleared). */
         const val EXTRA_FOUND = "found"
 
-        /** The search animation's minimum length, so the native has its time on screen. */
         private const val MIN_SEARCH_MS = 10_000L
 
-        /** Premium sees no ad, so there is nothing to hold the page for. */
         private const val MIN_SEARCH_PREMIUM_MS = 4_000L
 
-        /** When to look for a native that another screen's load delivered to the shared slot. */
         private val NATIVE_RECHECK_MS = longArrayOf(2_500L, 5_000L, 8_000L)
 
-        /** This page's `ScreenAds` entry (its `show` and `nativeType`). */
         private const val SCREEN_KEY = "PinpointingActivity"
 
         private const val FLY_MS = 1_800L
 
-        /** The approximate-area card of design 13b. */
         private const val MAP_RESULT_DP = 150
 
-        /**
-         * A new search ([saved] null) or a locked recent one reopened at its result ([saved]).
-         * [unlocked]: the number was unlocked before, or the search was bought with an ad.
-         */
         fun intent(context: Context, search: PastLookup, saved: NumberSummary?, unlocked: Boolean): Intent =
             Intent(context, PinpointingActivity::class.java)
                 .putExtra(EXTRA_DIGITS, search.digits)

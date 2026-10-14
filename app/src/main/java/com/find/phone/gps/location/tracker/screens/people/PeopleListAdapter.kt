@@ -9,7 +9,6 @@ import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.databinding.CardContactHeaderBinding
 import com.find.phone.gps.location.tracker.databinding.CardContactRowBinding
 
-/** The A–Z list (design 8a): letter headings, then that letter's contact cards with Locate and Call. */
 class PeopleListAdapter(
     private val onLocate: (PersonPhone) -> Unit,
     private val onCall: (PersonPhone) -> Unit,
@@ -20,10 +19,8 @@ class PeopleListAdapter(
         data class Row(val contact: PersonPhone) : Item()
     }
 
-    /** Adapter position of each letter heading, for the rail. */
     val letterPositions = LinkedHashMap<String, Int>()
 
-    /** Groups [contacts] (already sorted) under their letters. */
     fun submitContacts(contacts: List<PersonPhone>, onDone: () -> Unit = {}) {
         val items = ArrayList<Item>(contacts.size + 27)
         val positions = LinkedHashMap<String, Int>()
@@ -63,7 +60,7 @@ class PeopleListAdapter(
             binding.lblInitial.text = contact.initials
             binding.lblInitial.setBackgroundResource(AVATARS[contact.avatar])
             binding.lblName.text = contact.name
-            // A contact saved without a name already shows its number as the name.
+
             val number = contact.number.takeIf { it != contact.name }
             binding.lblNumber.text = listOfNotNull(contact.label.takeIf { it.isNotBlank() }, number).joinToString(" · ")
             binding.padLocate.setOnClickListener { onLocate(contact) }
@@ -87,7 +84,6 @@ class PeopleListAdapter(
         private const val TYPE_HEADER = 0
         private const val TYPE_ROW = 1
 
-        /** The six avatar gradients of the design, indexed by [PersonPhone.avatar]. */
         val AVATARS = intArrayOf(
             R.drawable.vs_avatar_g0, R.drawable.vs_avatar_g1, R.drawable.vs_avatar_g2,
             R.drawable.vs_avatar_g3, R.drawable.vs_avatar_g4, R.drawable.vs_avatar_g5,

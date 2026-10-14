@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Language row (design 4c): 56dp, a 36dp code tile, native name over the English name, a 22dp
-     radio. Selected: r14 tint row, primary code tile. Rows in a card are separated by a hairline. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"

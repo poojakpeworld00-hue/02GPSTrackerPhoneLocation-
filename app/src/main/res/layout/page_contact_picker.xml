@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Contact list (design 8a) and its permission state (8b). Top: the account filter chip with the
-    contact count, the tools and add buttons; the search field; the small native card; the
-    Favorites row; then the A–Z cards with the letter rail down the right edge.
--->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -17,14 +13,12 @@
         android:background="@color/ds_canvas"
         tools:context=".ui.contacts.PeopleSelectActivity">
 
-        <!-- ===== 8a ===== -->
         <LinearLayout
             android:id="@+id/listGroupVw"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!-- account filter · tools · add -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,7 +105,6 @@
 
             </LinearLayout>
 
-            <!-- search -->
             <LinearLayout
                 android:id="@+id/searchBoxVw"
                 android:layout_width="match_parent"
@@ -160,7 +153,6 @@
                     tools:visibility="visible" />
             </LinearLayout>
 
-            <!-- small native ad card -->
             <FrameLayout
                 android:id="@+id/adCardVw"
                 android:layout_width="match_parent"
@@ -186,7 +178,6 @@
                 </FrameLayout>
             </FrameLayout>
 
-            <!-- favorites -->
             <LinearLayout
                 android:id="@+id/favoritesGroupVw"
                 android:layout_width="match_parent"
@@ -238,7 +229,6 @@
                     tools:listitem="@layout/card_contact_fav" />
             </LinearLayout>
 
-            <!-- A–Z list, with the rail's 30dp gutter on the right -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -264,7 +254,6 @@
                     android:indeterminateTint="@color/ds_primary"
                     android:visibility="gone" />
 
-                <!-- no results -->
                 <LinearLayout
                     android:id="@+id/emptyStateVw"
                     android:layout_width="match_parent"
@@ -317,7 +306,6 @@
             </FrameLayout>
         </LinearLayout>
 
-        <!-- letter rail: right 6dp, vertically centred over the list -->
         <FrameLayout
             android:id="@+id/railBoxVw"
             android:layout_width="24dp"
@@ -334,7 +322,6 @@
                 android:orientation="vertical" />
         </FrameLayout>
 
-        <!-- ===== 8b: permission state ===== -->
         <LinearLayout
             android:id="@+id/permissionStateVw"
             android:layout_width="match_parent"

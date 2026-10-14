@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Onboarding A4 "Stay Connected": four tool tiles orbiting the logo (spin 18s, tiles counter-spin). -->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -21,9 +21,6 @@
         android:layout_gravity="center"
         android:background="@drawable/vs_ring_dashed_primary30" />
 
-    <!-- the orbit: 236dp box, tiles centred on its four edges, so half of each tile sits outside
-         the box. The card above must keep clipChildren="false" or the tiles are cut at the box;
-         clipToOutline still keeps everything inside the card's rounded corners. -->
     <FrameLayout
         android:id="@+id/obOrbitVw"
         android:layout_width="236dp"

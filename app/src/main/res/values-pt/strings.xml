@@ -1,11 +1,9 @@
 <resources>
-    <!-- App -->
+    
     <string name="dash">&#8211;</string>
 
-    <!-- Splash -->
     <string name="splash_footer">Este app pode exibir anúncios</string>
 
-    <!-- Language -->
     <string name="language_title">Selecione o idioma</string>
     <string name="language_continue">Continuar</string>
     <string name="language_search_hint">Buscar idioma</string>
@@ -15,7 +13,6 @@
     <string name="language_info_msg">Ao trocar o idioma, a interface do app será atualizada. Alguns recursos regionais podem mudar de acordo com a sua escolha.</string>
     <string name="language_info_got_it">Ok</string>
 
-    <!-- Terms &amp; Conditions -->
     <string name="terms_title">Termos de Uso</string>
     <string name="terms_agree">Li os Termos de Uso e a Política de Privacidade e concordo com eles.</string>
     <string name="terms_accept">Concordar e prosseguir</string>
@@ -24,12 +21,10 @@
     <string name="overlay_system_permission">Autorização do sistema</string>
     <string name="overlay_permission_desc">Com a sobreposição ativada, o app consegue exibir os dados de quem liga por cima de outros apps que você estiver usando.</string>
 
-    <!-- Onboarding -->
     <string name="onboarding_skip">Ignorar</string>
     <string name="onboarding_next">Seguinte</string>
     <string name="onboarding_get_started">Vamos lá</string>
 
-    <!-- Home -->
     <string name="home_title">Você está seguro</string>
     <string name="home_subtitle">A identificação de chamadas e o bloqueio de spam estão funcionando</string>
     <string name="home_greeting">Olá</string>
@@ -40,20 +35,17 @@
     <string name="home_recent_activity">Últimas atividades</string>
     <string name="see_all">Mostrar tudo</string>
 
-    <!-- Quick actions -->
     <string name="quick_dialer">Discar</string>
     <string name="quick_lookup">Consultar</string>
     <string name="quick_blocklist">Bloqueados</string>
     <string name="quick_tools">Ferramentas</string>
 
-    <!-- Bottom navigation -->
     <string name="nav_home">Início</string>
     <string name="nav_recents">Recentes</string>
     <string name="nav_contacts">Contatos</string>
     <string name="nav_lookup">Consultar</string>
     <string name="nav_settings">Configurações</string>
 
-    <!-- Call states -->
     <string name="call_incoming">Recebendo chamada…</string>
     <string name="call_decline">Recusar</string>
     <string name="call_accept">Atender</string>
@@ -62,31 +54,26 @@
     <string name="label_spam">Spam</string>
     <string name="label_verified">Verificado</string>
 
-    <!-- Recents -->
     <string name="recents_today">Hoje</string>
     <string name="recents_yesterday">Ontem</string>
     <string name="recents_this_week">Esta semana</string>
     <string name="recents_earlier">Mais antigas</string>
     <string name="recents_empty">Sem chamadas recentes</string>
 
-    <!-- Call filters -->
     <string name="filter_all">Todas</string>
     <string name="filter_incoming">Recebidas</string>
     <string name="filter_outgoing">Realizadas</string>
     <string name="filter_missed">Perdidas</string>
 
-    <!-- Call type labels -->
     <string name="type_incoming">Recebida</string>
     <string name="type_outgoing">Realizada</string>
     <string name="type_missed">Perdida</string>
     <string name="type_blocked">Bloqueada</string>
 
-    <!-- Call log permission -->
     <string name="perm_calllog_title">Mostrar chamadas recentes</string>
     <string name="perm_calllog_message">Autorize o acesso ao histórico de chamadas para exibir aqui as suas ligações recentes.</string>
     <string name="action_grant">Autorizar acesso</string>
 
-    <!-- Lookup -->
     <string name="lookup_hint">Digite um nome ou número</string>
     <string name="lookup_verified_business">Empresa confirmada</string>
     <string name="lookup_organization">Organização</string>
@@ -104,13 +91,11 @@
     <string name="lookup_international">Internacional</string>
     <string name="lookup_carrier">Operadora</string>
 
-    <!-- Contacts -->
     <string name="contacts_search_hint">Buscar nos contatos</string>
     <string name="contacts_empty">Não há contatos</string>
     <string name="perm_contacts_title">Mostrar seus contatos</string>
     <string name="perm_contacts_message">Autorize o acesso aos contatos para que eles sejam exibidos aqui.</string>
 
-    <!-- Settings -->
     <string name="settings_language">Idioma</string>
     <string name="settings_language_sub">Defina o idioma do app</string>
     <string name="settings_blocklist">Lista de bloqueio</string>
@@ -124,7 +109,6 @@
     <string name="theme_dark">Escuro</string>
     <string name="theme_system">Seguir o sistema</string>
 
-    <!-- Settings actions -->
     <string name="language_dialog_title">Selecione o idioma</string>
     <string name="blocklist_add">Incluir número</string>
     <string name="blocklist_empty">Ainda não há números bloqueados</string>
@@ -137,7 +121,6 @@
     <string name="action_cancel">Cancelar</string>
     <string name="action_remove">Remover</string>
 
-    <!-- Added translations -->
     <string name="app_name_overlay">Caller ID</string>
     <string name="number_lookup">Consulta de número</string>
     <string name="enter_a_number">Informe o número</string>
@@ -257,26 +240,22 @@
     </plurals>
     <string name="battery_activity_title">Dados da bateria</string>
 
-    <!-- Batch 2 translations -->
     <string name="home_brand">CallerID</string>
     <string name="home_brand_sub">Consulta de Número</string>
     <string name="home_quick_actions">Atalhos</string>
     <string name="overlay_banner_desc">Exibir dados de quem liga sobre outros apps</string>
 
-    <!-- Recents -->
     <string name="recents_subtitle">Seu histórico de ligações</string>
     <string name="recents_search_hint">Buscar nas chamadas</string>
     <string name="contacts_count_fmt">%1$d contatos salvos</string>
     <string name="action_more">Outros</string>
 
-    <!-- Recents sort menu -->
     <string name="sort_title">Ordenação</string>
     <string name="sort_newest">Das mais novas às mais antigas</string>
     <string name="sort_oldest">Das mais antigas às mais novas</string>
     <string name="sort_name_asc">Nome (A–Z)</string>
     <string name="sort_name_desc">Nome (Z–A)</string>
 
-    <!-- Lookup -->
     <string name="lookup_city">Município</string>
     <string name="lookup_spam_type">Categoria de spam</string>
     <string name="lookup_detail_title">Informações do número</string>
@@ -289,7 +268,6 @@
     <string name="lookup_history_empty">Nenhuma pesquisa feita até agora</string>
     <string name="action_back">Voltar</string>
 
-    <!-- Call details -->
     <string name="call_detail_title">Informações da chamada</string>
     <string name="action_message">Mensagem</string>
     <string name="action_block">Bloquear</string>
@@ -323,13 +301,11 @@
     <string name="detail_yesterday">Ontem, %1$s</string>
     <string name="detail_dot_join">%1$s · %2$s</string>
 
-    <!-- Dialer -->
     <string name="dialer_search_contacts">Buscar nos contatos</string>
     <string name="dialer_favorites">Favoritos</string>
     <string name="dialer_view_all">Mostrar tudo</string>
     <string name="dialer_voice_search">Pesquisa por voz</string>
 
-    <!-- Blocklist -->
     <string name="blocklist_empty_subtitle">Recuse ligações de números ou faixas de numeração específicos</string>
     <string name="blocklist_choose_title">Bloquear número</string>
     <string name="blocklist_method_add_title">Incluir um número</string>
@@ -347,7 +323,6 @@
     <string name="blocklist_no_contacts">Sem contatos por aqui</string>
     <string name="blocklist_perm_contacts">Para escolher um contato, é preciso acessar a agenda</string>
 
-    <!-- Tools -->
     <string name="compass_activity_title">Tela da bússola</string>
     <string name="compass_signal">Potência do sinal: %1$s</string>
     <string name="signal_strong">Forte</string>
@@ -363,7 +338,6 @@
     <string name="speedtest_mbps">%1$s Mbps</string>
     <string name="speedtest_ms">%1$d ms</string>
 
-    <!-- Flashlight -->
     <string name="flashlight_integrity">Integridade do hardware: confirmada</string>
     <string name="flashlight_lumen">Emissão em lúmens</string>
     <string name="flashlight_brightness">Ajuste de brilho</string>
@@ -371,7 +345,6 @@
     <string name="flashlight_mode_strobe">Estrobo</string>
     <string name="flashlight_lm">%1$d lm</string>
 
-    <!-- Bubble level -->
     <string name="level_current_tilt">Inclinação neste momento</string>
     <string name="level_dual_axis">Leituras em dois eixos</string>
     <string name="level_x_axis">X-Axis</string>
@@ -380,7 +353,6 @@
     <string name="level_adjusting">Em ajuste</string>
     <string name="level_level">Nivelado</string>
 
-    <!-- Battery -->
     <string name="battery_activity_sub">Acompanhe o consumo de energia e a integridade do hardware, com o desempenho em tempo real e o estado das verificações de segurança.</string>
     <string name="battery_secured">Protegida e em otimização</string>
     <string name="battery_health_great">Excelente</string>
@@ -389,7 +361,6 @@
     <string name="battery_health_dead">Sem vida útil</string>
     <string name="battery_health_over">Sobretensão</string>
 
-    <!-- Sound meter -->
     <string name="sound_peak">Nível máximo</string>
     <string name="sound_average">Nível médio</string>
     <string name="sound_spectrum">Distribuição de frequências</string>
@@ -402,7 +373,6 @@
     <string name="sound_cat_very_loud">Muito intenso</string>
     <string name="sound_cat_dangerous">Nocivo</string>
 
-    <!-- Light meter -->
     <string name="light_capture">Registrar</string>
     <string name="light_resume">Continuar</string>
     <string name="light_zero">Zerar</string>
@@ -411,7 +381,6 @@
     <string name="light_max">Máximo</string>
     <string name="light_lx">%1$d lx</string>
 
-    <!-- Stopwatch / Timer -->
     <string name="stopwatch_active">Sessão em andamento</string>
     <string name="stopwatch_lap">Volta</string>
     <string name="stopwatch_history">Registro de voltas</string>
@@ -420,13 +389,11 @@
     <string name="stopwatch_total">Total de registros</string>
     <string name="stopwatch_lap_n">Volta %1$d</string>
 
-    <!-- Timer -->
     <string name="timer_tool">Temporizador</string>
     <string name="timer_tool_sub">Contagem regressiva</string>
     <string name="timer_minutes">Minutos</string>
     <string name="timer_seconds">Segundos</string>
 
-    <!-- Incoming-call overlay -->
     <string name="incall_incoming">Ligação recebida</string>
     <string name="incall_known">Contato salvo</string>
     <string name="incall_unknown">Desconhecido</string>
@@ -434,21 +401,17 @@
     <string name="incall_calls">%1$d chamadas</string>
     <string name="incall_service_active">Identificação de chamadas ligada</string>
 
-    <!-- Contacts -->
     <string name="contacts_tab_all">Todos</string>
     <string name="contacts_tab_favorites">Favoritos</string>
     <string name="contacts_tab_recents">Recentes</string>
     <string name="contacts_tab_groups">Grupos</string>
 
-    <!-- Settings -->
     <string name="call_screening">Tela sobreposta do identificador</string>
     <string name="call_screening_desc">Exibir dados de quem liga durante as chamadas</string>
     <string name="settings_section_call">PROTEÇÃO CONTRA CHAMADAS</string>
 
-    <!-- Call states -->
     <string name="please_wait">Só um instante...</string>
 
-    <!-- Post-call (callback) screen -->
     <string name="pc_recent_calls_empty">Sem chamadas recentes</string>
     <string name="recent">Recente</string>
     <string name="message">Mensagem</string>
@@ -471,15 +434,13 @@
     <string name="feature_web">Acessar o site</string>
     <string name="feature_edit_contact">Alterar contato</string>
 
-    <!-- Home search-bar one-time hint -->
     <string name="search_hint_tip">Digite aqui um número para saber quem está ligando</string>
     <string name="got_it">Entendi</string>
 
-    <!-- App-redirect dialog -->
     <string name="app_unavailable">App não disponível</string>
     <string name="app_redirect_desc">Este app não está instalado no aparelho. Quer abri-lo na Play Store?</string>
     <string name="call_screening_hint_tip">Ative para saber quem liga e barrar spam</string>
-    <!-- FSI intro Activity/Dialog + Home permission hint -->
+    
     <string name="home_perm_hint">Há permissões desativadas. Ative-as para usar o identificador de chamadas por completo.</string>
     <string name="home_perm_manage">Configurar</string>
     <string name="fsi_incoming_call">Ligação recebida</string>

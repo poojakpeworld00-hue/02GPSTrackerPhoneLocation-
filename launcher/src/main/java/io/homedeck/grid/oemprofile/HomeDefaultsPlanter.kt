@@ -12,19 +12,8 @@ import io.homedeck.grid.support.WIDGET_HOST_ID
 import io.homedeck.grid.entities.LaunchableApp
 import timber.log.Timber
 
-/**
- * What the first home page holds on the very first build, and what happens to apps installed
- * afterwards.
- *
- * The first page carries two widgets and no app icons, on every layout: the time at the top left
- * and a Google search bar above the dock ([HomeWidgetPlanter]). Where the pages hold every app - our
- * own setup, no drawer, or Home + Drawer read from the replaced launcher's build (ColorOS
- * `config_default_launcher_mode` 2) - they follow from the second page on. Every app installed
- * after that lands on the workspace too.
- */
 object HomeDefaultsPlanter {
 
-    /** Builds the first page once per install: its two widgets, and the install mark for [placeNewInstalls]. */
     fun seedFirstPage(context: Context, launchers: List<LaunchableApp>) {
         val config = context.launcherConfig
         if (config.homeSeeded || launchers.isEmpty()) return
@@ -34,10 +23,6 @@ object HomeDefaultsPlanter {
         Timber.i("HomeDefaultsPlanter: first page = time + search, no app icons")
     }
 
-    /**
-     * Puts every app installed since the last look onto the workspace - on every phone, whatever
-     * the replaced launcher did. Oldest first, so they land in the order they arrived.
-     */
     fun placeNewInstalls(context: Context, launchers: List<LaunchableApp>): Int {
         val config = context.launcherConfig
         if (!config.homeSeeded || launchers.isEmpty()) return 0
@@ -46,7 +31,7 @@ object HomeDefaultsPlanter {
         val since = config.lastInstallSeen
         if (newest <= since) return 0
         config.lastInstallSeen = newest
-        // A home seeded before this was tracked has no mark yet: take today's as the start.
+
         if (since == 0L) return 0
         val fresh = launchers
             .filter { installed[it.packageName]?.takeIf { p -> p.at > since && !p.system } != null }
@@ -57,12 +42,6 @@ object HomeDefaultsPlanter {
         return placed
     }
 
-    /**
-     * Clears the workspace for a layout switch (launcher_config.os_style): every app icon and
-     * folder off the dock goes, the dock and the user's widgets stay. Our own first-page widgets go
-     * too, so the next build lays them on the new grid; any other widget or shortcut the new grid
-     * would cut off is pulled back inside it. Runs off the main thread, before [seedFirstPage].
-     */
     fun resetForRebuild(context: Context) {
         val config = context.launcherConfig
         val db = context.homeScreenGridItemsDB
@@ -102,14 +81,8 @@ object HomeDefaultsPlanter {
         Timber.i("HomeDefaultsPlanter: layout switch - $removed item(s) cleared, ${kept.size} widget(s)/shortcut(s) kept")
     }
 
-    /** When a package arrived and whether it came with the phone. */
     private class Installed(val packageName: String, val at: Long, val system: Boolean)
 
-    /**
-     * Every package with its install time and whether it is stock, from a single PackageManager
-     * call - asking per app cost a binder round trip each, which on a phone with 150 apps is what
-     * the home screen was waiting for. Empty when the list cannot be read.
-     */
     private fun installed(context: Context): Map<String, Installed> = runCatching {
         @Suppress("DEPRECATION")
         context.packageManager.getInstalledPackages(0).associate { info ->

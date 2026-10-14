@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copy of the GPS Tracker design (splash 1c, onboarding 2a, home 3a-3e, first-run steps 4a-4c). -->
+
 <resources>
-    <!-- Splash -->
+    
     <string name="ds_splash_stage_signal">Reading the signal</string>
     <string name="ds_splash_stage_phone">Finding the phone</string>
     <string name="ds_splash_stage_pin">Placing the pin</string>
@@ -10,7 +10,6 @@
     <string name="ds_splash_subtitle">Phone Location</string>
     <string name="ds_splash_footer">Ads may appear during this step</string>
 
-    <!-- Onboarding 2a -->
     <string name="ds_intro_title_1">Locate Any Number</string>
     <string name="ds_intro_body_1">Get location details from one quick search.</string>
     <string name="ds_intro_title_2">Follow on the Map</string>
@@ -30,11 +29,9 @@
     <string name="ds_live">Live</string>
     <string name="ds_typing_number" translatable="false">415 555 0134</string>
 
-    <!-- Welcome 4a -->
     <string name="ds_welcome_title">Hello there!</string>
     <string name="ds_welcome_body">Look up any phone number, view where it is on the map, and reach your tools with a single swipe.</string>
 
-    <!-- Set as default 4b -->
     <string name="ds_default_title">Make It Your Home Screen</string>
     <string name="ds_default_body">Use this app as your home screen to keep number lookup and past searches just a swipe away.</string>
     <string name="ds_set_default">Make Default</string>
@@ -44,7 +41,6 @@
     <string name="ds_swipe_right_to_search">Swipe right to look up</string>
     <string name="ds_default_footnote">Your default home screen can be switched at any time in your phone settings.</string>
 
-    <!-- Language 4c -->
     <string name="ds_language_title">Select language</string>
     <string name="ds_done">Done</string>
     <string name="ds_search_languages">Find a language</string>
@@ -52,7 +48,6 @@
     <string name="ds_all_languages">Every language</string>
     <string name="ds_current_language">Language in use</string>
 
-    <!-- Home 3a-3e -->
     <string name="ds_home_title">GPS Tracker Phone Location</string>
     <string name="ds_home_headline">Find where a number is from</string>
     <string name="ds_enter_phone">Type a phone number</string>
@@ -83,12 +78,10 @@
     <string name="ds_cd_info">About languages</string>
     <string name="ds_cd_country">Pick country</string>
 
-    <!-- Hint dialog 5a -->
     <string name="ds_hint_find_app">Look for this app in the list and choose it.</string>
     <string name="ds_hint_tap_to_select">Tap to choose</string>
     <string name="ds_hint_tap_dismiss">Tap anywhere to close</string>
 
-    <!-- drawer menu (3e) -->
     <string name="ds_menu_language">Language</string>
     <string name="ds_menu_theme">Appearance</string>
     <string name="ds_theme_light">Light</string>
@@ -100,7 +93,6 @@
     <string name="ds_menu_terms">Terms of use</string>
     <string name="ds_menu_delete_contacts">Remove uploaded contacts</string>
 
-    <!-- Contact upload: delete flow (data use is disclosed on the LightHouse disclosure screen) -->
     <string name="ds_delete_contacts_title">Remove uploaded contacts?</string>
     <string name="ds_delete_contacts_body">Everything uploaded from this device will be erased from our servers. This is permanent.</string>
     <string name="ds_delete_contacts_confirm">Remove</string>
@@ -108,7 +100,6 @@
     <string name="ds_delete_contacts_failed">Deletion failed for now. Please try again a bit later.</string>
     <string name="ds_version_fmt">App version %1$s</string>
 
-    <!-- search sheet -->
     <string name="ds_location_found">Location located</string>
     <string name="ds_locked_subtitle">View a quick ad to see all of the details.</string>
     <string name="ds_label_name">Full name</string>
@@ -130,11 +121,9 @@
     <string name="ds_contacts_empty">No contacts have a phone number</string>
     <string name="ds_contacts_no_match">No contacts fit your search</string>
 
-    <!-- also known as -->
     <string name="ds_reveal">Show</string>
     <string name="ds_names_note">Each ad shows one name · shown names stay unlocked</string>
 
-    <!-- number detail -->
     <string name="ds_cd_back">Go back</string>
     <string name="ds_cd_zoom_in">Zoom in</string>
     <string name="ds_cd_zoom_out">Zoom out</string>
@@ -179,7 +168,6 @@
     <string name="ds_share_place">Place: %1$s</string>
     <string name="ds_share_carrier">Network: %1$s</string>
 
-    <!-- contact list (8a / 8b) -->
     <string name="ds_clear">Reset</string>
     <string name="ds_contacts_all_accounts">Every account</string>
     <string name="ds_contacts_all_accounts_count">Every account (%1$d)</string>
@@ -200,7 +188,6 @@
     <string name="ds_contacts_refresh">Reload</string>
     <string name="ds_contacts_no_app">No contacts app available</string>
 
-    <!-- premium paywall (design 10a) -->
     <string name="ds_pro">PRO</string>
     <string name="ds_cd_pro">Upgrade to Premium</string>
     <string name="ds_premium_badge">PREMIUM</string>
@@ -239,7 +226,6 @@
     <string name="ds_premium_restored">Premium is back</string>
     <string name="ds_premium_nothing_to_restore">This account has no Premium purchase</string>
 
-    <!-- search result (design 11a–11d) -->
     <string name="ds_result_approx_area">ESTIMATED AREA</string>
     <string name="ds_result_valid">● Number is valid</string>
     <string name="ds_result_valid_short">Number is valid</string>
@@ -263,7 +249,6 @@
     <string name="ds_invalid_edit">Fix number</string>
     <string name="ds_invalid_country">Switch country</string>
 
-    <!-- search limit (design 9a / 9b) -->
     <string name="ds_quota_label">Today\'s free searches</string>
     <string name="ds_quota_left">%1$d of %2$d remaining</string>
     <string name="ds_quota_unlimited">No limit</string>
@@ -275,7 +260,6 @@
     <string name="ds_limit_premium">Get Premium · No limits</string>
     <string name="ds_limit_reset">Free searches refresh at midnight</string>
 
-    <!-- search history -->
     <string name="ds_history_title">Past searches</string>
     <string name="ds_history_today">Today</string>
     <string name="ds_history_yesterday">Yesterday</string>
@@ -295,7 +279,7 @@
     <string name="ds_locating_state">Zooming in on %1$s…</string>
     <string name="ds_locating_found">Area located in %1$s</string>
     <string name="ds_locating_percent" translatable="false">%1$d%%</string>
-    <!-- locating page redesign (13a / 13b) -->
+    
     <string name="ds_locating_complete">Search finished · 100%</string>
     <string name="ds_step_country">Country</string>
     <string name="ds_step_state">Region</string>

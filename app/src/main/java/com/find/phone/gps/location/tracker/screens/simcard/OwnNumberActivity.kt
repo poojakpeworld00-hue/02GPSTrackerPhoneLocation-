@@ -38,11 +38,6 @@ import com.find.phone.gps.location.tracker.helpers.SimLineJournal
 import com.find.phone.gps.location.tracker.helpers.isNightMode
 import kotlinx.coroutines.launch
 
-/**
- * SIM Tools "My number" page (design 2a). The phone's own SIMs as side-by-side, selectable cards
- * (carrier · network, region, number, live signal, Copy, a Default badge); the selected SIM drives
- * the SIM tools below (Share + QR, Dual-SIM dashboard, Carrier codes). READ_PHONE_STATE only.
- */
 class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
 
     override val layoutId: Int = R.layout.page_my_number
@@ -65,7 +60,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
     }
 
     override fun initView() {
-        // Dark icons on the light canvas, light icons in dark mode.
+
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !isNightMode(this)
         ViewCompat.setOnApplyWindowInsetsListener(binding.myNumberRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -144,15 +139,12 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         }
         v.badgeDefaultVw.isVisible = card.subId != null && card.subId == SimSignal.defaultVoiceSubId()
 
-        // Warm the name cache for Share (vCard), but the card shows the region, per the design.
         line.e164?.let { e164 ->
             if (OwnSimLabels.cached(this, e164) == null) lifecycleScope.launch {
                 OwnSimLabels.resolve(this@OwnNumberActivity, e164, getString(R.string.my_number_sim_label, line.slot, line.carrier))
             }
         }
     }
-
-    // ── selection / styling ────────────────────────────────────────────────────
 
     private fun select(slot: Int) {
         if (slot == selectedSlot) return
@@ -168,8 +160,6 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         val v = card.views
         v.root.setBackgroundResource(if (on) R.drawable.vs_sim_card_selected else R.drawable.vs_sim_card_unselected)
 
-        // The cards are fixed illustrations (gradient or white), so the unselected card uses fixed
-        // ink/grey — the adaptive ds_ink/ds_muted flip light in dark mode and vanish on the white card.
         val ink = color(if (on) R.color.white else R.color.ds_ink_fixed)
         val sub = if (on) 0xCCFFFFFF.toInt() else color(R.color.ds_muted_fixed)
         v.lblCarrier.setTextColor(ink)
@@ -198,8 +188,6 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         }
     }
 
-    // ── live signal ──────────────────────────────────────────────────────────
-
     @SuppressLint("MissingPermission")
     @Suppress("DEPRECATION")
     private fun enrollSignals() {
@@ -225,8 +213,6 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         signals.clear()
     }
 
-    // ── tools (operate on the selected SIM) ────────────────────────────────────
-
     private fun selected(): Card? = cards.firstOrNull { it.line.slot == selectedSlot } ?: cards.firstOrNull()
 
     private fun unfoldShare() {
@@ -240,8 +226,6 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         val name = OwnSimLabels.cached(this, e164)?.takeIf { it.source != OwnSimLabels.Source.SIM }?.name
         startActivity(SendNumberActivity.intent(this, e164, number, name, card.line.slot, card.line.carrier))
     }
-
-    // ── permission / helpers ───────────────────────────────────────────────────
 
     private fun onShow() {
         trackEvent("MyNumberPage_Show_Click")

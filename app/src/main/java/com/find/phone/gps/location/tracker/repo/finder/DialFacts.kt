@@ -11,7 +11,6 @@ import com.google.i18n.phonenumbers.geocoding.PhoneNumberOfflineGeocoder
 import com.google.i18n.phonenumbers.PhoneNumberToTimeZonesMapper
 import java.util.Locale
 
-/** What libphonenumber knows about a number without going online. */
 data class DialFacts(
     val e164: String,
     val international: String,
@@ -19,7 +18,7 @@ data class DialFacts(
     val valid: Boolean,
     val lineType: RouteStyle,
     val carrier: String?,
-    /** Offline geocoder area (state / telecom circle); null when it only knows the country. */
+
     val area: String?,
     val timeZone: String?,
 )
@@ -31,18 +30,12 @@ object DialFactsReader {
 
     private val util: PhoneNumberUtil by lazy { PhoneNumberUtil.getInstance() }
 
-    /** Parses national [digits] for [iso2]; null when libphonenumber can't parse them at all. */
     fun parse(digits: String, iso2: String): PhoneNumber? = try {
         util.parse(digits, iso2.uppercase(Locale.ROOT))
     } catch (_: NumberParseException) {
         null
     }
 
-    /**
-     * Splits a number as stored in the phone book ("+91 70460 24874", "070460 24874") into its
-     * region and national digits; [fallbackIso] is the region for numbers without a "+".
-     * Unparseable input comes back as its bare digits under [fallbackIso].
-     */
     fun split(raw: String, fallbackIso: String): Pair<String, String> {
         val parsed = parse(raw, fallbackIso)
             ?: return fallbackIso to raw.filter(Char::isDigit)
@@ -50,10 +43,8 @@ object DialFactsReader {
         return region to util.getNationalSignificantNumber(parsed)
     }
 
-    /** True when the number is a real, dialable number for its region. */
     fun isValid(digits: String, iso2: String): Boolean = parse(digits, iso2)?.let(util::isValidNumber) == true
 
-    /** E.164 for the search, or the naive "+dial digits" when parsing fails. */
     fun e164(digits: String, iso2: String, dial: String): String =
         parse(digits, iso2)?.let { util.format(it, PhoneNumberFormat.E164) } ?: "+$dial$digits"
 

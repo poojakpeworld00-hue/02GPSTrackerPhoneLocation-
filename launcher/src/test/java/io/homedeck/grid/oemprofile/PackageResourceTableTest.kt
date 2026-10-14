@@ -5,10 +5,6 @@ import org.junit.Assume.assumeTrue
 import org.junit.Test
 import java.io.File
 
-/**
- * Runs against real launcher APKs when `-Dlauncher.apks=<path;path>` names them (they are far
- * too big to ship in the repo); skipped otherwise. Locally: MIUI HyperOS and ColorOS 14.
- */
 class PackageResourceTableTest {
 
     private val apks = System.getProperty("launcher.apks", "").split(';').filter { it.isNotBlank() && File(it).exists() }

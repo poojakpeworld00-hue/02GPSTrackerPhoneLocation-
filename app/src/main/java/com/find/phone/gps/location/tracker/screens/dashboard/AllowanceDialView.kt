@@ -9,7 +9,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.find.phone.gps.location.tracker.R
 
-/** The limit sheet's usage ring (design 9b): 8dp track with the used share in amber, from 12 o'clock. */
 class AllowanceDialView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -29,7 +28,6 @@ class AllowanceDialView @JvmOverloads constructor(
     }
     private val oval = RectF()
 
-    /** 0..1 of the allowance used. */
     var fraction: Float = 1f
         set(value) {
             field = value.coerceIn(0f, 1f)

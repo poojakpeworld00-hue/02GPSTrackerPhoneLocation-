@@ -12,11 +12,9 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.Serializable
 import java.util.Locale
 
-/** A map point. */
 @Keep
 data class MapMarkerPoint(val lat: Double, val lng: Double) : Serializable
 
-/** How precisely the number's area is known; drives the map zoom and the area circle. */
 enum class ZoneAccuracy(val zoom: Double, val radiusMeters: Double) {
     PINCODE(13.5, 3_000.0),
     CITY(12.0, 6_000.0),
@@ -24,7 +22,6 @@ enum class ZoneAccuracy(val zoom: Double, val radiusMeters: Double) {
     COUNTRY(4.5, 0.0),
 }
 
-/** Everything the detail screen shows for one searched number. */
 @Keep
 data class NumberSummary(
     val e164: String,
@@ -35,14 +32,14 @@ data class NumberSummary(
     val lineType: RouteStyle,
     val carrier: String?,
     val timeZone: String?,
-    /** Best-match name from the server; null when nobody knows it. */
+
     val name: String?,
     val otherNames: List<String>,
     val city: String?,
     val state: String?,
     val pincode: String?,
     val spam: Boolean,
-    /** False when the server couldn't be reached (offline, timeout): only offline facts are shown. */
+
     val serverReached: Boolean,
     val pin: MapMarkerPoint?,
 ) : Serializable {
@@ -55,17 +52,11 @@ data class NumberSummary(
             else -> ZoneAccuracy.COUNTRY
         }
 
-    /** "Junagadh, Gujarat, India": most precise first, blanks dropped. */
     val placeLabel: String
         get() = listOf(city, state, countryName).mapNotNull { it?.trim()?.takeIf(String::isNotEmpty) }
             .distinct().joinToString(", ")
 }
 
-/**
- * One search: offline facts from libphonenumber, the contact-saver lookup, then the area
- * geocoded to a map point. A failed or slow server call never fails the search; the report
- * then carries only what libphonenumber knows ([NumberSummary.serverReached] = false).
- */
 object NumberFinder {
 
     private const val TAG = "NumberFinder"
@@ -127,13 +118,12 @@ object NumberFinder {
             state = state,
             pincode = pincode,
             spam = body?.isSpam == true,
-            // 404 = the server answered "no record"; auth / server errors count as unreachable.
+
             serverReached = response != null && (response.isSuccessful || response.code() == 404),
             pin = pin,
         )
     }
 
-    /** "IN" → "India"; a legacy full name passes through. */
     private fun countryName(code: String?): String? {
         val c = code?.trim()?.takeIf { it.isNotEmpty() } ?: return null
         if (c.length != 2 || !c.all(Char::isLetter)) return c

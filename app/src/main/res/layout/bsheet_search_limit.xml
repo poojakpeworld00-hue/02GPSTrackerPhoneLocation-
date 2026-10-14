@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Search limit reached (design 9b): the used ring ("3/3 used"), title and explanation, Watch Ad
-    · +1 search (rewarded), Go Premium · Unlimited (gold, shining), and the reset note with the
-    Rewarded ad tag.
--->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

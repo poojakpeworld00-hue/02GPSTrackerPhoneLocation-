@@ -14,16 +14,6 @@ import android.util.AttributeSet
 import android.view.View
 import com.find.phone.gps.location.tracker.R
 
-/**
- * The redesign's rotating Earth. A fast, 60fps look-alike of the design's `earth-globe.js`
- * orthographic sphere: the equirectangular texture ([R.drawable.vs_earth_texture]) is scrolled
- * horizontally behind a circular clip (the design's `earthroll` → `translateX(-50%)`), then
- * shaded with a radial terminator and a top-left highlight so the flat strip reads as a lit
- * ball, with a soft atmosphere ring at the rim.
- *
- * One full scroll takes [R.integer]-free 12 s (the design's `speed="12"`). Honours
- * "remove animations" via [VisualTweens.animationsDisabled] — it then holds a still frame.
- */
 class PlanetSphereView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null,
 ) : View(context, attrs) {
@@ -33,7 +23,6 @@ class PlanetSphereView @JvmOverloads constructor(
     private val matrix = Matrix()
     private val globe = Paint(Paint.ANTI_ALIAS_FLAG).apply { shader = this@PlanetSphereView.shader }
 
-    // A faint blue cast so the daylight texture matches the design's deep-blue ocean look.
     private val tint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0x22124B8A }
     private val shade = Paint(Paint.ANTI_ALIAS_FLAG)
     private val highlight = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -42,7 +31,7 @@ class PlanetSphereView @JvmOverloads constructor(
         color = 0x5579C3FF
     }
 
-    private var phase = 0f // 0..1 across one texture width
+    private var phase = 0f
     private val animators = mutableListOf<Animator>()
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -51,7 +40,7 @@ class PlanetSphereView @JvmOverloads constructor(
         val cx = w / 2f
         val cy = h / 2f
         val r = d / 2f
-        // Terminator: bright toward the top-left light, darkening to the lower-right rim.
+
         shade.shader = RadialGradient(
             cx - r * 0.28f, cy - r * 0.3f, r * 1.25f,
             intArrayOf(0x00000000, 0x11000A1E, 0x66001024, 0xB2000818.toInt()),
@@ -71,8 +60,6 @@ class PlanetSphereView @JvmOverloads constructor(
         val cy = height / 2f
         val r = d / 2f
 
-        // Scale the texture so its full height maps to the circle (uniform, no distortion),
-        // then scroll X; REPEAT tiles it seamlessly around the "equator".
         val scale = d / bitmap.height
         val scaledWidth = bitmap.width * scale
         matrix.reset()

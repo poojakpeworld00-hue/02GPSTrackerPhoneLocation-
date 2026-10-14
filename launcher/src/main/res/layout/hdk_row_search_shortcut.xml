@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One app shortcut under the drawer search's top result: its icon and label, a divider above all but the first. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/search_shortcut_rowView"
     android:layout_width="match_parent"

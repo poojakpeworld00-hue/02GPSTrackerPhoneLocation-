@@ -28,9 +28,6 @@ class FullscreenOnExit {
         private var googleInterBack: InterstitialAd? = null
     }
 
-    // ----------------------------------------------------------------------
-    // LOAD GOOGLE INTERSTITIAL (Back Ads)
-    // ----------------------------------------------------------------------
     fun fetchBackInterAds(activity: Activity) {
         val pref = AdPrefsStore.getInstance(activity)
 
@@ -39,7 +36,6 @@ class FullscreenOnExit {
             return
         }
 
-        // Firebase "InterAds" master switch — back ads are interstitials too
         if (!pref.getBoolean("InterAds")) {
             activity.safeLog("BackLoad:InterAdsDisabled")
             return
@@ -76,16 +72,10 @@ class FullscreenOnExit {
         }
     }
 
-    // ----------------------------------------------------------------------
-    // PUBLIC: SHOW BACK INTER AD
-    // ----------------------------------------------------------------------
     fun presentBackAds(activity: Activity?, adsClose: () -> Unit) {
         presentBackInternal(activity, adsClose)
     }
 
-    // ----------------------------------------------------------------------
-    // INTERNAL SHOW LOGIC (BACK ADS ONLY)
-    // ----------------------------------------------------------------------
     private fun presentBackInternal(activity: Activity?, adsClose: () -> Unit) {
         val act = activity ?: return adsClose()
         val pref = AdPrefsStore.getInstance(act)
@@ -101,16 +91,13 @@ class FullscreenOnExit {
             } catch (_: Exception) {
             }
         }
-        // Basic checks
+
         if (!isNetworkConnected(act)) return safeClose("no_network")
         if (!pref.getBoolean("IsAdsON")) return safeClose("ads_off")
-        // Firebase "InterAds" master switch — back ads are interstitials too
+
         if (!pref.getBoolean("InterAds")) return safeClose("inter_ads_disabled")
         if (!pref.getBoolean("IsBack")) return safeClose("back_ads_disabled")
 
-        // ------------------------
-        // COUNTER CHECK
-        // ------------------------
         val target = pref.getInt("InterBackCounter")
 
         if (interBackCounter != target) {
@@ -119,21 +106,16 @@ class FullscreenOnExit {
         }
         interBackCounter = 0
 
-        // `back_ad_flow` / a `back_` link chain: the dynamic flow instead of the back interstitial.
-        // Only a flow configured *for back* switches it over — a global setting never does.
         if (HomeSlotAds.hasOwnFlow(act, "back")) {
             if (!HomeSlotAds.placementEnabled(act, "back")) return safeClose("back_ads_on_false")
             HomeSlotAds.showInterstitial(act, "back") { safeClose("back_flow") }
             return
         }
 
-        // ------------------------
-        // SELECT AD TYPE
-        // ------------------------
         when (AdFormatKind.fromString(pref.getString("IsAdType"))) {
 
             AdFormatKind.GOOGLE -> {
-                // `Inter_Loader_Ms`: a short loader before a back interstitial that is already loaded.
+
                 if (googleInterBack != null) {
                     BlockingLoaderDialog.beforeShow(act) { presentGoogleBackInter(act, pref, ::safeClose) }
                 } else {
@@ -162,10 +144,6 @@ class FullscreenOnExit {
             else -> safeClose("invalid_type")
         }
     }
-
-    // ----------------------------------------------------------------------
-    // GOOGLE BACK INTERSTITIAL
-    // ----------------------------------------------------------------------
 
     private fun presentGoogleBackInter(
         activity: Activity,
@@ -209,9 +187,6 @@ class FullscreenOnExit {
         }
     }
 
-    // ----------------------------------------------------------------------
-    // GOOGLE FAIL → FB or CUSTOM
-    // ----------------------------------------------------------------------
     private fun processGoogleFail(
         activity: Activity,
         pref: AdPrefsStore,
@@ -231,9 +206,6 @@ class FullscreenOnExit {
         }
     }
 
-    // ----------------------------------------------------------------------
-    // FACEBOOK — BACK ADS
-    // ----------------------------------------------------------------------
     private fun presentFacebookBackInter(
         context: Context,
         onDismiss: () -> Unit,
@@ -245,7 +217,6 @@ class FullscreenOnExit {
 
         val fb = com.facebook.ads.InterstitialAd(context, fbId)
 
-        // ⬅ FULLSCREEN LOADER (only if Activity)
         if (context is Activity) BlockingLoaderDialog.show(context, isLoader)
 
         AdPulse.req(context, "back_interstitial", AdPulse.FACEBOOK)
@@ -297,130 +268,6 @@ class FullscreenOnExit {
         else safeClose("fb_fail_no_custom")
     }
 
-//    private var customTabsClient: CustomTabsClient? = null
-//    private var customTabsSession: CustomTabsSession? = null
-//    private var serviceConnection: CustomTabsServiceConnection? = null
-//    // ----------------------------------------------------------------------
-//    // OPEN CUSTOM URL
-//    // ----------------------------------------------------------------------
-//    // ----------------------------------------------------------------------
-//    // OPEN CUSTOM DIRECT LINK
-//    // ----------------------------------------------------------------------
-//    private fun unfoldDirectLink(context: Activity, onClosed: () -> Unit) {
-//        val url = AdPrefsStore.getInstance(context).getString("DirectLink")
-//
-//        if (url.isNullOrEmpty()) {
-//            onClosed()
-//            return
-//        }
-//
-//        val uri = Uri.parse(url)
-//        isOpened = true
-//        onTabClosed = onClosed
-//
-//        getSession(context) { session ->
-//
-//            val customTab = CustomTabsIntent.Builder(session)
-//                .setShowTitle(true)
-//                .setToolbarColor(ContextCompat.getColor(context, R.color.black))
-//                .build()
-//
-//            try {
-//                customTab.launchUrl(context, uri)
-//            } catch (e: Exception) {
-//                unfoldInBrowser(context, uri, onClosed)
-//            }
-//        }
-//    }
-//
-//    // Use CustomTabsSession to track tab close
-//    private fun getSession(
-//        context: Context,
-//        onReady: (CustomTabsSession?) -> Unit
-//    ) {
-//        if (customTabsSession != null) {
-//            onReady(customTabsSession)
-//            return
-//        }
-//
-//        serviceConnection = object : CustomTabsServiceConnection() {
-//
-//            override fun onCustomTabsServiceConnected(
-//                name: ComponentName,
-//                client: CustomTabsClient
-//            ) {
-//                customTabsClient = client
-//                customTabsSession = client.newSession(null)
-//                onReady(customTabsSession)
-//            }
-//
-//            override fun onServiceDisconnected(name: ComponentName) {
-//                customTabsClient = null
-//                customTabsSession = null
-//                onReady(null)
-//            }
-//        }
-//
-//        CustomTabsClient.bindCustomTabsService(
-//            context,
-//            "com.android.chrome",
-//            serviceConnection as CustomTabsServiceConnection
-//        )
-//    }
-//
-//    private fun unfoldInBrowser(
-//        context: Activity,
-//        uri: Uri,
-//        onClosed: () -> Unit
-//    ) {
-//        try {
-//            val intent = Intent(Intent.ACTION_VIEW, uri).apply {
-//                addCategory(Intent.CATEGORY_BROWSABLE)
-//            }
-//            context.startActivity(intent)
-//            context.safeLog("browser_opened")
-//        } catch (e: Exception) {
-//            context.safeLog("browser_open_failed")
-//        } finally {
-//            // Ensure callback is always called
-//            isOpened = false
-//            onTabClosed?.invoke()
-//            onTabClosed = null
-//            onClosed()
-//        }
-//    }
-
-    /*private fun getSession(context: Context): CustomTabsSession? {
-        var tabSession: CustomTabsSession? = null
-        CustomTabsClient.bindCustomTabsService(
-            context, "com.android.chrome",
-            object : CustomTabsServiceConnection() {
-                override fun onServiceDisconnected(name: android.content.ComponentName?) {}
-                override fun onCustomTabsServiceConnected(
-                    name: ComponentName,
-                    client: CustomTabsClient
-                ) {
-                    tabSession = client?.newSession(object : CustomTabsCallback() {
-                        override fun onNavigationEvent(
-                            navigationEvent: Int,
-                            extras: android.os.Bundle?
-                        ) {
-                            if (navigationEvent == CustomTabsCallback.NAVIGATION_ABORTED ||
-                                navigationEvent == CustomTabsCallback.TAB_HIDDEN
-                            ) {
-                                if (isOpened) {
-                                    isOpened = false
-                                    onTabClosed?.invoke()
-                                }
-                            }
-                        }
-                    })
-                }
-            }
-        )
-        return tabSession
-    }
-*/
     private fun Context.safeLog(event: String) {
         try {
             this.trackEvent(event)

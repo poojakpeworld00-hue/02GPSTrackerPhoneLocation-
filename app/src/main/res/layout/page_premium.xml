@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Premium paywall (design 10a · light map, plan columns): the 300dp map hero fading into the
-    page with the countdown close at its top-right, the PREMIUM pill, title and subtitle
-    overlapping its lower edge, three plan columns, two benefit lines, then — pinned at the
-    bottom — the price/trial line, the CTA, the consent line and Restore / Terms / Privacy.
--->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -31,14 +26,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- map hero -->
                 <FrameLayout
                     android:id="@+id/heroVw"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:clipChildren="true">
 
-                    <!-- 1.3× so the artwork's transparent rounded corners fall outside the hero -->
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -62,7 +55,6 @@
                         android:layout_marginEnd="14dp" />
                 </FrameLayout>
 
-                <!-- pill, title, subtitle -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -103,7 +95,6 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
-                <!-- plan columns: no clipping, so the selected card can scale up and cast its shadow -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -134,7 +125,6 @@
                         layout="@layout/card_premium_plan" />
                 </LinearLayout>
 
-                <!-- benefits -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -157,7 +147,6 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <!-- bottom: CTA, note, links -->
         <LinearLayout
             android:id="@+id/footerBar"
             android:layout_width="match_parent"
@@ -212,8 +201,6 @@
                     android:visibility="gone" />
             </FrameLayout>
 
-            <!-- "Continue without Premium": leaves like the X, shown from the start (not tied to
-                 close_delay_sec, which only paces the X). -->
             <TextView
                 android:id="@+id/padContinueFree"
                 android:layout_width="wrap_content"

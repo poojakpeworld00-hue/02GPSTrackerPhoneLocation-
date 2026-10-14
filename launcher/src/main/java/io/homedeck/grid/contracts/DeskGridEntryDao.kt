@@ -41,7 +41,6 @@ interface DeskGridEntryDao {
         deleteItemsWithParentId(id)
     }
 
-    /** Pseudo widgets are identified by their class name — see PSEUDO_WIDGET_* in Constants. */
     @Query("DELETE FROM home_screen_grid_items WHERE class_name = :className")
     fun deleteItemsByClassName(className: String)
 

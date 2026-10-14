@@ -15,11 +15,6 @@ import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.loop
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.pvh
 import java.lang.ref.WeakReference
 
-/**
- * "Get your reminders on time" (design 4): the bell on the gradient disc with two pulsing rings,
- * title / description / button from Remote Config, and "Maybe later". Layout
- * `dialog_reminder_prompt`.
- */
 object AlarmAskDialog {
 
     private var current: WeakReference<Dialog>? = null
@@ -72,7 +67,6 @@ object AlarmAskDialog {
         current = null
     }
 
-    /** Rings: scale .7 → 1.55 / 1.9 while fading out; bell: a swing every 3s from its hanger. */
     private fun animate(root: View) {
         if (VisualTweens.animationsDisabled(root.context)) return
         val e = VisualTweens.EASE_OUT

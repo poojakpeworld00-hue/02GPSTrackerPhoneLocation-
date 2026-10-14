@@ -1,11 +1,9 @@
 <resources>
-    <!-- App -->
+    
     <string name="dash">&#8211;</string>
 
-    <!-- Splash -->
     <string name="splash_footer">Bu uygulamada reklamlar bulunabilir</string>
 
-    <!-- Language -->
     <string name="language_title">Dilinizi seçin</string>
     <string name="language_continue">İlerle</string>
     <string name="language_search_hint">Dil bul</string>
@@ -15,7 +13,6 @@
     <string name="language_info_msg">Dil seçimi, uygulamanın arayüzünü yeniler. Seçtiğiniz dile göre bazı bölgesel özellikler farklılaşabilir.</string>
     <string name="language_info_got_it">Tamam, anladım</string>
 
-    <!-- Terms &amp; Conditions -->
     <string name="terms_title">Kullanım Koşulları</string>
     <string name="terms_agree">Kullanım Koşullarını ve Gizlilik Politikasını okuyup onaylıyorum.</string>
     <string name="terms_accept">Onayla ve ilerle</string>
@@ -24,12 +21,10 @@
     <string name="overlay_system_permission">Sistem yetkisi</string>
     <string name="overlay_permission_desc">Diğer uygulamaların üstünde görüntüleme yetkisi, siz başka bir uygulamayı kullanırken bu uygulamanın arayan kişi bilgilerini ekrana getirmesini sağlar.</string>
 
-    <!-- Onboarding -->
     <string name="onboarding_skip">Geç</string>
     <string name="onboarding_next">Sonraki</string>
     <string name="onboarding_get_started">Hadi başlayalım</string>
 
-    <!-- Home -->
     <string name="home_title">Güvendesiniz</string>
     <string name="home_subtitle">Arayan tanıma ve spam engelleme devrede</string>
     <string name="home_greeting">Merhaba</string>
@@ -40,44 +35,37 @@
     <string name="home_recent_activity">Güncel hareketler</string>
     <string name="see_all">Hepsini göster</string>
 
-    <!-- Quick actions -->
     <string name="quick_dialer">Numara tuşları</string>
     <string name="quick_lookup">Ara</string>
     <string name="quick_blocklist">Kara liste</string>
     <string name="quick_tools">Aletler</string>
 
-    <!-- Bottom navigation -->
     <string name="nav_home">Ana sayfa</string>
     <string name="nav_recents">Geçmiş</string>
     <string name="nav_contacts">Kişiler</string>
     <string name="nav_lookup">Ara</string>
     <string name="nav_settings">Ayarlar</string>
 
-    <!-- Recents -->
     <string name="recents_today">Bugün</string>
     <string name="recents_yesterday">Dün</string>
     <string name="recents_this_week">Bu haftaki</string>
     <string name="recents_earlier">Daha önce</string>
     <string name="recents_empty">Henüz arama kaydı yok</string>
 
-    <!-- Call filters -->
     <string name="filter_all">Hepsi</string>
     <string name="filter_incoming">Gelen</string>
     <string name="filter_outgoing">Giden</string>
     <string name="filter_missed">Cevapsız</string>
 
-    <!-- Call type labels -->
     <string name="type_incoming">Gelen</string>
     <string name="type_outgoing">Giden</string>
     <string name="type_missed">Cevapsız</string>
     <string name="type_blocked">Engelli</string>
 
-    <!-- Call log permission -->
     <string name="perm_calllog_title">Geçmiş aramalarınızı listeleyin</string>
     <string name="perm_calllog_message">Geçmiş aramalarınızı bu ekranda listeleyebilmemiz için arama kayıtlarına erişim yetkisi verin.</string>
     <string name="action_grant">Yetki ver</string>
 
-    <!-- Lookup -->
     <string name="lookup_hint">Bir telefon numarası yazın</string>
     <string name="lookup_verified_business">Onaylı iş yeri</string>
     <string name="lookup_organization">Kurum</string>
@@ -95,13 +83,11 @@
     <string name="lookup_international">Yurt dışı</string>
     <string name="lookup_carrier">Operatör</string>
 
-    <!-- Contacts -->
     <string name="contacts_search_hint">Rehberde bul</string>
     <string name="contacts_empty">Hiç kişi yok</string>
     <string name="perm_contacts_title">Rehberinizi listeleyin</string>
     <string name="perm_contacts_message">Kişilerinizi bu ekranda listeleyebilmemiz için erişim yetkisi verin.</string>
 
-    <!-- Settings actions -->
     <string name="language_dialog_title">Dilinizi seçin</string>
     <string name="blocklist_add">Numara kaydet</string>
     <string name="blocklist_empty">Engellenmiş numara bulunmuyor</string>
@@ -114,7 +100,6 @@
     <string name="action_cancel">İptal</string>
     <string name="action_remove">Çıkar</string>
 
-    <!-- Settings -->
     <string name="settings_language">Dil</string>
     <string name="settings_language_sub">Uygulamanın dilini belirleyin</string>
     <string name="settings_blocklist">Kara liste</string>
@@ -128,7 +113,6 @@
     <string name="theme_dark">Karanlık</string>
     <string name="theme_system">Sistemle aynı</string>
 
-    <!-- Call states -->
     <string name="call_incoming">Çağrı geliyor…</string>
     <string name="call_decline">Meşgule at</string>
     <string name="call_accept">Yanıtla</string>
@@ -137,7 +121,6 @@
     <string name="label_spam">Spam</string>
     <string name="label_verified">Onaylı</string>
 
-    <!-- Added translations -->
     <string name="app_name_overlay">Caller ID</string>
     <string name="number_lookup">Numara Arama</string>
     <string name="enter_a_number">Bir telefon numarası yazın</string>
@@ -257,7 +240,6 @@
     </plurals>
     <string name="battery_activity_title">Batarya Bilgileri</string>
 
-    <!-- Batch translations -->
     <string name="overlay_banner_desc">Arayanın bilgilerini diğer uygulamaların önünde görüntüle</string>
     <string name="home_brand">CallerID</string>
     <string name="home_brand_sub">Numara Arama</string>
@@ -437,7 +419,7 @@
     <string name="app_redirect_desc">Bu uygulama cihazınızda kurulu değil. Play Store\'da açmak ister misiniz?</string>
     <string name="settings_section_call">ARAYAN KALKANI</string>
     <string name="call_screening_hint_tip">Arayanı görmek ve spam çağrıları engellemek için bunu etkinleştirin</string>
-    <!-- FSI intro Activity/Dialog + Home permission hint -->
+    
     <string name="home_perm_hint">Bazı yetkiler kapalı. Arayan tanımanın tamamı için bunları etkinleştirin.</string>
     <string name="home_perm_manage">Düzenle</string>
     <string name="fsi_incoming_call">Çağrı Geliyor</string>

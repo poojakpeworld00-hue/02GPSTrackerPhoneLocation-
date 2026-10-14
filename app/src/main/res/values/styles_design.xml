@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Type scale and shared component styles of the GPS Tracker design (section 05/06 of the
-    design system). Figtree 400/500/600/700 and Nunito 800 ship in res/font.
--->
+
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Nunito 800, letter-spacing -.02em -->
     <style name="Ds.Text.Display" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/nunito_extrabold</item>
         <item name="android:textColor">@color/ds_ink</item>
@@ -22,7 +18,6 @@
         <item name="android:textSize">22sp</item>
     </style>
 
-    <!-- Nunito 800 11sp, +.12em, uppercase: the "SUGGESTED" section labels -->
     <style name="Ds.Text.SectionNunito" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/nunito_extrabold</item>
         <item name="android:textColor">@color/ds_muted</item>
@@ -31,7 +26,6 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <!-- Figtree 700 11sp, +.14em, uppercase: the country sheet section labels -->
     <style name="Ds.Text.Section" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/figtree_bold</item>
         <item name="android:textColor">@color/ds_placeholder</item>
@@ -40,7 +34,6 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <!-- Figtree 400 16/24 -->
     <style name="Ds.Text.Body" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/figtree_regular</item>
         <item name="android:textColor">@color/ds_muted</item>
@@ -48,20 +41,17 @@
         <item name="android:lineSpacingMultiplier">1.5</item>
     </style>
 
-    <!-- Figtree 400 15/1.45 -->
     <style name="Ds.Text.BodySmall" parent="Ds.Text.Body">
         <item name="android:textSize">15sp</item>
         <item name="android:lineSpacingMultiplier">1.45</item>
     </style>
 
-    <!-- Figtree 700 16 on the primary gradient -->
     <style name="Ds.Text.Button" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/figtree_bold</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">16sp</item>
     </style>
 
-    <!-- Figtree 700 11sp +.08em uppercase pill: STEP n OF m -->
     <style name="Ds.Text.StepPill" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/figtree_bold</item>
         <item name="android:textColor">@color/ds_step_pill_text</item>
@@ -73,7 +63,6 @@
         <item name="android:paddingVertical">5dp</item>
     </style>
 
-    <!-- Figtree 600 15 muted: Skip -->
     <style name="Ds.Text.Skip" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/figtree_semibold</item>
         <item name="android:textColor">@color/ds_muted</item>
@@ -85,7 +74,6 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <!-- 56dp primary CTA: r18, 135° gradient, pressed #067C6C -->
     <style name="Ds.Button.Primary" parent="android:Widget.TextView">
         <item name="android:layout_height">56dp</item>
         <item name="android:background">@drawable/vs_btn_primary_selector_r18</item>
@@ -100,7 +88,6 @@
         <item name="android:stateListAnimator">@null</item>
     </style>
 
-    <!-- 44dp header icon button, r14 -->
     <style name="Ds.IconButton" parent="android:Widget.ImageButton">
         <item name="android:layout_width">44dp</item>
         <item name="android:layout_height">44dp</item>
@@ -108,7 +95,6 @@
         <item name="android:scaleType">center</item>
     </style>
 
-    <!-- Amber "Ad" tag -->
     <style name="Ds.Text.AdTag" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/figtree_bold</item>
         <item name="android:textColor">@color/ds_ad_tag_fg</item>
@@ -118,7 +104,6 @@
         <item name="android:paddingVertical">2dp</item>
     </style>
 
-    <!-- The stripped Material theme for the design's dialogs and sheets -->
     <style name="Ds.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="bottomSheetStyle">@style/Ds.BottomSheet</item>
@@ -129,7 +114,6 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <!-- Figtree 500 15 muted, centred: the splash status line under the composition -->
     <style name="Ds.SplashStatus" parent="android:Widget.TextView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -140,8 +124,6 @@
         <item name="android:alpha">0</item>
     </style>
 
-    <!-- Locating 13a: the country · state · area chips over the map (11sp bold, 6×10 padding, r10).
-         The background and colour are set per stage in code (done / active / pending). -->
     <style name="Ds.MapChip" parent="android:Widget.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -154,7 +136,6 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <!-- Locating 13a: the three step chips under the progress bar, equal width, centred text -->
     <style name="Ds.StepChip" parent="android:Widget.TextView">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -168,7 +149,6 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <!-- Onboarding A4 orbit tiles: 48dp, r16, white, primary-tinted shadow; icons 22dp -->
     <style name="Ds.OrbitTile" parent="android:Widget">
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
@@ -185,7 +165,6 @@
         <item name="android:contentDescription">@null</item>
     </style>
 
-    <!-- 4b phone mock: 22dp app tiles on a 3-column grid, 10dp apart -->
     <style name="Ds.MockAppTile" parent="android:Widget">
         <item name="android:layout_width">22dp</item>
         <item name="android:layout_height">22dp</item>
@@ -193,9 +172,6 @@
         <item name="android:background">@drawable/vs_tile_white30_r9</item>
     </style>
 
-
-    <!-- ===== home drawer (3e) ===== -->
-    <!-- 52dp row, 14dp corners ripple, 10dp side padding, 14dp gap via the tile margin -->
     <style name="Ds.DrawerRow" parent="android:Widget">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">52dp</item>
@@ -208,7 +184,6 @@
         <item name="android:paddingEnd">10dp</item>
     </style>
 
-    <!-- 38dp r12 icon tile (the row colours its background) -->
     <style name="Ds.DrawerTile" parent="android:Widget">
         <item name="android:layout_width">38dp</item>
         <item name="android:layout_height">38dp</item>
@@ -231,7 +206,6 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <!-- one third of the theme segment: 36dp, r10, 14dp icon with a 6dp gap -->
     <style name="Ds.DrawerSegment" parent="android:Widget">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">36dp</item>
@@ -248,7 +222,6 @@
         <item name="android:focusable">true</item>
     </style>
 
-    <!-- Dual-SIM dashboard (design 1b) rows and meter labels. -->
     <style name="Ds.MeterLabel" parent="android:Widget">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -286,7 +259,6 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <!-- Paywall benefit line (design 10a): green tick, Figtree 600 13 ink2 -->
     <style name="Ds.Text.PremiumCheck" parent="android:Widget.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -298,7 +270,6 @@
         <item name="android:textSize">13sp</item>
     </style>
 
-    <!-- Paywall footer link (design 10a): Figtree 600 11 primary -->
     <style name="Ds.Text.PremiumLink" parent="android:Widget.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -309,7 +280,6 @@
         <item name="android:textSize">11sp</item>
     </style>
 
-    <!-- Number Details chip (design 11c): Figtree 700 11, pill padding 10 × 5 -->
     <style name="Ds.Text.ResultChip" parent="android:Widget.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -321,12 +291,12 @@
         <item name="android:textSize">11sp</item>
         <item name="android:maxLines">1</item>
     </style>
-    <!-- Drawer header: the launcher icon's rounded tile (same 18dp corner as the old pin tile) -->
+    
     <style name="DrawerAppIcon" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">18dp</item>
     </style>
-    <!-- Reminder sheet (reminders design 3) -->
+    
     <style name="Rem.FieldLabel" parent="android:Widget">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

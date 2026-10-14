@@ -7,17 +7,10 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import java.util.concurrent.TimeUnit
 
-/**
- * Turns the stored reminders into WorkManager jobs. One unique job per reminder,
- * `reminder_<id>`, replaced whenever the reminder changes; WorkManager keeps it across app kills
- * and reboots. The job carries only the id: the worker re-reads the reminder, so an edit made
- * after scheduling is what fires.
- */
 object AlarmPlanner {
 
     private fun workName(id: Long) = "reminder_$id"
 
-    /** Schedules [item] for its next time, or cancels it when it is off / done / in the past. */
     fun sync(context: Context, item: AlarmEntry) {
         if (!item.isActive) return cancel(context, item.id)
         val now = System.currentTimeMillis()
@@ -38,7 +31,6 @@ object AlarmPlanner {
         WorkManager.getInstance(context).cancelUniqueWork(workName(id))
     }
 
-    /** Saves and schedules in one step: what the edit sheet and the list switch call. */
     fun save(context: Context, item: AlarmEntry) {
         AlarmRepository.upsert(context, item)
         sync(context, item)
@@ -49,13 +41,11 @@ object AlarmPlanner {
         AlarmRepository.remove(context, id)
     }
 
-    /** Fires [id] again in [minutes]; a repeating reminder then goes back to its usual time. */
     fun snooze(context: Context, id: Long, minutes: Int) {
         val item = AlarmRepository.get(context, id) ?: return
         save(context, item.copy(dateTime = System.currentTimeMillis() + minutes * 60_000L, done = false, enabled = true))
     }
 
-    /** Done on the alert: a one-off is finished; a repeating one waits for its next time. */
     fun markDone(context: Context, id: Long) {
         val item = AlarmRepository.get(context, id) ?: return
         val next = Repeat.nextAfter(item.repeatOrOnce, item.baseTime, System.currentTimeMillis())

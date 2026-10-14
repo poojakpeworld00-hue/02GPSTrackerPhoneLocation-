@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-    "Setup not complete" card at the top of the launcher workspace, shown while the Home role is
-    not held. Outer wrapper is transparent and takes the status bar inset padding; the gradient
-    card lives inside it. The whole card is the tap target (HomeDeskPane hangs the click on the
-    root); HomeStripTransitions owns every animation - entrance, the hero loops, the chevron
-    nudge and the sheen sweep - and starts / stops them with the card's visibility.
--->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -25,7 +19,6 @@
         android:background="@drawable/hdk_bg_default_launcher_banner"
         android:elevation="6dp">
 
-        <!-- decorative discs bleeding off the corners; clipped by the card outline -->
         <View
             android:id="@+id/bannerBlobView"
             android:layout_width="150dp"
@@ -56,7 +49,6 @@
             android:paddingEnd="12dp"
             android:paddingBottom="12dp">
 
-            <!-- hero: breathing glow + slow dashed ring + floating art + two sparkles -->
             <FrameLayout
                 android:layout_width="72dp"
                 android:layout_height="72dp"
@@ -139,7 +131,6 @@
 
             </LinearLayout>
 
-            <!-- tap hint: translucent round chip with a chevron that nudges to the right -->
             <FrameLayout
                 android:id="@+id/bannerChevronView"
                 android:layout_width="34dp"
@@ -159,11 +150,6 @@
 
         </LinearLayout>
 
-        <!--
-            diagonal highlight swept across the card by HomeStripTransitions. Fixed height: a
-            match_parent View in a wrap_content FrameLayout takes all the free space and the
-            card grows with it; taller than the card and centred so the tilt never shows an end.
-        -->
         <View
             android:id="@+id/bannerSheenView"
             android:layout_width="56dp"

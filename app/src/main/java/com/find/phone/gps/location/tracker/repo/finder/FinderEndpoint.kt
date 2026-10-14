@@ -17,16 +17,10 @@ import java.util.concurrent.TimeUnit
 
 interface FinderEndpoint {
 
-    /** [phone] is E.164 ("+917046024874"). */
     @GET("similar-phone-number")
     suspend fun similarPhoneNumber(@Query("phone") phone: String): Response<HandsetReply>
 }
 
-/**
- * The contact-saver client. The origin is Remote Config `contacts_base_url` (ingested into
- * [AdPrefsStore]), falling back to [DEFAULT_BASE_URL] when it is absent or malformed; the key is
- * `lookup.apiKey` from local.properties, XORed into BuildConfig.
- */
 object FinderHttpClient {
 
     private const val DEFAULT_BASE_URL = "https://contact-saver.dailymorningupdate.com/"

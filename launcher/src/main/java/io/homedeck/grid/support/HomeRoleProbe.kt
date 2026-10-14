@@ -22,58 +22,27 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import kotlin.math.max
 
-/**
- * Builds the launcher list - every installed app with its decoded icon - into [GlyphMemo].
- *
- * Lifted out of HomeDeskPane so it can also run *before* the launcher exists: the host calls
- * [prewarm] while the user is still on its onboarding screens, so when the Home role is granted and
- * the launcher opens, the list and icons are already there instead of being decoded in front of the
- * user. Same code, same cache, same signature check - a prewarm that finds nothing changed is a
- * no-op.
- */
 object HomeRoleProbe {
 
     private const val COLOR_SAMPLE_EDGE = 16
 
-    /**
-     * How often, at most, a cold scan hands its partial list to the screen. Every hand-off is a
-     * sort and a list diff in the drawer and the apps panel, so it is paced by time rather than
-     * by icon count: a few hundred apps would otherwise mean dozens of full-list passes on the
-     * main thread in the first second.
-     */
     private const val PROGRESS_INTERVAL_MS = 150L
 
     private const val MICRO_G = "com.google.android.gms"
 
-    // Two callers in quick succession (a prewarm still running when the launcher opens, a Home
-    // press landing on a fresh process) each start a rebuild before either has filled the cache;
-    // the second waits here and then finds the first one's answer by signature instead of decoding
-    // every icon again.
     private val lock = Any()
 
-    /** Fire and forget; safe to call from any thread and any number of times. */
     fun prewarm(context: Context) {
         val app = context.applicationContext
         Thread { runCatching { scan(app) } }.apply { priority = Thread.MIN_PRIORITY + 2 }.start()
     }
 
-    /**
-     * Every launchable app with its label and no icon - one PackageManager query, no decoding.
-     * Enough for everything that only places or names apps (seeding the home, filling its pages),
-     * so a first run does not sit on an empty workspace while [scan] renders every icon.
-     */
     @SuppressLint("WrongConstant")
     fun quick(context: Context): List<LaunchableApp> = with(context) {
         val hidden = hiddenIconsDB.getHiddenIcons().map { it.getIconIdentifier() }
         wanted(this, launchable(this), hidden).map { info -> bare(info, info.loadLabel(packageManager).toString()) }
     }
 
-    /**
-     * The full list, icons decoded. [onQuick] is handed the label-only list straight away when the
-     * cache is empty, and [onProgress] the list so far (decoded icons, then the rest as placeholder
-     * rows) while a cold scan runs, so a caller with a screen up can paint tiles before every icon
-     * is done. Both run on the calling thread.
-     */
     @SuppressLint("WrongConstant")
     fun scan(
         context: Context,
@@ -84,11 +53,6 @@ object HomeRoleProbe {
             val hiddenIcons = hiddenIconsDB.getHiddenIcons().map { it.getIconIdentifier() }
             val list = launchable(this)
 
-            // Everything below decodes an icon per installed app. Skipped outright when the
-            // installed set is byte-for-byte what it was when the cache was built - which is every
-            // resume that is just the user pressing Home. The signature is derived from `list`,
-            // which we needed anyway, so the check itself is one already-paid binder call plus a
-            // string compare.
             val signature = installedSignature(list, hiddenIcons)
             val cached = GlyphMemo.launchers
             if (cached.isNotEmpty() && signature == GlyphMemo.installedSignature) {
@@ -98,22 +62,14 @@ object HomeRoleProbe {
             val started = SystemClock.elapsedRealtime()
             val wanted = wanted(this, list, hiddenIcons)
 
-            // Labels are read once and reused by the quick list, the decode order and the final
-            // rows. Decoding runs alphabetically - the drawer's own order - so the icons that arrive
-            // first are the ones already on screen.
             val labels = HashMap<ResolveInfo, String>(wanted.size * 2)
             wanted.forEach { labels[it] = it.loadLabel(packageManager).toString() }
             val ordered = wanted.sortedBy { labels[it]!!.lowercase() }
 
-            // Nothing to show yet (first run, or the process came back with an empty table): hand
-            // the drawer and the apps panel the labels straight away, on their placeholder tiles,
-            // so the lists are usable while the icons below are still rendering.
             if (cached.isEmpty()) {
                 onQuick(ArrayList(ordered.map { bare(it, labels[it]!!) }))
             }
 
-            // A launcher already cached from the same APK keeps its icon: one app installed or
-            // removed decodes one icon, not every installed app's again.
             val sourceDirs = wanted.associate { keyOf(it) to it.activityInfo.applicationInfo.sourceDir.orEmpty() }
             val knownDirs = GlyphMemo.sourceDirs
             val reusable = cached
@@ -121,23 +77,17 @@ object HomeRoleProbe {
                 .associateBy { "${it.packageName}/${it.activityName}" }
                 .filterKeys { key -> knownDirs[key] != null && knownDirs[key] == sourceDirs[key] }
 
-            // The on-demand cache must agree: an app whose APK moved (an update) is decoded again,
-            // not handed back the icon a tile cached before the update. Same for a tray change.
             val legacyTray = launcherConfig.legacyIconTray
             GlyphFetcher.syncTray(legacyTray)
             GlyphFetcher.invalidate(sourceDirs.keys.filter { key -> knownDirs[key] != null && knownDirs[key] != sourceDirs[key] })
 
-            // One icon per installed app: an XML inflate, a render and a colour average each, all
-            // independent, so they are spread over the cores rather than queued on one thread. The
-            // render is capped at the size any list here draws it - an adaptive icon's intrinsic
-            // size is 108 dp, which at this density is a 400 px bitmap nobody ever sees.
             val iconPx = resources.getDimensionPixelSize(R.dimen.launcher_icon_cache_size)
             val allApps = ArrayList<LaunchableApp>()
             val pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors().coerceIn(2, 6))
             try {
                 val decoded = ordered.map { info ->
                     reusable[keyOf(info)]?.let { kept ->
-                        // A package mid-removal answers with its bare package name: keep the name it had.
+
                         val label = labels[info]!!
                         return@map CompletableFuture.completedFuture<LaunchableApp?>(
                             kept.copy(title = label.takeIf { it.isNotBlank() && it != kept.packageName } ?: kept.title)
@@ -146,13 +96,6 @@ object HomeRoleProbe {
                     pool.submit<LaunchableApp?> { decode(this, info, labels[info]!!, iconPx, legacyTray) }
                 }
 
-                // One app whose icon will not load (a broken resource, an uninstall mid-decode) is
-                // skipped, the way the loop it replaced skipped it - not the whole list dropped.
-                // While the lists are still on placeholders, what has finished is handed on in
-                // order, so the first screenful of real icons does not wait for the slowest one.
-                // "Cold" is a cache with no decoded icons in it, not only an empty one: after a
-                // process start the list is restored from Room as bare rows (name and tint, no
-                // drawable), so the screen is on placeholder tiles even though `cached` is not empty.
                 val progressive = cached.none { it.drawable != null }
                 val restored = cached.associateBy { "${it.packageName}/${it.activityName}" }
                 var lastProgress = SystemClock.elapsedRealtime()
@@ -161,8 +104,7 @@ object HomeRoleProbe {
                     val now = SystemClock.elapsedRealtime()
                     if (progressive && i + 1 < decoded.size && now - lastProgress >= PROGRESS_INTERVAL_MS) {
                         lastProgress = now
-                        // The rest keep the tint the previous run stored, so a tile does not change
-                        // colour twice on its way to its icon.
+
                         val rest = ordered.drop(i + 1).map { info -> restored[keyOf(info)] ?: bare(info, labels[info]!!) }
                         onProgress(ArrayList(allApps) + rest)
                     }
@@ -173,8 +115,7 @@ object HomeRoleProbe {
 
             Timber.d("HomeRoleProbe: ${allApps.size} launchers, ${allApps.size - reusable.size} icons decoded in ${SystemClock.elapsedRealtime() - started} ms")
             launchersDB.insertAll(allApps)
-            // Last, so a throw anywhere above leaves the signature stale and the next resume
-            // retries rather than caching a half-built list.
+
             GlyphMemo.installedSignature = signature
             GlyphMemo.sourceDirs = sourceDirs
             allApps
@@ -192,8 +133,7 @@ object HomeRoleProbe {
         val selfHidden = context.launcherConfig.selfIconHidden
         return list.filter { info ->
             val packageName = info.activityInfo.applicationInfo.packageName
-            // Our own app is listed too (unless the fake uninstall hid it); tapping it goes
-            // through unfoldHostApp, not its LAUNCHER entry, which would only route back here.
+
             (packageName != own || !selfHidden) && packageName != MICRO_G &&
                 !hiddenIcons.contains("$packageName/${info.activityInfo.name}")
         }
@@ -214,8 +154,7 @@ object HomeRoleProbe {
     private fun decode(context: Context, info: ResolveInfo, label: String, iconPx: Int, tray: GlyphMasker.Tray): LaunchableApp? {
         val packageName = info.activityInfo.applicationInfo.packageName
         val activityName = info.activityInfo.name
-        // A visible tile already asked for this one (and its APK has not moved, see invalidate):
-        // no second decode.
+
         GlyphFetcher.cached(packageName, activityName)?.let { hit ->
             val bitmap = (hit as? BitmapDrawable)?.bitmap
             return LaunchableApp(
@@ -244,18 +183,6 @@ object HomeRoleProbe {
         )
     }
 
-    /**
-     * The installed set, in a form cheap enough to compare on every resume.
-     *
-     * `sourceDir` is what makes this catch app *updates* as well as installs and removals: the
-     * installer writes an updated APK to a fresh directory, so the path moves whenever the icon
-     * behind it could have. It rides along on the ResolveInfo already fetched, so this costs no
-     * extra binder call.
-     *
-     * The hidden set is folded in because it is the other input to the result - without it, hiding
-     * or unhiding an icon would leave the drawer showing the old list until something else
-     * invalidated the cache.
-     */
     private fun installedSignature(list: List<ResolveInfo>, hiddenIcons: List<String>): String {
         val apps = list
             .map { "${it.activityInfo.packageName}/${it.activityInfo.name}/${it.activityInfo.applicationInfo.sourceDir}" }
@@ -263,19 +190,6 @@ object HomeRoleProbe {
         return apps.joinToString("\n") + "\u0000" + hiddenIcons.sorted().joinToString("\n")
     }
 
-    // taken from https://gist.github.com/maxjvh/a6ab15cbba9c82a5065d
-    /**
-     * The mean colour of [bitmap], sampled on a grid rather than read whole.
-     *
-     * The result is a *placeholder* tint - LaunchablesAdapter shows it behind the icon only until the
-     * real drawable is there - so a grid sample is as good as the exact mean. Reading every pixel
-     * was not: it allocated an `IntArray(width * height)`, roughly 147 KB for a 192 px adaptive
-     * icon, once per installed app, every time the launcher set was rebuilt. On a device with a few
-     * hundred apps that is tens of MB of short-lived garbage in a tight loop, and the GC pressure it
-     * creates is paid back as longer pauses on the main thread.
-     *
-     * One reused row buffer and at most [COLOR_SAMPLE_EDGE]² samples instead.
-     */
     private fun deriveAverageColor(bitmap: Bitmap): Int {
         val width = bitmap.width
         val height = bitmap.height

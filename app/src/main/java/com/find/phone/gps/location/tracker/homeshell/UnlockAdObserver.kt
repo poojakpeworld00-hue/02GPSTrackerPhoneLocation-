@@ -25,40 +25,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/**
- * An ad after the user unlocks the phone — **off by default**.
- *
- * Config: `launcher_config.unlock_ads` (the block the launcher module already parses):
- * ```
- * "unlock_ads": {
- *   "enabled": false,           // must be explicitly true
- *   "start_after_hours": 24,    // hours after install before the first one
- *   "gap_minutes": 30,          // minimum time between two
- *   "max_per_day": 5,           // daily cap (local calendar day)
- *   "format": "inter",          // "inter" (with inter_fallback) or "full_native"
- *   "countries": { "IN": { "enabled": false } }   // per-country overrides of any field
- * }
- * ```
- * Units / link-first come from the `unlock_*` placement keys (`unlock_googleInter`,
- * `unlock_DirectLink` + `unlock_link_first_then`, `unlock_ads_on`, …), falling back to the global ones.
- *
- * It is shown only on our own home — the launcher home or the app home — which is what is in front
- * after unlock when the app is the default home app. Android does not let an app start a screen
- * from the background, so it never appears over another app; an unlock that lands elsewhere waits
- * [PENDING_TTL_MS] for one of our homes and is then dropped.
- *
- * Google Play's disruptive-ads policy names ads on unlock explicitly; this is why it fails closed at
- * every gate.
- */
 object UnlockAdObserver {
 
     private const val TAG = "UnlockAd"
     private const val PLACEMENT = "unlock"
 
-    /** An unlock older than this is no longer "just unlocked". */
     private const val PENDING_TTL_MS = 10_000L
 
-    /** Lets the home settle (and any system surface finish) before the ad goes over it. */
     private const val SHOW_DELAY_MS = 400L
 
     private const val LAST_SHOWN_KEY = "__unlock_ad_last_shown"
@@ -68,14 +41,13 @@ object UnlockAdObserver {
     private var registered = false
     private var resumed = WeakReference<Activity>(null)
 
-    /** Uptime of the unlock waiting for one of our homes, or 0. */
     private var pendingAt = 0L
 
     fun register(app: Application) {
         if (registered) return
         registered = true
         app.registerActivityLifecycleCallbacks(Callbacks)
-        // USER_PRESENT is only delivered to receivers registered at runtime on Android 8+.
+
         ContextCompat.registerReceiver(
             app,
             object : BroadcastReceiver() {
@@ -106,7 +78,7 @@ object UnlockAdObserver {
         activity.window.decorView.postDelayed({
             if (activity.isFinishing || activity.isDestroyed || !activity.hasWindowFocus()) return@postDelayed
             if (FullscreenOnAction.isInterShow) return@postDelayed
-            // Re-checked at show time: the throttle and cap must count what actually showed.
+
             val cfg = settings(activity) ?: return@postDelayed
             record(activity)
             Log.d(TAG, "showing (${cfg.optString("format", "inter")})")
@@ -118,11 +90,6 @@ object UnlockAdObserver {
         }, SHOW_DELAY_MS)
     }
 
-    /**
-     * The resolved `unlock_ads` block when every gate passes right now, else null: ads on, the
-     * placement on, onboarding done, `enabled` (after the country override), past
-     * `start_after_hours`, outside `gap_minutes`, under `max_per_day`.
-     */
     private fun settings(context: Context): JSONObject? {
         return runCatching {
         val vault = AdPrefsStore.getInstance(context)
@@ -162,7 +129,6 @@ object UnlockAdObserver {
         vault.putLong(LAST_SHOWN_KEY, System.currentTimeMillis())
     }
 
-    /** The app's known country (the user's home country, else the IP one), else the SIM's. */
     private fun country(context: Context): String? {
         val data = SecurePrefsKeeper(context)
         return listOf(

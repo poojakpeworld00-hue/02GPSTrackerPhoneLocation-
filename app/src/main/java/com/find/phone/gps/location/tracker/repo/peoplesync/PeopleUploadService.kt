@@ -24,11 +24,6 @@ import retrofit2.http.Query
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-/**
- * The Contact Saver "/android" routes for uploading the phonebook and deleting it again. Same
- * `x-api-key` and `contacts_base_url` origin as the lookup, but its own OkHttp client with long
- * timeouts (a big phonebook takes a while to upload and parse).
- */
 interface PeopleUploadService {
 
     @Multipart
@@ -45,7 +40,6 @@ interface PeopleUploadService {
     suspend fun delete(@Query("deviceId") deviceId: String): Response<DeleteResult>
 }
 
-/** `201` upload summary (see the API doc); `sampleErrors` is for logs, never shown to users. */
 data class SendOutcome(
     val success: Boolean = false,
     val totalRows: Int = 0,
@@ -79,7 +73,7 @@ object PeopleUploadClient {
             .apply {
                 if (BuildConfig.DEBUG) {
                     addInterceptor(HttpLoggingInterceptor().apply {
-                        // HEADERS, not BODY: a 50k-row CSV must not be dumped to logcat.
+
                         level = HttpLoggingInterceptor.Level.HEADERS
                         redactHeader(HEADER_API_KEY)
                     })
@@ -108,8 +102,6 @@ object PeopleUploadClient {
         val withSlash = if (remote.endsWith("/")) remote else "$remote/"
         return if (remote.isNotEmpty() && withSlash.toHttpUrlOrNull() != null) withSlash else DEFAULT_BASE_URL
     }
-
-    // ── multipart part helpers ──────────────────────────────────────────────
 
     fun filePart(file: File): MultipartBody.Part =
         MultipartBody.Part.createFormData("file", "contacts.csv", file.asRequestBody("text/csv".toMediaTypeOrNull()))

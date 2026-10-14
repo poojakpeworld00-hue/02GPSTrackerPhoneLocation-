@@ -22,7 +22,7 @@ class OwnAdsKeeper {
 
     companion object {
         private var cachedAds: List<InHouseOffer>? = null
-        
+
         fun wipeCache() {
             cachedAds = null
         }
@@ -50,7 +50,6 @@ class OwnAdsKeeper {
 
         val pref = AdPrefsStore.getInstance(context)
 
-        // Custom Ads OFF → fallback
         if (!pref.getBoolean("IsCustomADS")) {
             fallback(container, backupImage, backupLayout, onFail)
             return
@@ -98,7 +97,6 @@ class OwnAdsKeeper {
         wireData( view, ad)
         setClickListeners(view)
 
-        // Final UI setup (defer to next frame to avoid NestedScrollView layout issues)
         container.post {
             if (context.isHostActivityDead()) {
                 container.visibility = View.GONE
@@ -115,9 +113,6 @@ class OwnAdsKeeper {
         }
     }
 
-    // --------------------------------------------------------
-    // THEME APPLY
-    // --------------------------------------------------------
     private fun imprintTheme(context: Context, view: View, pref: AdPrefsStore) {
         try {
 
@@ -144,25 +139,20 @@ class OwnAdsKeeper {
             view.findViewById<TextView?>(R.id.only_banner_descVw)?.setTextColor(txtColor)
 
         } catch (_: Exception) {
-            // Silent fail → do not crash
+
         }
     }
 
-    // --------------------------------------------------------
-    // DATA BINDING
-    // --------------------------------------------------------
     private fun wireData(view: View, ad: InHouseOffer) {
-        // Big / Mid Native
+
         view.findViewById<TextView?>(R.id.titileTextVw)?.text = ad.title
         view.findViewById<TextView?>(R.id.TexttextVw)?.text = ad.description
         view.findViewById<TextView?>(R.id.btntextVw)?.text = ad.buttonText
 
-        // Banner Native
         view.findViewById<TextView?>(R.id.only_banner_titleVw)?.text = ad.title
         view.findViewById<TextView?>(R.id.only_banner_descVw)?.text = ad.description
         view.findViewById<TextView?>(R.id.only_banner_buttonVw)?.text = ad.buttonText
 
-        // Images
         view.findViewById<ImageView?>(R.id.gif_imageVw)?.let { wireGlideSafe(it, ad.icon) }
         view.findViewById<ImageView?>(R.id.only_banner_logoVw)?.let { wireGlideSafe(it, ad.icon) }
         view.findViewById<ImageView?>(R.id.custom_nativeVw)?.let { wireGlideSafe(it, ad.bannerImage) }
@@ -192,9 +182,6 @@ class OwnAdsKeeper {
         }
     }
 
-    // --------------------------------------------------------
-    // CLICK ACTIONS
-    // --------------------------------------------------------
     private fun setClickListeners(view: View) {
         val click = View.OnClickListener {
             Directlink(view.context)
@@ -205,9 +192,6 @@ class OwnAdsKeeper {
         view.findViewById<View?>(R.id.only_banner_buttonVw)?.setOnClickListener(click)
     }
 
-    // --------------------------------------------------------
-    // FALLBACK
-    // --------------------------------------------------------
     private fun fallback(
         container: FrameLayout,
         img: ImageView?,
@@ -231,7 +215,6 @@ class OwnAdsKeeper {
         }
     }
 
-    // Safe color parser
     private fun color(value: String?, default: String): Int {
         return try {
             Color.parseColor(value ?: default)

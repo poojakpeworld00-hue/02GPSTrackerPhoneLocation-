@@ -30,16 +30,6 @@ import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.helpers.OsDialogAssist
 import com.find.phone.gps.location.tracker.helpers.imprintNativeAdTheme
 
-/**
- * The charging / discharging screen (ported from QRScanner's `PowerStateActivity`).
- *
- * Launched by [PowerPlugObserver] on a power event, which has already passed every gate. It reads
- * the live battery (level, plug type, time-to-full) from `ACTION_BATTERY_CHANGED` and paints the
- * ring, the metrics and the status chip. `system_ads.<trigger>.native` fills the bottom slot
- * (`big` / `mid` / `mid2` / `native_banner`, QRScanner's `BigNative` / `MediumNative` /
- * `MediumNative2` / `NativeBanner` too, or `off`) and `close_ad` fires on the way out (`inter`,
- * `full_native`, `directlink` or `none`) — the same contract as [com.find.phone.gps.location.tracker.screens.recent.RecentAdActivity].
- */
 class PowerStateActivity : AppCompatActivity() {
 
     private val trigger: String
@@ -56,13 +46,12 @@ class PowerStateActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imprintNativeAdTheme()
-        // Recents closes it: a charge/discharge screen is not something to come back to.
+
         lifecycle.addObserver(OsDialogAssist(this) { finishAndRemoveTask() })
         presentOverLockAndWake()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.page_charging_status)
 
-        // Content under the transparent status bar; pad the functional block down past it.
         val content = findViewById<View>(R.id.chargingFunctionalContentVw)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chargingRootVw)) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -75,11 +64,10 @@ class PowerStateActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this) { close() }
         render(registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED)))
         populateAd()
-        // Loaded while the user reads the screen, so it is ready when they close it.
+
         if (closesWithFullNative) SideMenuAdDriver.preload(this, fullNativeFlow())
     }
 
-    /** QRScanner's `close_ad: full_native` — a full-screen native, from the app-wide `googleNative`. */
     private val closesWithFullNative: Boolean
         get() = settings.closeAd.trim().lowercase() in setOf("full_native", "fullnative", "full")
 
@@ -95,7 +83,6 @@ class PowerStateActivity : AppCompatActivity() {
         startFromFirst = true,
     )
 
-    /** A second power event (this screen is singleTask) — re-create for the new charge/discharge. */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
@@ -112,7 +99,6 @@ class PowerStateActivity : AppCompatActivity() {
         super.onStop()
     }
 
-    /** Reads the battery snapshot and paints both states. */
     private fun render(battery: Intent?) {
         val level = battery?.let {
             val l = it.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
@@ -150,7 +136,6 @@ class PowerStateActivity : AppCompatActivity() {
         }
     }
 
-    /** The system's charge-time estimate (API 28+), formatted; "Calculating…"/"Full" otherwise. */
     private fun timeToFull(level: Int): String {
         if (level >= 100) return getString(R.string.charging_time_full)
         val remainingMs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -189,27 +174,22 @@ class PowerStateActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Closes the screen, showing the configured close ad first. The screen closes either way — the
-     * close ad never becomes a reason the user cannot leave.
-     */
     private fun close() {
         if (closed) return
         closed = true
         findViewById<ImageButton>(R.id.padCloseCharging).isEnabled = false
-        // `charge_*` / `discharge_*` (`ad_flow` or a link chain) override `close_ad` when set.
+
         if (HomeSlotAds.hasOwnFlow(this, trigger)) {
             HomeSlotAds.showInterstitial(this, trigger) { finishSafely() }
             return
         }
         when {
             settings.closeShowsInterstitial -> {
-                // This screen has its own throttle (min_gap_sec); the app-wide InterCounter on top
-                // would skip the one ad it exists to show.
+
                 AdTallyKeeper.interCounter = AdPrefsStore.getInstance(this).getInt("InterCounter")
                 FullscreenOnAction().presentInterAds(this) { finishSafely() }
             }
-            // Shows only if it finished loading; either way the screen closes after.
+
             closesWithFullNative ->
                 SideMenuAdDriver.run(this, fullNativeFlow(), "__charging_full_native_ptr") { finishSafely() }
             settings.closeShowsLink -> {

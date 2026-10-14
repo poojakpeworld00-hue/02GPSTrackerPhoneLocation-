@@ -10,15 +10,10 @@ import  com.find.phone.gps.location.tracker.BuildConfig
 
 const val TAG_EVENT = "AdEvents"
 
-/**
- * Universal Ad Revenue Tracker
- * Works for: Interstitial, AppOpen, Banner, Native, Rewarded, Rewarded-Interstitial
- */
 object EarningsTracker {
 
     private const val TAG = "EarningsTracker"
 
-    /** Real revenue handler */
     fun trackPaidEvent(context: Context, adValue: AdValue?) {
         if (adValue == null) {
             Log.e(TAG, "🔥 REAL PAID EVENT → $adValue ")
@@ -32,9 +27,8 @@ object EarningsTracker {
         Log.e(TAG, "🔥 REAL PAID EVENT → $revenue $currency (${adValue.valueMicros})")
     }
 
-    /** Debug/Test mode revenue simulation */
     fun simulateDebugRevenue(context: Context) {
-        if (!BuildConfig.DEBUG) return   // 🚫 safety
+        if (!BuildConfig.DEBUG) return
 
         val revenue = 1.00
         val currency = "USD"
@@ -46,11 +40,6 @@ object EarningsTracker {
 
 }
 
-/* -------------------------------------------------------------
-   EXTENSION FUNCTIONS (Correct placement)
---------------------------------------------------------------*/
-
-/** Log general key events */
 fun Context.trackEvent(key: String) {
     val bundle = Bundle().apply { putString(key, key) }
 
@@ -62,7 +51,6 @@ fun Context.trackEvent(key: String) {
     }
 }
 
-/** Log an event with parameters (String / Int / Long / Double / Boolean values; nulls dropped). */
 fun Context.trackEvent(key: String, params: Map<String, Any?>) {
     val bundle = Bundle()
     params.forEach { (k, v) ->
@@ -82,25 +70,18 @@ fun Context.trackEvent(key: String, params: Map<String, Any?>) {
     }
 }
 
-/**
- * Logs a runtime-permission outcome as `Permission_<NAME>_Allow` / `_Deny`,
- * e.g. `Permission_READ_CALL_LOG_Allow`. [permission] is a full
- * `android.permission.*` string; only the short name is used in the event.
- */
 fun Context.trackPermissionResult(permission: String, granted: Boolean) {
     val shortName = permission.substringAfterLast('.')
     trackEvent("Permission_${shortName}_${if (granted) "Allow" else "Deny"}")
 }
 
-/** Check debug mode */
 fun Context.isDebuggable(): Boolean {
     return (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 }
 
-/** Main Firebase revenue logger */
 fun Context.trackAdRevenue(revenue: Double, currency: String) {
     val params = Bundle().apply {
-        putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob") // correct for AdMob
+        putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob")
         putString(FirebaseAnalytics.Param.CURRENCY, currency)
         putDouble(FirebaseAnalytics.Param.VALUE, revenue)
     }
@@ -111,6 +92,5 @@ fun Context.trackAdRevenue(revenue: Double, currency: String) {
         FirebaseAnalytics.getInstance(this)
             .logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
     }
-
 
 }

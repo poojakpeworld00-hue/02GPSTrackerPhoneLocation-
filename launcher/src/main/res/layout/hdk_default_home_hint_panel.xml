@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    The hint card that sits over a system screen this app has just opened, showing the user what they
-    came there to do. Three bodies, one shown per Kind (HomeRoleTipPane.applyKind):
 
-     - guideRowUi: words only, for the SMS chooser (which names this app and offers a button);
-     - guideHomeMockUi: a mock of the "Default home app" list with this app's row lifted out of it,
-       selected;
-     - guideOverlayMockUi: a mock of the "Display over other apps" page with this app's row lifted
-       out of it, its switch flipping on.
-
-    Each mock is what the screen behind looks like once the user has done the thing. Colours come
-    from launcher_hint_colors (light / night by system mode: the card is drawn over another app's
-    page, so the app theme does not apply). The spacer holds the card at the foot of the window;
-    the TOP position hides it. Tapping anywhere closes the card, which also takes itself down.
--->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rowMainUi"
     android:layout_width="match_parent"
@@ -38,7 +24,6 @@
         android:elevation="8dp"
         android:orientation="vertical">
 
-        <!-- ===== simple row: SMS chooser (words only) ===== -->
         <LinearLayout
             android:id="@+id/guideRowView"
             android:layout_width="match_parent"
@@ -87,7 +72,6 @@
 
         </LinearLayout>
 
-        <!-- ===== default-home mock: the list behind, this app's row lifted out of it ===== -->
         <FrameLayout
             android:id="@+id/guideHomeMockView"
             android:layout_width="match_parent"
@@ -113,7 +97,6 @@
 
                 <include layout="@layout/hdk_hint_mock_row" />
 
-                <!-- the slot the highlighted row sits over -->
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="74dp" />
@@ -136,7 +119,6 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
-                <!-- the mimic radio: ring tints and the dot grows on loop, never a real RadioButton -->
                 <FrameLayout
                     android:id="@+id/guideRadioRingView"
                     android:layout_width="24dp"
@@ -187,7 +169,6 @@
 
         </FrameLayout>
 
-        <!-- ===== overlay mock: the permission page behind, this app's switch row lifted out ===== -->
         <FrameLayout
             android:id="@+id/guideOverlayMockView"
             android:layout_width="match_parent"
@@ -281,10 +262,6 @@
 
                 </LinearLayout>
 
-                <!--
-                    A mimic of the switch on the screen behind, animated on loop. Never a real Switch:
-                    it must not look tappable, because the control that counts is the system's own.
-                -->
                 <FrameLayout
                     android:id="@+id/guideSwitchTrackView"
                     android:layout_width="52dp"

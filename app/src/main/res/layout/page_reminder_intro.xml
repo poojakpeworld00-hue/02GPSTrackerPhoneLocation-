@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-    Reminders onboarding step (reminders design 5), after Welcome: step header + Skip, a hero with
-    a sleeping-phone mock showing a due reminder and two floating chips, title + lead, the
-    "Turn on reminders" CTA, and the bottom mid native ad (launcher_ads.onboarding.reminders.slot).
--->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -48,7 +44,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Hero -->
             <FrameLayout
                 android:id="@+id/introHeroVw"
                 android:layout_width="match_parent"
@@ -58,7 +53,6 @@
                 android:background="@drawable/vs_hero_card_r32"
                 android:clipChildren="true">
 
-                <!-- The sleeping phone with a due reminder -->
                 <LinearLayout
                     android:id="@+id/introPhoneVw"
                     android:layout_width="200dp"
@@ -213,7 +207,6 @@
         app:backgroundTint="@color/ds_primary"
         app:cornerRadius="23dp" />
 
-    <!-- Bottom mid native ad (shimmer placeholder until it loads). -->
     <View
         android:id="@+id/ad_native_dividerVw"
         android:layout_width="match_parent"

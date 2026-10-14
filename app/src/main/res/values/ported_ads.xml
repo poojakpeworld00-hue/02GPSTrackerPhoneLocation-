@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Resources ported with the reference app's ad flow screens. -->
+
 <resources>
     <string name="pkgres_privacy_status">Privacy scan</string>
     <string name="pkgres_optimize_status">Optimizing system</string>

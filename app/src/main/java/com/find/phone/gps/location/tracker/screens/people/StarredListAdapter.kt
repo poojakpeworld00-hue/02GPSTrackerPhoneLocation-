@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.find.phone.gps.location.tracker.databinding.CardContactFavBinding
 
-/** The Favorites row (design 8a): 56dp gradient avatars with a locate badge and the first name. */
 class StarredListAdapter(
     private val onLocate: (PersonPhone) -> Unit,
 ) : ListAdapter<PersonPhone, StarredListAdapter.VH>(Diff) {

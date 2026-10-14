@@ -19,34 +19,20 @@ object BlockingLoaderDialog {
 
     private var dialog: Dialog? = null
 
-    /** Remote Config: the interstitial loader on/off. Absent → the older `isLoaderForFB`. */
     private const val LOADER_SHOW_KEY = "Inter_Loader_Show"
     private const val LEGACY_LOADER_KEY = "isLoaderForFB"
 
-    /**
-     * Remote Config: how long (ms) the loader shows before a *preloaded* interstitial opens.
-     * `0` / absent = open it straight away. Clamped to 3 s so a typo cannot park the user.
-     */
     private const val LOADER_MS_KEY = "Inter_Loader_Ms"
     private const val MAX_LOADER_MS = 3_000
 
-    /**
-     * Whether the full-screen loader may show while an interstitial loads — `Inter_Loader_Show`,
-     * falling back to `isLoaderForFB` for a config that does not carry the new key yet.
-     */
     fun isEnabled(context: Context): Boolean {
         val vault = AdPrefsStore.getInstance(context)
         val set = vault.getBoolean(LOADER_SHOW_KEY, true)
-        // getBoolean has no "absent" answer, so ask with both defaults: they differ only when absent.
+
         val present = set == vault.getBoolean(LOADER_SHOW_KEY, false)
         return if (present) set else vault.getBoolean(LEGACY_LOADER_KEY)
     }
 
-    /**
-     * Runs [show] behind the loader for `Inter_Loader_Ms` — the "Loading ad…" beat before an
-     * interstitial that is already loaded. Runs [show] immediately when the loader is off, the
-     * delay is 0, or the activity is going away. [show] runs exactly once.
-     */
     fun beforeShow(activity: Activity, show: () -> Unit) {
         val ms = AdPrefsStore.getInstance(activity).getInt(LOADER_MS_KEY).coerceIn(0, MAX_LOADER_MS)
         if (ms == 0 || !isEnabled(activity) || activity.isFinishing || activity.isDestroyed) return show()
@@ -57,10 +43,6 @@ object BlockingLoaderDialog {
         }, ms.toLong())
     }
 
-    /**
-     * Shows a full-screen transparent loader.
-     * Checks if activity is alive before showing.
-     */
     @Suppress("DEPRECATION")
     fun show(activity: Activity, isLoader: Boolean) {
         if (!isLoader) return
@@ -68,7 +50,6 @@ object BlockingLoaderDialog {
         try {
             if (activity.isFinishing || activity.isDestroyed) return
 
-            // Dismiss existing one if still active
             retireSafely()
 
             dialog = Dialog(activity).apply {
@@ -84,13 +65,11 @@ object BlockingLoaderDialog {
 
                 window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
-                // FLAG_NOT_FOCUSABLE before show() prevents status-bar flicker
                 window?.setFlags(
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 )
 
-                // Immersive sticky — hide status bar + nav bar
                 window?.decorView?.systemUiVisibility =
                     (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -101,7 +80,6 @@ object BlockingLoaderDialog {
 
                 show()
 
-                // Restore focusability after show so touches register
                 window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
             }
 
@@ -129,11 +107,10 @@ object BlockingLoaderDialog {
                 }
             }
         } catch (e: Exception) {
-            // Log.e("BlockingLoaderDialog", "Error dismissing loader", e)
+
         } finally {
             dialog = null
         }
     }
 }
-
 

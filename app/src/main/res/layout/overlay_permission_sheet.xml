@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Permission sheet (design "Permission Sheet" 1b): grabber · counter pill + Skip · a pager with one
-     illustrated page per permission · status chip · page dots · one Allow button that asks every page in turn.
-     The pager's height is set in code to its tallest page. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

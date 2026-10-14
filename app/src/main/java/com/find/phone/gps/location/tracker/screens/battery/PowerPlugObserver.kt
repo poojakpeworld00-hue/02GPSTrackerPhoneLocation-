@@ -14,19 +14,6 @@ import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import java.lang.ref.WeakReference
 
-/**
- * Shows [PowerStateActivity] when the charger is plugged in or pulled out (QRScanner's
- * `system_ads.charge` / `discharge`), the way the reference app does it: from one of this app's own
- * screens with a plain `startActivity` — no foreground service, no notification. An event that
- * arrives with none of our screens in front is queued and shown on the next resume, the same as
- * [com.find.phone.gps.location.tracker.screens.appevent.InstallEventObserver] does for installs.
- *
- * Since the launcher home is one of our screens, a user who has made the app their home screen
- * sees it whenever they are on the home screen or come back to it.
- *
- * Every gate is here — `IsAdsON`, the trigger's `enabled`, and its `min_gap_sec` throttle — and all
- * of them fail closed: an absent `system_ads` block shows nothing.
- */
 object PowerPlugObserver {
 
     private const val TAG = "ChargeEvent"
@@ -35,20 +22,17 @@ object PowerPlugObserver {
     private const val KEY_PENDING = "pending_trigger"
     private const val KEY_PENDING_AT = "pending_at"
 
-    /** A queued event older than this is stale and dropped — a "charging" screen an hour later is noise. */
     private const val PENDING_TTL_MS = 10 * 60 * 1000L
 
     private var registered = false
 
     private var resumed = WeakReference<Activity>(null)
 
-    /** Registers the lifecycle callbacks and the power receiver. Idempotent. */
     fun register(app: Application) {
         if (registered) return
         registered = true
         app.registerActivityLifecycleCallbacks(Callbacks)
-        // NOT_EXPORTED: protected system broadcasts, only the system delivers them. The only way to
-        // hear ACTION_POWER_* on Android 8+ is a context-registered receiver in a living process.
+
         ContextCompat.registerReceiver(
             app,
             Receiver,
@@ -110,7 +94,6 @@ object PowerPlugObserver {
         return true
     }
 
-    /** The queued trigger if one is set and still fresh, clearing the slot either way. */
     private fun takePending(context: Context): String? {
         val data = settings(context)
         val trigger = data.getString(KEY_PENDING, null) ?: return null
@@ -126,7 +109,7 @@ object PowerPlugObserver {
 
     private object Callbacks : Application.ActivityLifecycleCallbacks {
         override fun onActivityResumed(activity: Activity) {
-            // Never arm off, or drain onto, the charging screen itself.
+
             if (activity is PowerStateActivity) return
             resumed = WeakReference(activity)
             val trigger = takePending(activity.applicationContext) ?: return

@@ -1,11 +1,9 @@
 <resources>
-    <!-- App -->
+    
     <string name="dash">&#8211;</string>
 
-    <!-- Splash -->
     <string name="splash_footer">本应用内含广告内容</string>
 
-    <!-- Language -->
     <string name="language_title">请选择语言</string>
     <string name="language_continue">继续</string>
     <string name="language_search_hint">查找语言</string>
@@ -15,7 +13,6 @@
     <string name="language_info_msg">切换语言后，应用界面文字将随之改变。根据所选语言，某些地区性功能可能略有不同。</string>
     <string name="language_info_got_it">明白了</string>
 
-    <!-- Terms &amp; Conditions -->
     <string name="terms_title">使用条款</string>
     <string name="terms_agree">我已阅读并认可条款、条件以及隐私政策。</string>
     <string name="terms_accept">同意并继续</string>
@@ -24,12 +21,10 @@
     <string name="overlay_system_permission">系统级权限</string>
     <string name="overlay_permission_desc">开启“显示在其他应用上层”后，您在使用别的应用时，本应用也能弹出来电者信息。</string>
 
-    <!-- Onboarding -->
     <string name="onboarding_skip">略过</string>
     <string name="onboarding_next">继续</string>
     <string name="onboarding_get_started">马上开始</string>
 
-    <!-- Home -->
     <string name="home_title">安全防护已就绪</string>
     <string name="home_subtitle">来电识别与骚扰拦截正在运行</string>
     <string name="home_greeting">早安</string>
@@ -40,44 +35,37 @@
     <string name="home_recent_activity">近期动态</string>
     <string name="see_all">全部查看</string>
 
-    <!-- Quick actions -->
     <string name="quick_dialer">拨号盘</string>
     <string name="quick_lookup">号码查询</string>
     <string name="quick_blocklist">拦截名单</string>
     <string name="quick_tools">实用工具</string>
 
-    <!-- Bottom navigation -->
     <string name="nav_home">首页</string>
     <string name="nav_recents">通话记录</string>
     <string name="nav_contacts">联系人</string>
     <string name="nav_lookup">号码查询</string>
     <string name="nav_settings">设置</string>
 
-    <!-- Recents -->
     <string name="recents_today">今天</string>
     <string name="recents_yesterday">昨天</string>
     <string name="recents_this_week">本周</string>
     <string name="recents_earlier">更早</string>
     <string name="recents_empty">暂无通话记录</string>
 
-    <!-- Call filters -->
     <string name="filter_all">全部</string>
     <string name="filter_incoming">呼入</string>
     <string name="filter_outgoing">呼出</string>
     <string name="filter_missed">未接听</string>
 
-    <!-- Call type labels -->
     <string name="type_incoming">呼入</string>
     <string name="type_outgoing">呼出</string>
     <string name="type_missed">未接听</string>
     <string name="type_blocked">被拦截</string>
 
-    <!-- Call log permission -->
     <string name="perm_calllog_title">显示您的通话记录</string>
     <string name="perm_calllog_message">请允许读取通话记录，这样最近的通话就能显示在此处。</string>
     <string name="action_grant">授权访问</string>
 
-    <!-- Lookup -->
     <string name="lookup_hint">请输入手机号码</string>
     <string name="lookup_verified_business">认证企业</string>
     <string name="lookup_organization">所属机构</string>
@@ -95,13 +83,11 @@
     <string name="lookup_international">国际号码</string>
     <string name="lookup_carrier">所属运营商</string>
 
-    <!-- Contacts -->
     <string name="contacts_search_hint">查找联系人</string>
     <string name="contacts_empty">没有找到联系人</string>
     <string name="perm_contacts_title">显示您的联系人</string>
     <string name="perm_contacts_message">请允许读取联系人，这样它们就能显示在此处。</string>
 
-    <!-- Settings actions -->
     <string name="language_dialog_title">请选择语言</string>
     <string name="blocklist_add">新增号码</string>
     <string name="blocklist_empty">尚未拦截任何号码</string>
@@ -114,7 +100,6 @@
     <string name="action_cancel">取消</string>
     <string name="action_remove">删除</string>
 
-    <!-- Settings -->
     <string name="settings_language">语言</string>
     <string name="settings_language_sub">设置应用显示语言</string>
     <string name="settings_blocklist">拦截名单</string>
@@ -128,7 +113,6 @@
     <string name="theme_dark">暗色</string>
     <string name="theme_system">与系统一致</string>
 
-    <!-- Call states -->
     <string name="call_incoming">正在来电…</string>
     <string name="call_decline">挂断</string>
     <string name="call_accept">接通</string>
@@ -137,7 +121,6 @@
     <string name="label_spam">骚扰</string>
     <string name="label_verified">已验证</string>
 
-    <!-- Added translations -->
     <string name="app_name_overlay">Caller ID</string>
     <string name="number_lookup">查询号码</string>
     <string name="enter_a_number">请输入手机号码</string>
@@ -255,7 +238,6 @@
     </plurals>
     <string name="battery_activity_title">电池详情</string>
 
-    <!-- Localized (zh) - batch added -->
     <string name="overlay_banner_desc">通话时在其他应用之上展示来电者信息</string>
     <string name="home_brand">CallerID</string>
     <string name="home_brand_sub">号码查询</string>
@@ -435,7 +417,7 @@
     <string name="app_redirect_desc">您的设备上没有安装此应用。要前往 Play 商店查看吗？</string>
     <string name="settings_section_call">通话防护</string>
     <string name="call_screening_hint_tip">开启后可查看来电者身份，并拦截骚扰电话</string>
-    <!-- FSI intro Activity/Dialog + Home permission hint -->
+    
     <string name="home_perm_hint">有些权限处于关闭状态。开启后才能完整显示来电信息。</string>
     <string name="home_perm_manage">去设置</string>
     <string name="fsi_incoming_call">呼入电话</string>

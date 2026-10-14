@@ -4,22 +4,6 @@ import android.content.Context
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
-/**
- * How often the "Turn on reminders" prompt may appear, from `feature_config`'s
- * `prompt_frequency` + `prompt_interval`:
- *
- * | prompt_frequency     | Behaviour                                         | prompt_interval |
- * |----------------------|---------------------------------------------------|-----------------|
- * | `always`             | every time it is reachable                        | ignored         |
- * | `once`               | once, ever                                        | ignored         |
- * | `every_days`         | then rest X days                                  | days            |
- * | `app_launches`       | once every X app opens                            | launches        |
- * | `reminder_creations` | once X more reminders have been saved             | count           |
- * | `never`              | never                                             | ignored         |
- *
- * Unknown / blank → `always`, so a typo never hides the prompt for good. The host feeds two
- * counters: [onAppLaunch] (splash) and [onReminderCreated] (after a new reminder is saved).
- */
 object AskGatekeeper {
 
     private const val PREFS = "reminder_prompt_gate"
@@ -59,7 +43,6 @@ object AskGatekeeper {
         }
     }
 
-    /** Stamps every counter the moment the prompt is actually on screen. */
     fun markShown(c: Context) {
         val p = prefs(c)
         p.edit()

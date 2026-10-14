@@ -9,7 +9,7 @@ data class CallTileData(
     val initials: String,
     val type: CallKind,
     val number: String = "",
-    /** True when a contact name resolved; false for unknown/unsaved numbers (→ "Identify"). */
+
     val identified: Boolean = true
 )
 
@@ -23,7 +23,6 @@ data class PersonRow(
     val inGroup: Boolean = false
 )
 
-/** Demo data used until real CallLog / Contacts providers are wired in. */
 object SampleFixtures {
 
     val recents: List<CallTileData> = listOf(

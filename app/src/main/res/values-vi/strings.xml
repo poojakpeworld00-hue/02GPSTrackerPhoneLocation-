@@ -1,11 +1,9 @@
 <resources>
-    <!-- App -->
+    
     <string name="dash">&#8211;</string>
 
-    <!-- Splash -->
     <string name="splash_footer">Ứng dụng có thể hiển thị quảng cáo</string>
 
-    <!-- Language -->
     <string name="language_title">Lựa chọn ngôn ngữ</string>
     <string name="language_continue">Đi tiếp</string>
     <string name="language_search_hint">Tìm kiếm ngôn ngữ</string>
@@ -15,7 +13,6 @@
     <string name="language_info_msg">Khi bạn đổi ngôn ngữ, giao diện ứng dụng sẽ được làm mới. Một vài tính năng theo vùng có thể thay đổi tùy theo lựa chọn này.</string>
     <string name="language_info_got_it">Tôi đã rõ</string>
 
-    <!-- Terms &amp; Conditions -->
     <string name="terms_title">Điều khoản sử dụng</string>
     <string name="terms_agree">Tôi đã đọc và đồng ý với Điều khoản sử dụng cũng như Chính sách bảo mật.</string>
     <string name="terms_accept">Đồng ý và đi tiếp</string>
@@ -24,12 +21,10 @@
     <string name="overlay_system_permission">Quyền của hệ thống</string>
     <string name="overlay_permission_desc">Quyền hiển thị đè lên ứng dụng khác giúp ứng dụng này cho thấy thông tin người gọi trong lúc bạn đang dùng ứng dụng khác.</string>
 
-    <!-- Onboarding -->
     <string name="onboarding_skip">Lướt qua</string>
     <string name="onboarding_next">Kế tiếp</string>
     <string name="onboarding_get_started">Bắt đầu thôi</string>
 
-    <!-- Home -->
     <string name="home_title">Bạn đã được bảo vệ</string>
     <string name="home_subtitle">Chức năng nhận diện người gọi và chặn rác đang chạy</string>
     <string name="home_greeting">Xin chào</string>
@@ -40,44 +35,37 @@
     <string name="home_recent_activity">Diễn biến mới đây</string>
     <string name="see_all">Hiện toàn bộ</string>
 
-    <!-- Quick actions -->
     <string name="quick_dialer">Bàn phím số</string>
     <string name="quick_lookup">Tìm số</string>
     <string name="quick_blocklist">Sổ đen</string>
     <string name="quick_tools">Tiện ích</string>
 
-    <!-- Bottom navigation -->
     <string name="nav_home">Trang đầu</string>
     <string name="nav_recents">Mới đây</string>
     <string name="nav_contacts">Danh bạ</string>
     <string name="nav_lookup">Tìm số</string>
     <string name="nav_settings">Cài đặt</string>
 
-    <!-- Recents -->
     <string name="recents_today">Hôm nay</string>
     <string name="recents_yesterday">Hôm qua</string>
     <string name="recents_this_week">Trong tuần</string>
     <string name="recents_earlier">Cũ hơn</string>
     <string name="recents_empty">Chưa có cuộc gọi nào gần đây</string>
 
-    <!-- Call filters -->
     <string name="filter_all">Tất cả</string>
     <string name="filter_incoming">Đến</string>
     <string name="filter_outgoing">Đi</string>
     <string name="filter_missed">Nhỡ</string>
 
-    <!-- Call type labels -->
     <string name="type_incoming">Đến</string>
     <string name="type_outgoing">Đi</string>
     <string name="type_missed">Nhỡ</string>
     <string name="type_blocked">Đã chặn</string>
 
-    <!-- Call log permission -->
     <string name="perm_calllog_title">Xem lại các cuộc gọi gần đây</string>
     <string name="perm_calllog_message">Hãy cấp quyền đọc nhật ký cuộc gọi để ứng dụng liệt kê các cuộc gọi gần đây ở đây.</string>
     <string name="action_grant">Cấp quyền</string>
 
-    <!-- Lookup -->
     <string name="lookup_hint">Gõ số điện thoại</string>
     <string name="lookup_verified_business">Doanh nghiệp được xác thực</string>
     <string name="lookup_organization">Đơn vị</string>
@@ -95,13 +83,11 @@
     <string name="lookup_international">Số quốc tế</string>
     <string name="lookup_carrier">Hãng mạng</string>
 
-    <!-- Contacts -->
     <string name="contacts_search_hint">Tìm trong danh bạ</string>
     <string name="contacts_empty">Danh bạ trống</string>
     <string name="perm_contacts_title">Xem danh bạ của bạn</string>
     <string name="perm_contacts_message">Hãy cấp quyền truy cập danh bạ để ứng dụng liệt kê ở đây.</string>
 
-    <!-- Settings actions -->
     <string name="language_dialog_title">Lựa chọn ngôn ngữ</string>
     <string name="blocklist_add">Thêm số mới</string>
     <string name="blocklist_empty">Chưa chặn số nào</string>
@@ -114,7 +100,6 @@
     <string name="action_cancel">Thôi</string>
     <string name="action_remove">Gỡ bỏ</string>
 
-    <!-- Settings -->
     <string name="settings_language">Ngôn ngữ</string>
     <string name="settings_language_sub">Chọn ngôn ngữ cho ứng dụng</string>
     <string name="settings_blocklist">Sổ đen</string>
@@ -128,7 +113,6 @@
     <string name="theme_dark">Nền tối</string>
     <string name="theme_system">Theo hệ thống</string>
 
-    <!-- Call states -->
     <string name="call_incoming">Có cuộc gọi tới…</string>
     <string name="call_decline">Cúp máy</string>
     <string name="call_accept">Nghe máy</string>
@@ -137,7 +121,6 @@
     <string name="label_spam">Spam</string>
     <string name="label_verified">Xác thực</string>
 
-    <!-- Added translations -->
     <string name="app_name_overlay">Caller ID</string>
     <string name="number_lookup">Tìm kiếm số</string>
     <string name="enter_a_number">Gõ số điện thoại</string>
@@ -255,7 +238,6 @@
     </plurals>
     <string name="battery_activity_title">Chi tiết pin</string>
 
-    <!-- Localized: remaining keys -->
     <string name="overlay_banner_desc">Cho thấy thông tin người gọi đè lên các ứng dụng khác</string>
     <string name="home_brand">CallerID</string>
     <string name="home_brand_sub">Tìm kiếm số</string>
@@ -435,7 +417,7 @@
     <string name="contacts_tab_recents">Mới đây</string>
     <string name="contacts_tab_groups">Nhóm</string>
     <string name="call_screening_hint_tip">Hãy bật mục này để thấy người gọi và ngăn các cuộc gọi spam</string>
-    <!-- FSI intro Activity/Dialog + Home permission hint -->
+    
     <string name="home_perm_hint">Một số quyền đang bị tắt. Hãy bật để dùng đủ tính năng nhận diện người gọi.</string>
     <string name="home_perm_manage">Thiết lập</string>
     <string name="fsi_incoming_call">Có cuộc gọi tới</string>

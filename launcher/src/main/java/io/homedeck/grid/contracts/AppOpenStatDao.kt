@@ -21,7 +21,6 @@ interface AppOpenStatDao {
     @Query("DELETE FROM app_usage WHERE package_name = :packageName")
     fun remove(packageName: String)
 
-    /** Counts one more launch of the app, now. */
     @Transaction
     fun recordLaunch(packageName: String, activityName: String, now: Long = System.currentTimeMillis()) {
         val previous = get(packageName)

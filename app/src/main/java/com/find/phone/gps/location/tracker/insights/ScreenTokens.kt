@@ -35,12 +35,6 @@ import io.homedeck.grid.screens.HomeRoleTipPane
 import io.homedeck.grid.screens.HomeSettingsPane
 import java.util.Locale
 
-/**
- * Stable analytics token per screen. Event names are built from these tokens
- * (`{token}_open`, `{token}_back_press`, `{token}_home_press`), never from class
- * names, so renames and R8 obfuscation never change what reaches Firebase.
- * Keyed by class reference for the same reason.
- */
 object ScreenTokens {
 
     private val TOKENS: Map<Class<*>, String> = mapOf(
@@ -79,7 +73,6 @@ object ScreenTokens {
         HomeRoleTipPane::class.java to "default_home_hint",
     )
 
-    /** Screens whose `_open` is tracked when they are Fragments (others are Activities). */
     val FRAGMENTS: Set<Class<*>> = setOf(DashboardMainFragment::class.java, HomeShellPane::class.java)
 
     fun of(screen: Any): String = tokenFor(screen.javaClass)

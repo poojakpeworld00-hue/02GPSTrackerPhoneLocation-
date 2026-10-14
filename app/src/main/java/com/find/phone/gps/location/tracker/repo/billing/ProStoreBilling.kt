@@ -18,21 +18,12 @@ import java.util.Currency
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
-/**
- * Premium through Google Play Billing: the entitlement (cached in prefs so it is known offline
- * and on cold start), product details for the paywall, the purchase flow and Restore.
- *
- * Premium is active while any configured product is PURCHASED: a live weekly/monthly
- * subscription or the lifetime purchase. [sync] re-checks with Play at app start, so an
- * expired or refunded subscription drops premium on the next launch.
- */
 object ProStoreBilling {
 
     private const val TAG = "ProStoreBilling"
     private const val PREFS = "premium"
     private const val KEY_ACTIVE = "active"
 
-    /** Listeners for purchase results on the paywall; cleared when it goes away. */
     var onPurchaseResult: ((PurchaseOutcome) -> Unit)? = null
 
     enum class PurchaseOutcome { PURCHASED, PENDING, CANCELED, FAILED }
@@ -59,18 +50,9 @@ object ProStoreBilling {
             .also { client = it }
     }
 
-    /** Callers waiting for the one connection attempt in flight; guarded by `this`. */
     private val waiting = ArrayList<(BillingClient?) -> Unit>()
     private var connecting = false
 
-    /**
-     * Runs [block] with the client once connected, or with null when Play Billing can't be reached.
-     *
-     * Only one connection attempt runs at a time: the app-start [sync] and the paywall opening
-     * right after the intro used to call startConnection over each other, Play rejected the second
-     * ("already in the process of connecting") and every query that followed failed. Callers that
-     * arrive while an attempt is in flight now wait for that attempt instead.
-     */
     private fun connected(context: Context, block: (BillingClient?) -> Unit) {
         val c = client(context)
         if (c.isReady) return block(c)
@@ -91,18 +73,12 @@ object ProStoreBilling {
             }
 
             override fun onBillingServiceDisconnected() {
-                // enableAutoServiceReconnection() reconnects on the next call; nothing to do here.
+
                 Log.w(TAG, "service disconnected")
             }
         })
     }
 
-    /**
-     * Re-reads what the user owns from Play and updates the cached entitlement. [onDone] gets
-     * whether Premium is active, or null when Play couldn't be asked — in which case the cached
-     * entitlement is left as it was: a paying user who is offline, or whose query failed, keeps
-     * Premium until Play can actually say otherwise.
-     */
     fun sync(context: Context, onDone: (Boolean?) -> Unit = {}) {
         val app = context.applicationContext
         val ids = ProSettings.read(app).plans.map { it.productId }.toSet()
@@ -139,11 +115,6 @@ object ProStoreBilling {
         }
     }
 
-    /**
-     * Product details for [plans], keyed by product id; missing ones are simply absent (and
-     * logged, so an id that doesn't match Play Console shows up in logcat). [onLoaded] runs
-     * either way, with whatever is known.
-     */
     fun fetchDetails(context: Context, plans: List<ProTier>, onLoaded: (Map<String, ProductDetails>) -> Unit) {
         connected(context) { c ->
             if (c == null) return@connected onLoaded(HashMap(details))
@@ -169,10 +140,6 @@ object ProStoreBilling {
         }
     }
 
-    /**
-     * Loads Play's prices for the configured plans ahead of time (app start), so the paywall —
-     * which shows no price until Play has one — usually opens with them already in memory.
-     */
     fun prefetchDetails(context: Context) {
         val app = context.applicationContext
         fetchDetails(app, ProSettings.read(app).plans) {}
@@ -180,7 +147,6 @@ object ProStoreBilling {
 
     private fun detailsOf(plan: ProTier): ProductDetails? = synchronized(details) { details[plan.productId] }
 
-    /** Localized price of [plan] ("₹799.00"), or null until Play has answered. */
     fun price(plan: ProTier): String? {
         val d = detailsOf(plan) ?: return null
         return if (plan.isSubscription) {
@@ -190,10 +156,6 @@ object ProStoreBilling {
         }
     }
 
-    /**
-     * A monthly [plan]'s Play price shown per week — the monthly amount / 4, in Play's currency
-     * ("₹399.00" → "₹99.75"). Null until Play has answered, or for a plan that is not monthly.
-     */
     fun weeklyPrice(plan: ProTier): String? {
         if (plan.kind != ProTier.Kind.MONTHLY) return null
         val phase = detailsOf(plan)?.let { basePlan(it) }?.pricingPhases?.pricingPhaseList?.lastOrNull() ?: return null
@@ -203,10 +165,6 @@ object ProStoreBilling {
         }.getOrNull()
     }
 
-    /**
-     * Free-trial length of [plan] in days as Play offers it to this user: null until Play has
-     * answered, 0 when there is no trial (not set up, or the user already used it).
-     */
     fun trialDays(plan: ProTier): Int? {
         if (!plan.isSubscription) return 0
         val d = detailsOf(plan) ?: return null
@@ -214,23 +172,20 @@ object ProStoreBilling {
         return days(phase.billingPeriod) * phase.billingCycleCount.coerceAtLeast(1)
     }
 
-    /** The offer that starts with a free phase — Play only lists offers this user can take. */
     private fun trialOffer(d: ProductDetails): ProductDetails.SubscriptionOfferDetails? =
         d.subscriptionOfferDetails?.firstOrNull { o -> o.pricingPhases.pricingPhaseList.any { it.priceAmountMicros == 0L } }
 
-    /** ISO-8601 period ("P3D", "P1W", "P1M") → days. */
     private fun days(period: String): Int {
         val m = Regex("""P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?""").matchEntire(period) ?: return 0
         val (y, mo, w, d) = m.destructured
         return (y.toIntOrNull() ?: 0) * 365 + (mo.toIntOrNull() ?: 0) * 30 + (w.toIntOrNull() ?: 0) * 7 + (d.toIntOrNull() ?: 0)
     }
 
-    /** Opens Play's purchase sheet; false when the product isn't available (not loaded / not in Play). */
     fun purchase(activity: Activity, plan: ProTier): Boolean {
         val d = detailsOf(plan) ?: return false
         val params = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(d)
         if (plan.isSubscription) {
-            // The free-trial offer when this user can have one, else the plain base plan.
+
             val token = (trialOffer(d) ?: basePlan(d))?.offerToken ?: return false
             params.setOfferToken(token)
         }
@@ -240,7 +195,6 @@ object ProStoreBilling {
         return result.responseCode == BillingClient.BillingResponseCode.OK
     }
 
-    /** The plain base plan (no offer id, so no intro pricing), else whatever Play lists first. */
     private fun basePlan(d: ProductDetails): ProductDetails.SubscriptionOfferDetails? =
         d.subscriptionOfferDetails?.let { offers -> offers.firstOrNull { it.offerId == null } ?: offers.firstOrNull() }
 

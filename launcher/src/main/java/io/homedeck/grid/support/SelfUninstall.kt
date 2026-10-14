@@ -10,22 +10,8 @@ import io.homedeck.grid.ext.launcherConfig
 import io.homedeck.grid.entities.DeskGridEntry
 import timber.log.Timber
 
-/**
- * The fake uninstall seen from our own launcher: our app leaves the dock, the home pages and the
- * drawer, and the dock slot it held gets the phone's own messaging app instead - so the home
- * screen looks exactly like the app was removed.
- *
- * `launcherConfig.selfIconHidden` is one-way: once set, [isOurRow] rows are dropped wherever the
- * grid is loaded (DeskGrid.grabGridItems) and HomeDeskPane's messaging slot resolves to
- * [systemMessagingPackage] rather than to us, so no seed, profile copy or SMS-role sync can put the
- * icon back. The drawer stops listing our package too (HomeRoleProbe filters it once hidden).
- *
- * The launcher's own built-in widgets (clock, search bar) are stored under our package name too;
- * they are the launcher, not "the app", and always stay.
- */
 object SelfUninstall {
 
-    /** The phone maker's own messaging app, preferred over Google Messages when both ship. */
     private val MAKER_MESSAGING = mapOf(
         "samsung" to "com.samsung.android.messaging",
         "xiaomi" to "com.miui.mms",
@@ -41,7 +27,6 @@ object SelfUninstall {
         "asus" to "com.asus.message",
     )
 
-    /** Known stock messaging apps, most likely first; any other system SMS app comes after these. */
     private val STOCK_MESSAGING = listOf(
         "com.google.android.apps.messaging",
         "com.samsung.android.messaging",
@@ -58,14 +43,9 @@ object SelfUninstall {
         "com.asus.message",
     )
 
-    /** A home-grid row that belongs to the app (icon, pinned shortcut, real widget), not to the launcher. */
     fun isOurRow(item: DeskGridEntry, ownPackage: String): Boolean =
         item.packageName == ownPackage && !item.className.startsWith(PSEUDO_WIDGET_PREFIX)
 
-    /**
-     * Hides the app from our launcher for good. Blocking (Room) - call off the main thread.
-     * Never throws: a failure here must not stop the caller from closing the app.
-     */
     fun hide(context: Context) {
         val app = context.applicationContext
         val own = app.packageName
@@ -84,17 +64,13 @@ object SelfUninstall {
                 if (dockSpot != null && !alreadyDocked) {
                     db.insert(dockRow(app, messaging, dockSpot))
                 }
-                // The slot is now the stock app's; HomeDeskPane's SMS-role sync must not fight it.
+
                 app.launcherConfig.dockHostPackage = messaging
             }
             Timber.d("SelfUninstall: hid %d rows, dock spot=%s -> %s", ours.size, dockSpot?.left, messaging)
         }.onFailure { Timber.e(it, "SelfUninstall: could not clear our rows") }
     }
 
-    /**
-     * The phone's own messaging app, for the dock slot we leave: a system app that handles
-     * `smsto:` and has a launcher entry, the well-known stock ones first. Null when there is none.
-     */
     fun systemMessagingPackage(context: Context): String? = runCatching {
         val pm = context.packageManager
         val own = context.packageName

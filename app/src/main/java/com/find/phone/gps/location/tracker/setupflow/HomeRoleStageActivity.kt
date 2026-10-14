@@ -23,19 +23,6 @@ import io.homedeck.grid.ext.roleManager
 import org.fossify.commons.extensions.viewBinding
 import org.fossify.commons.helpers.isQPlus
 
-/**
- * The "Set as default launcher?" decision point (design 4b).
- *
- * A fresh arrival opens the first stage by itself; the CTA re-runs it. Two chances, in order:
- * the system home-app settings page, then the Q+ role dialog. Grant → home (with
- * `skip_rest_on_grant`), cancel → stay, Skip → whatever `onboarding.order` has next.
- * The two stages are driven separately because the launcher module's helper fires whichever
- * intent resolves first and never reaches the role dialog on a device with a settings page.
- *
- * Opened with [EXTRA_ROLE_GRANTED] (the role was just granted and the OS started the launcher
- * instead of returning here, see [HomeRoleJourney.resumeIfUnfinished]) it never shows itself: the
- * screen stays blank and the grant path runs at once — interstitial, then the next step.
- */
 class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
 
     companion object {
@@ -43,13 +30,8 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         private const val REQ_ROLE_HOME = 7012
         private const val TAG = "HomeRoleStep"
 
-        /** Finish a grant that happened while this screen was away: no page, straight to the ad. */
         const val EXTRA_ROLE_GRANTED = "role_granted"
 
-        /**
-         * The surface last asked for the role, for the grant event — kept for the process, since a
-         * grant through the settings list comes back to a new instance (EXTRA_ROLE_GRANTED).
-         */
         private var lastRequest = 0
         private var grantLogged = false
     }
@@ -57,22 +39,16 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
     private val binding by viewBinding(PageOnboardingDefaultLauncherBinding::inflate)
     private val animators = mutableListOf<Animator>()
 
-    /** One-way latch: once a destination is committed, nothing else may pick another. */
     private var leaving = false
 
-    /** True between launching a request and its result. */
     private var requestInFlight = false
 
-    /** Open the home-app page on the first onResume. */
     private var autoOpenPending = false
 
-    /** The decline-time permission ask runs once per visit. */
     private var askedOnDecline = false
 
-    /** Whether Skip is on screen — without it, a cancelled role dialog has to move on. */
     private var skipEnabled = true
 
-    /** Here only to finish a grant ([EXTRA_ROLE_GRANTED]): nothing shown, no delay. */
     private var finishingGrant = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,7 +77,6 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         skipEnabled = ui.skipEnabled
         binding.onboardingSkipVw.isVisible = ui.skipEnabled
 
-        // Paid users: Back gets one last ask (the role dialog). Organic users: Back is Back.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (HomeRoleJourney.backMovesForward(this@HomeRoleStageActivity)) promptForRole()
@@ -109,8 +84,6 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
             }
         })
 
-        // Native big ad card, `launcher_ads.onboarding.set_default.slot`; the frame is hidden
-        // outright when the slot is off.
         HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.SET_DEFAULT),
@@ -118,34 +91,27 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
             shimmer = binding.adShimmerVw,
         )
 
-        // Small phones: the hero card gives way to the ad while one is on screen.
         binding.imageHeroVw.concealWhileAdVisible(binding.adNativeFrameVw, binding.heroCompactVw)
 
         HomeRoleJourney.bindStepHeader(this, HomeAdsSettings.OnboardScreen.SET_DEFAULT, binding.root)
 
-        // First arrival: open the system default-app page straight away, not on a restore.
-        // Debug builds accept `qa_no_auto_open` so the screen itself can be inspected via adb.
         val qaHold = BuildConfig.DEBUG && intent.getBooleanExtra("qa_no_auto_open", false)
-        // Not when it is back only to be skipped past (Home was pressed here, WalkthroughHomeAdvance).
+
         if (savedInstanceState == null && !qaHold && !WalkthroughHomeAdvance.isSavedFor(this)) autoOpenPending = true
 
         playMotion()
     }
 
-    /** The chooser card and the swipe chip float (`floaty 4s`, the chip offset 1.4s). */
     private fun playMotion() {
         if (VisualTweens.animationsDisabled(this)) return
         animators += VisualTweens.floaty(binding.chooserCardVw)
         animators += VisualTweens.floaty(binding.flagSwipe, delayMs = 1400L)
     }
 
-    // ===== the two-stage request =====
-
-    /** Stage 1 — the settings page listing the installed home apps. */
     private fun unfoldHomeSettings() {
         if (leaving || requestInFlight) return
         fireHomeSettings()
-        // The coach-mark follows the list rather than racing it — see HomeRoleNudgeDialog.
+
         HomeRoleNudgeDialog.presentAfterSettings(this)
     }
 
@@ -153,11 +119,10 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         if (leaving) return
         val opened = fireForResult(Intent(Settings.ACTION_HOME_SETTINGS), REQ_HOME_SETTINGS) ||
             fireForResult(Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS), REQ_HOME_SETTINGS)
-        // A ROM with neither page would otherwise dead-end the CTA, so skip to stage 2.
+
         if (!opened) promptForRole()
     }
 
-    /** Stage 2 — the one-tap role dialog, for when stage 1 came back with nothing changed. */
     private fun promptForRole() {
         if (leaving || requestInFlight) return
         if (!isQPlus()) {
@@ -184,26 +149,24 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         super.onActivityResult(requestCode, resultCode, resultData)
         requestInFlight = false
         if (leaving) return
-        // Whether we hold the role is the only honest signal (both surfaces report CANCELED on Back).
+
         if (isDefaultLauncher()) return
         when (requestCode) {
             REQ_HOME_SETTINGS -> promptForRole()
             REQ_ROLE_HOME -> {
-                // Still not the default home after the role popup: it was declined.
+
                 trackEvent("default_home_declined")
                 if (resultCode == RESULT_OK || !skipEnabled) goToNextStep() else promptOnDecline()
             }
         }
     }
 
-    /** Declined the home role: a one-time `permission_engine` ask for this screen, if any. */
     private fun promptOnDecline() {
         if (askedOnDecline) return
         askedOnDecline = true
         GrantOrchestrator.check(this)
     }
 
-    /** The instance still waiting from before the grant, raised to finish it. */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (intent.getBooleanExtra(EXTRA_ROLE_GRANTED, false)) {
@@ -226,14 +189,12 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         }
     }
 
-    /** The role was just granted from this step: which surface did it, once per process. */
     private fun noteGrant() {
         if (grantLogged || lastRequest == 0) return
         grantLogged = true
         trackEvent(if (lastRequest == REQ_ROLE_HOME) "default_home_granted_dialog" else "default_home_granted_settings")
     }
 
-    /** The role is held: `auto_next` (default on) moves on after `auto_next_delay_ms`. */
     private fun advanceAfterGrant() {
         val (auto, delayMs) = HomeAdsSettings.onboardingAutoNext(this, HomeAdsSettings.OnboardScreen.SET_DEFAULT)
         if (!auto) return
@@ -241,8 +202,6 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
             if (!isFinishing && !isDestroyed) goHome()
         }, delayMs)
     }
-
-    // ===== destinations =====
 
     private fun goHome() {
         if (leaving) return
@@ -253,8 +212,7 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
                 skipRest = HomeAdsSettings.defaultHomeStep(this).skipRestOnGrant,
             )
         }
-        // Straight after the grant: the preloaded interstitial if it is ready, else the next
-        // step at once — no loader, no fallback format in between.
+
         if (finishingGrant && !FullscreenOnAction.hasReadyInter(this)) {
             Log.d(TAG, "grant finished, no interstitial ready → next step")
             return next()
@@ -262,7 +220,6 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         HomeAdsSettings.runOnboardingInter(this, HomeAdsSettings.OnboardScreen.SET_DEFAULT) { next() }
     }
 
-    /** Home pressed here: on return, skip to the next step — Back would only ask for the role again. */
     override fun onHomeForward() = goToNextStep()
 
     private fun goToNextStep() {

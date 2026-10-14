@@ -36,7 +36,6 @@ import com.find.phone.gps.location.tracker.helpers.followAdContainer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
-/** Language picker (design 4c): Done confirms, the big native ad is pinned below. */
 class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
 
     override val layoutId: Int = R.layout.page_language
@@ -44,7 +43,6 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
     private val viewModel: LanguageViewModel by viewModels()
     private val prefs by lazy { SecurePrefsKeeper(this) }
 
-    /** True when opened from Settings to change language (vs. the first-run flow). */
     private val standalone by lazy { intent.getBooleanExtra(EXTRA_STANDALONE, false) }
 
     private lateinit var suggestedAdapter: LanguageListAdapter
@@ -65,7 +63,6 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         val current = AppPrefsStore.language(this) ?: AppPrefsStore.LANGUAGE_DEFAULT
         viewModel.init(current)
 
-        // Big native under the list, `launcher_ads.onboarding.language.slot`.
         HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.LANGUAGE),
@@ -80,7 +77,6 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
             binding.root.findViewById<View>(R.id.onboarding_step_headerVw).isVisible = false
         }
 
-        // Resolve the region FIRST, so the Suggested list is right on the very first frame.
         settleRegion()
 
         val onPick: (LanguageEntry) -> Unit = { viewModel.select(it.tag) }
@@ -95,7 +91,6 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         VisualTweens.pressScale(binding.padContinue)
         binding.padContinue.setOnClickListener { onContinue() }
 
-        // First-run flow: Back must not exit the app for paid users; it advances like Done.
         if (!standalone) {
             onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -155,7 +150,6 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         }
     }
 
-    /** Small spring on the Done pill each time the selection changes. */
     private fun popConfirm() {
         binding.padContinue.animate().cancel()
         binding.padContinue.scaleX = 0.8f
@@ -193,8 +187,6 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
             return
         }
 
-        // First-run flow: permission(s) first, then the exit interstitial, then navigate, then
-        // apply the locale (applying it recreates this Activity).
         GrantOrchestrator.check(this) {
             val next = when {
                 !standalone && HomeRoleJourney.isOnboardingActive(this) -> HomeRoleJourney.nextActivity(this)
@@ -208,16 +200,14 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
             val intent = when {
                 !standalone && HomeRoleJourney.isOnboardingActive(this) && next != HomeRoleJourney.homeActivity() ->
                     HomeRoleJourney.onboardingIntent(this, next)
-                // Later launches: the reminders intro goes right before Home when it is due.
+
                 next == HomeRoleJourney.homeActivity() -> AlarmIntroActivity.wrap(this, Intent(this, next))
                 else -> Intent(this, next)
             }
             HomeAdsSettings.runOnboardingInter(this, HomeAdsSettings.OnboardScreen.LANGUAGE) {
                 if (navigated) return@runOnboardingInter
                 navigated = true
-                // Apply the locale BEFORE starting the next screen, so it inflates in the chosen
-                // language instead of the old one (the recreate this triggers never lands: this
-                // Activity finishes in the same block).
+
                 if (tag != AppCompatDelegate.getApplicationLocales().toLanguageTags()) {
                     LanguageKeeper.apply(tag)
                 }
@@ -231,7 +221,6 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         private const val TAG = "LocalePickActivity"
         private const val EXTRA_STANDALONE = "extra_standalone"
 
-        /** Standalone = opened from Settings to change language (returns on Done). */
         fun newIntent(context: Context, standalone: Boolean = false): Intent =
             Intent(context, LocalePickActivity::class.java).putExtra(EXTRA_STANDALONE, standalone)
     }

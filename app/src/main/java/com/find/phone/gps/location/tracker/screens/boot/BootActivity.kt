@@ -34,12 +34,6 @@ import com.find.phone.gps.location.tracker.helpers.unfoldActivity
 import java.security.MessageDigest
 import java.util.concurrent.atomic.AtomicBoolean
 
-/**
- * Entry point. Plays the "Map Light" splash (design 1c) while the ads module runs consent →
- * Remote Config → attribution → permission → splash ad, then routes to the first-run
- * sequence or the home screen. The animation is owned by [BootTweens]; navigation waits
- * for BOTH the data chain and one full animation cycle.
- */
 class BootActivity : FoundationActivity<PageSplashBinding>() {
 
     override val layoutId: Int = R.layout.page_splash
@@ -48,39 +42,28 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
 
     private val prefs by lazy { SecurePrefsKeeper(this) }
 
-    // Ensures we navigate exactly once, whether the win comes from getData's callback or a
-    // late animation gate.
     private val proceeded = AtomicBoolean(false)
 
-    // Navigation waits on BOTH gates: the getData chain must be ready AND the intro animation
-    // must have played long enough.
     private val dataReady = AtomicBoolean(false)
     private val animMinElapsed = AtomicBoolean(false)
 
     private companion object {
-        // Shared with MonetizeGateActivity's tracing. Filter: `adb logcat -s SplashFlow`
+
         const val SPLASH_FLOW_TAG = "SplashFlow"
 
-        // One full pass of the four-stage sequence (satellite → phone → pin → logo hold).
         const val ANIM_MIN_MS = BootTweens.CYCLE_MS
 
-        // With animations off the scene is a static final frame; nothing to wait for.
         const val ANIM_MIN_REDUCED_MS = 700L
     }
 
     override fun initView() {
-        // Rich-push cold start: if this launch came from a push routed via the launcher, hand
-        // off to the rich-push activity and skip the splash flow.
+
         if (LightHouseRichPush.handleFromSplash(this, binding.root)) return
 
-        // One session = one cold start. Bump before nextScreen() so the intro `app_launches`
-        // frequency counts this launch.
         prefs.appLaunchCount = prefs.appLaunchCount + 1
-        // Same count for the reminders prompt's `prompt_frequency: app_launches`.
+
         AskGatekeeper.onAppLaunch(this)
 
-        // Light canvas → dark status-bar icons (and the reverse in dark mode); the grid and roads
-        // run under the bars.
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         window.navigationBarColor = android.graphics.Color.TRANSPARENT
@@ -106,8 +89,7 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
 
         printHashKey(this)
         Log.d(SPLASH_FLOW_TAG, "SplashActivity.initView → getData()")
-        // Hand off to the ad module. It runs consent + SDK init + runtime permission prompts +
-        // native/banner/interstitial preloads, then fires one of the two callbacks below.
+
         getData(this, true, object : OnPayloadReady {
             override fun onSuccess() {
                 Log.d(SPLASH_FLOW_TAG, "getData onSuccess → dataReady")
@@ -124,7 +106,6 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
         })
     }
 
-    /** Navigate only once BOTH gates are met: data ready AND the intro has played. */
     private fun perhapsProceed() {
         if (dataReady.get() && animMinElapsed.get()) {
             Log.d(SPLASH_FLOW_TAG, "both gates met (data + animation) → proceedNow")
@@ -158,27 +139,23 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
             return
         }
         Log.d(SPLASH_FLOW_TAG, "fireNext → ensureDataDisclosure")
-        // The LightHouse data-disclosure screen briefly sends the app background→foreground.
-        // That foreground event would pop the returning-app App Open ad right after the
-        // disclosure, in the middle of the first-launch flow. Suppress it for this one trip.
+
         ResumeAdKeeper.skipNextAppOpenAd = true
         LightHouse.ensureDataDisclosure(this) {
             if (isFinishing || isDestroyed) return@ensureDataDisclosure
             LightHouse.subscribeAsync()
-            // Read before nextScreen(): starting the launcher's first run can decide the whole
-            // order has nothing to show and mark onboarding completed on the spot.
+
             val launcherOnboarding = !HomeRoleJourney.wasOnboardingCompleted(this)
             val next = nextScreen()
             Log.d(SPLASH_FLOW_TAG, "ensureDataDisclosure done → launching ${next.simpleName}")
-            // The first-run marker tells Intro and Language they are steps in the launcher's
-            // sequence rather than the app's own gated screens.
+
             val intent = when {
                 launcherOnboarding && next != HomeRoleJourney.homeActivity() -> HomeRoleJourney.onboardingIntent(this, next)
-                // Later launches: the reminders intro goes right before Home when it is due.
+
                 next == HomeRoleJourney.homeActivity() -> AlarmIntroActivity.wrap(this, Intent(this, next))
                 else -> Intent(this, next)
             }
-            // Splash → onboarding/main: no interstitial on the very first launch.
+
             unfoldActivity(intent, isShowAd = false)
             finish()
         }
@@ -191,14 +168,8 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
         handler.removeCallbacksAndMessages(null)
     }
 
-    /**
-     * Picks the next screen in the launch flow. Language, Terms and Onboarding are all gated
-     * by [TourUnveilRules] (the `intro_display` Remote Config block).
-     */
     private fun nextScreen(): Class<*> = when {
-        // The launcher's own onboarding runs once, ahead of everything else, and ends on the
-        // home screen. Its sequence comes from `launcher_ads.onboarding.order`.
-        // Left with Home mid-run: back at that screen, which then moves on (WalkthroughHomeAdvance).
+
         !HomeRoleJourney.wasOnboardingCompleted(this) ->
             WalkthroughHomeAdvance.resumeScreen(this) ?: HomeRoleJourney.firstScreen(this)
         TourUnveilRules.shouldShowLanguage(this) -> LocalePickActivity::class.java

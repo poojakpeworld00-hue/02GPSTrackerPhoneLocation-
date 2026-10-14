@@ -7,11 +7,6 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import java.security.MessageDigest
 
-/**
- * Glide transformation that turns a sponsored tile's logo into a launcher icon ([GlyphMasker.shapeLogo]).
- * Running inside Glide keeps the work on its decode thread and puts the shaped bitmap in its memory
- * cache, so scrolling back to a tile sets the finished icon in the same frame.
- */
 class BadgeOutline(private val resources: Resources, private val tray: GlyphMasker.Tray) : BitmapTransformation() {
 
     override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {

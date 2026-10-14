@@ -17,11 +17,6 @@ import com.find.phone.gps.location.tracker.helpers.followAdContainer
 import com.find.phone.gps.location.tracker.helpers.concealWhileAdVisible
 import org.fossify.commons.extensions.viewBinding
 
-/**
- * Welcome step (design 4a): the gesture guide. Continue hands off to [GrantOrchestrator], which
- * asks whatever `permission_engine` has configured for this Activity, then the flow moves on
- * to whatever `onboarding.order` puts next. Skip goes to the same place without asking.
- */
 class WelcomeStageActivity : ShellHubActivity() {
 
     private val binding by viewBinding(PageOnboardingWelcomeBinding::inflate)
@@ -36,11 +31,9 @@ class WelcomeStageActivity : ShellHubActivity() {
         binding.onboardingContinueVw.setOnClickListener { trackEvent("welcome_continue_click"); seekOnboardingPermissions() }
         binding.onboardingSkipVw.setOnClickListener { trackEvent("welcome_skip_click"); goToNextStep() }
 
-        // `onboarding.welcome.skip_enabled: false` makes the screen a required step.
         val ui = HomeAdsSettings.onboardingUi(this, HomeAdsSettings.OnboardScreen.WELCOME)
         binding.onboardingSkipVw.isVisible = ui.skipEnabled
 
-        // Paid users: Back behaves like Skip and moves the flow on. Organic users: Back is Back.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (HomeRoleJourney.backMovesForward(this@WelcomeStageActivity)) goToNextStep()
@@ -48,8 +41,6 @@ class WelcomeStageActivity : ShellHubActivity() {
             }
         })
 
-        // Ad frame pinned at the bottom, `launcher_ads.onboarding.welcome.slot`. presentSlot hides
-        // the frame outright when the slot is off, and followAdContainer drops the hairline.
         HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.WELCOME),
@@ -57,7 +48,7 @@ class WelcomeStageActivity : ShellHubActivity() {
             shimmer = binding.adShimmerVw,
         )
         binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)
-        // Small phones: the hero card gives way to the ad while one is on screen.
+
         binding.onboardingHeroVw.concealWhileAdVisible(binding.adNativeFrameVw, binding.heroCompactVw)
 
         HomeRoleJourney.bindStepHeader(this, HomeAdsSettings.OnboardScreen.WELCOME, binding.root)
@@ -66,7 +57,6 @@ class WelcomeStageActivity : ShellHubActivity() {
         playMotion()
     }
 
-    /** The four launcher gestures: one arrow glyph rotated per direction; "Swipe right" is active. */
     private fun wireGestureTiles() = with(binding) {
         bindTile(tileSwipeUpVw, -90f, R.string.gesture_swipe_up, R.string.gesture_swipe_up_body, active = false)
         bindTile(tileSwipeRightVw, 0f, R.string.gesture_swipe_right, R.string.gesture_swipe_right_body, active = true)
@@ -88,7 +78,6 @@ class WelcomeStageActivity : ShellHubActivity() {
         }
     }
 
-    /** The design's loops: badge `fadein .6s .4s`, chips `floaty 4s` (the second offset 1.2s). */
     private fun playMotion() {
         if (VisualTweens.animationsDisabled(this)) return
         animators += VisualTweens.fadeIn(binding.onboardingBadgeVw, durationMs = 600L, delayMs = 400L)
@@ -102,12 +91,10 @@ class WelcomeStageActivity : ShellHubActivity() {
     }
 
     private fun seekOnboardingPermissions() {
-        // onComplete fires once the whole configured queue is done — or straight away when
-        // there is nothing to ask.
+
         GrantOrchestrator.check(this) { goToNextStep() }
     }
 
-    /** Whatever `launcher_ads.onboarding.order` puts after this screen, behind its exit interstitial. */
     private fun goToNextStep() {
         HomeAdsSettings.runOnboardingInter(this, HomeAdsSettings.OnboardScreen.WELCOME) {
             HomeRoleJourney.advance(this)

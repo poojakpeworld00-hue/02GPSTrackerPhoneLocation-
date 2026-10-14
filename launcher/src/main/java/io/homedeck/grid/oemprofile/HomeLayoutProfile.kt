@@ -2,25 +2,12 @@ package io.homedeck.grid.oemprofile
 
 import org.json.JSONObject
 
-/** How the app drawer is reached: a vertical scrolling list, Samsung-style horizontal pages, or not at all (every app on the workspace). */
 enum class TrayLayoutMode { VERTICAL, PAGED, NONE }
 
-/** Where the drawer's search bar sits - Samsung moved its Finder bar to the bottom with One UI 6.1. */
 enum class TraySearchPlacement { TOP, BOTTOM }
 
-/**
- * Where a value came from - the tiers of the design: the launcher's own APK resources (B), a
- * documented OEM default from Remote Config or the built-in table (C), or our standard
- * configuration when nothing was known (STANDARD).
- */
 enum class LayoutOrigin { APK, RC_RULE, BUILT_IN, STANDARD }
 
-/**
- * The factory look of one launcher build on one device class: what the user saw before we became
- * the home app, expressed in our own knobs. Numbers are the OEM's — [homeRows] counts the rows
- * *above* the dock, the way every launcher advertises its grid ("4×5"), and the applier adds the
- * dock row when it writes `Config.homeRowCount`.
- */
 data class HomeLayoutProfile(
     val id: String,
     val homeCols: Int,
@@ -28,74 +15,58 @@ data class HomeLayoutProfile(
     val dockSize: Int,
     val drawerMode: TrayLayoutMode,
     val drawerCols: Int,
-    /** Meaningful for [TrayLayoutMode.PAGED] only. */
+
     val drawerRows: Int,
     val drawerSearch: Boolean,
     val homeLabels: Boolean,
     val drawerLabels: Boolean,
     val source: LayoutOrigin,
     val drawerSearchPosition: TraySearchPlacement = TraySearchPlacement.TOP,
-    /** Icon size relative to ours at the same grid: 1.0 is what the grid draws by itself. Used only when [iconDp] is 0. */
+
     val iconScale: Float = 1f,
-    /** The icon size the launcher we replaced drew on its workspace, in dp; 0 = unknown. Drawn exactly, centred in the cell. */
+
     val iconDp: Int = 0,
-    /** Dock icon in dp; 0 = same as [iconDp]. One UI draws its label-less hotseat larger than the workspace. */
+
     val dockIconDp: Int = 0,
-    /** Drawer icon in dp; 0 = same as [iconDp]. */
+
     val drawerIconDp: Int = 0,
-    /**
-     * The same three sizes as a fraction of the display's short side, the way Launcher3-free OEM
-     * launchers state them in code (One UI: `width × 0.164`); resolved into the dp fields against
-     * this device's width when the dp field is 0. 0 = not stated.
-     */
+
     val iconWidthFraction: Float = 0f,
     val dockIconWidthFraction: Float = 0f,
     val drawerIconWidthFraction: Float = 0f,
-    /**
-     * [iconWidthFraction] per screen density, for a launcher that picks its icon ratio by screen
-     * zoom (One UI's `PhoneItemStyleFactory.getDefaultIconSize`: 0.161 at 420 dpi up to 0.172 at
-     * 540). The entry nearest the display's density wins over [iconWidthFraction]. Empty = none.
-     */
+
     val iconWidthFractionByDpi: Map<Int, Float> = emptyMap(),
-    /**
-     * The share of its stated item size the launcher actually fills with icon art, for a launcher
-     * that keeps a margin inside the item. We draw the art edge to edge, so the drawn dp is the item
-     * dp times this. 0 = 1.0 (One UI: its width fraction is already the art).
-     */
+
     val iconInset: Float = 0f,
-    /** The tray behind a wrapped legacy icon: `white` (One UI) or `dominant` (Launcher3: a colour from the art). */
+
     val legacyIconTray: String = LEGACY_TRAY_DOMINANT,
-    /** App-label text size in sp; 0 = our standard size (nothing known). One UI phones draw 11, Launcher3 states its own `iconTextSize`. */
+
     val labelSp: Float = 0f,
-    /** Per field, which tier supplied it; fields not listed carry [source]. */
+
     val fieldSources: Map<String, LayoutOrigin> = emptyMap(),
 ) {
-    /** The grid numbers a launcher's resources can supply; anything null keeps the base profile's value. */
+
     data class Numbers(
         val homeCols: Int? = null,
         val homeRows: Int? = null,
         val dockSize: Int? = null,
         val drawerCols: Int? = null,
-        /** The launcher's workspace icon size in dp (Launcher3 `iconImageSize`). */
+
         val iconSizeDp: Int? = null,
-        /** The launcher's workspace label text size in sp (Launcher3 `iconTextSize`, or a dimen read with its unit). */
+
         val labelSp: Float? = null,
-        /** Drawer icon in dp when the launcher states one apart from the workspace (Launcher3 `allAppsIconSize`). */
+
         val drawerIconDp: Int? = null,
-        /** Dock icon in dp when stated apart (Launcher3 `hotseatIconSize`, where a fork declares it). */
+
         val dockIconDp: Int? = null,
-        /**
-         * Whether the launcher we replaced keeps an app drawer, when its own build states it -
-         * only launchers whose probe entry says where to read it (ColorOS / OxygenOS today).
-         */
+
         val drawerMode: TrayLayoutMode? = null,
-        /** Whether that launcher put each new install on the workspace, when its build states it. */
+
     ) {
         val isEmpty: Boolean
             get() = homeCols == null && homeRows == null && dockSize == null && drawerCols == null && iconSizeDp == null &&
                 labelSp == null && drawerIconDp == null && dockIconDp == null && drawerMode == null
 
-        /** This, with [other] filling whatever this leaves null. */
         fun fill(other: Numbers) = Numbers(
             homeCols = homeCols ?: other.homeCols,
             homeRows = homeRows ?: other.homeRows,
@@ -109,11 +80,6 @@ data class HomeLayoutProfile(
         )
     }
 
-    /**
-     * Lays the launcher's own numbers over this profile. [ownIconDp] is the icon size our grid
-     * would draw at the resulting column count on this display, so an OEM icon size becomes a
-     * scale against it.
-     */
     fun overlay(numbers: Numbers, ownIconDp: (cols: Int) -> Float = { 0f }): HomeLayoutProfile {
         if (numbers.isEmpty) return this
         val cols = numbers.homeCols ?: homeCols
@@ -121,7 +87,7 @@ data class HomeLayoutProfile(
             val ours = ownIconDp(cols)
             if (ours > 0f) (oem / ours).coerceIn(MIN_ICON_SCALE, MAX_ICON_SCALE) else null
         }
-        // Every field keeps the tier it had before; only what the APK supplied moves to APK.
+
         val tagged = FIELD_KEYS.associateWith { sourceOf(it) }.toMutableMap()
         if (numbers.homeCols != null) tagged[KEY_HOME_COLS] = LayoutOrigin.APK
         if (numbers.homeRows != null) tagged[KEY_HOME_ROWS] = LayoutOrigin.APK
@@ -153,12 +119,6 @@ data class HomeLayoutProfile(
         )
     }
 
-    /**
-     * The dp fields settled for a display [widthDp] wide. A fraction stated by the profile wins over
-     * a dp read from the APK: it is the launcher's own formula (One UI sizes icons off the window
-     * width), while its `app_icon_size` dimen is only that formula at the default screen zoom - on a
-     * phone zoomed out to 411 dp, 63 dp against the 67 dp One UI really draws. Idempotent.
-     */
     fun settleFractions(widthDp: Int, densityDpi: Int = 0): HomeLayoutProfile {
         if (widthDp <= 0) return this
         fun dp(current: Int, fraction: Float) = if (fraction > 0f) Math.round(fraction * widthDp).takeIf { it in MIN_ICON_DP..MAX_ICON_DP } ?: current else current
@@ -168,7 +128,7 @@ data class HomeLayoutProfile(
             dockIconDp = dp(dockIconDp, dockIconWidthFraction),
             drawerIconDp = dp(drawerIconDp, drawerIconWidthFraction),
         )
-        // A dp the fraction replaced now carries the fraction's tier, so the resolve log stays true.
+
         val retagged = fieldSources.toMutableMap()
         fun retag(key: String, fractionKey: String, before: Int, after: Int) {
             if (before != after) retagged[key] = sourceOf(fractionKey)
@@ -179,22 +139,18 @@ data class HomeLayoutProfile(
         return resolved.copy(fieldSources = retagged)
     }
 
-    /** The workspace icon fraction at [densityDpi]: the nearest per-density entry, else the flat one. */
     fun iconFractionFor(densityDpi: Int): Float =
         iconWidthFractionByDpi.takeIf { densityDpi > 0 && it.isNotEmpty() }
             ?.minByOrNull { (dpi, _) -> kotlin.math.abs(dpi - densityDpi) }?.value
             ?: iconWidthFraction
 
-    /** The dp each surface draws: the launcher's item size times [iconInset]; dock and drawer fall back to the workspace. 0 = unknown. */
     private fun artDp(item: Int): Int = if (item == 0) 0 else Math.round(item * (if (iconInset > 0f) iconInset else 1f)).coerceIn(MIN_ICON_DP, MAX_ICON_DP)
     val homeArtDp: Int get() = artDp(iconDp)
     val dockArtDp: Int get() = artDp(if (dockIconDp > 0) dockIconDp else iconDp)
     val drawerArtDp: Int get() = artDp(if (drawerIconDp > 0) drawerIconDp else iconDp)
 
-    /** The tier behind one field, for the log. */
     fun sourceOf(key: String): LayoutOrigin = fieldSources[key] ?: source
 
-    /** One line naming every field and its tier. Local log only; nothing leaves the device. */
     fun describeSources(): String = FIELD_KEYS.joinToString(" ") { "$it=${sourceOf(it).name.lowercase()}" }
 
     fun toJson(): JSONObject = JSONObject().apply {
@@ -255,19 +211,18 @@ data class HomeLayoutProfile(
             KEY_DRAWER_SEARCH, KEY_DRAWER_SEARCH_POSITION, KEY_HOME_LABELS, KEY_DRAWER_LABELS, KEY_ICON_SCALE, KEY_ICON_DP,
             KEY_DOCK_ICON_DP, KEY_DRAWER_ICON_DP, KEY_LABEL_SP, KEY_LEGACY_ICON_TRAY,
         )
-        /** A fraction of the short side outside this cannot be an app icon (One UI phones sit at 0.14 - 0.20). */
+
         const val MIN_ICON_FRACTION = 0.05f
         const val MAX_ICON_FRACTION = 0.5f
         const val MIN_ICON_DP = 24
         const val MAX_ICON_DP = 120
         const val MIN_ICON_SCALE = 0.5f
         const val MAX_ICON_SCALE = 1.5f
-        /** A label smaller than 8 sp is unreadable, larger than 20 sp is not an app label; 0 means "ours". */
+
         const val MIN_LABEL_SP = 8f
         const val MAX_LABEL_SP = 20f
         const val KEY_SOURCE = "source"
 
-        /** Our standard configuration: what a launcher gets when neither its APK nor a documented OEM default says otherwise. */
         val AOSP = HomeLayoutProfile(
             id = "aosp",
             homeCols = 5,
@@ -282,11 +237,6 @@ data class HomeLayoutProfile(
             source = LayoutOrigin.STANDARD,
         )
 
-        /**
-         * A profile from a rule's `profile` object. Missing fields fall back to [defaults] so a
-         * console row only has to state what differs from AOSP. Returns null when there is no id or
-         * a number is out of the range the grid can draw.
-         */
         fun fromJson(o: JSONObject, defaults: HomeLayoutProfile = AOSP, source: LayoutOrigin): HomeLayoutProfile? {
             val id = o.optString(KEY_ID).trim()
             if (id.isEmpty()) return null
@@ -328,7 +278,6 @@ data class HomeLayoutProfile(
         private fun drawerSearchPosition(raw: String): TraySearchPlacement? =
             TraySearchPlacement.entries.firstOrNull { it.name.equals(raw.trim(), ignoreCase = true) }
 
-        /** Bounds the grid can actually draw; a console typo must not produce a 0-column home. */
         const val MIN_CELLS = 2
         const val MAX_CELLS = 12
     }

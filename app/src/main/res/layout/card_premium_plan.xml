@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One plan column (design 10a): r18 card — name, price, period — with the primary tag riding
-     on its top edge. The card sits 9dp down so the tag straddles its border; the tag is drawn
-     after (and above) the card.
-     The period always takes two lines (minLines = maxLines = 2), so every column is the same
-     height whether its period wraps ("per week, billed monthly") or not, and names and prices
-     line up across the row. Equal heights cannot come from match_parent here: the plan row
-     sits in a ScrollView, where it would measure to zero. -->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="0dp"

@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Full view of a number's registered area (from Number Details: the header's Full view or the
-    Map action). An interactive OpenStreetMap edge to edge with back / place title on top, zoom
-    and recenter on the right, and a card at the bottom with the number, place, the "area, not
-    live position" note and Directions. The bottom banner docks under it.
--->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -30,7 +25,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <!-- top bar -->
             <LinearLayout
                 android:id="@+id/mapTopBarVw"
                 android:layout_width="match_parent"
@@ -67,7 +61,6 @@
                     tools:text="Surat, Gujarat" />
             </LinearLayout>
 
-            <!-- zoom + recenter -->
             <LinearLayout
                 android:id="@+id/mapControlsVw"
                 android:layout_width="wrap_content"
@@ -109,7 +102,6 @@
                     app:tint="@color/ds_primary" />
             </LinearLayout>
 
-            <!-- place card -->
             <LinearLayout
                 android:id="@+id/placeCardVw"
                 android:layout_width="match_parent"
@@ -200,7 +192,6 @@
             </LinearLayout>
         </FrameLayout>
 
-        <!-- adaptive banner docked at the bottom, hairline above -->
         <View
             android:id="@+id/adBannerDividerVw"
             style="@style/AdDivider"

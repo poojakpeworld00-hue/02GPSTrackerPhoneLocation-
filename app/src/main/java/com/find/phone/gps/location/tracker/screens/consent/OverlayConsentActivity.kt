@@ -16,18 +16,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-/**
- * One-time tutorial coach-mark shown on top of the system "display over other
- * apps" Settings page. A hand taps the toggle to show the user what to flip.
- *
- * Three knobs (see code):
- *  - shown ONCE  -> [SecurePrefsKeeper.isOverlayTutorialShown]
- *  - lasts 3 sec -> [AUTO_DISMISS_MS]
- *  - the HAND    -> [kickHandHint] animating R.id.picHand
- *
- * It never navigates; [PolicyConsentActivity] owns the flow. This screen just finishes
- * itself: on grant detected, after the timeout, or on tap.
- */
 class OverlayConsentActivity : AppCompatActivity() {
 
     companion object {
@@ -46,19 +34,16 @@ class OverlayConsentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.page_overlay_permission)
 
-        // Tutorial is shown only once, ever.
         if (prefs.isOverlayTutorialShown) {
             finish()
             return
         }
         prefs.isOverlayTutorialShown = true
 
-        // Tapping anywhere outside the card dismisses the hint.
         findViewById<View>(R.id.rowMain)?.setOnClickListener { finish() }
 
         kickHandHint()
 
-        // Auto-dismiss after the tutorial duration.
         autoDismissJob = lifecycleScope.launch {
             delay(AUTO_DISMISS_MS)
             if (!isFinishing && !isDestroyed) finish()
@@ -67,7 +52,7 @@ class OverlayConsentActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Close the moment the toggle is flipped on so the caller's UI shows.
+
         pollJob?.cancel()
         pollJob = lifecycleScope.launch {
             while (isActive) {
@@ -91,7 +76,6 @@ class OverlayConsentActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    /** Looping "tap" gesture: the hand nudges up into the toggle and shrinks. */
     private fun kickHandHint() {
         val hand = findViewById<ImageView>(R.id.picHand) ?: return
         val up = dp(2f)

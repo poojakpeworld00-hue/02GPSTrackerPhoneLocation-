@@ -22,23 +22,14 @@ import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.facebook.ads.AdView as FbAdView
 
-// --------------------------------------------------------------
-// ENUMS
-// --------------------------------------------------------------
 enum class StripSizing { ADAPTIVE, INLINE, NORMAL }
 enum class StripVariant { AUTO, GOOGLE, FACEBOOK, CUSTOM }
 
-// --------------------------------------------------------------
-// OBSERVER
-// --------------------------------------------------------------
 interface StripAdObserver {
     fun onAdLoaded() {}
     fun onAdFailed() {}
 }
 
-// --------------------------------------------------------------
-// BANNER ADS MANAGER
-// --------------------------------------------------------------
 class StripSponsor {
 
     private var googleBanner: AdView? = null
@@ -48,9 +39,6 @@ class StripSponsor {
         var bannerCounter = 0
     }
 
-    // -----------------------------
-    // SHOW BANNER ENTRY POINT
-    // -----------------------------
     fun presentBanner(
         activity: Activity,
         container: FrameLayout,
@@ -64,14 +52,12 @@ class StripSponsor {
     ) {
         val pref = AdPrefsStore.getInstance(activity)
 
-        // Ads OFF
         if (!isNetworkConnected(activity)|| !pref.getBoolean("IsAdsON") || !pref.getBoolean("BannerAds")) {
             hide(container)
             observer?.onAdFailed()
             return
         }
 
-        // Banner counter logic
         if (bannerCounter < pref.getInt("BannerCounter")) {
             bannerCounter++
             hide(container)
@@ -141,9 +127,6 @@ class StripSponsor {
         }
     }
 
-    // -----------------------------
-    // GOOGLE BANNER
-    // -----------------------------
     private fun fetchGoogleBanner(
         activity: Activity,
         container: FrameLayout,
@@ -164,14 +147,13 @@ class StripSponsor {
         }
 
         hide(container)
-        // Show shimmer while loading
+
         shimmer?.startShimmer()
         shimmer?.visibility = View.VISIBLE
         container.removeAllViews()
         shimmer?.let { container.addView(it) }
         container.visibility = View.VISIBLE
 
-        // Preload banner
         if (googleBanner == null) googleBanner = AdView(activity)
         googleBanner?.adUnitId = adUnitId
 
@@ -189,7 +171,7 @@ class StripSponsor {
                     "BannerAds",
                     "Ad loaded. adView.isCollapsible() is ${googleBanner?.isCollapsible}.",
                 )
-                // Log load
+
                 activity.trackEvent("Banner_Load")
 
                 if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
@@ -197,7 +179,6 @@ class StripSponsor {
                 googleBanner!!.setOnPaidEventListener {
                     EarningsTracker.trackPaidEvent(activity, it)
                 }
-
 
                 shimmer?.stopShimmer()
                 shimmer?.visibility = View.GONE
@@ -286,9 +267,6 @@ class StripSponsor {
         return (display.widthPixels / display.density).toInt()
     }
 
-    // -----------------------------
-    // FACEBOOK BANNER
-    // -----------------------------
     private fun fetchFacebookBanner(
         activity: Activity,
         container: FrameLayout,
@@ -313,7 +291,7 @@ class StripSponsor {
         }
 
         hide(container)
-        // Show shimmer while loading
+
         shimmer?.startShimmer()
         shimmer?.visibility = View.VISIBLE
         container.removeAllViews()
@@ -368,9 +346,6 @@ class StripSponsor {
         )
     }
 
-    // -----------------------------
-    // FALLBACK
-    // -----------------------------
     private fun fallbackToFBOrCustom(
         activity: Activity,
         container: FrameLayout,
@@ -379,10 +354,10 @@ class StripSponsor {
     ) {
         val pref = AdPrefsStore.getInstance(activity)
         if (pref.getBoolean("IsFail_FB")) {
-            // Pass shimmer to Facebook banner loader
+
             fetchFacebookBanner(activity, container, shimmer, observer)
         } else {
-            // Optionally, you can show shimmer for custom ads if OwnAdsKeeper supports it
+
             shimmer?.startShimmer()
             shimmer?.visibility = View.VISIBLE
             OwnAdsKeeper().fetchCustomAd(
@@ -393,9 +368,6 @@ class StripSponsor {
         }
     }
 
-    // -----------------------------
-    // HIDE
-    // -----------------------------
     private fun hide(container: FrameLayout) {
         container.removeAllViews()
         container.visibility = View.GONE

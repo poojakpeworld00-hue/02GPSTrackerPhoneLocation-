@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One favourite (design 8a): 56dp gradient avatar inside a white + pale-blue ring, a 20dp
-     primary locate badge at the bottom-right, the first name under it. 64dp wide, 14dp gap. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

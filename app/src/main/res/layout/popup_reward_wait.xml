@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- "Almost ready to unlock" — the rewarded no-fill cooldown in `nofill_mode` "wait": a ring that
-     drains with the countdown in its centre, then "Unlock now" asks for the ad again. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

@@ -4,16 +4,14 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.find.phone.gps.location.tracker.R
 
-/** One onboarding page: title, body and the scene layout inflated into the hero card. */
 data class TourSlide(
     @param:StringRes val titleRes: Int,
     @param:StringRes val descRes: Int,
     @param:LayoutRes val sceneRes: Int,
-    /** The native banner slot under the CTA is shown on this page (design page A3). */
+
     val showsAd: Boolean = false,
 )
 
-/** The four pages of onboarding 2a: radar, route, input, orbit. */
 object TourSlides {
     val all: List<TourSlide> = listOf(
         TourSlide(R.string.ds_intro_title_1, R.string.ds_intro_body_1, R.layout.stage_intro_find),

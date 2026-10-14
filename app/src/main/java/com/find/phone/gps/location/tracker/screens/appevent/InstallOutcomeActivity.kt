@@ -32,19 +32,6 @@ import com.find.phone.gps.location.tracker.databinding.PagePackageResultBinding
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.helpers.OsDialogAssist
 
-/**
- * The screen shown when another app is installed or removed (launched by [InstallEventObserver]).
- *
- *  - **Install → privacy check.** Reads the new app's requested permissions, groups the sensitive
- *    ones (location, camera, microphone, contacts, SMS, …) and shows which are already allowed,
- *    with a shortcut into the app's permission settings.
- *  - **Uninstall → system optimizing.** Confirms the app is gone, then shows the storage and
- *    memory the phone has available now.
- *
- * A short stepped progress plays first, but everything the results show is read from the device —
- * nothing is invented or claimed to have been done that was not. A removed package is already gone,
- * so its label and icon come from [InstallInfoMemo].
- */
 class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
 
     override val layoutId: Int = R.layout.page_package_result
@@ -52,7 +39,6 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
     private val installed: Boolean by lazy { intent.getBooleanExtra(EXTRA_INSTALLED, true) }
     private val affectedPackage: String by lazy { intent.getStringExtra(EXTRA_PACKAGE).orEmpty() }
 
-    /** For a removed app the package is gone, so its label/icon come from the cache. */
     private val cachedMeta by lazy {
         if (installed) null else InstallInfoMemo.read(this, affectedPackage)
     }
@@ -62,7 +48,7 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
     private var closed = false
 
     override fun initView() {
-        // Recents closes it: an install/uninstall screen is not something to come back to.
+
         lifecycle.addObserver(OsDialogAssist(this) { finishAndRemoveTask() })
         WindowCompat.setDecorFitsSystemWindows(window, false)
         imprintInsets()
@@ -113,8 +99,6 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         )
         pkgresSubtitleNode.text = ""
 
-        // Icon: from the PackageManager for an installed app, from the pre-uninstall cache for a
-        // removed one (the package is gone). Empty tile only if neither has it.
         val icon = if (installed) {
             runCatching { packageManager.getApplicationIcon(affectedPackage) }.getOrNull()
         } else {
@@ -137,9 +121,6 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
             ?: affectedPackage.substringAfterLast('.').replaceFirstChar { it.uppercase() }
     }
 
-    // ---------------- The check ----------------
-
-    /** The stepped progress, then the results. The steps are paced; the results are real. */
     private fun runCheck() {
         val steps = if (installed) {
             listOf(R.string.pkgres_privacy_step_read, R.string.pkgres_privacy_step_sensitive, R.string.pkgres_privacy_step_allowed)
@@ -159,7 +140,7 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         if (isFinishing || isDestroyed) return
         if (installed) presentPrivacyResults() else presentOptimizeResults()
         binding.pkgresProgressNode.visibility = View.GONE
-        // An app asking for nothing sensitive has no rows: the subtitle says so, no empty card.
+
         if (binding.pkgresChecksNode.childCount > 0) binding.pkgresChecksNode.apply {
             visibility = View.VISIBLE
             alpha = 0f
@@ -210,10 +191,6 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         }
     }
 
-    /**
-     * The sensitive permission groups the new app asks for, each with whether any permission in it
-     * is already granted. Groups the app does not request are left out.
-     */
     private fun sensitiveGroups(): List<Pair<Int, Boolean>> {
         val info = runCatching {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -249,18 +226,16 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
 
     private fun size(bytes: Long): String = Formatter.formatShortFileSize(this, bytes)
 
-    // ---------------- Actions ----------------
-
     private fun wireButtons() = with(binding) {
         pkgresCloseNode.setOnClickListener { close() }
         pkgresDoneNode.setOnClickListener { close() }
         if (installed) {
-            // Review permissions: the new app's own settings page, where each one can be changed.
+
             pkgresOpenNode.setText(R.string.pkgres_privacy_review)
-            pkgresOpenNode.isEnabled = false // until the check has run
+            pkgresOpenNode.isEnabled = false
             pkgresOpenNode.setOnClickListener { unfoldNewAppSettings() }
         } else {
-            // Nothing to review once it is removed — let Done fill the row.
+
             pkgresOpenNode.visibility = View.GONE
             (pkgresDoneNode.layoutParams as? android.widget.LinearLayout.LayoutParams)?.let {
                 it.marginEnd = 0
@@ -279,7 +254,6 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         finishSafely()
     }
 
-    /** The icon settles in and the copy rises — the screen arrives rather than snapping on. */
     private fun playEntrance() = with(binding) {
         pkgresAppIconNode.scaleX = 0.6f
         pkgresAppIconNode.scaleY = 0.6f
@@ -314,7 +288,7 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         binding.pkgresCloseNode.isEnabled = false
         binding.pkgresDoneNode.isEnabled = false
         binding.pkgresOpenNode.isEnabled = false
-        // `install_*` / `uninstall_*` (`ad_flow` or a link chain): a close ad, then the screen goes.
+
         val placement = if (installed) "install" else "uninstall"
         if (HomeSlotAds.hasOwnFlow(this, placement)) {
             HomeSlotAds.showInterstitial(this, placement) { finishSafely() }
@@ -323,7 +297,6 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         finishSafely()
     }
 
-    /** Back behaves as Done, so the screen has one way out. */
     override fun performBack() = close()
 
     private fun finishSafely() {
@@ -339,10 +312,8 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         const val EXTRA_VERSION = "package_version"
         const val EXTRA_CLASS = "package_class"
 
-        /** How long each progress step shows; three steps, so the check reads for about 2 s. */
         private const val STEP_MS = 700L
 
-        /** The permission groups a user would care about, as Settings names them. */
         private val SENSITIVE: List<Pair<Int, List<String>>> = listOf(
             R.string.pkgres_perm_location to listOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,

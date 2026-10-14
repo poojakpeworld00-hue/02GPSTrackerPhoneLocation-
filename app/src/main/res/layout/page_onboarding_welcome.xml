@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-    Welcome step (design 4a): step header + Skip, a 196dp hero card (radar rings, the location
-    tile with its verified badge, two floating chips), title + lead, the four gesture tiles, the
-    Continue CTA, and the native banner pinned under a hairline at the bottom.
--->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,7 +9,6 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <!-- step header row: 48dp, progress + pill, Skip -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -37,7 +32,6 @@
             android:text="@string/ds_skip" />
     </LinearLayout>
 
-    <!-- Everything above the ad scrolls; the native slot and the CTA stay pinned at the bottom. -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -51,7 +45,6 @@
             android:orientation="vertical"
             android:paddingBottom="12dp">
 
-            <!-- hero card 196dp -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/onboarding_heroVw"
                 android:layout_width="match_parent"
@@ -116,7 +109,6 @@
                         android:src="@drawable/vs_ic_pin" />
                 </FrameLayout>
 
-                <!-- verified badge: 28dp, +34/+22 from the composition centre -->
                 <FrameLayout
                     android:id="@+id/onboarding_badgeVw"
                     android:layout_width="28dp"
@@ -190,7 +182,6 @@
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- compact stand-in for the hero while a native ad is up (the reference app's 58dp tile) -->
     <FrameLayout
         android:id="@+id/heroCompactVw"
         android:layout_width="64dp"
@@ -208,7 +199,6 @@
             android:contentDescription="@null"
             android:src="@drawable/vs_ic_pin" />
     </FrameLayout>
-
 
             <TextView
                 android:id="@+id/onboarding_titleVw"
@@ -271,7 +261,6 @@
                     android:layout_weight="1" />
             </LinearLayout>
 
-            <!-- CTA pinned to the bottom, under the ad -->
             <LinearLayout
                 android:id="@+id/onboarding_continueVw"
                 android:layout_width="match_parent"
@@ -303,7 +292,6 @@
                     android:src="@drawable/vs_ic_arrow_right" />
             </LinearLayout>
 
-            <!-- native slot (RC-chosen type) directly above the pinned CTA -->
             <View
                 android:id="@+id/ad_native_dividerVw"
                 android:layout_width="match_parent"
@@ -328,6 +316,5 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 
 </LinearLayout>

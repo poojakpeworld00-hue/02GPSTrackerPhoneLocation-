@@ -37,21 +37,6 @@ import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.loop
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.pvh
 import com.find.phone.gps.location.tracker.helpers.OsDialogAssist
 
-/**
- * A due reminder over the lock screen (reminders design 6): a bottom sheet rising over the dimmed
- * lock screen. Launched by the reminder notification's full-screen target; cancels that
- * notification as soon as it is up.
- *
- * The sheet's mid native ad loads only once the phone is unlocked with the sheet still up: Play
- * and AdMob do not allow ads on the locked display. `ScreenAds["AlarmPopupActivity"].show`
- * in Remote Config switches it off like any other screen's ad.
- *
- * - Call now (a number is set) → unlock, then the dialer with the number filled in.
- *   Open (no number) → unlock, then the Reminders list.
- * - Snooze → the Remote Config choices (design 7); the reminder fires again after that.
- * - Done / Back / Home / Recents → close. The worker already moved the reminder on (a one-off is
- *   done, a repeating one is scheduled for its next time).
- */
 class AlarmPopupActivity : AppCompatActivity() {
 
     private lateinit var binding: PageReminderAlertBinding
@@ -60,7 +45,6 @@ class AlarmPopupActivity : AppCompatActivity() {
     private val animators = mutableListOf<Animator>()
     private var adRequested = false
 
-    /** The user unlocked while the sheet is up: now the ad may show. */
     private val unlockReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = loadAdIfUnlocked()
     }
@@ -75,7 +59,7 @@ class AlarmPopupActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = PageReminderAlertBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // The sheet sits on the navigation bar: its 22dp bottom padding plus the bar.
+
         val sheetBottom = binding.alertSheetVw.paddingBottom
         ViewCompat.setOnApplyWindowInsetsListener(binding.alertRootVw) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -145,7 +129,6 @@ class AlarmPopupActivity : AppCompatActivity() {
         loadAdIfUnlocked()
     }
 
-    /** The mid native ad, once per alert and never while the keyguard is up. */
     private fun loadAdIfUnlocked() {
         if (adRequested || isFinishing || isDestroyed) return
         val km = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
@@ -156,7 +139,6 @@ class AlarmPopupActivity : AppCompatActivity() {
         trackEvent("Reminder_Alert_Ad")
     }
 
-    /** The sheet rises from below (300 ms, decelerate) while the dim fades in. */
     private fun riseSheet() {
         if (VisualTweens.animationsDisabled(this)) return
         val sheet = binding.alertSheetVw
@@ -172,8 +154,6 @@ class AlarmPopupActivity : AppCompatActivity() {
             start()
         }
     }
-
-    // ───────────────────────────── actions ─────────────────────────────
 
     private fun callBack(reminder: AlarmEntry) {
         trackEvent("Reminder_Alert_Call")
@@ -191,7 +171,6 @@ class AlarmPopupActivity : AppCompatActivity() {
         }
     }
 
-    /** Asks the user to unlock first (the dialer / app can't show over the lock screen). */
     private fun afterUnlock(then: () -> Unit) {
         val km = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         if (!km.isKeyguardLocked) { then(); return }
@@ -200,7 +179,6 @@ class AlarmPopupActivity : AppCompatActivity() {
         })
     }
 
-    /** Snooze choices from `action_delay_options`, two per row; the second is preselected. */
     private fun presentSnooze() {
         val options = AlarmSettings.get(this).actionDelayOptions.split(',')
             .mapNotNull { it.trim().toIntOrNull() }.filter { it in 1..24 * 60 }.distinct()
@@ -253,9 +231,6 @@ class AlarmPopupActivity : AppCompatActivity() {
         if (minutes % 60 == 0) resources.getQuantityString(R.plurals.rem_snooze_hours, minutes / 60, minutes / 60)
         else getString(R.string.rem_snooze_min, minutes)
 
-    // ───────────────────────────── motion ─────────────────────────────
-
-    /** Ring pulse (2.4s) and a bell swing every 3s, as on the prompt. */
     private fun kickMotion() {
         VisualTweens.cancelAll(animators)
         if (VisualTweens.animationsDisabled(this)) return

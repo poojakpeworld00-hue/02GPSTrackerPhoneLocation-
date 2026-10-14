@@ -43,7 +43,6 @@ class NumeralClockWidgetProvider : AppWidgetProvider() {
                 context.getWidgetBackgroundColor(appWidgetId)
             )
 
-            // TextClock has no single "show 12/24 hours" switch, keep one of the two around
             setViewVisibility(R.id.widget_text_clock_24View, if (is24Hours) View.VISIBLE else View.GONE)
             setViewVisibility(R.id.widget_text_clock_12View, if (is24Hours) View.GONE else View.VISIBLE)
 

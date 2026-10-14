@@ -1,11 +1,9 @@
 <resources>
-    <!-- App -->
+    
     <string name="dash">&#8211;</string>
 
-    <!-- Splash -->
     <string name="splash_footer">इस ऐप में विज्ञापन दिख सकते हैं</string>
 
-    <!-- Language -->
     <string name="language_title">अपनी भाषा चुनिए</string>
     <string name="language_continue">आगे बढ़ें</string>
     <string name="language_search_hint">भाषा ढूँढें</string>
@@ -15,7 +13,6 @@
     <string name="language_info_msg">भाषा बदलने पर ऐप का इंटरफ़ेस नई भाषा में दिखेगा। आपकी पसंद के अनुसार कुछ क्षेत्र-आधारित सुविधाएँ अलग हो सकती हैं।</string>
     <string name="language_info_got_it">ठीक है</string>
 
-    <!-- Terms &amp; Conditions -->
     <string name="terms_title">उपयोग की शर्तें</string>
     <string name="terms_agree">मैं नियम व शर्तों और गोपनीयता नीति को पढ़ चुका/चुकी हूँ तथा इन्हें मानता/मानती हूँ।</string>
     <string name="terms_accept">मंज़ूर करें और आगे बढ़ें</string>
@@ -24,12 +21,10 @@
     <string name="overlay_system_permission">सिस्टम की इजाज़त</string>
     <string name="overlay_permission_desc">दूसरे ऐप्स के ऊपर प्रदर्शित करने की इजाज़त मिलने पर यह ऐप आपके अन्य ऐप्स चलाते समय भी कॉल करने वाले की जानकारी दिखा सकता है।</string>
 
-    <!-- Onboarding -->
     <string name="onboarding_skip">स्किप करें</string>
     <string name="onboarding_next">अगला</string>
     <string name="onboarding_get_started">चलिए शुरू करें</string>
 
-    <!-- Home -->
     <string name="home_title">आप महफ़ूज़ हैं</string>
     <string name="home_subtitle">कॉलर की पहचान और स्पैम रोकथाम चालू हैं</string>
     <string name="home_greeting">नमस्ते</string>
@@ -40,20 +35,17 @@
     <string name="home_recent_activity">ताज़ा गतिविधि</string>
     <string name="see_all">सब दिखाएँ</string>
 
-    <!-- Quick actions -->
     <string name="quick_dialer">कीपैड</string>
     <string name="quick_lookup">खोज</string>
     <string name="quick_blocklist">ब्लॉक लिस्ट</string>
     <string name="quick_tools">उपकरण</string>
 
-    <!-- Bottom navigation -->
     <string name="nav_home">होम</string>
     <string name="nav_recents">रीसेंट</string>
     <string name="nav_contacts">कॉन्टैक्ट</string>
     <string name="nav_lookup">खोज</string>
     <string name="nav_settings">सेटिंग</string>
 
-    <!-- Call states -->
     <string name="call_incoming">कॉल आ रही है…</string>
     <string name="call_decline">काटें</string>
     <string name="call_accept">उठाएँ</string>
@@ -62,31 +54,26 @@
     <string name="label_spam">स्पैम</string>
     <string name="label_verified">जाँचा हुआ</string>
 
-    <!-- Recents -->
     <string name="recents_today">आज</string>
     <string name="recents_yesterday">कल</string>
     <string name="recents_this_week">बीते हफ़्ते में</string>
     <string name="recents_earlier">उससे पहले</string>
     <string name="recents_empty">हाल में कोई कॉल नहीं</string>
 
-    <!-- Call filters -->
     <string name="filter_all">सारी</string>
     <string name="filter_incoming">आई हुई</string>
     <string name="filter_outgoing">की हुई</string>
     <string name="filter_missed">छूटी हुई</string>
 
-    <!-- Call type labels -->
     <string name="type_incoming">आई हुई</string>
     <string name="type_outgoing">की हुई</string>
     <string name="type_missed">छूटी हुई</string>
     <string name="type_blocked">रोकी गई</string>
 
-    <!-- Call log permission -->
     <string name="perm_calllog_title">हाल की कॉल दिखाएँ</string>
     <string name="perm_calllog_message">हाल की कॉल यहाँ दिखाने के लिए कॉल लॉग खोलने की इजाज़त दें।</string>
     <string name="action_grant">इजाज़त दें</string>
 
-    <!-- Lookup -->
     <string name="lookup_hint">नाम या नंबर लिखें</string>
     <string name="lookup_verified_business">जाँचा हुआ कारोबार</string>
     <string name="lookup_organization">संस्था</string>
@@ -104,13 +91,11 @@
     <string name="lookup_international">अंतरराष्ट्रीय</string>
     <string name="lookup_carrier">नेटवर्क कंपनी</string>
 
-    <!-- Contacts -->
     <string name="contacts_search_hint">कॉन्टैक्ट ढूँढें</string>
     <string name="contacts_empty">कोई कॉन्टैक्ट नहीं मिला</string>
     <string name="perm_contacts_title">अपने कॉन्टैक्ट दिखाएँ</string>
     <string name="perm_contacts_message">कॉन्टैक्ट यहाँ दिखाने के लिए एक्सेस की इजाज़त दें।</string>
 
-    <!-- Settings -->
     <string name="settings_language">भाषा</string>
     <string name="settings_language_sub">ऐप की भाषा तय करें</string>
     <string name="settings_blocklist">ब्लॉक लिस्ट</string>
@@ -124,7 +109,6 @@
     <string name="theme_dark">डार्क</string>
     <string name="theme_system">सिस्टम के अनुसार</string>
 
-    <!-- Settings actions -->
     <string name="language_dialog_title">अपनी भाषा चुनिए</string>
     <string name="blocklist_add">नंबर शामिल करें</string>
     <string name="blocklist_empty">अब तक कोई नंबर ब्लॉक नहीं किया गया</string>
@@ -137,7 +121,6 @@
     <string name="action_cancel">छोड़ें</string>
     <string name="action_remove">निकालें</string>
 
-    <!-- Added translations -->
     <string name="app_name_overlay">Caller ID</string>
     <string name="number_lookup">नंबर की खोज</string>
     <string name="enter_a_number">कोई फ़ोन नंबर लिखें</string>
@@ -257,7 +240,6 @@
     </plurals>
     <string name="battery_activity_title">बैटरी का ब्योरा</string>
 
-    <!-- Localization batch: missing keys -->
     <string name="home_brand">CallerID</string>
     <string name="home_brand_sub">फ़ोन नंबर खोज</string>
     <string name="home_quick_actions">फ़टाफ़ट काम</string>
@@ -275,28 +257,23 @@
     <string name="message">मैसेज</string>
     <string name="recent">ताज़ा</string>
 
-    <!-- Overlay -->
     <string name="overlay_banner_desc">दूसरे ऐप्स के ऊपर कॉल करने वाले की जानकारी प्रदर्शित करें</string>
 
-    <!-- Recents -->
     <string name="recents_subtitle">आपकी कॉल का रिकॉर्ड</string>
     <string name="recents_search_hint">कॉल ढूँढें</string>
 
-    <!-- Recents sort menu -->
     <string name="sort_title">क्रम तय करें</string>
     <string name="sort_newest">नए पहले</string>
     <string name="sort_oldest">पुराने पहले</string>
     <string name="sort_name_asc">नाम (A–Z)</string>
     <string name="sort_name_desc">नाम (Z–A)</string>
 
-    <!-- Contacts -->
     <string name="contacts_count_fmt">%1$d कॉन्टैक्ट</string>
     <string name="contacts_tab_all">सारे</string>
     <string name="contacts_tab_favorites">चहेते</string>
     <string name="contacts_tab_recents">रीसेंट</string>
     <string name="contacts_tab_groups">ग्रुप</string>
 
-    <!-- Lookup -->
     <string name="lookup_detail_title">नंबर का ब्योरा</string>
     <string name="lookup_city">नगर</string>
     <string name="lookup_spam_type">स्पैम की किस्म</string>
@@ -307,7 +284,6 @@
     <string name="lookup_history_title">खोजों का रिकॉर्ड</string>
     <string name="lookup_history_empty">अब तक कोई खोज नहीं की गई</string>
 
-    <!-- Call details -->
     <string name="call_detail_title">कॉल का ब्योरा</string>
     <string name="lookup_also_known_as">अन्य नाम</string>
     <string name="lookup_nickname_bullet">•  %1$s</string>
@@ -337,13 +313,11 @@
     <string name="detail_yesterday">कल, %1$s</string>
     <string name="detail_dot_join">%1$s · %2$s</string>
 
-    <!-- Dialer -->
     <string name="dialer_search_contacts">कॉन्टैक्ट ढूँढें</string>
     <string name="dialer_favorites">चहेते</string>
     <string name="dialer_view_all">सब दिखाएँ</string>
     <string name="dialer_voice_search">आवाज़ से खोज</string>
 
-    <!-- Blocklist -->
     <string name="blocklist_empty_subtitle">चुने हुए नंबरों या पैटर्न से आने वाली कॉल ठुकराएँ</string>
     <string name="blocklist_choose_title">नंबर रोकें</string>
     <string name="blocklist_method_add_title">नंबर शामिल करें</string>
@@ -361,12 +335,10 @@
     <string name="blocklist_no_contacts">कोई कॉन्टैक्ट नहीं मिला</string>
     <string name="blocklist_perm_contacts">कॉन्टैक्ट चुनने के लिए कॉन्टैक्ट की एक्सेस ज़रूरी है</string>
 
-    <!-- Settings -->
     <string name="call_screening">कॉलर पहचान की परत</string>
     <string name="call_screening_desc">कॉल के समय कॉल करने वाले की जानकारी प्रदर्शित करें</string>
     <string name="settings_section_call">कॉल की सुरक्षा</string>
 
-    <!-- Compass / Speedometer -->
     <string name="compass_activity_title">कम्पास स्क्रीन</string>
     <string name="compass_signal">सिग्नल की ताक़त: %1$s</string>
     <string name="signal_strong">प्रबल</string>
@@ -382,7 +354,6 @@
     <string name="speedtest_mbps">%1$s Mbps</string>
     <string name="speedtest_ms">%1$d ms</string>
 
-    <!-- Flashlight -->
     <string name="flashlight_integrity">हार्डवेयर की स्थिति: जाँची गई</string>
     <string name="flashlight_lumen">रोशनी की क्षमता</string>
     <string name="flashlight_brightness">उजाला घटाएँ-बढ़ाएँ</string>
@@ -390,7 +361,6 @@
     <string name="flashlight_mode_strobe">झिलमिल</string>
     <string name="flashlight_lm">%1$d lm</string>
 
-    <!-- Bubble level -->
     <string name="level_current_tilt">अभी का झुकाव</string>
     <string name="level_dual_axis">दो दिशाओं का डेटा</string>
     <string name="level_x_axis">X-Axis</string>
@@ -399,7 +369,6 @@
     <string name="level_adjusting">ठीक किया जा रहा है</string>
     <string name="level_level">बराबर</string>
 
-    <!-- Battery -->
     <string name="battery_activity_sub">बिजली की खपत और हार्डवेयर की हालत पर नज़र रखें। सीधे प्रदर्शन और सुरक्षित कनेक्शन की स्थिति देखें।</string>
     <string name="battery_secured">सुरक्षित और बेहतर बनाई जा रही है</string>
     <string name="battery_health_great">उम्दा</string>
@@ -408,7 +377,6 @@
     <string name="battery_health_dead">ख़राब</string>
     <string name="battery_health_over">ज़्यादा वोल्टेज</string>
 
-    <!-- Sound meter -->
     <string name="sound_peak">सर्वोच्च स्तर</string>
     <string name="sound_average">औसत स्तर</string>
     <string name="sound_spectrum">आवृत्तियों का ब्योरा</string>
@@ -421,7 +389,6 @@
     <string name="sound_cat_very_loud">बहुत ऊँची आवाज़</string>
     <string name="sound_cat_dangerous">ख़तरनाक</string>
 
-    <!-- Light meter -->
     <string name="light_capture">दर्ज करें</string>
     <string name="light_resume">दोबारा चलाएँ</string>
     <string name="light_zero">ज़ीरो</string>
@@ -430,7 +397,6 @@
     <string name="light_max">सबसे ज़्यादा</string>
     <string name="light_lx">%1$d lx</string>
 
-    <!-- Stopwatch / Timer -->
     <string name="stopwatch_active">चालू सत्र</string>
     <string name="stopwatch_lap">चक्कर</string>
     <string name="stopwatch_history">चक्करों का रिकॉर्ड</string>
@@ -443,7 +409,6 @@
     <string name="timer_minutes">मिनट</string>
     <string name="timer_seconds">सेकंड</string>
 
-    <!-- Incoming-call overlay -->
     <string name="incall_incoming">आती हुई कॉल</string>
     <string name="incall_known">जाना-पहचाना कॉन्टैक्ट</string>
     <string name="incall_unknown">पता नहीं</string>
@@ -451,7 +416,6 @@
     <string name="incall_calls">%1$d कॉल</string>
     <string name="incall_service_active">कॉलर पहचान चालू</string>
 
-    <!-- Post-call (callback) screen -->
     <string name="pc_recent_calls_empty">हाल में कोई कॉल नहीं</string>
     <string name="reminder">याद दिलाना</string>
     <string name="whatsapp">WhatsApp</string>
@@ -470,14 +434,12 @@
     <string name="feature_web">वेबसाइट पर जाएँ</string>
     <string name="feature_edit_contact">कॉन्टैक्ट बदलें</string>
 
-    <!-- Home search-bar one-time hint -->
     <string name="search_hint_tip">कॉल करने वाले को जानने के लिए यहाँ नंबर टाइप करें</string>
 
-    <!-- App-redirect dialog -->
     <string name="app_unavailable">ऐप नहीं मिला</string>
     <string name="app_redirect_desc">यह ऐप आपके डिवाइस में नहीं है। क्या इसे Play Store में देखना चाहेंगे?</string>
     <string name="call_screening_hint_tip">कौन कॉल कर रहा है यह जानने और स्पैम रोकने के लिए इसे ऑन करें</string>
-    <!-- FSI intro Activity/Dialog + Home permission hint -->
+    
     <string name="home_perm_hint">कुछ इजाज़तें बंद पड़ी हैं। पूरी कॉलर पहचान के लिए इन्हें ऑन करें।</string>
     <string name="home_perm_manage">संभालें</string>
     <string name="fsi_incoming_call">आती हुई कॉल</string>

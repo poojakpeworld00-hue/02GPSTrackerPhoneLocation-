@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Onboarding 2a "Light Cards" (GPS Tracker Design). Skip row on top, the pager carries the
-    hero card + copy per page, then the page dots, the primary CTA, and (page 3 only, per the
-    design) the native banner slot under the CTA. Designed at 360×780.
--->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -45,7 +41,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/crownBar" />
 
-        <!-- Page dots: 6×6 idle, the active one stretches to 24×6 (gap 6). -->
         <LinearLayout
             android:id="@+id/dotsVw"
             android:layout_width="wrap_content"
@@ -57,9 +52,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Native slot (`launcher_ads.onboarding.intro.slot`, mid2 by default) on every page,
-             directly above the CTA; the frame keeps its ad across pages and collapses when the
-             slot is off. -->
         <FrameLayout
             android:id="@+id/adNativeContainerVw"
             android:layout_width="0dp"
@@ -85,7 +77,6 @@
             </FrameLayout>
         </FrameLayout>
 
-        <!-- CTA pinned to the bottom: 56dp, r18, gradient; "Next →" / "Get Started". -->
         <LinearLayout
             android:id="@+id/padNext"
             android:layout_width="0dp"

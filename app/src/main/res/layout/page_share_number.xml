@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SIM Tools "Share + QR code" (design 1a): a QR of a tel: link for the SIM's number, a Send-as
-     selector (text / contact card / QR image) and Copy / Save QR / Share actions. -->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -64,7 +63,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- QR card -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

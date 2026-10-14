@@ -54,20 +54,8 @@ import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.screens.finder.RegionZones
 import com.find.phone.gps.location.tracker.helpers.followAdContainer
 
-/**
- * The app's home content (design 3a–3e): "one task up front — number in, search out". The live
- * radar hero, the raised search card, the native mid slot under the fold, then recent searches;
- * the adaptive banner docks at the bottom once recents exist.
- *
- * One fragment, two hosts: the standalone home ([com.find.phone.gps.location.tracker.screens.MainHubActivity])
- * and the launcher's swipe-in panel ([com.find.phone.gps.location.tracker.homeshell.HomeShellPane]).
- * Ads and anything else that must not run unseen wait for [setOnScreen]: the launcher commits its
- * panel at `onCreate` and parks it off screen. The Activity-bound flows (RC permission sheet,
- * in-app update) stay with the hosts through [DashboardShellDriver].
- */
 class DashboardMainFragment : Fragment() {
 
-    /** The host that owns the menu button (the standalone home's drawer). */
     interface MenuHost {
         fun openHomeMenu()
     }
@@ -84,28 +72,21 @@ class DashboardMainFragment : Fragment() {
     private var proShine: Animator? = null
     private var heroAnimator: ValueAnimator? = null
 
-    /** The country the dial code belongs to; the user's home country, else the US. */
     private var countryIso: String = "US"
 
-    /** Groups the digits as the user types ("415 555 0134"), following the chosen country. */
     private var formatter: PhoneNumberFormattingTextWatcher? = null
 
-    /** Whether the user can see this content right now (always in the standalone home). */
     private var onScreen = false
 
-    /** The native slot has been requested once; later opens refresh instead. */
     private var nativeRequested = false
 
-    /** A banner load is in flight or on screen; cleared when recents empty and the frame hides. */
     private var bannerRequested = false
 
-    /** The contact button asks for Contacts first; once granted it opens the system picker. */
     private val contactPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) unfoldContactPicker()
         else Toast.makeText(requireContext(), R.string.ds_contacts_denied, Toast.LENGTH_SHORT).show()
     }
 
-    /** The history page hands a row back; it reopens exactly as a tap on the Home list would. */
     private val historyPage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode != Activity.RESULT_OK) { renewRecents(); return@registerForActivityResult }
         val digits = result.data?.getStringExtra(PastLookupsActivity.EXTRA_DIGITS).orEmpty()
@@ -114,11 +95,6 @@ class DashboardMainFragment : Fragment() {
         store.find(digits, dial)?.let { unfoldRecent(it) }
     }
 
-    /**
-     * A recent search tapped (on Home or on the history page): an unlocked result reopens as it
-     * was; a locked one goes back to its blurred preview (no new lookup); rows saved before
-     * results were kept just refill the search box.
-     */
     private fun unfoldRecent(recent: PastLookup) {
         val report = recent.report
         if (report != null) {
@@ -137,33 +113,16 @@ class DashboardMainFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK && !number.isNullOrBlank()) populateFromContact(number)
     }
 
-    /**
-     * Search Location: location permission first, then contacts permission, then the result —
-     * the search runs whatever either answer is. The data use is disclosed on the LightHouse
-     * disclosure screen after the splash, so neither step has an in-app dialog of its own; the
-     * one-time phonebook upload runs silently once contacts is granted (gated inside
-     * [PeopleUploader.uploadOnceIfDue]: release only, Remote Config switch, once per install).
-     *
-     * Everything after a permission result is null-safe on purpose: the result can land while
-     * the fragment's view is gone (the launcher panel closes and reopens under the system
-     * dialog), and a throw here takes the whole app down.
-     */
     private val locationPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
         if (result.values.any { it }) context?.let(PositionJournal::log)
         promptContactsThenSearch()
     }
 
-    /** Result of the contacts permission asked in the search chain (not the picker button). */
     private val uploadContactsPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         kickUploadIfDue()
         unfoldPendingSearch()
     }
 
-    /**
-     * After location settles: ask for contacts once (the system shows its dialog at most twice;
-     * after that the search just goes ahead), then open the search. Already granted → straight to
-     * the search, with the upload kicked off in the background.
-     */
     private fun promptContactsThenSearch() {
         val context = context ?: return
         val permission = Manifest.permission.READ_CONTACTS
@@ -178,15 +137,11 @@ class DashboardMainFragment : Fragment() {
                 uploadContactsPermission.launch(permission)
             }
             shouldShowRequestPermissionRationale(permission) -> uploadContactsPermission.launch(permission)
-            // Denied for good: the system would not show a dialog, so don't hold the search.
+
             else -> unfoldPendingSearch()
         }
     }
 
-    /**
-     * The one-time upload, off the main thread and never fatal. Uses the application context and
-     * the view's scope only if the view is still there, so a late permission result cannot throw.
-     */
     private fun kickUploadIfDue() {
         val app = context?.applicationContext ?: return
         val owner = viewLifecycleOwnerLiveData.value ?: return
@@ -196,29 +151,21 @@ class DashboardMainFragment : Fragment() {
         }
     }
 
-    /** Opens the search that was waiting on the permission answers, if one is still pending. */
     private fun unfoldPendingSearch() {
         val search = pendingSearch ?: return
         pendingSearch = null
         unfoldLocating(search, saved = null)
     }
 
-    /** The search waiting on the location answer. */
     private var pendingSearch: PastLookup? = null
 
-    /** The next search was bought with a 9b rewarded ad: its result opens without another ad. */
     private var nextSearchPrepaid = false
 
-    /** Back from the paywall opened by the limit sheet: bought Premium → the search goes ahead. */
     private val limitPremiumLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         wireQuota()
         if (ProStoreBilling.isPremium(requireContext())) kickSearch()
     }
 
-    /**
-     * Back from the Locating page: it saved the search to Recents itself; once its lookup has
-     * answered the search box is cleared. Premium bought from it shows here too.
-     */
     private val locatingPage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.data?.getBooleanExtra(PinpointingActivity.EXTRA_FOUND, false) == true) _binding?.phoneInputVw?.setText("")
         renewRecents()
@@ -227,15 +174,13 @@ class DashboardMainFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        // Inflated under the app theme in both hosts: the launcher Activity carries the module's
-        // own theme, whose default font and text style would otherwise restyle this content.
+
         val themed = inflater.cloneInContext(ContextThemeWrapper(inflater.context, R.style.Theme_GpsTracker))
         return PaneHomeCoreBinding.inflate(themed, container, false).also { _binding = it }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // The hero gradient runs under the status bar; the header takes the top inset as
-        // padding, the root the sides and the bottom (the banner slot sits above the nav bar).
+
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             binding.crest.updatePadding(top = bars.top)
@@ -245,29 +190,23 @@ class DashboardMainFragment : Fragment() {
             imprintBottomInset(v)
             insets
         }
-        // The bottom inset is only padded where the navigation bar really covers this view. In the
-        // standalone (edge-to-edge) home that is the whole bar; in the launcher panel with 3-button
-        // navigation the host already lays out above the bar, and padding again left a bar-high
-        // empty strip under the banner.
+
         view.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ -> imprintBottomInset(v) }
 
         countryIso = prefs.homeCountryIso.takeIf { it.length == 2 && RegionZones.byIso(it) != null } ?: "US"
         wireCountry()
 
-        // The menu only exists where there is a drawer to open (the standalone home).
         val menuHost = (parentFragment as? MenuHost) ?: (activity as? MenuHost)
         binding.padMenu.isVisible = menuHost != null
         binding.padMenu.setOnClickListener { menuHost?.openHomeMenu() }
         binding.padHistory.setOnClickListener { historyPage.launch(PastLookupsActivity.intent(requireContext())) }
 
-        // Free searches today (design 9a); "Unlimited" → the Premium paywall.
         binding.padUnlimited.setOnClickListener {
             requireContext().trackEvent("home_quota_unlimited")
             startActivity(ProUpgradeActivity.intent(requireContext()))
         }
         wireQuota()
 
-        // PRO chip (design 9a) → the Premium paywall.
         VisualTweens.pressScale(binding.padPro)
         binding.padPro.clipToOutline = true
         binding.padPro.setOnClickListener {
@@ -285,7 +224,6 @@ class DashboardMainFragment : Fragment() {
             }
         }
 
-        // Field: rest → focus (white, 2dp primary, 4dp halo) and the hero shrinks (3b).
         binding.phoneInputVw.setOnFocusChangeListener { _, focused -> setTypingState(focused) }
         binding.phoneInputVw.doAfterTextChanged { updateInputState() }
         binding.phoneInputVw.setOnEditorActionListener { _, action, _ ->
@@ -306,9 +244,6 @@ class DashboardMainFragment : Fragment() {
         }
         renewRecents()
 
-        // The slot frame and the bottom banner are hidden until the content is on screen, so an
-        // off-screen panel never requests an ad; the standalone home calls setOnScreen(true)
-        // straight away. The ad layer shows the banner frame itself once a load starts.
         binding.adNativeCardVw.isVisible = false
         binding.root.findViewById<View>(R.id.bannerAdFrameVw)?.isVisible = false
         if (onScreen) paintAds()
@@ -316,13 +251,11 @@ class DashboardMainFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Coming back from the paywall with a purchase hides the chip and the counter; a new day
-        // refills the counter.
+
         wireProChip()
         wireQuota()
     }
 
-    /** The chip shows while Premium is on offer and the user doesn't have it; its shine runs meanwhile. */
     private fun wireProChip() {
         val b = _binding ?: return
         val context = requireContext()
@@ -359,24 +292,18 @@ class DashboardMainFragment : Fragment() {
         super.onDestroyView()
     }
 
-    /**
-     * Whether the user can see this content. The launcher calls it as its panel slides in and
-     * out; the standalone home once, on create. Ad requests only ever happen while it is true.
-     */
     fun setOnScreen(visible: Boolean) {
         onScreen = visible
         if (visible && _binding != null) paintAds()
     }
 
-    /** The native mid slot under the search card, and the bottom banner once recents exist. */
     private fun paintAds() {
         val activity = activity ?: return
         val slot = HomeAdsSettings.rightPanelNativeSlot(activity)
         val adsOn = AdPrefsStore.getInstance(activity).getBoolean("IsAdsON")
         binding.adNativeCardVw.isVisible = adsOn && slot.visible
         if (adsOn && slot.visible) {
-            // `launcher_ads.right_panel.native`: requested once, then refreshed only when a
-            // fresh native is actually in hand (see HomeAdsSettings.renewSlot).
+
             if (!nativeRequested) {
                 nativeRequested = true
                 HomeAdsSettings.presentSlot(activity, slot, binding.adNativeFrameVw, binding.adShimmerVw)
@@ -387,11 +314,6 @@ class DashboardMainFragment : Fragment() {
         paintBanner()
     }
 
-    /**
-     * Design 3b: the adaptive banner docks at the bottom once recents exist. Requested here for
-     * both hosts (`ScreenAds.MainHubActivity`): FoundationActivity's automatic bottom banner runs
-     * before this fragment's view is in the hierarchy, so it never finds the frame.
-     */
     private fun paintBanner() {
         val activity = activity ?: return
         val container = binding.root.findViewById<FrameLayout>(R.id.bannerAdFrameVw) ?: return
@@ -403,7 +325,6 @@ class DashboardMainFragment : Fragment() {
         binding.adBannerDividerVw.followAdContainer(container)
     }
 
-    /** The shimmer skeleton is a child too; only a real ad view counts. */
     private fun bannerHoldsAd(container: FrameLayout): Boolean {
         val shimmer = container.findViewById<View>(R.id.bannerShimmerVw)
         return (0 until container.childCount).any { container.getChildAt(it) !== shimmer }
@@ -411,14 +332,8 @@ class DashboardMainFragment : Fragment() {
 
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
-    /** The navigation bar's height from the last insets pass. */
     private var navBarBottom = 0
 
-    /**
-     * Pads the bottom by how far the navigation bar actually overlaps [view] in its window:
-     * the bar's full height when the view runs under it, nothing when the host already stops
-     * above it. Padding never changes the view's own bounds, so the layout listener cannot loop.
-     */
     private fun imprintBottomInset(view: View) {
         if (view.height == 0) return
         val loc = IntArray(2)
@@ -437,7 +352,6 @@ class DashboardMainFragment : Fragment() {
         }
     }
 
-    /** Contacts ↔ clear swap on input; the Search button glows only when the number is valid. */
     private fun updateInputState() {
         val digits = binding.phoneInputVw.text?.filter { it.isDigit() }?.length ?: 0
         binding.padContact.isVisible = digits == 0
@@ -454,7 +368,6 @@ class DashboardMainFragment : Fragment() {
         }
     }
 
-    /** 3a ↔ 3b: focus turns the field white with the primary ring and halo, hero 300 → 230dp. */
     private fun setTypingState(typing: Boolean) {
         binding.phoneFieldVw.setBackgroundResource(if (typing) R.drawable.vs_field_focus_r16 else R.drawable.vs_field_rest_r16)
         binding.fieldHaloVw.isInvisible = !typing
@@ -475,12 +388,6 @@ class DashboardMainFragment : Fragment() {
         }
     }
 
-    // ── Contacts ──────────────────────────────────────────────────────────
-
-    /**
-     * Picks a number from the phone book. Contacts permission first; once the system has stopped
-     * showing its dialog (denied twice), the button opens this app's settings instead.
-     */
     private fun pickContact() {
         val permission = Manifest.permission.READ_CONTACTS
         val context = requireContext()
@@ -500,17 +407,13 @@ class DashboardMainFragment : Fragment() {
         }
     }
 
-    /** The app's own contact list (PeopleSelectActivity), not the system picker. */
     private fun unfoldContactPicker() {
         val context = context ?: return
         contactPicker.launch(PeopleSelectActivity.intent(context))
-        // Contacts are granted here (this runs after the grant): upload silently if the switch is
-        // on. Gated inside — debug/off/already-uploaded are all no-ops. Disclosed on the LightHouse
-        // screen, so no dialog here.
+
         kickUploadIfDue()
     }
 
-    /** The picked number goes into the field; an international one also sets the country. */
     private fun populateFromContact(raw: String) {
         val (iso, digits) = DialFactsReader.split(raw, countryIso)
         if (iso != countryIso && RegionZones.byIso(iso) != null) {
@@ -521,20 +424,17 @@ class DashboardMainFragment : Fragment() {
         binding.phoneInputVw.setSelection(binding.phoneInputVw.text?.length ?: 0)
     }
 
-    // ── Search ────────────────────────────────────────────────────────────
-
     private fun kickSearch() {
         val typed = binding.phoneInputVw.text?.filter { it.isDigit() }?.toString().orEmpty()
         if (typed.length < MIN_DIGITS || !DialFactsReader.isValid(typed, countryIso)) {
             presentInvalid(typed)
             return
         }
-        // Keep the national digits only: "91 70460 24874" typed under +91 is 7046024874, so
-        // Recents doesn't show "+91 917 046 024874".
+
         val digits = DialFactsReader.split(typed, countryIso)
             .takeIf { (iso, _) -> iso.equals(countryIso, ignoreCase = true) }?.second ?: typed
         hideKeyboard()
-        // Out of free searches today → design 9b: watch an ad for one more, or go Premium.
+
         if (!LookupAllowance.canSearch(requireContext())) {
             requireContext().trackEvent("search_limit_reached")
             LookupCapSheet(
@@ -561,27 +461,21 @@ class DashboardMainFragment : Fragment() {
         }
     }
 
-    /**
-     * The Locating page: a fresh search runs its map search there and is saved to Recents
-     * (locked) once it finds its result; watching the ad saves it unlocked and opens the full
-     * detail screen. [saved] reopens a locked recent search straight at its result.
-     */
     private fun unfoldLocating(search: PastLookup, saved: NumberSummary?) {
         val activity = activity ?: return
-        // A new lookup uses one of today's free searches (reopening a saved result doesn't).
+
         if (saved == null) {
             LookupAllowance.consume(activity)
             wireQuota()
         }
-        // A number unlocked before stays unlocked when searched again.
+
         val unlockedBefore = store.all().any { it.digits == search.digits && it.dial == search.dial && it.unlocked } ||
-            // One ad per search: a search bought with the 9b ad skips the 11a/11b unlock.
+
             (saved == null && nextSearchPrepaid)
         if (saved == null) nextSearchPrepaid = false
         locatingPage.launch(PinpointingActivity.intent(activity, search, saved, unlockedBefore))
     }
 
-    /** Design 9a: "Free searches today · n of 3 left" with its bar; hidden when there is no limit. */
     private fun wireQuota() {
         val b = _binding ?: return
         val context = requireContext()
@@ -594,7 +488,6 @@ class DashboardMainFragment : Fragment() {
         b.quotaBarVw.progress = (100 * left.coerceAtMost(limit) / limit.coerceAtLeast(1))
     }
 
-    /** Design 11d: what's wrong with the number, with Edit number and Change country. */
     private fun presentInvalid(digits: String) {
         val context = requireContext()
         val shown = binding.phoneInputVw.text?.toString()?.trim().orEmpty().ifEmpty { digits }
@@ -624,9 +517,7 @@ class DashboardMainFragment : Fragment() {
         b.emptyStateVw.isVisible = recents.isEmpty()
         b.rollRecents.isVisible = recents.isNotEmpty()
         b.padClearAll.isVisible = recents.isNotEmpty()
-        // Design 3b: the adaptive banner docks at the bottom once recents exist. The frame is only
-        // forced on when it holds a real ad; otherwise the ad layer's own state stands (it hides
-        // the frame when there is nothing to show, and forcing it on exposed the loading skeleton).
+
         val banner = b.root.findViewById<FrameLayout>(R.id.bannerAdFrameVw)
         val holdsAd = banner != null && bannerHoldsAd(banner)
         if (recents.isEmpty()) {
@@ -647,7 +538,6 @@ class DashboardMainFragment : Fragment() {
             Manifest.permission.ACCESS_COARSE_LOCATION,
         )
 
-        /** The same ScreenAds entry the standalone home uses, so one switch covers both. */
         const val BANNER_SCREEN_KEY = "MainHubActivity"
     }
 }

@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.Calendar
 
-/** The reminders list, kept on the device only (SharedPreferences, JSON). */
 object AlarmRepository {
 
     private const val PREFS = "reminder_prefs"
@@ -23,7 +22,6 @@ object AlarmRepository {
 
     fun get(context: Context, id: Long): AlarmEntry? = load(context).firstOrNull { it.id == id }
 
-    /** Inserts or replaces by id. */
     fun upsert(context: Context, item: AlarmEntry) {
         val list = load(context)
         val i = list.indexOfFirst { it.id == item.id }
@@ -36,7 +34,6 @@ object AlarmRepository {
         if (list.removeAll { it.id == id }) save(context, list)
     }
 
-    /** Reminders still waiting to fire: the drawer badge. */
     fun activeCount(context: Context): Int = load(context).count { it.isActive }
 
     private fun save(context: Context, list: List<AlarmEntry>) {
@@ -46,11 +43,6 @@ object AlarmRepository {
     private fun prefs(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    /**
-     * Seeds `default_config_list` once, the first time reminders are usable, when
-     * `is_default_config` is on and the list is empty. Samples are switched off, so nothing
-     * fires until the user opens one and saves it.
-     */
     fun seedDefaultsIfNeeded(context: Context) {
         val prefs = prefs(context)
         if (prefs.getBoolean(KEY_SEEDED, false)) return

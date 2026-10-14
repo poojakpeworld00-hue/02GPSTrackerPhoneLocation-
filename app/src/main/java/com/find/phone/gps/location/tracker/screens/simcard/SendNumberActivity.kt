@@ -28,11 +28,6 @@ import com.find.phone.gps.location.tracker.helpers.isNightMode
 import java.io.File
 import java.io.FileOutputStream
 
-/**
- * SIM Tools "Share + QR code" (design 1a). Shows a QR encoding `tel:<number>` for one SIM, a
- * Send-as selector (plain text / vCard contact card / the QR image), and Copy / Save QR / Share.
- * Generation only — no scanner, no extra permission (saving uses MediaStore on API 29+).
- */
 class SendNumberActivity : FoundationActivity<PageShareNumberBinding>() {
 
     override val layoutId: Int = R.layout.page_share_number
@@ -52,7 +47,6 @@ class SendNumberActivity : FoundationActivity<PageShareNumberBinding>() {
         val slot = intent.getIntExtra(EXTRA_SLOT, 1)
         val carrier = intent.getStringExtra(EXTRA_CARRIER).orEmpty()
 
-        // Dark icons on the light canvas, light icons in dark mode.
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !isNightMode(this)
         ViewCompat.setOnApplyWindowInsetsListener(binding.shareRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -111,7 +105,6 @@ class SendNumberActivity : FoundationActivity<PageShareNumberBinding>() {
         runCatching { startActivity(Intent.createChooser(intent, getString(R.string.share_number_share))) }
     }
 
-    /** ACTION_SEND for a file under cacheDir/shared via the app FileProvider. */
     private fun fileShareIntent(file: File?, mime: String): Intent? {
         if (file == null) return null
         val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
@@ -151,7 +144,6 @@ class SendNumberActivity : FoundationActivity<PageShareNumberBinding>() {
         Toast.makeText(this, if (ok) R.string.share_number_saved else R.string.share_number_save_failed, Toast.LENGTH_SHORT).show()
     }
 
-    /** MediaStore on API 29+ (no permission); app external Pictures dir on older. */
     private fun persistBitmapToGallery(bmp: Bitmap): Boolean {
         val fileName = "GPS_MyNumber_QR_${System.currentTimeMillis()}.png"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

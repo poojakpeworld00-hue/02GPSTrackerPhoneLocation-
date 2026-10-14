@@ -38,13 +38,6 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-/**
- * Number Details (design 11c), once the result is unlocked: the registered area on a small
- * OpenStreetMap header, the card with the number, place, chips and Call · Message · Map · Copy,
- * the Location details grid, and Also known as — every name the lookup found, the best match
- * revealed by the unlock and each other one behind its own rewarded ad (Premium: all shown).
- * When the lookup server couldn't be reached a note offers Retry, which re-runs it in place.
- */
 class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
 
     override val layoutId: Int = R.layout.page_number_detail
@@ -56,7 +49,7 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
     private var allNamesShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // osmdroid must be configured before the MapView is inflated (in super.onCreate).
+
         OpenStreetTiles.init(this)
         super.onCreate(savedInstanceState)
     }
@@ -69,7 +62,6 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         }
         report = given
 
-        // The map runs under the status bar; the top bar sits below it.
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         val topPad = binding.mapTopBarVw.paddingTop
@@ -103,8 +95,6 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         bind()
         placeOnMap()
     }
-
-    // ── Card, grid, names ─────────────────────────────────────────────────
 
     private fun bind() {
         val r = report
@@ -155,7 +145,6 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         tile.actionRootVw.setOnClickListener { onClick() }
     }
 
-    /** Every name found: the best match came with the unlock; the others one ad each. */
     private val names: List<String>
         get() = listOfNotNull(report.name) + report.otherNames
 
@@ -166,7 +155,7 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         val all = names
         binding.namesBlockVw.isVisible = all.isNotEmpty()
         binding.namesListVw.removeAllViews()
-        // The lookup can return up to 100 names: the first few, then "Show all" on demand.
+
         val shown = if (allNamesShown) all else all.take(NAMES_PREVIEW)
         binding.padShowAllNames.isVisible = shown.size < all.size
         binding.padShowAllNames.text = getString(R.string.ds_names_show_all, all.size)
@@ -210,7 +199,6 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         binding.lblNamesNote.isVisible = revealed < all.size
     }
 
-    /** One rewarded ad reveals one name (remembered); closing the ad early keeps it hidden. */
     private fun revealName(item: CardDetailNameBinding, name: String) {
         if (revealing) return
         revealing = true
@@ -232,18 +220,12 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         }
     }
 
-    // ── Map ───────────────────────────────────────────────────────────────
-
     private fun placeOnMap() {
         overlay?.let { it.stop(); binding.mapViewVw.overlays.remove(it) }
         overlay = OpenStreetTiles.place(binding.mapViewVw, report, coarse = false)
         centerPin()
     }
 
-    /**
-     * The pin goes in the middle of the strip left visible between the top bar (under the status
-     * bar) and the card overlapping the header's bottom — half the difference below centre.
-     */
     private fun centerPin() {
         val d = resources.displayMetrics.density
         val above = topInset + (46 * d).roundToInt()
@@ -252,13 +234,11 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         binding.mapViewVw.invalidate()
     }
 
-    // ── Retry ─────────────────────────────────────────────────────────────
-
     private fun retry() {
         binding.padRetry.isVisible = false
         binding.pbRetryVw.isVisible = true
         lifecycleScope.launch {
-            // The E.164 number re-parses on its own; the region only matters when it doesn't.
+
             val fresh = NumberFinder.run(this@NumberInsightActivity, report.e164, report.iso2, "")
             binding.padRetry.isVisible = true
             binding.pbRetryVw.isVisible = false
@@ -273,8 +253,6 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         }
     }
 
-    // ── Actions ───────────────────────────────────────────────────────────
-
     private fun sendSms() = launch(Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:${report.e164}")))
 
     private fun copyNumber() {
@@ -283,7 +261,6 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         Toast.makeText(this, R.string.ds_copied, Toast.LENGTH_SHORT).show()
     }
 
-    /** The area on a full-screen, interactive map (header Full view, a tap on the header, Map). */
     private fun unfoldFullMap() = startActivity(MapExpandedActivity.intent(this, report))
 
     private fun share() {
@@ -309,8 +286,6 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
             Toast.makeText(this, R.string.ds_no_app, Toast.LENGTH_SHORT).show()
         }
     }
-
-    // ── Lifecycle ─────────────────────────────────────────────────────────
 
     override fun onResume() {
         super.onResume()

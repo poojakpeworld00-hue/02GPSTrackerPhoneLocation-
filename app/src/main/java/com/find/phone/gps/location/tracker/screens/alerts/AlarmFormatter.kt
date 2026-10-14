@@ -7,13 +7,10 @@ import com.find.phone.gps.location.tracker.alarms.Repeat
 import java.util.Calendar
 import java.util.Date
 
-/** How reminder times read in the list, the sheet, the prompt and the alert. */
 object AlarmFormatter {
 
-    /** "6:30 PM" / "18:30", following the phone's 12/24-hour setting. */
     fun time(context: Context, millis: Long): String = DateFormat.getTimeFormat(context).format(Date(millis))
 
-    /** "Today" / "Tomorrow" / "Yesterday", else "Fri, 10 Oct". */
     fun day(context: Context, millis: Long): String {
         val target = Calendar.getInstance().apply { timeInMillis = millis }
         val today = Calendar.getInstance()
@@ -29,7 +26,6 @@ object AlarmFormatter {
         return DateFormat.format(DateFormat.getBestDateTimePattern(java.util.Locale.getDefault(), "EEEdMMM"), target).toString()
     }
 
-    /** "Today · 6:30 PM". */
     fun dayAndTime(context: Context, millis: Long): String =
         context.getString(R.string.rem_when_fmt, day(context, millis), time(context, millis))
 

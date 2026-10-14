@@ -13,7 +13,6 @@ class TourPagerAdapter(
 
     inner class VH(val binding: CardOnboardingBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        /** Looping animators of the current scene; cancelled on recycle. */
         private val anims = mutableListOf<Animator>()
 
         fun bind(page: TourSlide) {
@@ -21,8 +20,7 @@ class TourPagerAdapter(
             val container = binding.artContainerVw
             container.removeAllViews()
             LayoutInflater.from(container.context).inflate(page.sceneRes, container, true)
-            // The self-animating views (ping rings, roads, typing) start on attach; the
-            // element loops that need ids (floaty, spin, fade-in, blink, glow) are wired here.
+
             anims += TourTransitions.attach(container)
             binding.lblTitle.setText(page.titleRes)
             binding.lblDesc.setText(page.descRes)

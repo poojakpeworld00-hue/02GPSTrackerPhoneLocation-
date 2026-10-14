@@ -13,37 +13,20 @@ import com.google.android.material.snackbar.Snackbar
 import io.homedeck.grid.screens.HomeDeskPane
 import java.util.WeakHashMap
 
-/**
- * [DashboardShellOwner] for the launcher module's home screen.
- *
- * [HomeDeskPane] is the module's Activity, so it cannot implement our interface the way the old
- * in-app launcher did. This object stands in for it, one per HomeDeskPane instance, and the shell
- * fragments find it through [of].
- *
- * It must be created from [TrackerHomeBridge.onLauncherStart]: that runs inside the launcher's
- * `onCreate`, and [DashboardShellDriver] registers its result launchers on construction, which only
- * works before the Activity is STARTED.
- */
 class HomeShellOwner private constructor(private val panel: HomeDeskPane) : DashboardShellOwner {
 
     override val hostActivity: AppCompatActivity get() = panel
 
     override val homeShellController = DashboardShellDriver(this)
 
-    /** Set by [HomeShellPane] as the right-hand panel slides in and out. */
     var shellVisible = false
 
     private var updateReadySnackbar: Snackbar? = null
 
     override val isShellOnScreen: Boolean get() = shellVisible
 
-    /** Back inside the panel with the shell's own tab history exhausted just closes it. */
     override fun onShellBackExhausted() = panel.shutHostPanel()
 
-    /**
-     * With the panel open the shell's own Snackbar is right; with it shut the shell is parked off
-     * screen, so the home grid carries the prompt or a downloaded update has nowhere to install from.
-     */
     override fun showUpdateReadyPrompt() {
         if (updateReadySnackbar?.isShown == true) return
         updateReadySnackbar = Snackbar
@@ -52,7 +35,6 @@ class HomeShellOwner private constructor(private val panel: HomeDeskPane) : Dash
             .also { it.show() }
     }
 
-    /** Back from a Settings round trip (overlay / FSI grant): land in the panel, not on the grid. */
     override fun bringHostToFront() {
         runCatching {
             panel.startActivity(

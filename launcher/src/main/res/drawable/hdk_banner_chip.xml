@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Translucent round chip holding the default-launcher card's chevron. -->
+<?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <solid android:color="#33FFFFFF" />
     <stroke

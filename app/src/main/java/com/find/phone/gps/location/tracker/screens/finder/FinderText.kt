@@ -4,7 +4,6 @@ import android.content.Context
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.repo.finder.RouteStyle
 
-/** "Mobile", "Landline"… or null when libphonenumber can't tell. */
 fun RouteStyle.label(context: Context): String? = when (this) {
     RouteStyle.MOBILE -> context.getString(R.string.ds_line_mobile)
     RouteStyle.FIXED_LINE -> context.getString(R.string.ds_line_fixed)

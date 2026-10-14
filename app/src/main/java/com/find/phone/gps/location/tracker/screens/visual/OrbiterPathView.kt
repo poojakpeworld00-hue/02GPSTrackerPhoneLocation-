@@ -13,12 +13,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.find.phone.gps.location.tracker.R
 
-/**
- * Splash stage 1, "satellite triangulation": a 260dp dashed orbit, three satellite tiles
- * rotating around it (`spin 5s linear infinite`) joined to the centre by dashed lines whose
- * dashes march (`dash .8s linear infinite`), and the phone dot with its halo in the middle.
- * Drawn on one canvas so the tiles, lines and orbit stay in register while rotating.
- */
 class OrbiterPathView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null,
 ) : View(context, attrs) {
@@ -51,7 +45,7 @@ class OrbiterPathView @JvmOverloads constructor(
     private val animators = mutableListOf<Animator>()
 
     init {
-        setLayerType(LAYER_TYPE_SOFTWARE, null) // shadow layers need it
+        setLayerType(LAYER_TYPE_SOFTWARE, null)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -59,14 +53,14 @@ class OrbiterPathView @JvmOverloads constructor(
         val cx = width / 2f
         val cy = height / 2f
         val r = side / 2f
-        // Design units: the composition is a 260px box; everything below scales with it.
+
         val u = side / 260f
 
         canvas.drawCircle(cx, cy, r, orbit)
 
         canvas.save()
         canvas.rotate(rotation, cx, cy)
-        // Dashed guide lines: centre → top, centre → bottom-left, centre → bottom-right.
+
         line.pathEffect = DashPathEffect(floatArrayOf(4f * u, 6f * u), -dashPhase)
         path.reset()
         path.moveTo(cx, cy); path.lineTo(cx, cy - r)
@@ -74,14 +68,12 @@ class OrbiterPathView @JvmOverloads constructor(
         path.moveTo(cx, cy); path.lineTo(cx + 114f * u, cy + 70f * u)
         canvas.drawPath(path, line)
 
-        // Top satellite: 28px tile, 9px radius, 10px primary chip.
         drawTile(canvas, cx, cy - r, 28f * u, 9f * u, 10f * u, chipPrimary)
-        // Lower satellites: 24px tiles at (4px, bottom 48px) → centre offset ≈ (±114, +70).
+
         drawTile(canvas, cx - 114f * u, cy + 70f * u, 24f * u, 8f * u, 8f * u, chipCyan)
         drawTile(canvas, cx + 114f * u, cy + 70f * u, 24f * u, 8f * u, 8f * u, chipCyan)
         canvas.restore()
 
-        // The located phone: 18px dot with an 8px halo ring (box-shadow 0 0 0 8px).
         canvas.drawCircle(cx, cy, 17f * u, halo)
         canvas.drawCircle(cx, cy, 9f * u, core)
     }

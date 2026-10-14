@@ -10,11 +10,6 @@
     android:paddingEnd="@dimen/small_margin"
     android:paddingBottom="@dimen/small_margin">
 
-    <!--
-        Sized by LaunchablesAdapter once laid out: as tall as the profile's icon plus its top padding
-        when a size is known (so a row is icon + label, and six of them fit a page), square by
-        width otherwise.
-    -->
     <ImageView
         android:id="@+id/launcher_iconView"
         android:layout_width="match_parent"
@@ -23,17 +18,6 @@
         android:contentDescription="@null"
         android:scaleType="fitCenter" />
 
-    <!--
-        White, and stated here as well as in LaunchablesAdapter so a label is never left carrying the
-        theme's text colour: MyTextView starts from the theme, and the theme's colour follows the
-        wallpaper under Material You.
-
-        The shadow is what keeps it *reading* as white. The drawer is a 50% black scrim over the
-        wallpaper, so whatever the user has set shows through behind these labels; without a dark
-        shadow the thin antialiased glyphs pick up the colour behind them and the same white label
-        looks blue over a blue wallpaper and warm over a warm one. The home screen's labels have
-        carried the same shadow all along (DeskGrid.textPaint).
-    -->
     <org.fossify.commons.views.MyTextView
         android:id="@+id/launcher_labelView"
         android:layout_width="match_parent"

@@ -55,20 +55,9 @@ class InlineSponsor() {
     companion object {
         private var nativeAd: NativeAd? = null
 
-        /**
-         * A load is in flight. The pool is one static slot and every `show*` kicks a refill,
-         * so without this a surface that opens twice in a row (the app drawer, the left panel)
-         * stacks concurrent AdLoader requests that each overwrite — and destroy — the last
-         * one's result.
-         */
         @Volatile
         private var loadingSince = 0L
 
-        /**
-         * Observers that asked while a load was already in flight. Without them a screen that
-         * opens mid-refill (onboarding steps shown seconds apart all share this one slot) was
-         * turned away and never told when the ad landed, so its frame stayed empty.
-         */
         private val waiters = mutableListOf<InlineAdCallback>()
 
         private fun settleWaiters(loaded: Boolean) {
@@ -79,38 +68,15 @@ class InlineSponsor() {
             }
         }
 
-        /**
-         * How long a request may be considered in flight. AdLoader always answers one of its
-         * two callbacks, but a latched flag here would kill native ads process-wide, so the
-         * guard expires rather than trusting that.
-         */
         private const val LOAD_TIMEOUT_MS = 60_000L
 
         private val isLoading: Boolean
             get() = loadingSince != 0L &&
                     System.currentTimeMillis() - loadingSince < LOAD_TIMEOUT_MS
 
-        /**
-         * Whether a native is in hand right now.
-         *
-         * Callers that re-render an already-filled frame need this: rendering consumes the
-         * pooled ad, so asking again before the refill lands would drop through to the
-         * fallback path and replace a good ad with a custom one. See
-         * [com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings.renewSlot].
-         */
         fun hasPreloadedNative(): Boolean = nativeAd != null
     }
 
-    /**
-     * Takes the shimmer down and clears whatever half-built view is in the frame.
-     *
-     * Every render path below builds the ad view FIRST and stops the shimmer only once that
-     * has succeeded — so anything thrown while binding a template (a null asset, a recycled
-     * NativeAd, an inflate failure) used to land in a catch that only logged, leaving the
-     * shimmer running over an empty frame for as long as the screen lived. The launcher's
-     * side panels are where that shows up worst: they are never recreated, so the placeholder
-     * stays until the process dies.
-     */
     private fun wipeToEmpty(layout: FrameLayout, shimmer: ShimmerFrameLayout?) {
         runCatching {
             shimmer?.stopShimmer()
@@ -126,25 +92,23 @@ class InlineSponsor() {
 
     fun fetchNativeADs(context: Activity, observer: InlineAdCallback? = null) {
         val adsPreference = AdPrefsStore.getInstance(context)
-        // Ads toggle and type check
+
         if (!adsPreference.getBoolean("IsAdsON") || AdFormatKind.fromString(adsPreference.getString("IsAdType")) != AdFormatKind.GOOGLE) {
             observer?.onNativeAdFailed()
             return
         }
-        // Firebase "NativeBanner" master switch — disable native ad loading
+
         if (!adsPreference.getBoolean("NativeAd")) {
             observer?.onNativeAdFailed()
             return
         }
-        // Screen-wise aware: resolves to ScreenAds.default native id, or the
-        // global googleNative when screen_wise_ad is off.
+
         val adUnit = PageSponsorSettings.nativeAdUnitId(context)
         if (adUnit.isEmpty()) {
             observer?.onNativeAdFailed()
             return
         }
-        // One request at a time — see [isLoading]. A caller waiting on the result is told when
-        // the in-flight one settles instead of being dropped.
+
         if (isLoading) {
             Log.d("NativeAds", "load already in flight — waiting on it")
             observer?.let { waiters += it }
@@ -155,23 +119,15 @@ class InlineSponsor() {
             AdLoader.Builder(context, adUnit)
                 .forNativeAd { nativeAds ->
                     AdPulse.loaded(context, "native")
-                    // Always cache the ad — even when the activity that
-                    // triggered this load is destroyed by the time the ad
-                    // lands. The cache is a static field; it survives
-                    // activity transitions and can be shown by the next
-                    // caller. Previously this branch destroyed the ad,
-                    // which is why "1 load → then nothing" was the symptom:
-                    // the splash refill landed after splash was gone, got
-                    // destroyed, and every subsequent show found null.
+
                     nativeAd?.destroy()
                     nativeAd = nativeAds
                     loadingSince = 0L
-                    // Screens that asked mid-load check their own lifecycle in their callback.
+
                     settleWaiters(loaded = true)
 
                     if (context.isActivityDestroyedCompat()) {
-                        // Originating activity is gone — cache only, skip
-                        // observer/log calls that need a live context.
+
                         return@forNativeAd
                     }
 
@@ -180,7 +136,6 @@ class InlineSponsor() {
                         context.trackEvent("NativeAds_load")
                     } catch (e: Exception) {
                     }
-
 
                     Log.e("NativeAds", "Google Load: nativeAd")
                 }
@@ -203,8 +158,6 @@ class InlineSponsor() {
                         nativeAd = null
                     }
 
-                    // The cached ad may be shown on a later screen than the one that loaded it,
-                    // so these resolve the screen in front rather than the loading activity.
                     override fun onAdImpression() {
                         super.onAdImpression()
                         AdPulse.impression(context.applicationContext, "native")
@@ -224,7 +177,6 @@ class InlineSponsor() {
         adLoader.loadAd(AdRequest.Builder().build())
     }
 
-    //================================================================================BigNAtive
     fun presentBigNative(
         context: Activity,
         layout: FrameLayout,
@@ -236,14 +188,12 @@ class InlineSponsor() {
 
         val adsPreference = AdPrefsStore.getInstance(context)
 
-        // 🔥 1. Activity lifecycle safety
         if (context.isFinishing || context.isDestroyed) return
 
-        // 🔥 2. Network + Ads ON + InlineSponsorStrip master switch
         if (!isNetworkConnected(context)
             || !adsPreference.getBoolean("IsAdsON")
             || !adsPreference.getBoolean("NativeAd")
-            // Per-screen visibility: a screen whose ScreenAds entry is off gets no native.
+
             || !PageSponsorSettings.resolve(context, context.javaClass.simpleName).show
         ) {
             layout.removeAllViews()
@@ -255,7 +205,6 @@ class InlineSponsor() {
             return
         }
 
-        // 🔥 3. Counter logic
         if (nativeCounter < adsPreference.getInt("NativeCounter")) {
             nativeCounter++
             layout.removeAllViews()
@@ -268,8 +217,6 @@ class InlineSponsor() {
         }
         nativeCounter = 0
 
-
-        // 🔥 4. UI loading state
         layout.visible()
         shimmer?.startShimmer()
         shimmer?.isVisible = true
@@ -278,7 +225,7 @@ class InlineSponsor() {
 
         when (AdFormatKind.fromString(adsPreference.getString("IsAdType"))) {
             AdFormatKind.GOOGLE -> {
-                layout.post {  // 🔥 UI thread safe
+                layout.post {
                     try {
                         if (context.isFinishing || context.isDestroyed) return@post
 
@@ -319,7 +266,6 @@ class InlineSponsor() {
                             return@post
                         }
 
-                        // 🔥 GOOGLE FAIL → fallback
                         if (adsPreference.getBoolean("IsFail_FB")) {
                             presentFBNativeFallback(context, layout, imageView, shimmer)
                         } else {
@@ -376,7 +322,6 @@ class InlineSponsor() {
             (binding.mainNativeadViewVw.headlineView as TextView).text = nativeAd.headline
             binding.mainNativeadViewVw.mediaView?.mediaContent = nativeAd.mediaContent
 
-
             binding.mainNativeadViewVw.bodyView?.apply {
                 visibility = if (nativeAd.body == null) View.GONE else View.VISIBLE
                 (binding.mainNativeadViewVw.bodyView as TextView).text = nativeAd.body
@@ -392,9 +337,6 @@ class InlineSponsor() {
                 (binding.mainNativeadViewVw.callToActionView as TextView).text = nativeAd.callToAction
             }
 
-
-            // Remote Config ad colours (with the layout's own theme as the fallback), the rating line
-            // and the CTA glow — the reference app's InlineAdSkin.
             InlineAdSkin.bind(binding.mainNativeadViewVw, nativeAd)
             binding.mainNativeadViewVw.setNativeAd(nativeAd)
         }
@@ -416,7 +358,6 @@ class InlineSponsor() {
             (binding.mainNativeadViewVw.headlineView as TextView).text = nativeAd.headline
             binding.mainNativeadViewVw.mediaView?.mediaContent = nativeAd.mediaContent
 
-
             binding.mainNativeadViewVw.bodyView?.apply {
                 visibility = if (nativeAd.body == null) View.GONE else View.VISIBLE
                 (binding.mainNativeadViewVw.bodyView as TextView).text = nativeAd.body
@@ -432,16 +373,11 @@ class InlineSponsor() {
                 (binding.mainNativeadViewVw.callToActionView as TextView).text = nativeAd.callToAction
             }
 
-
-            // Remote Config ad colours (with the layout's own theme as the fallback), the rating line
-            // and the CTA glow — the reference app's InlineAdSkin.
             InlineAdSkin.bind(binding.mainNativeadViewVw, nativeAd)
             binding.mainNativeadViewVw.setNativeAd(nativeAd)
         }
     }
 
-
-    // Helper function for FB fallback
     private fun presentFBNativeFallback(
         context: Activity,
         layout: FrameLayout,
@@ -520,20 +456,16 @@ class InlineSponsor() {
         activity: Activity,
         adSize: String? = null
     ) {
-        // ✅ Make sure container is visible
+
         viewGroup.isVisible = true
 
-        // Unregister any old ad view
         nativeAd.unregisterView()
 
-        // ✅ Inflate layout with ViewBinding
         val binding = AdMNativeBinding.inflate(LayoutInflater.from(activity), viewGroup, false)
 
-        // Clear old views and add new ad view
         viewGroup.removeAllViews()
         viewGroup.addView(binding.root)
 
-        // ✅ Add AdChoicesView
         val adOptionsView = AdOptionsView(activity, nativeAd, binding.nativviewVw)
         binding.adChoicesContainerVw.removeAllViews()
         binding.adChoicesContainerVw.addView(adOptionsView, 0)
@@ -556,7 +488,7 @@ class InlineSponsor() {
         (binding.promoAdCallToAction as TextView).apply {
             setTextColor(Color.parseColor(btntxtColor))
         }
-        // ✅ Bind ad data to views
+
         binding.promoAdTitle.text = nativeAd.advertiserName
         binding.promoAdBody.text = nativeAd.adBodyText
         binding.promoAdSocialContext.text = nativeAd.adSocialContext
@@ -569,7 +501,6 @@ class InlineSponsor() {
             binding.promoAdCallToAction.isVisible = false
         }
 
-        // ✅ Register clickable views
         val clickableViews = listOf(binding.promoAdTitle, binding.promoAdCallToAction)
 
         nativeAd.registerViewForInteraction(
@@ -577,8 +508,6 @@ class InlineSponsor() {
         )
     }
 
-    //================================================================================BigNAtive
-//================================================================================MidNAtive
     fun presentMidNative(
         context: Activity,
         layout: FrameLayout,
@@ -587,10 +516,9 @@ class InlineSponsor() {
         ln: LinearLayout? = null
     ) {
         val adsPref = AdPrefsStore.getInstance(context)
-        // 🔥 1. Activity lifecycle safety
+
         if (context.isFinishing || context.isDestroyed) return
 
-        // Check network & ad toggle + InlineSponsorStrip master switch
         if (!isNetworkConnected(context)
             || !adsPref.getBoolean("IsAdsON")
             || !adsPref.getBoolean("NativeAd")
@@ -605,7 +533,6 @@ class InlineSponsor() {
             return
         }
 
-        // MidNative counter logic
         if (nativeCounter < adsPref.getInt("MidNativeCounter")) {
             nativeCounter += 1
             layout.removeAllViews()
@@ -624,7 +551,6 @@ class InlineSponsor() {
         ln?.gone()
         layout.visible()
 
-
         when (AdFormatKind.fromString(adsPref.getString("IsAdType"))) {
             AdFormatKind.GOOGLE -> {
                 layout.post {
@@ -639,12 +565,11 @@ class InlineSponsor() {
                             )
 
                             layout.removeAllViews()
-                            // Stop shimmer before adding real ad
+
                             shimmer?.stopShimmer()
                             shimmer?.isVisible = false
                             layout.addView(binding.root)
 
-                            // Log load
                             context.trackEvent("NativeAds_showMidNative_Google")
 
                             if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(context)
@@ -654,10 +579,10 @@ class InlineSponsor() {
                             }
 
                             nativeAd = null
-                            fetchNativeADs(context) // preload next Google ad
+                            fetchNativeADs(context)
                             return@post
                         }
-                        // Google failed → fallback
+
                         if (adsPref.getBoolean("IsFail_FB")) {
                             presentMidFBNativeFallback(context, layout, shimmer, imageView)
                         } else {
@@ -675,7 +600,6 @@ class InlineSponsor() {
                         wipeToEmpty(layout, shimmer)
                     }
                 }
-
 
             }
 
@@ -775,20 +699,16 @@ class InlineSponsor() {
         activity: Activity,
         adSize: String? = null
     ) {
-        // ✅ Make sure container is visible
+
         viewGroup.isVisible = true
 
-        // Unregister any old ad view
         nativeAd.unregisterView()
 
-        // ✅ Inflate layout with ViewBinding
         val binding = AdMNativeMidBinding.inflate(LayoutInflater.from(activity), viewGroup, false)
 
-        // Clear old views and add new ad view
         viewGroup.removeAllViews()
         viewGroup.addView(binding.root)
 
-        // ✅ Add AdChoicesView
         val adOptionsView = AdOptionsView(activity, nativeAd, binding.nativviewVw)
         binding.adChoicesContainerVw.removeAllViews()
         binding.adChoicesContainerVw.addView(adOptionsView, 0)
@@ -813,7 +733,6 @@ class InlineSponsor() {
             setTextColor(Color.parseColor(btntxtColor))
         }
 
-        // ✅ Bind ad data to views
         binding.promoAdTitle.text = nativeAd.advertiserName
         binding.promoAdBody.text = nativeAd.adBodyText
         binding.promoAdSocialContext.text = nativeAd.adSocialContext
@@ -826,7 +745,6 @@ class InlineSponsor() {
             binding.promoAdCallToAction.isVisible = false
         }
 
-        // ✅ Register clickable views
         val clickableViews = listOf(binding.promoAdTitle, binding.promoAdCallToAction)
 
         nativeAd.registerViewForInteraction(
@@ -847,7 +765,6 @@ class InlineSponsor() {
 
             (binding.mainNativeadViewVw.headlineView as TextView).text = nativeAd.headline
 
-
             binding.mainNativeadViewVw.bodyView?.apply {
                 visibility = if (nativeAd.body == null) View.GONE else View.VISIBLE
                 (binding.mainNativeadViewVw.bodyView as TextView).text = nativeAd.body
@@ -863,14 +780,11 @@ class InlineSponsor() {
                 (binding.mainNativeadViewVw.callToActionView as TextView).text = nativeAd.callToAction
             }
 
-            // Remote Config ad colours (with the layout's own theme as the fallback), the rating line
-            // and the CTA glow — the reference app's InlineAdSkin.
             InlineAdSkin.bind(binding.mainNativeadViewVw, nativeAd)
             binding.mainNativeadViewVw.setNativeAd(nativeAd)
         }
     }
 
-    // Extension helpers
     fun View.visible() {
         this.visibility = View.VISIBLE
     }
@@ -891,7 +805,6 @@ class InlineSponsor() {
         }
     }
 
-
     fun presentMidNative2(
         context: Activity,
         layout: FrameLayout,
@@ -900,10 +813,9 @@ class InlineSponsor() {
         ln: LinearLayout? = null
     ) {
         val adsPref = AdPrefsStore.getInstance(context)
-        // 🔥 1. Activity lifecycle safety
+
         if (context.isFinishing || context.isDestroyed) return
 
-        // Check network & ad toggle
         if (!isNetworkConnected(context) || !adsPref.getBoolean("IsAdsON") || !adsPref.getBoolean("NativeAd")
             || !PageSponsorSettings.resolve(context, context.javaClass.simpleName).show
         ) {
@@ -916,7 +828,6 @@ class InlineSponsor() {
             return
         }
 
-        // MidNative counter logic
         if (nativeCounter < adsPref.getInt("MidNativeCounter")) {
             nativeCounter += 1
             layout.removeAllViews()
@@ -948,12 +859,11 @@ class InlineSponsor() {
                             )
 
                             layout.removeAllViews()
-                            // Stop shimmer before adding real ad
+
                             shimmer?.stopShimmer()
                             shimmer?.isVisible = false
                             layout.addView(binding.root)
 
-                            // Log load
                             context.trackEvent("NativeAds_showMidNative2_Google")
 
                             if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(context)
@@ -963,10 +873,10 @@ class InlineSponsor() {
                             }
 
                             nativeAd = null
-                            fetchNativeADs(context) // preload next Google ad
+                            fetchNativeADs(context)
                             return@post
                         }
-                        // Google failed → fallback
+
                         layout.removeAllViews()
                         shimmer?.stopShimmer()
                         shimmer?.isVisible = false
@@ -980,7 +890,6 @@ class InlineSponsor() {
                         wipeToEmpty(layout, shimmer)
                     }
                 }
-
 
             }
 
@@ -1017,7 +926,6 @@ class InlineSponsor() {
             (binding.mainNativeadViewVw.headlineView as TextView).text = nativeAd.headline
             binding.mainNativeadViewVw.mediaView?.mediaContent = nativeAd.mediaContent
 
-
             binding.mainNativeadViewVw.bodyView?.apply {
                 visibility = if (nativeAd.body == null) View.GONE else View.VISIBLE
                 (binding.mainNativeadViewVw.bodyView as TextView).text = nativeAd.body
@@ -1033,13 +941,9 @@ class InlineSponsor() {
                 (binding.mainNativeadViewVw.callToActionView as TextView).text = nativeAd.callToAction
             }
 
-
-            // Remote Config ad colours (with the layout's own theme as the fallback), the rating line
-            // and the CTA glow — the reference app's InlineAdSkin.
             InlineAdSkin.bind(binding.mainNativeadViewVw, nativeAd)
             binding.mainNativeadViewVw.setNativeAd(nativeAd)
         }
     }
-
 
 }

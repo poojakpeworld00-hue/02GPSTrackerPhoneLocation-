@@ -14,36 +14,20 @@ import androidx.lifecycle.LifecycleOwner
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 
-/**
- * `launcher_ads.recent_click`: the Recents (overview) button pressed while the launcher is on screen.
- *
- * Nothing can be shown over the Recents list itself, so the press is only recorded here, and the
- * ad runs when the user comes back to the launcher — within `return_window_sec` (default 60s), so
- * a return much later is not treated as the same moment. Picking another app from Recents and
- * coming back later therefore shows nothing.
- *
- * The press is heard through `ACTION_CLOSE_SYSTEM_DIALOGS` (reason `recentapps`), the same signal
- * [OsDialogAssist][com.find.phone.gps.location.tracker.helpers.OsDialogAssist] uses. The
- * platform keeps narrowing that broadcast, so on some devices and Android versions it never
- * arrives, and then this surface simply never fires.
- */
 object RecentsTaskObserver {
 
     private const val TAG = "RecentsTaskObserver"
     private const val REASON_RECENT_APPS = "recentapps"
     private const val TEARDOWN_DELAY_MS = 100L
 
-    /** When Recents was last pressed on the launcher; 0 = nothing pending. */
     private var pressedAt = 0L
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
-    /** Listens for Recents while [activity] (the launcher) is on screen. Call once per instance. */
     fun attach(activity: Activity) {
         (activity as? LifecycleOwner)?.lifecycle?.addObserver(Observer(activity))
     }
 
-    /** The launcher is back in front: runs `recent_click` if Recents was pressed recently enough. */
     fun onLauncherResume(activity: Activity) {
         val at = pressedAt
         if (at == 0L) return
@@ -53,7 +37,7 @@ object RecentsTaskObserver {
             log("recents return after ${age}ms — outside the window, nothing shown")
             return
         }
-        // After the resume settles: a full-screen ad shown from inside onResume can be refused.
+
         activity.window.decorView.post {
             if (activity.isFinishing || activity.isDestroyed) return@post
             HomeAdsSettings.runSurface(activity, HomeAdsSettings.HomeDeskFragment.RECENT_CLICK) {}
@@ -86,7 +70,6 @@ object RecentsTaskObserver {
             }
         }
 
-        // The broadcast arrives as the launcher is left, so the receiver stays up a beat past onStop.
         override fun onStop(owner: LifecycleOwner) {
             val teardown = Runnable { unregister() }
             pendingTeardown = teardown

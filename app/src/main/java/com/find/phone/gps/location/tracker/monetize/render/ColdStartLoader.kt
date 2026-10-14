@@ -12,14 +12,6 @@ import android.widget.TextView
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.BlockingLoaderDialog
 import com.find.phone.gps.location.tracker.R
 
-/**
- * The loader shown while an ad for an app tap is fetched on the spot (`on_demand`): the tapped
- * app's icon and name over a spinner, so the pause reads as that app opening.
- *
- * Follows the same `Inter_Loader_Show` switch as [BlockingLoaderDialog]; off means the wait happens
- * with no loader at all. Without a known package it falls back to [BlockingLoaderDialog]'s generic
- * loader.
- */
 object ColdStartLoader {
 
     private var dialog: Dialog? = null
@@ -51,7 +43,6 @@ object ColdStartLoader {
         }.onFailure { Log.e("ColdStartLoader", "could not show loader", it) }
     }
 
-    /** Takes down whichever loader is up — this one or the generic fallback. */
     fun hide() {
         runCatching {
             dialog?.takeIf { it.isShowing }?.let { d ->

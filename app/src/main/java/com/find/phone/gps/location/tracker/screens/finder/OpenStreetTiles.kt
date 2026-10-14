@@ -17,12 +17,10 @@ import org.osmdroid.views.overlay.TilesOverlay
 import java.io.File
 import kotlin.math.log2
 
-/** The OpenStreetMap setup shared by the result sheet's map card and the Number Details header. */
 object OpenStreetTiles {
 
     private var configured = false
 
-    /** osmdroid needs its config before any MapView is inflated. */
     fun init(context: Context) {
         if (configured) return
         val app = context.applicationContext
@@ -35,7 +33,6 @@ object OpenStreetTiles {
         configured = true
     }
 
-    /** MAPNIK tiles, no zoom buttons; [interactive] false makes it a picture (no gestures). */
     @SuppressLint("ClickableViewAccessibility")
     fun style(map: MapView, interactive: Boolean) = map.apply {
         setTileSource(TileSourceFactory.MAPNIK)
@@ -45,33 +42,23 @@ object OpenStreetTiles {
         maxZoomLevel = 18.0
         setMultiTouchControls(interactive)
         if (!interactive) setOnTouchListener { _, _ -> true }
-        // Dark theme: invert the light OSM tiles so the map doesn't glare.
+
         val night = resources.configuration.uiMode and UiConfiguration.UI_MODE_NIGHT_MASK
         if (night == UiConfiguration.UI_MODE_NIGHT_YES) overlayManager.tilesOverlay.setColorFilter(TilesOverlay.INVERT_COLORS)
     }
 
-    /**
-     * Centres [map] on the report's area with the pulsing circle. [coarse] keeps it at state
-     * level (the locked preview must not give the city away). Null when the area has no point.
-     */
     fun place(map: MapView, report: NumberSummary, coarse: Boolean): ZoneRippleOverlay? {
         val pin = report.pin ?: return null
         val precision = if (coarse && report.precision.zoom > ZoneAccuracy.STATE.zoom) ZoneAccuracy.STATE else report.precision
         return placeAt(map, pin, precision)
     }
 
-    /**
-     * The zoom at which [precision]'s circle looks as big as the state circle does at state zoom.
-     * For small map cards: at a city's own zoom its circle fills the whole card, which reads as a
-     * plain blue page, while this keeps it a ring around the right place.
-     */
     fun cardZoom(precision: ZoneAccuracy): Double {
         if (precision.radiusMeters <= 0.0) return precision.zoom
         val fit = ZoneAccuracy.STATE.zoom + log2(ZoneAccuracy.STATE.radiusMeters / precision.radiusMeters)
         return minOf(precision.zoom, fit)
     }
 
-    /** Centres [map] on [pin] at [zoom] (default: [precision]'s own), with its pulsing circle. */
     fun placeAt(map: MapView, pin: MapMarkerPoint, precision: ZoneAccuracy, zoom: Double = precision.zoom): ZoneRippleOverlay {
         val point = GeoPoint(pin.lat, pin.lng)
         map.controller.setZoom(zoom)

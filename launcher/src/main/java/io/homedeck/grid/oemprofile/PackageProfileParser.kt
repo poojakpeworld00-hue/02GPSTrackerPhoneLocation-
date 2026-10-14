@@ -9,25 +9,6 @@ import org.xmlpull.v1.XmlPullParser
 import timber.log.Timber
 import kotlin.math.hypot
 
-/**
- * The previous launcher's *own* factory grid, read from its APK resources through the public
- * `getResourcesForApplication` API — real numbers for that exact build, no table involved.
- *
- * Three readers, each filling only what the previous left unknown:
- *
- * 1. **Launcher3 `device_profiles.xml`** — every AOSP-derived launcher (Pixel, ColorOS/OxygenOS,
- *    Motorola, Nothing, Sony, HMD, plain AOSP) ships `res/xml/device_profiles.xml` listing its
- *    grid options with the display size each is meant for. We pick the option Launcher3 itself
- *    would pick for this display.
- * 2. **Generic name reader** ([StockGridParser]) — for every other launcher: the APK's own
- *    resource names ([PackageResourceTable]) are scored for "this is the column count" and read
- *    through `Resources`, so a launcher this code has never met still resolves.
- * 3. **Console probes** — an explicit per-package name list in Remote Config `home_profile_probes`,
- *    the override for a launcher whose names fool the generic reader.
- *
- * Anything that fails — package not visible, no such resource, odd XML — yields nothing for that
- * field and the documented OEM default (rules table) or our standard value stands.
- */
 object PackageProfileParser {
 
     private const val RES_AUTO_NS = "http://schemas.android.com/apk/res-auto"
@@ -35,11 +16,6 @@ object PackageProfileParser {
     private const val TAG_GRID_OPTION = "grid-option"
     private const val TAG_DISPLAY_OPTION = "display-option"
 
-    /**
-     * Remote Config `home_profile_probes`: `{ "<package>": { "home_cols": ["name", …], "home_rows": [...],
-     * "dock_size": [...], "drawer_cols": [...], "icon_size_dp": [...], "label_sp": [...] } }` — resource
-     * names to try in order; `label_sp` names dimens read with their unit.
-     */
     const val KEY_HOME_COLS = "home_cols"
     const val KEY_HOME_ROWS = "home_rows"
     const val KEY_DOCK_SIZE = "dock_size"
@@ -47,33 +23,10 @@ object PackageProfileParser {
     const val KEY_ICON_SIZE_DP = "icon_size_dp"
     const val KEY_LABEL_SP = "label_sp"
 
-    /**
-     * Drawer-mode probe, for the launchers that state their home/drawer layout as a number of
-     * their own: `drawer_mode` names the integer resources holding the factory value,
-     * `drawer_mode_setting` the `Settings.Global` key the launcher writes when the user switches
-     * modes (unset until they do, so the resource is the factory answer), and `drawer_mode_values`
-     * maps those numbers onto ours. A launcher with no such entry - Samsung, Pixel, MIUI, every
-     * other - is untouched by this; its mode keeps coming from the rules table.
-     *
-     * ColorOS / OxygenOS: `integer/config_default_launcher_mode`, whose `LauncherMode` is
-     * Standard 0 (every app on the home screen, no drawer), Drawer 2 (home screen + drawer) and
-     * Simple 3 (big-icon home, no drawer); `LauncherMode.create` reads anything else as Standard.
-     * Verified identical on OxygenOS 14 (com.android.launcher 14.0.62) and 16 (16.4.25).
-     */
     const val KEY_DRAWER_MODE = "drawer_mode"
     const val KEY_DRAWER_MODE_SETTING = "drawer_mode_setting"
     const val KEY_DRAWER_MODE_VALUES = "drawer_mode_values"
 
-    /**
-     * Bool resource naming whether that launcher also puts a newly installed app on the workspace
-     * (ColorOS: `config_default_add_new_app_to_workspace_in_drawer_mode`). Same gate as
-     * [KEY_DRAWER_MODE]: only a launcher whose entry names it is read at all.
-     */
-
-    /**
-     * The probes this app ships with, used when the console blob is empty. Names verified against
-     * the launcher build named beside them; mirrored in `docs/remote-config/home_profile_probes.json`.
-     */
     const val DEFAULT_PROBES_JSON = """
 {
   "com.miui.home": {
@@ -114,14 +67,8 @@ object PackageProfileParser {
 }
 """
 
-    /** The grid numbers an APK yielded and which readers contributed, for the log. */
     class ApkFacts(val numbers: HomeLayoutProfile.Numbers?, val sources: List<String>)
 
-    /**
-     * Grid numbers from, in order: the Launcher3 `device_profiles.xml`, the generic name-based
-     * reader over the APK's resource index, and the console probes as an override. Each fills
-     * only what the previous left null.
-     */
     fun read(context: Context, fp: HomeSignature, probesJson: String): ApkFacts? {
         if (fp.homePackage.isEmpty() || fp.homePackage == context.packageName) return null
         val pm = context.packageManager
@@ -145,8 +92,6 @@ object PackageProfileParser {
 
         return ApkFacts(numbers.takeIf { !it.isEmpty }, sources)
     }
-
-    // ---- Launcher3 ---------------------------------------------------------------------------
 
     private class GridOption(
         val cols: Int,
@@ -183,8 +128,6 @@ object PackageProfileParser {
         val heightDp = maxOf(metrics.widthPixels, metrics.heightPixels) / metrics.density
         val wantedCategory = if (context.resources.configuration.smallestScreenWidthDp >= 600) "tablet" else "phone"
 
-        // Launcher3 keeps the options tagged for this device category that may be a default, and
-        // takes the one whose display size is nearest; an untagged file is treated as all-phone.
         val eligible = options.filter { it.deviceCategory == null || it.deviceCategory.contains(wantedCategory) }
             .ifEmpty { options }
         val (best, display) = eligible.flatMap { option ->
@@ -199,9 +142,9 @@ object PackageProfileParser {
             dockSize = best.hotseat,
             drawerCols = best.allAppsCols ?: best.cols,
             iconSizeDp = display.iconImageSize?.toInt()?.takeIf { it in 24..120 },
-            // Launcher3 draws its labels at `iconTextSize` sp (DeviceProfile.iconTextSizePx = sp * scaledDensity).
+
             labelSp = display.iconTextSize?.takeIf { it in HomeLayoutProfile.MIN_LABEL_SP..HomeLayoutProfile.MAX_LABEL_SP },
-            // Launcher3 states the all-apps icon apart (`allAppsIconSize`); a hotseat size only where a fork adds it.
+
             drawerIconDp = display.allAppsIconSize?.toInt()?.takeIf { it in 24..120 },
             dockIconDp = display.hotseatIconSize?.toInt()?.takeIf { it in 24..120 },
         )
@@ -234,7 +177,7 @@ object PackageProfileParser {
                         val w = parser.float("minWidthDps")
                         val h = parser.float("minHeightDps")
                         if (current != null && w != null && h != null) {
-                            // Older files predate canBeDefault; there every option was a candidate.
+
                             current.displays.add(
                                 DisplayOption(
                                     w, h, parser.bool("canBeDefault") ?: true, parser.float("iconImageSize"), parser.float("iconTextSize"),
@@ -252,7 +195,6 @@ object PackageProfileParser {
         return options
     }
 
-    // Attributes sit in the res-auto namespace; a build that flattened them is tried unqualified too.
     private fun XmlResourceParser.str(name: String): String? =
         getAttributeValue(RES_AUTO_NS, name) ?: getAttributeValue(null, name)
 
@@ -260,9 +202,6 @@ object PackageProfileParser {
     private fun XmlResourceParser.float(name: String): Float? = str(name)?.trim()?.toFloatOrNull()
     private fun XmlResourceParser.bool(name: String): Boolean? = str(name)?.trim()?.toBooleanStrictOrNull()
 
-    // ---- Named-integer probes ----------------------------------------------------------------
-
-    /** `integer/<name>` as is, else `dimen/<name>` converted to dp; null when neither exists. */
     private fun readInt(resources: Resources, packageName: String, name: String): Int? {
         val intId = resources.getIdentifier(name, "integer", packageName)
         if (intId != 0) return runCatching { resources.getInteger(intId) }.getOrNull()
@@ -273,10 +212,6 @@ object PackageProfileParser {
         return null
     }
 
-    /**
-     * The mode [value] stands for, per the probe entry's own table; null when the entry does not
-     * name that number. Pure, so an OEM's numbering is unit-testable without its device.
-     */
     fun drawerModeOf(value: Int, values: JSONObject?): TrayLayoutMode? {
         val name = values?.optString(value.toString())?.trim().orEmpty()
         if (name.isEmpty()) return null
@@ -297,8 +232,7 @@ object PackageProfileParser {
             }
             return null
         }
-        // Only for a launcher whose entry says where its mode lives: what the user switched to
-        // (the Settings value, written on a switch) first, the launcher's own default after.
+
         val drawerMode = probes.optJSONArray(KEY_DRAWER_MODE)?.let { names ->
             val values = probes.optJSONObject(KEY_DRAWER_MODE_VALUES)
             val live = probes.optString(KEY_DRAWER_MODE_SETTING).trim().takeIf { it.isNotEmpty() }?.let { key ->
@@ -324,7 +258,7 @@ object PackageProfileParser {
             homeRows = probe(KEY_HOME_ROWS),
             dockSize = probe(KEY_DOCK_SIZE),
             drawerCols = probe(KEY_DRAWER_COLS),
-            // An icon size may be an integer (dp) or a dimen; both read as dp.
+
             iconSizeDp = probe(KEY_ICON_SIZE_DP, 24..120),
             labelSp = labelSp,
             drawerMode = drawerMode,

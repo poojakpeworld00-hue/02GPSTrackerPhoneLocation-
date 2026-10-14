@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SIM Tools "My number" page (design 2a): opened from the drawer. A back header, "Your SIM cards
-     on this phone", one card per SIM (carrier, region, Default badge, Copy), and the on-device note.
-     Uses READ_PHONE_STATE / READ_PHONE_NUMBERS only; no call log or SMS access. -->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -80,7 +78,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- SIM cards side by side; selecting one drives the SIM tools below. -->
                 <LinearLayout
                     android:id="@+id/simCardsVw"
                     android:layout_width="match_parent"
@@ -88,7 +85,6 @@
                     android:baselineAligned="false"
                     android:orientation="horizontal" />
 
-                <!-- Empty state: shown when phone access is not granted / no ready SIM. -->
                 <LinearLayout
                     android:id="@+id/emptyStateVw"
                     android:layout_width="match_parent"
@@ -123,7 +119,6 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
-                <!-- SIM tools: links out to the per-SIM tools (design 2a). -->
                 <LinearLayout
                     android:id="@+id/simToolsSectionVw"
                     android:layout_width="match_parent"

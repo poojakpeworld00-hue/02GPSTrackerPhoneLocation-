@@ -119,14 +119,15 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
             val row = rows[i]
             val on = i == selected
 
-            row.planCardVw.setBackgroundResource(if (on) R.drawable.vs_plan_on_r18 else R.drawable.vs_plan_off_r18)
-            row.lblName.setTextColor(getColor(if (on) R.color.white else R.color.ds_ink))
-            row.lblPrice.setTextColor(getColor(if (on) R.color.white else R.color.ds_ink))
-            row.lblPeriod.setTextColor(if (on) getColor(R.color.white) and 0xD9FFFFFF.toInt() else getColor(R.color.ds_muted))
-            row.planCardVw.elevation = if (on) dp(10).toFloat() else 0f
+            row.planCardVw.setBackgroundResource(if (on) R.drawable.pw_plan_on_r20 else R.drawable.pw_plan_off_r20)
+            row.lblName.setTextColor(getColor(if (on) R.color.pw_plan_name_on else R.color.ds_muted))
+            row.lblPrice.setTextColor(getColor(if (on) R.color.pw_plan_price_on else R.color.ds_ink))
+            row.lblPeriod.setTextColor(getColor(R.color.ds_muted))
+            row.planCheckVw.isVisible = on
+            row.planCardVw.elevation = if (on) dp(6).toFloat() else 0f
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                row.planCardVw.outlineSpotShadowColor = getColor(R.color.ds_primary)
-                row.planCardVw.outlineAmbientShadowColor = getColor(R.color.ds_primary)
+                row.planCardVw.outlineSpotShadowColor = getColor(R.color.pw_plan_on_stroke)
+                row.planCardVw.outlineAmbientShadowColor = getColor(R.color.pw_plan_on_stroke)
             }
             val scale = if (on) SELECTED_SCALE else 1f
             row.root.animate().scaleX(scale).scaleY(scale).setDuration(180L).start()

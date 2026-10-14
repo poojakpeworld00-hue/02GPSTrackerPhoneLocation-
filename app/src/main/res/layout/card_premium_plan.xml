@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
@@ -13,29 +14,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
-        android:background="@drawable/vs_plan_off_r18"
+        android:background="@drawable/pw_plan_off_r20"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="8dp"
-        android:paddingTop="18dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="20dp"
+        android:paddingBottom="14dp">
 
         <TextView
             android:id="@+id/lblName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/figtree_bold"
+            android:letterSpacing="0.04"
             android:maxLines="1"
-            android:textColor="@color/ds_ink"
-            android:textSize="13sp"
+            android:textAllCaps="true"
+            android:textColor="@color/ds_muted"
+            android:textSize="11sp"
             tools:text="1 Week" />
+
+        <View
+            android:layout_width="24dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/pw_plan_off_stroke" />
 
         <TextView
             android:id="@+id/lblPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:autoSizeMaxTextSize="22sp"
             android:autoSizeMinTextSize="14sp"
             android:autoSizeTextType="uniform"
@@ -60,6 +69,22 @@
             android:textSize="11sp"
             tools:text="per week" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/planCheckVw"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_gravity="end|top"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="-4dp"
+        android:background="@drawable/pw_check_badge"
+        android:contentDescription="@null"
+        android:elevation="15dp"
+        android:padding="5dp"
+        android:src="@drawable/vs_ic_check"
+        android:visibility="gone"
+        app:tint="@color/white"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/lblTag"

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pw_hero_inner">#FFDCE6FF</color>
+    <color name="pw_hero_outer">#FFF4F7FB</color>
+    <color name="pw_ring_dashed">#FFB6C6FF</color>
+    <color name="pw_ring_solid">#FFD5E0FF</color>
+    <color name="pw_plan_on_fill">#FFEEF2FF</color>
+    <color name="pw_plan_on_stroke">#FF284CDA</color>
+    <color name="pw_plan_off_fill">#FFFFFFFF</color>
+    <color name="pw_plan_off_stroke">#FFE6ECF3</color>
+    <color name="pw_plan_name_on">#FF284CDA</color>
+    <color name="pw_plan_price_on">#FF284CDA</color>
+</resources>

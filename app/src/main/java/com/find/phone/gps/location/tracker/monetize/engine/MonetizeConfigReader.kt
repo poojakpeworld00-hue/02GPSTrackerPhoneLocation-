@@ -121,7 +121,7 @@ object MonetizeConfigReader {
             CONFIG_TAG,
             "ingested → IsAdsON=${adsPref.getBoolean("IsAdsON")}, IsAdType=${adsPref.getString("IsAdType")}, " +
                 "InterAds=${adsPref.getBoolean("InterAds")}, AppopenAds=${adsPref.getBoolean("AppopenAds")}, " +
-                "NativeAd=${adsPref.getBoolean("NativeAd")}, BannerAds=${adsPref.getBoolean("StripSponsor")}, " +
+                "NativeAd=${adsPref.getBoolean("NativeAd")}, BannerAds=${adsPref.getBoolean("BannerAds")}, " +
                 "screen_wise_ad=${adsPref.getBoolean("screen_wise_ad")}, " +
                 "customAds=${root.optJSONArray("custom_ads")?.length() ?: 0}, " +
                 "fbInit=${fbAppId.isNotEmpty() && fbClientToken.isNotEmpty()}, " +

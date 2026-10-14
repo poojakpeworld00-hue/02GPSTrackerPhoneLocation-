@@ -1,0 +1,34 @@
+{
+  "organic": {
+    "os_style": false,
+    "search_widget": "google",
+    "should_show_time_widget": true,
+    "should_show_search_widget": true,
+    "default_launcher_prompt": true,
+    "guide": {
+      "enabled": false,
+      "swipe_right_contacts": true,
+      "swipe_left_apps": true,
+      "swipe_up_drawer": true
+    },
+    "drawerAppAdEnabled": false,
+    "drawerAppAdEvery": 8,
+    "drawerAppAds": []
+  },
+  "marketing": {
+    "os_style": false,
+    "search_widget": "google",
+    "should_show_time_widget": true,
+    "should_show_search_widget": true,
+    "default_launcher_prompt": true,
+    "guide": {
+      "enabled": false,
+      "swipe_right_contacts": true,
+      "swipe_left_apps": true,
+      "swipe_up_drawer": true
+    },
+    "drawerAppAdEnabled": false,
+    "drawerAppAdEvery": 8,
+    "drawerAppAds": []
+  }
+}

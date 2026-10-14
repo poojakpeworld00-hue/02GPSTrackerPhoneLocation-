@@ -9,26 +9,39 @@ import java.util.concurrent.TimeUnit
 
 object AlarmPlanner {
 
-    private fun workName(id: Long) = "reminder_$id"
+    private const val TAG = "reminder"
+
+    private fun uniqueName(alarmId: Long) = "reminder_$alarmId"
+
+    private fun nextFireAt(entry: AlarmEntry, nowMs: Long): Long? = when {
+        entry.dateTime > nowMs -> entry.dateTime
+        else -> Repeat.nextAfter(entry.repeatOrOnce, entry.baseTime, nowMs)
+    }
 
     fun sync(context: Context, item: AlarmEntry) {
-        if (!item.isActive) return cancel(context, item.id)
-        val now = System.currentTimeMillis()
-        val at = if (item.dateTime > now) item.dateTime
-        else Repeat.nextAfter(item.repeatOrOnce, item.baseTime, now) ?: return cancel(context, item.id)
-        if (at != item.dateTime) AlarmRepository.upsert(context, item.copy(dateTime = at))
+        if (!item.isActive) {
+            cancel(context, item.id)
+            return
+        }
+        val nowMs = System.currentTimeMillis()
+        val fireAt = nextFireAt(item, nowMs)
+        if (fireAt == null) {
+            cancel(context, item.id)
+            return
+        }
+        if (fireAt != item.dateTime) AlarmRepository.upsert(context, item.copy(dateTime = fireAt))
 
-        val request = OneTimeWorkRequestBuilder<AlarmJob>()
-            .setInitialDelay(at - now, TimeUnit.MILLISECONDS)
+        val job = OneTimeWorkRequestBuilder<AlarmJob>()
+            .setInitialDelay(fireAt - nowMs, TimeUnit.MILLISECONDS)
             .setInputData(workDataOf(AlarmJob.KEY_ID to item.id))
             .addTag(TAG)
             .build()
         WorkManager.getInstance(context)
-            .enqueueUniqueWork(workName(item.id), ExistingWorkPolicy.REPLACE, request)
+            .enqueueUniqueWork(uniqueName(item.id), ExistingWorkPolicy.REPLACE, job)
     }
 
     fun cancel(context: Context, id: Long) {
-        WorkManager.getInstance(context).cancelUniqueWork(workName(id))
+        WorkManager.getInstance(context).cancelUniqueWork(uniqueName(id))
     }
 
     fun save(context: Context, item: AlarmEntry) {
@@ -42,20 +55,19 @@ object AlarmPlanner {
     }
 
     fun snooze(context: Context, id: Long, minutes: Int) {
-        val item = AlarmRepository.get(context, id) ?: return
-        save(context, item.copy(dateTime = System.currentTimeMillis() + minutes * 60_000L, done = false, enabled = true))
+        val stored = AlarmRepository.get(context, id) ?: return
+        val wakeAt = System.currentTimeMillis() + minutes * 60_000L
+        save(context, stored.copy(dateTime = wakeAt, done = false, enabled = true))
     }
 
     fun markDone(context: Context, id: Long) {
-        val item = AlarmRepository.get(context, id) ?: return
-        val next = Repeat.nextAfter(item.repeatOrOnce, item.baseTime, System.currentTimeMillis())
-        if (next == null) {
-            cancel(context, id)
-            AlarmRepository.upsert(context, item.copy(done = true))
-        } else {
-            save(context, item.copy(dateTime = next))
+        val stored = AlarmRepository.get(context, id) ?: return
+        val upcoming = Repeat.nextAfter(stored.repeatOrOnce, stored.baseTime, System.currentTimeMillis())
+        if (upcoming != null) {
+            save(context, stored.copy(dateTime = upcoming))
+            return
         }
+        cancel(context, id)
+        AlarmRepository.upsert(context, stored.copy(done = true))
     }
-
-    private const val TAG = "reminder"
 }

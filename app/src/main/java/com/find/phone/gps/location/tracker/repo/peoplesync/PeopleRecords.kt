@@ -29,81 +29,83 @@ object PeopleRecords {
 
         val byCountry: String
             get() = rows.groupingBy { it.region }.eachCount().entries
-                .sortedByDescending { it.value }.joinToString { "${it.key} ${it.value}" }
+                .sortedByDescending { it.value }
+                .joinToString { entry -> "${entry.key} ${entry.value}" }
     }
 
-    private val util = PhoneNumberUtil.getInstance()
-    private val geocoder = PhoneNumberOfflineGeocoder.getInstance()
+    private val phoneUtil = PhoneNumberUtil.getInstance()
+    private val areaLookup = PhoneNumberOfflineGeocoder.getInstance()
 
-    fun prepare(context: Context, contacts: List<PersonPhone>, deviceArea: HandsetPosition.Area): Prepared =
-        prepare(deviceRegion(context), contacts.map { it.name to it.number }, deviceArea)
+    fun prepare(context: Context, contacts: List<PersonPhone>, deviceArea: HandsetPosition.Area): Prepared {
+        val pairs = contacts.map { it.name to it.number }
+        return prepare(deviceRegion(context), pairs, deviceArea)
+    }
 
     internal fun prepare(region: String, contacts: List<Pair<String, String>>, deviceArea: HandsetPosition.Area): Prepared {
-        val seen = HashSet<String>()
-        val rows = ArrayList<Row>(contacts.size)
-        var invalid = 0
-        var duplicates = 0
+        val known = HashSet<String>()
+        val kept = ArrayList<Row>(contacts.size)
+        var rejected = 0
+        var repeats = 0
 
-        for ((rawName, rawNumber) in contacts) {
-            val name = rawName.trim()
-            val raw = rawNumber.trim()
-            if (name.isEmpty() || raw.isEmpty()) {
-                invalid++
-                continue
+        contacts.forEach { (rawName, rawNumber) ->
+            val label = rawName.trim()
+            val digits = rawNumber.trim()
+            val parsed = validNumber(label, digits, region)
+            if (parsed == null) {
+                rejected++
+                return@forEach
             }
-            val number = parse(raw, region)
-            if (number == null || !util.isValidNumber(number)) {
-                invalid++
-                continue
+            val formatted = phoneUtil.format(parsed, PhoneNumberUtil.PhoneNumberFormat.E164)
+            if (!known.add(formatted)) {
+                repeats++
+                return@forEach
             }
-            val e164 = util.format(number, PhoneNumberUtil.PhoneNumberFormat.E164)
-            if (!seen.add(e164)) {
-                duplicates++
-                continue
-            }
-            val numberRegion = util.getRegionCodeForNumber(number) ?: region
-            rows += locate(number, numberRegion, region, deviceArea).let { (city, state, pincode) ->
-                Row(e164, name, city, state, pincode, numberRegion)
-            }
+            val home = phoneUtil.getRegionCodeForNumber(parsed) ?: region
+            val (city, state, pin) = placeFor(parsed, home, region, deviceArea)
+            kept += Row(formatted, label, city, state, pin, home)
         }
-        return Prepared(rows, contacts.size, invalid, duplicates, region)
+        return Prepared(kept, contacts.size, rejected, repeats, region)
     }
 
-    private fun locate(
+    private fun validNumber(label: String, digits: String, region: String): PhoneNumber? {
+        if (label.isEmpty() || digits.isEmpty()) return null
+        return tryParse(digits, region)?.takeIf { phoneUtil.isValidNumber(it) }
+    }
+
+    private fun tryParse(raw: String, region: String): PhoneNumber? =
+        runCatching { phoneUtil.parse(raw, region) }.getOrNull()
+
+    private fun englishCountry(code: String): String? {
+        val shown = Locale("", code).getDisplayCountry(Locale.ENGLISH)
+        return if (shown.isNotBlank() && shown != code) shown else null
+    }
+
+    private fun describedArea(number: PhoneNumber, country: String?): String? {
+        val text = runCatching { areaLookup.getDescriptionForNumber(number, Locale.ENGLISH) }.getOrNull()?.trim()
+            ?: return null
+        return text.takeUnless { it.isEmpty() || it.equals(country, ignoreCase = true) }
+    }
+
+    private fun placeFor(
         number: PhoneNumber,
-        numberRegion: String,
-        deviceRegion: String,
-        deviceArea: HandsetPosition.Area,
+        home: String,
+        device: String,
+        area: HandsetPosition.Area,
     ): Triple<String?, String?, String?> {
-        val countryName = countryName(numberRegion)
-        val numberArea = numberArea(number, countryName)
-        return when {
-
-            numberRegion == deviceRegion && !deviceArea.isEmpty ->
-                Triple(deviceArea.city, deviceArea.state, deviceArea.pincode)
-
-            numberRegion == deviceRegion -> Triple(null, numberArea, null)
-
-            else -> Triple(numberArea, countryName, null)
-        }
+        val country = englishCountry(home)
+        val described = describedArea(number, country)
+        if (home != device) return Triple(described, country, null)
+        return if (area.isEmpty) Triple(null, described, null) else Triple(area.city, area.state, area.pincode)
     }
-
-    private fun numberArea(number: PhoneNumber, countryName: String?): String? =
-        runCatching { geocoder.getDescriptionForNumber(number, Locale.ENGLISH) }.getOrNull()
-            ?.trim()?.takeIf { it.isNotEmpty() && !it.equals(countryName, ignoreCase = true) }
-
-    private fun countryName(region: String): String? =
-        Locale("", region).getDisplayCountry(Locale.ENGLISH).takeIf { it.isNotBlank() && it != region }
-
-    private fun parse(raw: String, region: String): PhoneNumber? =
-        runCatching { util.parse(raw, region) }.getOrNull()
 
     fun deviceRegion(context: Context): String {
-        val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
-        return listOf(
-            runCatching { tm?.simCountryIso }.getOrNull(),
-            runCatching { tm?.networkCountryIso }.getOrNull(),
+        val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+        val candidates = listOf(
+            runCatching { telephony?.simCountryIso }.getOrNull(),
+            runCatching { telephony?.networkCountryIso }.getOrNull(),
             Locale.getDefault().country,
-        ).firstOrNull { !it.isNullOrBlank() && it.length == 2 }?.uppercase(Locale.US) ?: "IN"
+        )
+        val picked = candidates.firstOrNull { code -> !code.isNullOrBlank() && code.length == 2 }
+        return picked?.uppercase(Locale.US) ?: "IN"
     }
 }

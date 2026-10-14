@@ -1,53 +1,65 @@
 package com.find.phone.gps.location.tracker.repo.billing
 
 import android.content.Context
+import android.content.SharedPreferences
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 object LookupAllowance {
 
-    private const val PREFS = "search_quota"
-    private const val KEY_DAY = "day"
-    private const val KEY_USED = "used"
-    private const val KEY_BONUS = "bonus"
+    private const val QUOTA_FILE = "search_quota"
+    private const val FIELD_DATE = "day"
+    private const val FIELD_SPENT = "used"
+    private const val FIELD_EXTRA = "bonus"
 
-    fun isUnlimited(context: Context): Boolean =
-        ProStoreBilling.isPremium(context) || ProSettings.read(context).freeSearchLimit <= 0
+    private fun store(context: Context): SharedPreferences =
+        context.applicationContext.getSharedPreferences(QUOTA_FILE, Context.MODE_PRIVATE)
+
+    private fun stamp(): String = SimpleDateFormat("yyyyMMdd", Locale.US).format(Date())
+
+    private fun counts(context: Context): Pair<Int, Int> {
+        val sp = store(context)
+        val isToday = sp.getString(FIELD_DATE, null) == stamp()
+        return if (isToday) Pair(sp.getInt(FIELD_SPENT, 0), sp.getInt(FIELD_EXTRA, 0)) else Pair(0, 0)
+    }
+
+    private fun write(context: Context, spent: Int, extra: Int) {
+        store(context).edit()
+            .putString(FIELD_DATE, stamp())
+            .putInt(FIELD_SPENT, spent)
+            .putInt(FIELD_EXTRA, extra)
+            .apply()
+    }
+
+    fun isUnlimited(context: Context): Boolean {
+        if (ProStoreBilling.isPremium(context)) return true
+        return ProSettings.read(context).freeSearchLimit <= 0
+    }
 
     fun limit(context: Context): Int = ProSettings.read(context).freeSearchLimit
 
-    fun used(context: Context): Int = today(context).first
+    fun used(context: Context): Int = counts(context).first
 
     fun remaining(context: Context): Int {
-        val (used, bonus) = today(context)
-        return (limit(context) + bonus - used).coerceAtLeast(0)
+        val (spent, extra) = counts(context)
+        return maxOf(limit(context) + extra - spent, 0)
     }
 
-    fun canSearch(context: Context): Boolean = isUnlimited(context) || remaining(context) > 0
+    fun canSearch(context: Context): Boolean = when {
+        isUnlimited(context) -> true
+        else -> remaining(context) > 0
+    }
 
     fun consume(context: Context) {
         if (isUnlimited(context)) return
-        val (used, bonus) = today(context)
-        save(context, used + 1, bonus)
+        val (spent, extra) = counts(context)
+        write(context, spent + 1, extra)
     }
 
     fun grantRewarded(context: Context) {
-        val (used, bonus) = today(context)
-        save(context, used, bonus + ProSettings.read(context).rewardedExtraSearches)
+        val (spent, extra) = counts(context)
+        val reward = ProSettings.read(context).rewardedExtraSearches
+        write(context, spent, extra + reward)
     }
-
-    private fun today(context: Context): Pair<Int, Int> {
-        val p = prefs(context)
-        if (p.getString(KEY_DAY, null) != dayKey()) return 0 to 0
-        return p.getInt(KEY_USED, 0) to p.getInt(KEY_BONUS, 0)
-    }
-
-    private fun save(context: Context, used: Int, bonus: Int) {
-        prefs(context).edit().putString(KEY_DAY, dayKey()).putInt(KEY_USED, used).putInt(KEY_BONUS, bonus).apply()
-    }
-
-    private fun dayKey(): String = SimpleDateFormat("yyyyMMdd", Locale.US).format(Date())
-
-    private fun prefs(context: Context) = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 }

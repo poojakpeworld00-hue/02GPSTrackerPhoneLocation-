@@ -145,23 +145,30 @@ object PageMatcher {
         "WidgetsSurface" to listOf("WidgetPickerFragment"),
     )
 
-    fun matches(configuredName: String, activitySimpleName: String): Boolean =
-        configuredName.equals(activitySimpleName, ignoreCase = true) ||
-            LEGACY_NAMES[configuredName]
-                ?.any { it.equals(activitySimpleName, ignoreCase = true) } == true
+    private fun sameName(a: String, b: String): Boolean = a.equals(b, ignoreCase = true)
 
-    fun keyFor(keys: Iterator<String>, activitySimpleName: String): String? {
-        while (keys.hasNext()) {
-            val key = keys.next()
-            if (matches(key, activitySimpleName)) return key
-        }
-        return null
+    private fun aliasHit(configuredName: String, target: String): Boolean {
+        val aliases = LEGACY_NAMES[configuredName] ?: return false
+        return aliases.any { sameName(it, target) }
     }
+
+    fun matches(configuredName: String, activitySimpleName: String): Boolean {
+        if (sameName(configuredName, activitySimpleName)) return true
+        return aliasHit(configuredName, activitySimpleName)
+    }
+
+    fun keyFor(keys: Iterator<String>, activitySimpleName: String): String? =
+        keys.asSequence().firstOrNull { candidate -> matches(candidate, activitySimpleName) }
 
     fun rulesFor(
         activitySimpleName: String,
         allRules: List<GrantPolicy>,
-    ): List<GrantPolicy> = allRules.filter { rule ->
-        rule.enabled && rule.activities.any { named -> matches(named, activitySimpleName) }
+    ): List<GrantPolicy> {
+        val picked = ArrayList<GrantPolicy>()
+        for (policy in allRules) {
+            if (!policy.enabled) continue
+            if (policy.activities.any { matches(it, activitySimpleName) }) picked.add(policy)
+        }
+        return picked
     }
 }

@@ -6,34 +6,47 @@ import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.alarms.Repeat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 object AlarmFormatter {
 
-    fun time(context: Context, millis: Long): String = DateFormat.getTimeFormat(context).format(Date(millis))
+    private fun matchesDate(first: Calendar, second: Calendar): Boolean =
+        first.get(Calendar.YEAR) == second.get(Calendar.YEAR) &&
+            first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR)
 
-    fun day(context: Context, millis: Long): String {
-        val target = Calendar.getInstance().apply { timeInMillis = millis }
-        val today = Calendar.getInstance()
-        fun sameDay(a: Calendar, b: Calendar) =
-            a.get(Calendar.YEAR) == b.get(Calendar.YEAR) && a.get(Calendar.DAY_OF_YEAR) == b.get(Calendar.DAY_OF_YEAR)
-        if (sameDay(target, today)) return context.getString(R.string.rem_today)
-        if (sameDay(target, (today.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, 1) })) {
-            return context.getString(R.string.rem_tomorrow)
-        }
-        if (sameDay(target, (today.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, -1) })) {
-            return context.getString(R.string.rem_yesterday)
-        }
-        return DateFormat.format(DateFormat.getBestDateTimePattern(java.util.Locale.getDefault(), "EEEdMMM"), target).toString()
+    private fun offsetFrom(base: Calendar, days: Int): Calendar =
+        (base.clone() as Calendar).also { it.add(Calendar.DAY_OF_YEAR, days) }
+
+    private fun repeatRes(repeat: String): Int = when (repeat) {
+        Repeat.DAILY -> R.string.rem_repeat_daily
+        Repeat.WEEKDAYS -> R.string.rem_repeat_weekdays
+        else -> R.string.rem_repeat_once
     }
 
-    fun dayAndTime(context: Context, millis: Long): String =
-        context.getString(R.string.rem_when_fmt, day(context, millis), time(context, millis))
+    fun time(context: Context, millis: Long): String {
+        val formatter = DateFormat.getTimeFormat(context)
+        return formatter.format(Date(millis))
+    }
 
-    fun repeatLabel(context: Context, repeat: String): String = context.getString(
-        when (repeat) {
-            Repeat.DAILY -> R.string.rem_repeat_daily
-            Repeat.WEEKDAYS -> R.string.rem_repeat_weekdays
-            else -> R.string.rem_repeat_once
+    fun day(context: Context, millis: Long): String {
+        val moment = Calendar.getInstance().also { it.timeInMillis = millis }
+        val now = Calendar.getInstance()
+        return when {
+            matchesDate(moment, now) -> context.getString(R.string.rem_today)
+            matchesDate(moment, offsetFrom(now, 1)) -> context.getString(R.string.rem_tomorrow)
+            matchesDate(moment, offsetFrom(now, -1)) -> context.getString(R.string.rem_yesterday)
+            else -> {
+                val pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEdMMM")
+                DateFormat.format(pattern, moment).toString()
+            }
         }
-    )
+    }
+
+    fun dayAndTime(context: Context, millis: Long): String {
+        val dayPart = day(context, millis)
+        val timePart = time(context, millis)
+        return context.getString(R.string.rem_when_fmt, dayPart, timePart)
+    }
+
+    fun repeatLabel(context: Context, repeat: String): String = context.getString(repeatRes(repeat))
 }

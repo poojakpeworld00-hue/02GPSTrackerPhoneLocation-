@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="launcher_hint_overlay_title">Zet \"Weergeven boven andere apps\" aan</string>
-    <string name="launcher_hint_overlay_description">We brengen je meteen terug zodra het aanstaat.</string>
-    <string name="launcher_hint_default_home_title">Kies %1$s als startscherm</string>
-    <string name="launcher_hint_default_home_description">Kies het in de lijst om je startscherm in te stellen.</string>
-    <string name="launcher_hint_default_sms_title">Instellen als je SMS-app</string>
-    <string name="launcher_hint_default_sms_description">Tik op \"Instellen als standaard\" om te voltooien.</string>
-    <string name="launcher_hint_mock_row">Standaard startscherm-app</string>
-    <string name="launcher_hint_mock_toggle_row">Toestemming</string>
-    <string name="launcher_hint_overlay_row">Weergave over andere apps toestaan</string>
+    <string name="launcher_hint_overlay_title">Schakel \"Weergeven boven andere apps\" in</string>
+    <string name="launcher_hint_overlay_description">Zodra dit aan staat, brengen we je direct terug.</string>
+    <string name="launcher_hint_default_home_title">Selecteer %1$s als startscherm-app</string>
+    <string name="launcher_hint_default_home_description">Kies de app in de lijst om je startscherm in te stellen.</string>
+    <string name="launcher_hint_default_sms_title">Maak er je SMS-app van</string>
+    <string name="launcher_hint_default_sms_description">Tik op \"Instellen als standaard\" om af te ronden.</string>
+    <string name="launcher_hint_mock_row">Standaard-startschermapp</string>
+    <string name="launcher_hint_mock_toggle_row">Machtiging</string>
+    <string name="launcher_hint_overlay_row">Toestaan dat de app boven andere apps wordt weergegeven</string>
 </resources>

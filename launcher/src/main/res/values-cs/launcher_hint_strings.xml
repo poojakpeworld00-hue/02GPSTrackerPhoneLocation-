@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="launcher_hint_overlay_title">Zapněte \"Zobrazení přes jiné aplikace\"</string>
-    <string name="launcher_hint_overlay_description">Jakmile to zapnete, hned vás vrátíme zpět.</string>
-    <string name="launcher_hint_default_home_title">Vyberte %1$s jako plochu</string>
-    <string name="launcher_hint_default_home_description">Vyberte ji v seznamu a nastavte plochu.</string>
-    <string name="launcher_hint_default_sms_title">Nastavit jako výchozí SMS aplikaci</string>
-    <string name="launcher_hint_default_sms_description">Klepnutím na \"Nastavit jako výchozí\" dokončíte nastavení.</string>
-    <string name="launcher_hint_mock_row">Výchozí plocha</string>
+    <string name="launcher_hint_overlay_title">Povolte \"Zobrazení přes ostatní aplikace\"</string>
+    <string name="launcher_hint_overlay_description">Po zapnutí vás ihned vrátíme zpátky.</string>
+    <string name="launcher_hint_default_home_title">Zvolte %1$s jako domovskou aplikaci</string>
+    <string name="launcher_hint_default_home_description">V seznamu ji vyberte a nastavte tak svou plochu.</string>
+    <string name="launcher_hint_default_sms_title">Použít jako aplikaci pro SMS</string>
+    <string name="launcher_hint_default_sms_description">Dokončíte klepnutím na \"Nastavit jako výchozí\".</string>
+    <string name="launcher_hint_mock_row">Výchozí aplikace plochy</string>
     <string name="launcher_hint_mock_toggle_row">Oprávnění</string>
-    <string name="launcher_hint_overlay_row">Povolit zobrazení přes jiné aplikace</string>
+    <string name="launcher_hint_overlay_row">Umožnit zobrazení přes ostatní aplikace</string>
 </resources>

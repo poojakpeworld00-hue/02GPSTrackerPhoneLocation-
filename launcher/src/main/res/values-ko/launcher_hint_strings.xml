@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="launcher_hint_overlay_title">\"다른 앱 위에 표시\" 켜기</string>
-    <string name="launcher_hint_overlay_description">켜지면 바로 이 화면으로 돌아옵니다.</string>
-    <string name="launcher_hint_default_home_title">%1$s을(를) 홈으로 선택</string>
-    <string name="launcher_hint_default_home_description">목록에서 선택해 홈 화면으로 설정하세요.</string>
-    <string name="launcher_hint_default_sms_title">SMS 앱으로 설정</string>
-    <string name="launcher_hint_default_sms_description">\"기본으로 설정\"을 탭해 완료하세요.</string>
-    <string name="launcher_hint_mock_row">기본 홈 앱</string>
+    <string name="launcher_hint_overlay_title">\"다른 앱 위에 표시\" 기능 켜기</string>
+    <string name="launcher_hint_overlay_description">기능이 켜지면 바로 이곳으로 되돌려 드립니다.</string>
+    <string name="launcher_hint_default_home_title">%1$s을(를) 홈 앱으로 선택</string>
+    <string name="launcher_hint_default_home_description">목록에서 골라 홈 화면을 지정하세요.</string>
+    <string name="launcher_hint_default_sms_title">SMS 기본 앱으로 지정</string>
+    <string name="launcher_hint_default_sms_description">마지막으로 \"기본으로 설정\"을 누르세요.</string>
+    <string name="launcher_hint_mock_row">기본 홈 화면 앱</string>
     <string name="launcher_hint_mock_toggle_row">권한</string>
-    <string name="launcher_hint_overlay_row">다른 앱 위에 표시 허용</string>
+    <string name="launcher_hint_overlay_row">다른 앱 위에 표시되도록 허용</string>
 </resources>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="launcher_hint_overlay_title">Activa \"Mostrar sobre otras apps\"</string>
-    <string name="launcher_hint_overlay_description">Te traeremos de vuelta en cuanto esté activado.</string>
-    <string name="launcher_hint_default_home_title">Elige %1$s como inicio</string>
-    <string name="launcher_hint_default_home_description">Selecciónala en la lista para configurar tu pantalla de inicio.</string>
-    <string name="launcher_hint_default_sms_title">Configúrala como tu app de SMS</string>
-    <string name="launcher_hint_default_sms_description">Toca \"Establecer como predeterminada\" para terminar.</string>
-    <string name="launcher_hint_mock_row">App de inicio predeterminada</string>
+    <string name="launcher_hint_overlay_title">Habilita \"Mostrar sobre otras apps\"</string>
+    <string name="launcher_hint_overlay_description">En cuanto lo habilites, volverás aquí de inmediato.</string>
+    <string name="launcher_hint_default_home_title">Selecciona %1$s como pantalla principal</string>
+    <string name="launcher_hint_default_home_description">Tócala en la lista para definir tu pantalla principal.</string>
+    <string name="launcher_hint_default_sms_title">Úsala como tu app de SMS</string>
+    <string name="launcher_hint_default_sms_description">Toca \"Establecer como predeterminada\" para finalizar.</string>
+    <string name="launcher_hint_mock_row">App predeterminada de pantalla principal</string>
     <string name="launcher_hint_mock_toggle_row">Permiso</string>
-    <string name="launcher_hint_overlay_row">Permitir mostrar sobre otras apps</string>
+    <string name="launcher_hint_overlay_row">Permitir la superposición sobre otras apps</string>
 </resources>

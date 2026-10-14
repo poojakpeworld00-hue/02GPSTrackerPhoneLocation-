@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "io.launcher.home"
+    namespace = "io.homedeck.grid"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -60,7 +60,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    // MyAppWidgetResizeFrame snapshots the occupied cells while a widget is being dragged.
+    // DeskWidgetResizer snapshots the occupied cells while a widget is being dragged.
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.coroutines.android)
 

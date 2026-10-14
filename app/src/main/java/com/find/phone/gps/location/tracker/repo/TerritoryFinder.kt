@@ -1,0 +1,98 @@
+package com.find.phone.gps.location.tracker.repo
+
+import android.content.Context
+import com.find.phone.gps.location.tracker.monetize.model.getLocationFromIP
+import com.find.phone.gps.location.tracker.BuildConfig
+import com.find.phone.gps.location.tracker.screens.finder.RegionZones
+import com.find.phone.gps.location.tracker.helpers.SafeLogger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+/**
+ * Single source of truth for the user's IP-resolved country.
+ *
+ * The country is detected **once** — MonetizeGateActivity resolves it early via
+ * [getLocationFromIP] and stores it in [SecurePrefsKeeper.homeCountryIso]. Every other
+ * caller (Language, Home, Lookup) goes through [detectCountry], which reuses that
+ * cached value and only touches the network if nothing has resolved it yet — so
+ * the geo endpoint is never hit multiple times.
+ *
+ * Best-effort: returns null when there's no cache and the network call fails.
+ * ip-api returns only the ISO code, so the dialing code is derived from [RegionZones].
+ */
+object TerritoryFinder {
+
+    private const val TAG = "TerritoryFinder"
+
+    /**
+     * TEST ONLY — force a country in debug builds, bypassing cache and network.
+     * Set to an ISO-3166 alpha-2 code (e.g. "JP" for Japan) to test that region's
+     * suggestions; set back to null for normal IP detection. No effect in release.
+     */
+    private val DEBUG_FORCE_ISO: String? = "JP"
+
+    /** Resolved country: ISO-3166 alpha-2 plus the dialing code (digits, no '+'). */
+    data class IpNation(val iso: String, val dial: String)
+
+    /**
+     * The user's country, cache-first:
+     *  1. [SecurePrefsKeeper.homeCountryIso] — user pick or MonetizeGateActivity's detection.
+     *  2. [SecurePrefsKeeper.geoCountryIso]  — our own previously-cached IP result.
+     *  3. Only if both are empty, hit the network once and cache the result.
+     *
+     * Returns null only when there's no cache and the IP lookup fails.
+     */
+    suspend fun detectCountry(context: Context): IpNation? {
+        // Debug override wins over everything so a forced region is deterministic.
+        if (BuildConfig.DEBUG) {
+            validCountry(DEBUG_FORCE_ISO)?.let { forced ->
+                SafeLogger.log(TAG, "DEBUG force country=$forced (cache/network bypassed)")
+                return IpNation(forced, RegionZones.dialOf(forced).orEmpty())
+            }
+        }
+
+        val prefs = SecurePrefsKeeper(context)
+
+        // Reuse a cached value only if it's a *real* ISO-2 country (present in the
+        // dial table). This rejects stale/garbage codes (e.g. a language tag like
+        // "JA" wrongly stored as a country), so the cache self-heals via re-detect.
+        val cached = validCountry(prefs.homeCountryIso) ?: validCountry(prefs.geoCountryIso)
+        if (cached != null) {
+            SafeLogger.log(TAG, "reuse cached country=$cached (no IP call)")
+            return IpNation(cached, RegionZones.dialOf(cached).orEmpty())
+        }
+
+        val geo = detectCountryFromIp() ?: return null
+        // Cache under our own key (not homeCountryIso) so it's never confused with
+        // an explicit user pick — subsequent callers reuse it without a network hit.
+        prefs.geoCountryIso = geo.iso
+        SafeLogger.log(TAG, "cached detected country=${geo.iso} for app-wide reuse")
+        return geo
+    }
+
+    /** An uppercase ISO-2 code, or null when [raw] isn't a recognised country. */
+    private fun validCountry(raw: String?): String? {
+        val iso = raw?.takeIf { it.length == 2 }?.uppercase() ?: return null
+        return iso.takeIf { RegionZones.dialOf(it) != null }
+    }
+
+    /** One-shot IP lookup via the app's shared [getLocationFromIP] source (ip-api.com). */
+    private suspend fun detectCountryFromIp(): IpNation? = withContext(Dispatchers.IO) {
+        SafeLogger.log(TAG, "no cache → getLocationFromIP()")
+        val location = getLocationFromIP()
+        if (location == null) {
+            SafeLogger.log(TAG, "getLocationFromIP() returned null → null")
+            return@withContext null
+        }
+        SafeLogger.log(TAG, "location: country=${location.country} code=${location.countryCode}")
+
+        val iso = location.countryCode?.takeIf { it.length == 2 }?.uppercase()
+        if (iso == null) {
+            SafeLogger.log(TAG, "no valid countryCode → null")
+            return@withContext null
+        }
+        val dial = RegionZones.dialOf(iso).orEmpty()
+        SafeLogger.log(TAG, "resolved country=$iso dial=$dial")
+        IpNation(iso, dial)
+    }
+}

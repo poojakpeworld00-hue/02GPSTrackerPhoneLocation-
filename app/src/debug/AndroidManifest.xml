@@ -2,11 +2,11 @@
 <!--
     DEBUG ONLY. Exports the individual screens so QA can open any of them directly:
 
-        adb shell am start -n com.find.phone.gps.location.tracker/.ui.language.LangChooserActivity
-        adb shell am start -n com.find.phone.gps.location.tracker/.ui.onboarding.PrimerActivity
-        adb shell am start -n com.find.phone.gps.location.tracker/.onboard.GreetingStepActivity
-        adb shell am start -n com.find.phone.gps.location.tracker/.onboard.HomeRoleStepActivity
-        adb shell am start -n com.find.phone.gps.location.tracker/.ui.AppCoreActivity
+        adb shell am start -n com.find.phone.gps.location.tracker/.ui.language.LocalePickActivity
+        adb shell am start -n com.find.phone.gps.location.tracker/.ui.onboarding.GuidedTourActivity
+        adb shell am start -n com.find.phone.gps.location.tracker/.onboard.WelcomeStageActivity
+        adb shell am start -n com.find.phone.gps.location.tracker/.onboard.HomeRoleStageActivity
+        adb shell am start -n com.find.phone.gps.location.tracker/.ui.MainHubActivity
 
     Release builds keep every one of them exported="false" (see src/main/AndroidManifest.xml).
 -->
@@ -15,43 +15,43 @@
 
     <application>
         <activity
-            android:name=".ui.language.LangChooserActivity"
+            android:name="com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity"
             android:exported="true"
             tools:replace="android:exported" />
         <activity
-            android:name=".ui.onboarding.PrimerActivity"
+            android:name="com.find.phone.gps.location.tracker.screens.walkthrough.GuidedTourActivity"
             android:exported="true"
             tools:replace="android:exported" />
         <activity
-            android:name=".onboard.GreetingStepActivity"
+            android:name="com.find.phone.gps.location.tracker.setupflow.WelcomeStageActivity"
             android:exported="true"
             tools:replace="android:exported" />
         <activity
-            android:name=".onboard.HomeRoleStepActivity"
+            android:name="com.find.phone.gps.location.tracker.setupflow.HomeRoleStageActivity"
             android:exported="true"
             tools:replace="android:exported" />
         <activity
-            android:name=".onboard.RoleHintActivity"
+            android:name="com.find.phone.gps.location.tracker.setupflow.HomeRoleTipActivity"
             android:exported="true"
             tools:replace="android:exported" />
         <activity
-            android:name=".ui.premium.PremiumActivity"
+            android:name="com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity"
             android:exported="true"
             tools:replace="android:exported" />
         <activity
-            android:name=".ui.AppCoreActivity"
+            android:name="com.find.phone.gps.location.tracker.screens.MainHubActivity"
             android:exported="true"
             tools:replace="android:exported" />
         <activity
-            android:name=".ui.contacts.ContactPickerActivity"
+            android:name="com.find.phone.gps.location.tracker.screens.people.PeopleSelectActivity"
             android:exported="true"
             tools:replace="android:exported" />
         <activity
-            android:name=".ui.home.HistoryActivity"
+            android:name="com.find.phone.gps.location.tracker.screens.dashboard.PastLookupsActivity"
             android:exported="true"
             tools:replace="android:exported" />
         <activity
-            android:name=".ui.lookup.MapFullActivity"
+            android:name="com.find.phone.gps.location.tracker.screens.finder.MapExpandedActivity"
             android:exported="true"
             tools:replace="android:exported" />
     </application>

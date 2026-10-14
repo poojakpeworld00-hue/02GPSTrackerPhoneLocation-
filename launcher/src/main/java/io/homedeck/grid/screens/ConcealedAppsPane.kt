@@ -26,16 +26,16 @@ class ConcealedAppsPane : HomeFoundationPane(), RefreshRecyclerViewListener {
         setContentView(binding.root)
         updateIcons()
 
-        setupEdgeToEdge(padBottomSystem = listOf(binding.manageHiddenIconsListUi))
-        setupMaterialScrollListener(binding.manageHiddenIconsListUi, binding.manageHiddenIconsAppbarUi)
+        setupEdgeToEdge(padBottomSystem = listOf(binding.manageHiddenIconsListView))
+        setupMaterialScrollListener(binding.manageHiddenIconsListView, binding.manageHiddenIconsAppbarView)
 
-        val layoutManager = binding.manageHiddenIconsListUi.layoutManager as MyGridLayoutManager
+        val layoutManager = binding.manageHiddenIconsListView.layoutManager as MyGridLayoutManager
         layoutManager.spanCount = launcherConfig.drawerColumnCount
     }
 
     override fun onResume() {
         super.onResume()
-        setupTopAppBar(binding.manageHiddenIconsAppbarUi, NavigationIcon.Arrow)
+        setupTopAppBar(binding.manageHiddenIconsAppbarView, NavigationIcon.Arrow)
     }
 
     private fun updateIcons() {
@@ -50,7 +50,7 @@ class ConcealedAppsPane : HomeFoundationPane(), RefreshRecyclerViewListener {
 
             val hiddenIconsEmpty = hiddenIcons.isEmpty()
             runOnUiThread {
-                binding.manageHiddenIconsPlaceholderUi.beVisibleIf(hiddenIconsEmpty)
+                binding.manageHiddenIconsPlaceholderView.beVisibleIf(hiddenIconsEmpty)
             }
 
             if (hiddenIcons.isNotEmpty()) {
@@ -80,9 +80,9 @@ class ConcealedAppsPane : HomeFoundationPane(), RefreshRecyclerViewListener {
             }
 
             runOnUiThread {
-                ConcealedAppsAdapter(this, hiddenIcons, this, binding.manageHiddenIconsListUi) {
+                ConcealedAppsAdapter(this, hiddenIcons, this, binding.manageHiddenIconsListView) {
                 }.apply {
-                    binding.manageHiddenIconsListUi.adapter = this
+                    binding.manageHiddenIconsListView.adapter = this
                 }
             }
         }

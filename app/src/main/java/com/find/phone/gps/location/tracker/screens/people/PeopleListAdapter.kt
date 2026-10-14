@@ -51,7 +51,7 @@ class PeopleListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
-            is Item.Header -> (holder as HeaderVH).binding.tvLetter.text = item.letter
+            is Item.Header -> (holder as HeaderVH).binding.lblLetter.text = item.letter
             is Item.Row -> (holder as RowVH).bind(item.contact)
         }
     }
@@ -60,15 +60,15 @@ class PeopleListAdapter(
 
     inner class RowVH(private val binding: CardContactRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(contact: PersonPhone) {
-            binding.tvInitial.text = contact.initials
-            binding.tvInitial.setBackgroundResource(AVATARS[contact.avatar])
-            binding.tvName.text = contact.name
+            binding.lblInitial.text = contact.initials
+            binding.lblInitial.setBackgroundResource(AVATARS[contact.avatar])
+            binding.lblName.text = contact.name
             // A contact saved without a name already shows its number as the name.
             val number = contact.number.takeIf { it != contact.name }
-            binding.tvNumber.text = listOfNotNull(contact.label.takeIf { it.isNotBlank() }, number).joinToString(" · ")
-            binding.btnLocate.setOnClickListener { onLocate(contact) }
-            binding.btnCall.setOnClickListener { onCall(contact) }
-            binding.contactRow.setOnClickListener { onLocate(contact) }
+            binding.lblNumber.text = listOfNotNull(contact.label.takeIf { it.isNotBlank() }, number).joinToString(" · ")
+            binding.padLocate.setOnClickListener { onLocate(contact) }
+            binding.padCall.setOnClickListener { onCall(contact) }
+            binding.contactRowVw.setOnClickListener { onLocate(contact) }
         }
     }
 

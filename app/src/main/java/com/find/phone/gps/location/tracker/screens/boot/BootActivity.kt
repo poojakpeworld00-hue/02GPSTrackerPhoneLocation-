@@ -90,7 +90,7 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
             isAppearanceLightStatusBars = !night
             isAppearanceLightNavigationBars = !night
         }
-        ViewCompat.setOnApplyWindowInsetsListener(binding.splashRoot) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.splashRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
             insets

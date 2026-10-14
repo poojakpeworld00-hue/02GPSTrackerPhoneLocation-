@@ -400,7 +400,7 @@ object SideMenuAdDriver {
             val view = LayoutInflater.from(activity)
                 .inflate(R.layout.sidemenu_ad_fullscreen_native, null) as NativeAdView
             bindNative(view, ad)
-            view.findViewById<ImageView>(R.id.drawer_native_close).setOnClickListener { dialog.dismiss() }
+            view.findViewById<ImageView>(R.id.drawer_native_closeVw).setOnClickListener { dialog.dismiss() }
             dialog.setContentView(view, ViewGroup.LayoutParams(MATCH, MATCH))
             dialog.setOnDismissListener {
                 runCatching { ad.destroy() }
@@ -423,12 +423,12 @@ object SideMenuAdDriver {
     }
 
     private fun bindNative(view: NativeAdView, ad: NativeAd) {
-        val headline = view.findViewById<TextView>(R.id.drawer_native_headline)
-        val body = view.findViewById<TextView>(R.id.drawer_native_body)
-        val cta = view.findViewById<Button>(R.id.drawer_native_cta)
-        val icon = view.findViewById<ImageView>(R.id.drawer_native_icon)
-        val advertiser = view.findViewById<TextView>(R.id.drawer_native_advertiser)
-        val media = view.findViewById<MediaView>(R.id.drawer_native_media)
+        val headline = view.findViewById<TextView>(R.id.drawer_native_headlineVw)
+        val body = view.findViewById<TextView>(R.id.drawer_native_bodyVw)
+        val cta = view.findViewById<Button>(R.id.drawer_native_ctaVw)
+        val icon = view.findViewById<ImageView>(R.id.drawer_native_iconVw)
+        val advertiser = view.findViewById<TextView>(R.id.drawer_native_advertiserVw)
+        val media = view.findViewById<MediaView>(R.id.drawer_native_mediaVw)
 
         headline.text = ad.headline
         view.headlineView = headline

@@ -46,8 +46,8 @@ class UnveilSplitLayout @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        cardTop = findViewById(R.id.cardTop)
-        handle = findViewById(R.id.handle)
+        cardTop = findViewById(R.id.panelTop)
+        handle = findViewById(R.id.handleVw)
         cardTop.clipToOutline = true
     }
 

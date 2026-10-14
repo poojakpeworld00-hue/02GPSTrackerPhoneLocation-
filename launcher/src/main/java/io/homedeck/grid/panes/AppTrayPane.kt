@@ -66,21 +66,21 @@ class AppTrayPane(
         resultsAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_result, ::launchLauncher)
         searchInAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_search_in, ::searchInApp)
 
-        binding.panelSuggestedGridUi.adapter = suggestedAdapter
-        binding.panelRecentGridUi.adapter = recentAdapter
-        binding.panelResultsListUi.adapter = resultsAdapter
-        binding.panelSearchInListUi.adapter = searchInAdapter
+        binding.panelSuggestedGridView.adapter = suggestedAdapter
+        binding.panelRecentGridView.adapter = recentAdapter
+        binding.panelResultsListView.adapter = resultsAdapter
+        binding.panelSearchInListView.adapter = searchInAdapter
 
-        binding.panelSearchUi.doAfterTextChanged {
+        binding.panelSearchView.doAfterTextChanged {
             resultsCap = COLLAPSED_RESULTS
             updateSections()
         }
 
-        binding.panelSearchClearUi.setOnClickListener {
-            binding.panelSearchUi.setText("")
+        binding.panelSearchClearView.setOnClickListener {
+            binding.panelSearchView.setText("")
         }
 
-        binding.panelSeeMoreUi.setOnClickListener {
+        binding.panelSeeMoreView.setOnClickListener {
             resultsCap = if (resultsCap == COLLAPSED_RESULTS) {
                 EXPANDED_RESULTS
             } else {
@@ -113,7 +113,7 @@ class AppTrayPane(
      */
     fun onOpened() {
         val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
-        binding.panelGreetingUi.setText(
+        binding.panelGreetingView.setText(
             when {
                 hour < 12 -> R.string.launcher_greeting_morning
                 hour < 17 -> R.string.launcher_greeting_afternoon
@@ -122,25 +122,25 @@ class AppTrayPane(
         )
         val locale = java.util.Locale.getDefault()
         val pattern = android.text.format.DateFormat.getBestDateTimePattern(locale, "EEEEdMMMM")
-        binding.panelDateUi.text = java.text.SimpleDateFormat(pattern, locale).format(java.util.Date())
+        binding.panelDateView.text = java.text.SimpleDateFormat(pattern, locale).format(java.util.Date())
         io.homedeck.grid.anim.WalkthroughTweens.enter(
             null,
-            binding.panelHeaderUi,
-            binding.panelSearchHolderUi,
-            binding.panelSuggestedHeaderUi,
-            binding.panelSuggestedGridUi,
-            binding.panelRecentHeaderUi,
-            binding.panelRecentGridUi,
+            binding.panelHeaderView,
+            binding.panelSearchHolderView,
+            binding.panelSuggestedHeaderView,
+            binding.panelSuggestedGridView,
+            binding.panelRecentHeaderView,
+            binding.panelRecentGridView,
         )
     }
 
     fun refreshAds() {
         val activity = activity ?: return
         HomeServiceLocator.ads.bindNativeOnOpen(
-            activity, HomeAdsSettings.KEY_PANEL_MIDDLE, binding.panelMidNativeFrameUi
+            activity, HomeAdsSettings.KEY_PANEL_MIDDLE, binding.panelMidNativeFrameView
         )
         HomeServiceLocator.ads.bindNativeOnOpen(
-            activity, HomeAdsSettings.KEY_PANEL_BOTTOM, binding.panelNativeFrameUi
+            activity, HomeAdsSettings.KEY_PANEL_BOTTOM, binding.panelNativeFrameView
         )
     }
 
@@ -160,47 +160,47 @@ class AppTrayPane(
     fun hasQuery() = getQuery().isNotEmpty()
 
     fun resetSearch() {
-        binding.panelSearchUi.setText("")
-        binding.panelScrollUi.scrollTo(0, 0)
+        binding.panelSearchView.setText("")
+        binding.panelScrollView.scrollTo(0, 0)
     }
 
-    private fun getQuery() = binding.panelSearchUi.text.toString().trim()
+    private fun getQuery() = binding.panelSearchView.text.toString().trim()
 
     private fun updateSections() {
         val query = getQuery()
         val hasQuery = query.isNotEmpty()
 
-        binding.panelSearchClearUi.beVisibleIf(hasQuery)
-        binding.panelSuggestedHeaderUi.beVisibleIf(!hasQuery)
-        binding.panelSuggestedGridUi.beVisibleIf(!hasQuery)
+        binding.panelSearchClearView.beVisibleIf(hasQuery)
+        binding.panelSuggestedHeaderView.beVisibleIf(!hasQuery)
+        binding.panelSuggestedGridView.beVisibleIf(!hasQuery)
 
         if (hasQuery) {
             val results = launchers.filter {
                 it.title.normalizeString().contains(query.normalizeString(), ignoreCase = true)
             }
 
-            binding.panelRecentHeaderUi.beGone()
-            binding.panelRecentGridUi.beGone()
-            binding.panelResultsHeaderUi.beVisible()
-            binding.panelResultsListUi.beVisible()
-            binding.panelSeeMoreUi.beVisibleIf(results.size > COLLAPSED_RESULTS)
-            binding.panelSeeMoreUi.setText(
+            binding.panelRecentHeaderView.beGone()
+            binding.panelRecentGridView.beGone()
+            binding.panelResultsHeaderView.beVisible()
+            binding.panelResultsListView.beVisible()
+            binding.panelSeeMoreView.beVisibleIf(results.size > COLLAPSED_RESULTS)
+            binding.panelSeeMoreView.setText(
                 if (resultsCap == COLLAPSED_RESULTS) R.string.launcher_see_more else R.string.launcher_see_less
             )
             resultsAdapter.submitList(results.take(resultsCap))
 
             val searchTargets = launchers.filter { it.packageName in SEARCH_IN_PACKAGES }
-            binding.panelSearchInHeaderUi.beVisibleIf(searchTargets.isNotEmpty())
-            binding.panelSearchInListUi.beVisibleIf(searchTargets.isNotEmpty())
+            binding.panelSearchInHeaderView.beVisibleIf(searchTargets.isNotEmpty())
+            binding.panelSearchInListView.beVisibleIf(searchTargets.isNotEmpty())
             searchInAdapter.submitList(searchTargets)
         } else {
             val recent = launchers.drop(SUGGESTED_COUNT).take(RECENT_COUNT)
-            binding.panelResultsHeaderUi.beGone()
-            binding.panelResultsListUi.beGone()
-            binding.panelSearchInHeaderUi.beGone()
-            binding.panelSearchInListUi.beGone()
-            binding.panelRecentHeaderUi.beVisibleIf(recent.isNotEmpty())
-            binding.panelRecentGridUi.beVisibleIf(recent.isNotEmpty())
+            binding.panelResultsHeaderView.beGone()
+            binding.panelResultsListView.beGone()
+            binding.panelSearchInHeaderView.beGone()
+            binding.panelSearchInListView.beGone()
+            binding.panelRecentHeaderView.beVisibleIf(recent.isNotEmpty())
+            binding.panelRecentGridView.beVisibleIf(recent.isNotEmpty())
 
             suggestedAdapter.submitList(launchers.take(SUGGESTED_COUNT))
             recentAdapter.submitList(recent)

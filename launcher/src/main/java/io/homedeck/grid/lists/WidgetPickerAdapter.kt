@@ -57,20 +57,20 @@ class WidgetPickerAdapter(
 
     private fun setupListSection(view: View, section: WidgetPickerGroup) {
         HdkRowWidgetListSectionBinding.bind(view).apply {
-            widgetAppTitleUi.text = section.appTitle
-            widgetAppTitleUi.setTextColor(textColor)
-            widgetAppIconUi.setImageDrawable(section.appIcon)
+            widgetAppTitleView.text = section.appTitle
+            widgetAppTitleView.setTextColor(textColor)
+            widgetAppIconView.setImageDrawable(section.appIcon)
         }
     }
 
     private fun setupListItemsHolder(view: View, listItem: WidgetPickerEntries) {
         val binding = HdkRowWidgetListItemsHolderBinding.bind(view)
-        binding.widgetListItemsHolderUi.removeAllViews()
-        binding.widgetListItemsScrollViewUi.scrollX = 0
+        binding.widgetListItemsHolderView.removeAllViews()
+        binding.widgetListItemsScrollViewView.scrollX = 0
         listItem.widgets.forEachIndexed { index, widget ->
             val imageSize = activity.resources.getDimension(R.dimen.launcher_widget_preview_size).toInt()
             val widgetPreview = HdkRowWidgetPreviewBinding.inflate(LayoutInflater.from(activity))
-            binding.widgetListItemsHolderUi.addView(widgetPreview.root)
+            binding.widgetListItemsHolderView.addView(widgetPreview.root)
 
             val endMargin = if (index == listItem.widgets.size - 1) {
                 activity.resources.getDimension(org.fossify.commons.R.dimen.medium_margin).toInt()
@@ -78,12 +78,12 @@ class WidgetPickerAdapter(
                 0
             }
 
-            widgetPreview.widgetTitleUi.apply {
+            widgetPreview.widgetTitleView.apply {
                 text = widget.widgetTitleUi
                 setTextColor(textColor)
             }
 
-            widgetPreview.widgetSizeUi.apply {
+            widgetPreview.widgetSizeView.apply {
                 text = if (widget.isShortcut) {
                     activity.getString(org.fossify.commons.R.string.shortcut)
                 } else {
@@ -92,7 +92,7 @@ class WidgetPickerAdapter(
                 setTextColor(textColor)
             }
 
-            (widgetPreview.widgetImageUi.layoutParams as RelativeLayout.LayoutParams).apply {
+            (widgetPreview.widgetImageView.layoutParams as RelativeLayout.LayoutParams).apply {
                 marginStart = activity.resources.getDimension(org.fossify.commons.R.dimen.activity_margin).toInt()
                 marginEnd = endMargin
                 width = imageSize
@@ -101,7 +101,7 @@ class WidgetPickerAdapter(
 
             Glide.with(activity)
                 .load(widget.widgetPreviewImage)
-                .into(widgetPreview.widgetImageUi)
+                .into(widgetPreview.widgetImageView)
 
             widgetPreview.root.setOnClickListener { itemClick() }
 

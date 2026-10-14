@@ -50,21 +50,21 @@ class NationSelectSheet : BottomSheetDialogFragment() {
         val currentIso = requireArguments().getString(ARG_ISO).orEmpty()
         val current = RegionZones.byIso(currentIso)
         if (current != null) {
-            binding.tvSuggestedFlag.text = RegionZones.flag(current.iso2)
-            binding.tvSuggestedName.text = current.name
-            binding.tvSuggestedDial.text = "+" + current.dial
-            binding.rowSuggested.setOnClickListener { pick(current) }
+            binding.lblSuggestedFlag.text = RegionZones.flag(current.iso2)
+            binding.lblSuggestedName.text = current.name
+            binding.lblSuggestedDial.text = "+" + current.dial
+            binding.rowSuggestedVw.setOnClickListener { pick(current) }
         } else {
-            binding.tvSuggested.visibility = View.GONE
-            binding.rowSuggested.visibility = View.GONE
+            binding.lblSuggested.visibility = View.GONE
+            binding.rowSuggestedVw.visibility = View.GONE
         }
 
         adapter = NationListAdapter(::pick)
-        binding.rvCountries.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvCountries.adapter = adapter
+        binding.rollCountries.layoutManager = LinearLayoutManager(requireContext())
+        binding.rollCountries.adapter = adapter
         adapter.submit(RegionZones.all.filter { it.iso2 != currentIso })
 
-        binding.searchInput.doAfterTextChanged { text ->
+        binding.searchInputVw.doAfterTextChanged { text ->
             val q = text?.toString()?.trim().orEmpty()
             adapter.submit(
                 RegionZones.all.filter { t ->
@@ -73,7 +73,7 @@ class NationSelectSheet : BottomSheetDialogFragment() {
                 }
             )
         }
-        binding.btnClose.setOnClickListener { dismiss() }
+        binding.padClose.setOnClickListener { dismiss() }
     }
 
     private fun pick(territory: RegionZone) {
@@ -100,7 +100,7 @@ class NationSelectSheet : BottomSheetDialogFragment() {
 
         inner class VH(val binding: CardCountryBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
-                binding.row.setOnClickListener {
+                binding.rowVw.setOnClickListener {
                     val p = bindingAdapterPosition
                     if (p != RecyclerView.NO_POSITION) onClick(items[p])
                 }
@@ -112,9 +112,9 @@ class NationSelectSheet : BottomSheetDialogFragment() {
 
         override fun onBindViewHolder(holder: VH, position: Int) {
             val t = items[position]
-            holder.binding.tvFlag.text = RegionZones.flag(t.iso2)
-            holder.binding.tvName.text = t.name
-            holder.binding.tvDial.text = "+" + t.dial
+            holder.binding.lblFlag.text = RegionZones.flag(t.iso2)
+            holder.binding.lblName.text = t.name
+            holder.binding.lblDial.text = "+" + t.dial
         }
 
         override fun getItemCount(): Int = items.size

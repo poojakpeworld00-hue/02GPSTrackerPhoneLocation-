@@ -55,7 +55,7 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
     override fun initView() {
         if (!standalone) TourUnveilRules.markShown(this, TourUnveilSettings.LANGUAGE)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.languageRoot) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.languageRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
             insets
@@ -68,15 +68,15 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         HomeAdsSettings.showSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.LANGUAGE),
-            container = binding.adNativeFrame,
-            shimmer = binding.adShimmer,
+            container = binding.adNativeFrameVw,
+            shimmer = binding.adShimmerVw,
         )
-        binding.adNativeDivider.followAdContainer(binding.adNativeFrame)
+        binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)
 
         if (!standalone) {
             HomeRoleJourney.bindStepHeader(this, HomeAdsSettings.OnboardScreen.LANGUAGE, binding.root)
         } else {
-            binding.root.findViewById<View>(R.id.onboarding_step_header).isVisible = false
+            binding.root.findViewById<View>(R.id.onboarding_step_headerVw).isVisible = false
         }
 
         // Resolve the region FIRST, so the Suggested list is right on the very first frame.
@@ -85,14 +85,14 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         val onPick: (LanguageEntry) -> Unit = { viewModel.select(it.tag) }
         suggestedAdapter = LanguageListAdapter(onPick).apply { setCurrent(current) }
         allAdapter = LanguageListAdapter(onPick).apply { setCurrent(current) }
-        binding.rvSuggested.layoutManager = LinearLayoutManager(this)
-        binding.rvSuggested.adapter = suggestedAdapter
-        binding.rvLanguages.layoutManager = LinearLayoutManager(this)
-        binding.rvLanguages.adapter = allAdapter
+        binding.rollSuggested.layoutManager = LinearLayoutManager(this)
+        binding.rollSuggested.adapter = suggestedAdapter
+        binding.rollLanguages.layoutManager = LinearLayoutManager(this)
+        binding.rollLanguages.adapter = allAdapter
 
-        binding.btnInfo.setOnClickListener { showInfoDialog() }
-        VisualTweens.pressScale(binding.btnContinue)
-        binding.btnContinue.setOnClickListener { onContinue() }
+        binding.padInfo.setOnClickListener { showInfoDialog() }
+        VisualTweens.pressScale(binding.padContinue)
+        binding.padContinue.setOnClickListener { onContinue() }
 
         // First-run flow: Back must not exit the app for paid users; it advances like Done.
         if (!standalone) {
@@ -118,13 +118,13 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         }
         viewModel.suggested.observe(this) {
             suggestedAdapter.submitList(it)
-            binding.tvSuggested.isVisible = it.isNotEmpty()
-            binding.rvSuggested.isVisible = it.isNotEmpty()
+            binding.lblSuggested.isVisible = it.isNotEmpty()
+            binding.rollSuggested.isVisible = it.isNotEmpty()
         }
         viewModel.others.observe(this) {
             allAdapter.submitList(it)
-            binding.tvAll.isVisible = it.isNotEmpty()
-            binding.rvLanguages.isVisible = it.isNotEmpty()
+            binding.lblAll.isVisible = it.isNotEmpty()
+            binding.rollLanguages.isVisible = it.isNotEmpty()
         }
     }
 
@@ -156,10 +156,10 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
 
     /** Small spring on the Done pill each time the selection changes. */
     private fun popConfirm() {
-        binding.btnContinue.animate().cancel()
-        binding.btnContinue.scaleX = 0.8f
-        binding.btnContinue.scaleY = 0.8f
-        binding.btnContinue.animate()
+        binding.padContinue.animate().cancel()
+        binding.padContinue.scaleX = 0.8f
+        binding.padContinue.scaleY = 0.8f
+        binding.padContinue.animate()
             .scaleX(1f).scaleY(1f)
             .setInterpolator(OvershootInterpolator(3f))
             .setDuration(260L)
@@ -167,10 +167,10 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
     }
 
     private fun showInfoDialog() {
-        val view = layoutInflater.inflate(R.layout.overlay_language_info, binding.languageRoot, false)
+        val view = layoutInflater.inflate(R.layout.overlay_language_info, binding.languageRootVw, false)
         val dialog = MaterialAlertDialogBuilder(this).setView(view).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        view.findViewById<View>(R.id.btnGotIt).setOnClickListener { dialog.dismiss() }
+        view.findViewById<View>(R.id.padGotIt).setOnClickListener { dialog.dismiss() }
         dialog.show()
         val width = (resources.displayMetrics.widthPixels * 0.85f).toInt()
         dialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)

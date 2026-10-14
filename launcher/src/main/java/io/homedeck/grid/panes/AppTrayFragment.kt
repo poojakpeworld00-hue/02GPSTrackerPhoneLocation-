@@ -135,13 +135,13 @@ class AppTrayFragment(
         // the slot's row spans the whole width; every other position is a single app icon. Which
         // position that is comes from the launcherConfig, so it is asked of the adapter rather than fixed
         // here — see submitList.
-        val layoutManager = binding.allAppsGridUi.layoutManager as MyGridLayoutManager
+        val layoutManager = binding.allAppsGridView.layoutManager as MyGridLayoutManager
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int) =
                 if (getAdapter()?.isAdSlotPosition(position) == true) layoutManager.spanCount else 1
         }
 
-        binding.allAppsGridUi.setOnTouchListener { _, event ->
+        binding.allAppsGridView.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
                 touchDownY = -1
             }
@@ -149,7 +149,7 @@ class AppTrayFragment(
             return@setOnTouchListener false
         }
 
-        binding.allAppsPagerUi.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.allAppsPagerView.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) = renderDots(selected = position)
         })
     }
@@ -181,11 +181,11 @@ class AppTrayFragment(
 
     @SuppressLint("NotifyDataSetChanged")
     fun onResume() {
-        if (binding.allAppsGridUi.layoutManager == null || (binding.allAppsGridUi.adapter == null && pagesAdapter == null)) {
+        if (binding.allAppsGridView.layoutManager == null || (binding.allAppsGridView.adapter == null && pagesAdapter == null)) {
             return
         }
 
-        val layoutManager = binding.allAppsGridUi.layoutManager as MyGridLayoutManager
+        val layoutManager = binding.allAppsGridView.layoutManager as MyGridLayoutManager
         if (layoutManager.spanCount != context.launcherConfig.drawerColumnCount || shownPaged != isPaged) {
             onConfigurationChanged()
             // Force redraw due to changed item size
@@ -194,11 +194,11 @@ class AppTrayFragment(
     }
 
     fun onConfigurationChanged() {
-        binding.allAppsGridUi.scrollToPosition(0)
-        binding.allAppsPagerUi.setCurrentItem(0, false)
+        binding.allAppsGridView.scrollToPosition(0)
+        binding.allAppsPagerView.setCurrentItem(0, false)
         setupViews()
 
-        val layoutManager = binding.allAppsGridUi.layoutManager as MyGridLayoutManager
+        val layoutManager = binding.allAppsGridView.layoutManager as MyGridLayoutManager
         layoutManager.spanCount = context.launcherConfig.drawerColumnCount
         setupAdapter(launchers)
     }
@@ -236,7 +236,7 @@ class AppTrayFragment(
                     shouldIntercept = distance > touchSlop && mostlyVertical && isGridAtTop()
                     if (shouldIntercept) {
                         // Hiding is expensive, only do it if focused
-                        if (binding.searchBarUi.hasFocus()) {
+                        if (binding.searchBarView.hasFocus()) {
                             activity?.hideKeyboard()
                         }
                         activity?.startHandlingTouches(touchDownY)
@@ -263,7 +263,7 @@ class AppTrayFragment(
     private fun isGridAtTop(): Boolean {
         // Pages never scroll vertically: the sheet is always at its top.
         if (isPaged) return true
-        val grid = binding.allAppsGridUi
+        val grid = binding.allAppsGridView
         val first = grid.getChildAt(0) ?: return true
         val layoutManager = grid.layoutManager ?: return true
         return grid.getChildAdapterPosition(first) <= 0 &&
@@ -326,37 +326,37 @@ class AppTrayFragment(
     private fun setupAdapter(launchers: List<LaunchableApp>) {
         activity?.runOnUiThread {
             val paged = isPaged
-            val layoutManager = binding.allAppsGridUi.layoutManager as MyGridLayoutManager
+            val layoutManager = binding.allAppsGridView.layoutManager as MyGridLayoutManager
             layoutManager.spanCount = context.launcherConfig.drawerColumnCount
 
             // One surface at a time. The slot is a single view, so the surface that goes away
             // must let go of it: its adapter is dropped and rebuilt on the way back.
             if (shownPaged != paged) {
                 shownPaged = paged
-                binding.allAppsGridUi.beVisibleIf(!paged)
-                binding.allAppsPagerUi.beVisibleIf(paged)
-                binding.allAppsPageDotsUi.beVisibleIf(paged)
+                binding.allAppsGridView.beVisibleIf(!paged)
+                binding.allAppsPagerView.beVisibleIf(paged)
+                binding.allAppsPageDotsView.beVisibleIf(paged)
                 (adSlot.parent as? ViewGroup)?.removeView(adSlot)
                 if (paged) {
                     launchersAdapter = null
-                    binding.allAppsGridUi.adapter = null
+                    binding.allAppsGridView.adapter = null
                 } else {
                     pagesAdapter = null
-                    binding.allAppsPagerUi.adapter = null
+                    binding.allAppsPagerView.adapter = null
                 }
             }
 
             if (paged) {
                 if (pagesAdapter == null) {
                     pagesAdapter = TrayPagesAdapter(activity!!, this, adSlot, onItemClick)
-                    binding.allAppsPagerUi.adapter = pagesAdapter
+                    binding.allAppsPagerView.adapter = pagesAdapter
                 }
             } else if (getAdapter() == null) {
                 LaunchablesAdapter(activity!!, this, adSlot, onItemClick).apply {
                     launchersAdapter = this
-                    binding.allAppsGridUi.itemAnimator = null
-                    binding.allAppsGridUi.adapter = this
-                    prewarm(binding.allAppsGridUi, layoutManager.spanCount * PREWARM_ROWS)
+                    binding.allAppsGridView.itemAnimator = null
+                    binding.allAppsGridView.adapter = this
+                    prewarm(binding.allAppsGridView, layoutManager.spanCount * PREWARM_ROWS)
                 }
             }
 
@@ -383,8 +383,8 @@ class AppTrayFragment(
         return pages
     }
 
-    private fun renderDots(count: Int = pagesAdapter?.itemCount ?: 0, selected: Int = binding.allAppsPagerUi.currentItem) {
-        val dots = binding.allAppsPageDotsUi
+    private fun renderDots(count: Int = pagesAdapter?.itemCount ?: 0, selected: Int = binding.allAppsPagerView.currentItem) {
+        val dots = binding.allAppsPageDotsView
         val size = resources.getDimensionPixelSize(R.dimen.launcher_drawer_page_dot)
         val gap = resources.getDimensionPixelSize(R.dimen.launcher_drawer_page_dot_gap)
         while (dots.childCount > count) dots.removeViewAt(dots.childCount - 1)
@@ -403,7 +403,7 @@ class AppTrayFragment(
 
     /** Back to the first page, the way the scrolling drawer goes back to its top on close. */
     fun resetToFirstPage() {
-        if (binding.allAppsPagerUi.adapter != null) binding.allAppsPagerUi.setCurrentItem(0, false)
+        if (binding.allAppsPagerView.adapter != null) binding.allAppsPagerView.setCurrentItem(0, false)
     }
 
     fun onIconHidden(item: DeskGridEntry) {
@@ -431,10 +431,10 @@ class AppTrayFragment(
 
         if (!scrollListenerAdded) {
             scrollListenerAdded = true
-            binding.allAppsGridUi.addOnScrollListener(object : OnScrollListener() {
+            binding.allAppsGridView.addOnScrollListener(object : OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     // Hiding is expensive, only do it if focused
-                    if (binding.searchBarUi.hasFocus() && dy > 0 && binding.allAppsGridUi.computeVerticalScrollOffset() > 0) {
+                    if (binding.searchBarView.hasFocus() && dy > 0 && binding.allAppsGridView.computeVerticalScrollOffset() > 0) {
                         activity?.hideKeyboard()
                     }
                 }
@@ -445,20 +445,20 @@ class AppTrayFragment(
 
         applySearchPosition()
         applyBottomSearchClearance()
-        binding.searchBarUi.beVisibleIf(context.launcherConfig.showSearchBar)
-        binding.searchBarUi.requireToolbar().beGone()
-        binding.searchBarUi.updateColors()
-        binding.searchBarUi.applyDrawerSkin()
-        binding.searchBarUi.setupMenu()
+        binding.searchBarView.beVisibleIf(context.launcherConfig.showSearchBar)
+        binding.searchBarView.requireToolbar().beGone()
+        binding.searchBarView.updateColors()
+        binding.searchBarView.applyDrawerSkin()
+        binding.searchBarView.setupMenu()
 
-        binding.searchBarUi.onSearchTextChangedListener = {
+        binding.searchBarView.onSearchTextChangedListener = {
             submitList(launchers)
         }
-        binding.searchBarUi.onSearchOpenListener = { showSearchPanel(true) }
-        binding.searchBarUi.onSearchClosedListener = { showSearchPanel(false) }
+        binding.searchBarView.onSearchOpenListener = { showSearchPanel(true) }
+        binding.searchBarView.onSearchClosedListener = { showSearchPanel(false) }
 
-        binding.searchBarUi.binding.topToolbarSearch.setOnEditorActionListener { _, actionId, _ ->
-            if (binding.searchBarUi.getCurrentQuery().isEmpty()) return@setOnEditorActionListener false
+        binding.searchBarView.binding.topToolbarSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (binding.searchBarView.getCurrentQuery().isEmpty()) return@setOnEditorActionListener false
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE,
                 EditorInfo.IME_ACTION_SEARCH,
@@ -481,8 +481,8 @@ class AppTrayFragment(
         // layout from inside a layout and starve the UI thread. Only a real change touches the rules.
         if (appliedSearchAtBottom == bottom) return
         appliedSearchAtBottom = bottom
-        val search = binding.searchBarUi.id
-        val dots = binding.allAppsPageDotsUi.id
+        val search = binding.searchBarView.id
+        val dots = binding.allAppsPageDotsView.id
 
         fun RelativeLayout.LayoutParams.anchor(vararg rules: Pair<Int, Int>) {
             for (verb in listOf(RelativeLayout.ABOVE, RelativeLayout.BELOW, RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.ALIGN_PARENT_BOTTOM)) {
@@ -491,30 +491,30 @@ class AppTrayFragment(
             rules.forEach { (verb, subject) -> addRule(verb, subject) }
         }
 
-        (binding.searchBarUi.layoutParams as RelativeLayout.LayoutParams).anchor(
+        (binding.searchBarView.layoutParams as RelativeLayout.LayoutParams).anchor(
             if (bottom) RelativeLayout.ALIGN_PARENT_BOTTOM to RelativeLayout.TRUE else RelativeLayout.ALIGN_PARENT_TOP to RelativeLayout.TRUE
         )
-        (binding.allAppsGridUi.layoutParams as RelativeLayout.LayoutParams).anchor(
+        (binding.allAppsGridView.layoutParams as RelativeLayout.LayoutParams).anchor(
             if (bottom) RelativeLayout.ABOVE to search else RelativeLayout.BELOW to search
         )
-        (binding.allAppsPageDotsUi.layoutParams as RelativeLayout.LayoutParams).anchor(
+        (binding.allAppsPageDotsView.layoutParams as RelativeLayout.LayoutParams).anchor(
             if (bottom) RelativeLayout.ABOVE to search else RelativeLayout.ALIGN_PARENT_BOTTOM to RelativeLayout.TRUE
         )
-        (binding.allAppsPagerUi.layoutParams as RelativeLayout.LayoutParams).anchor(
+        (binding.allAppsPagerView.layoutParams as RelativeLayout.LayoutParams).anchor(
             if (bottom) RelativeLayout.ALIGN_PARENT_TOP to RelativeLayout.TRUE else RelativeLayout.BELOW to search,
             RelativeLayout.ABOVE to dots,
         )
-        (binding.noResultsPlaceholderUi.layoutParams as RelativeLayout.LayoutParams).anchor(
+        (binding.noResultsPlaceholderView.layoutParams as RelativeLayout.LayoutParams).anchor(
             if (bottom) RelativeLayout.ALIGN_PARENT_TOP to RelativeLayout.TRUE else RelativeLayout.BELOW to search
         )
         // The search cards always stack from the top of the sheet (One UI's Finder keeps them
         // there with its bar at the bottom); the bar's edge only decides where the panel ends.
-        (binding.searchPanelUi.layoutParams as RelativeLayout.LayoutParams).anchor(
+        (binding.searchPanelView.layoutParams as RelativeLayout.LayoutParams).anchor(
             if (bottom) RelativeLayout.ALIGN_PARENT_TOP to RelativeLayout.TRUE else RelativeLayout.BELOW to search,
             if (bottom) RelativeLayout.ABOVE to search else RelativeLayout.ALIGN_PARENT_BOTTOM to RelativeLayout.TRUE,
         )
-        binding.searchPanelUi.gravity = Gravity.TOP
-        binding.searchBarUi.requestLayout()
+        binding.searchPanelView.gravity = Gravity.TOP
+        binding.searchBarView.requestLayout()
     }
 
     /**
@@ -537,14 +537,14 @@ class AppTrayFragment(
 
     private fun syncBottomSearchClearance() {
         val bottom = context.launcherConfig.drawerSearchAtBottom
-        val wanted = if (bottom) binding.allAppsGridUi.paddingBottom else 0
-        val bar = binding.searchBarUi
+        val wanted = if (bottom) binding.allAppsGridView.paddingBottom else 0
+        val bar = binding.searchBarView
         if (bar.paddingBottom != wanted) {
             bar.setPadding(bar.paddingLeft, bar.paddingTop, bar.paddingRight, wanted)
         }
         // With the bar at the bottom nothing sits above the list, so its first row gets a gap of its
         // own below the status bar. Kept here, on every layout, because inset passes rewrite padding.
-        val grid = binding.allAppsGridUi
+        val grid = binding.allAppsGridView
         val topGap = if (bottom) resources.getDimensionPixelSize(R.dimen.launcher_drawer_list_top_gap) else 0
         if (grid.paddingTop != topGap) {
             grid.setPadding(grid.paddingLeft, topGap, grid.paddingRight, grid.paddingBottom)
@@ -559,7 +559,7 @@ class AppTrayFragment(
      * (and the pager anchored above them) reclaim that chrome. Applied only on a real change.
      */
     private fun syncDotsToSearchPill(bottom: Boolean) {
-        val dots = binding.allAppsPageDotsUi
+        val dots = binding.allAppsPageDotsView
         val params = dots.layoutParams as? RelativeLayout.LayoutParams ?: return
         // setupEdgeToEdge pads the dots by the navigation-bar inset for the top-bar layout, where
         // they sit on the nav bar. Under a bottom bar that clearance is already the bar's own
@@ -569,10 +569,10 @@ class AppTrayFragment(
             if (dots.paddingBottom != own) dots.setPadding(dots.paddingLeft, dots.paddingTop, dots.paddingRight, own)
         }
         val margin = if (bottom) {
-            val pill = binding.searchBarUi.binding.toolbarContainer
+            val pill = binding.searchBarView.binding.toolbarContainer
             var pillTop = 0
             var v: View? = pill
-            while (v != null && v !== binding.searchBarUi) { pillTop += v.top; v = v.parent as? View }
+            while (v != null && v !== binding.searchBarView) { pillTop += v.top; v = v.parent as? View }
             if (v == null || pill.height == 0) return
             val gap = resources.getDimensionPixelSize(R.dimen.launcher_page_dots_search_gap)
             -(pillTop - gap).coerceAtLeast(0)
@@ -587,7 +587,7 @@ class AppTrayFragment(
 
     private fun showNoResultsPlaceholderIfNeeded() {
         val itemCount = if (isPaged) pagesAdapter?.itemCount else getAdapter()?.itemCount
-        binding.noResultsPlaceholderUi.beVisibleIf(itemCount != null && itemCount == 0)
+        binding.noResultsPlaceholderView.beVisibleIf(itemCount != null && itemCount == 0)
     }
 
     override fun onAppLauncherLongPressed(x: Float, y: Float, appLauncher: LaunchableApp) {
@@ -614,7 +614,7 @@ class AppTrayFragment(
         activity?.showHomeIconMenu(x, y, gridItem, true)
         ignoreTouches = true
 
-        binding.searchBarUi.closeSearch()
+        binding.searchBarView.closeSearch()
     }
 
     /**
@@ -625,14 +625,14 @@ class AppTrayFragment(
      * next open does not come back with the last query still in the bar.
      */
     fun resetSearch() {
-        if (binding.searchBarUi.isSearchOpen) {
-            binding.searchBarUi.closeSearch()
+        if (binding.searchBarView.isSearchOpen) {
+            binding.searchBarView.closeSearch()
         }
     }
 
     private fun submitList(items: List<LaunchableApp>) {
-        val searchQuery = binding.searchBarUi.getCurrentQuery()
-        if (binding.searchBarUi.isSearchOpen) {
+        val searchQuery = binding.searchBarView.getCurrentQuery()
+        if (binding.searchBarView.isSearchOpen) {
             renderSearchPanel(items, searchQuery)
             return
         }
@@ -647,7 +647,7 @@ class AppTrayFragment(
 
         if (isPaged) {
             pagesAdapter?.submitPages(chunkPages(filtered), context.launcherConfig.drawerColumnCount, context.launcherConfig.drawerRowCount.coerceAtLeast(2))
-            binding.allAppsPagerUi.setCurrentItem(0, false)
+            binding.allAppsPagerView.setCurrentItem(0, false)
             renderDots(selected = 0)
             showNoResultsPlaceholderIfNeeded()
             return
@@ -669,20 +669,20 @@ class AppTrayFragment(
     private var suggestionsGeneration = 0
 
     private fun showSearchPanel(open: Boolean) {
-        binding.searchPanelUi.beVisibleIf(open)
+        binding.searchPanelView.beVisibleIf(open)
         if (open) {
-            binding.allAppsGridUi.beGone()
-            binding.allAppsPagerUi.beGone()
-            binding.allAppsPageDotsUi.beGone()
-            binding.noResultsPlaceholderUi.beGone()
+            binding.allAppsGridView.beGone()
+            binding.allAppsPagerView.beGone()
+            binding.allAppsPageDotsView.beGone()
+            binding.noResultsPlaceholderView.beGone()
             suggestions = null
             loadSuggestions()
-            renderSearchPanel(launchers, binding.searchBarUi.getCurrentQuery())
+            renderSearchPanel(launchers, binding.searchBarView.getCurrentQuery())
         } else {
             val paged = isPaged
-            binding.allAppsGridUi.beVisibleIf(!paged)
-            binding.allAppsPagerUi.beVisibleIf(paged)
-            binding.allAppsPageDotsUi.beVisibleIf(paged)
+            binding.allAppsGridView.beVisibleIf(!paged)
+            binding.allAppsPagerView.beVisibleIf(paged)
+            binding.allAppsPageDotsView.beVisibleIf(paged)
             searchAdapter?.highlight = ""
             submitList(launchers)
         }
@@ -690,7 +690,7 @@ class AppTrayFragment(
 
     private fun searchGridAdapter(): LaunchablesAdapter {
         searchAdapter?.let { return it }
-        val grid = binding.searchAppsGridUi
+        val grid = binding.searchAppsGridView
         grid.layoutManager = object : GridLayoutManager(context, SEARCH_COLUMNS) {
             override fun canScrollVertically() = false
         }
@@ -729,7 +729,7 @@ class AppTrayFragment(
             activity?.runOnUiThread {
                 if (generation != suggestionsGeneration) return@runOnUiThread
                 suggestions = ranked
-                if (binding.searchBarUi.isSearchOpen && binding.searchBarUi.getCurrentQuery().isEmpty()) {
+                if (binding.searchBarView.isSearchOpen && binding.searchBarView.getCurrentQuery().isEmpty()) {
                     renderSearchPanel(launchers, "")
                 }
             }
@@ -742,29 +742,29 @@ class AppTrayFragment(
             // Resolved against the list the drawer holds now: the icon cache may have refreshed
             // (new LaunchableApp objects, decoded icons) since the ranking was taken.
             val apps = live(suggestions ?: emptyList(), items)
-            binding.searchAppsTitleUi.setText(R.string.launcher_suggested_apps)
+            binding.searchAppsTitleView.setText(R.string.launcher_suggested_apps)
             adapter.highlight = ""
             adapter.submitList(apps.toMutableList())
-            binding.searchAppsCardUi.beVisibleIf(apps.size >= AppRecommender.MIN_TO_SHOW)
-            binding.searchShortcutsCardUi.beGone()
-            binding.noResultsPlaceholderUi.beGone()
+            binding.searchAppsCardView.beVisibleIf(apps.size >= AppRecommender.MIN_TO_SHOW)
+            binding.searchShortcutsCardView.beGone()
+            binding.noResultsPlaceholderView.beGone()
             return
         }
         val needle = query.normalizeString()
         val matches = items.filter { it.title.normalizeString().contains(needle, ignoreCase = true) }
             .sortedWith(compareBy<LaunchableApp> { !it.title.normalizeString().startsWith(needle, ignoreCase = true) }.thenBy { it.title.lowercase() })
-        binding.searchAppsTitleUi.setText(R.string.launcher_searched_apps)
+        binding.searchAppsTitleView.setText(R.string.launcher_searched_apps)
         adapter.highlight = query
         adapter.submitList(matches.take(SEARCH_MAX_RESULTS).toMutableList())
-        binding.searchAppsCardUi.beVisibleIf(matches.isNotEmpty())
-        binding.noResultsPlaceholderUi.beVisibleIf(matches.isEmpty())
+        binding.searchAppsCardView.beVisibleIf(matches.isNotEmpty())
+        binding.noResultsPlaceholderView.beVisibleIf(matches.isEmpty())
         renderShortcuts(matches.firstOrNull())
     }
 
     /** The top match's app shortcuts (dynamic + manifest), as the Finder lists them under the app's name. */
     private fun renderShortcuts(app: LaunchableApp?) {
-        val card = binding.searchShortcutsCardUi
-        val list = binding.searchShortcutsListUi
+        val card = binding.searchShortcutsCardView
+        val list = binding.searchShortcutsListView
         list.removeAllViews()
         if (app == null) { card.beGone(); return }
         val launcherApps = context.applicationContext.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
@@ -774,13 +774,13 @@ class AppTrayFragment(
             launcherApps.getShortcuts(LauncherApps.ShortcutQuery().setQueryFlags(flags).setPackage(app.packageName), Process.myUserHandle())
         }.getOrNull()?.filter { it.isEnabled }?.take(SEARCH_MAX_SHORTCUTS).orEmpty()
         if (shortcuts.isEmpty()) { card.beGone(); return }
-        binding.searchShortcutsTitleUi.text = app.title
+        binding.searchShortcutsTitleView.text = app.title
         val inflater = LayoutInflater.from(context)
         val density = resources.displayMetrics.densityDpi
         shortcuts.forEach { shortcut ->
             val row = HdkRowSearchShortcutBinding.inflate(inflater, list, false)
-            row.searchShortcutLabelUi.text = shortcut.shortLabel ?: shortcut.longLabel ?: ""
-            row.searchShortcutIconUi.setImageDrawable(runCatching { launcherApps.getShortcutIconDrawable(shortcut, density) }.getOrNull())
+            row.searchShortcutLabelView.text = shortcut.shortLabel ?: shortcut.longLabel ?: ""
+            row.searchShortcutIconView.setImageDrawable(runCatching { launcherApps.getShortcutIconDrawable(shortcut, density) }.getOrNull())
             row.root.setOnClickListener {
                 runCatching {
                     launcherApps.startShortcut(shortcut.`package`, shortcut.id, null, null, Process.myUserHandle())
@@ -809,7 +809,7 @@ class AppTrayFragment(
             return apps.toMutableList()
         }
 
-        val spanCount = (binding.allAppsGridUi.layoutManager as MyGridLayoutManager).spanCount
+        val spanCount = (binding.allAppsGridView.layoutManager as MyGridLayoutManager).spanCount
         val row = HomeAdsSettings.drawerAdRowPosition()
         val index = (row * spanCount).coerceIn(0, apps.size)
         return apps.toMutableList().apply { add(index, LaunchablesAdapter.AD_SLOT) }

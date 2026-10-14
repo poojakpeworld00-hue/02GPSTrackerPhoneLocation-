@@ -1,6 +1,6 @@
 <com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mainNativeadView"
+    android:id="@+id/mainNativeadViewVw"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/ad_card_margin_h"
@@ -17,7 +17,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/ad_call_to_action"
+            android:id="@+id/ad_call_to_actionVw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -34,7 +34,7 @@
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cvcalculate"
+                android:id="@+id/cvcalculateVw"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
@@ -44,7 +44,7 @@
                 app:cardElevation="0dp">
 
                 <ImageView
-                    android:id="@+id/ad_app_icon"
+                    android:id="@+id/ad_app_iconVw"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -71,7 +71,7 @@
                         android:src="@drawable/art_ic_ad" />
 
                     <TextView
-                        android:id="@+id/ad_headline"
+                        android:id="@+id/ad_headlineVw"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_3sdp"
@@ -83,7 +83,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/ad_body"
+                    android:id="@+id/ad_bodyVw"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_3sdp"
@@ -102,7 +102,7 @@
             android:orientation="vertical">
 
             <com.google.android.gms.ads.nativead.MediaView
-                android:id="@+id/ad_media"
+                android:id="@+id/ad_mediaVw"
                 android:layout_width="match_parent"
                 android:layout_height="145dp"
                 android:layout_gravity="center_horizontal"

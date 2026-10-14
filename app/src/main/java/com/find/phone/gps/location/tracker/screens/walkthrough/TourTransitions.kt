@@ -23,24 +23,24 @@ object TourTransitions {
         if (VisualTweens.animationsDisabled(root.context)) return emptyList()
         val out = ArrayList<Animator>(8)
 
-        root.findViewById<View?>(R.id.obPhoneMock)?.let { out += VisualTweens.floaty(it) }
-        root.findViewById<View?>(R.id.obChipDial)?.let { out += VisualTweens.floaty(it, delayMs = 800L) }
-        root.findViewById<View?>(R.id.obChipGps)?.let { out += VisualTweens.floaty(it, delayMs = 1600L) }
-        root.findViewById<View?>(R.id.obSearchTile)?.let { out += VisualTweens.floaty(it, delayMs = 2400L) }
+        root.findViewById<View?>(R.id.obPhoneMockVw)?.let { out += VisualTweens.floaty(it) }
+        root.findViewById<View?>(R.id.obChipDialVw)?.let { out += VisualTweens.floaty(it, delayMs = 800L) }
+        root.findViewById<View?>(R.id.obChipGpsVw)?.let { out += VisualTweens.floaty(it, delayMs = 1600L) }
+        root.findViewById<View?>(R.id.obSearchTileVw)?.let { out += VisualTweens.floaty(it, delayMs = 2400L) }
 
-        root.findViewById<View?>(R.id.obDetailCard)?.let { out += VisualTweens.fadeIn(it, durationMs = 800L) }
+        root.findViewById<View?>(R.id.obDetailCardVw)?.let { out += VisualTweens.fadeIn(it, durationMs = 800L) }
 
-        root.findViewById<View?>(R.id.obCursor)?.let { out += VisualTweens.blink(it) }
-        root.findViewById<View?>(R.id.obGlow)?.let { out += VisualTweens.glow(it, durationMs = 2000L) }
+        root.findViewById<View?>(R.id.obCursorVw)?.let { out += VisualTweens.blink(it) }
+        root.findViewById<View?>(R.id.obGlowVw)?.let { out += VisualTweens.glow(it, durationMs = 2000L) }
 
         // A3: the result area cross-fades from the "Searching…" shimmer to the result card
         // (the design's `srload` / `srres` on one 4 s loop).
-        val srLoad = root.findViewById<View?>(R.id.obSrLoad)
-        val srRes = root.findViewById<View?>(R.id.obSrRes)
+        val srLoad = root.findViewById<View?>(R.id.obSrLoadVw)
+        val srRes = root.findViewById<View?>(R.id.obSrResVw)
         if (srLoad != null && srRes != null) out += crossFade(srLoad, srRes)
 
-        root.findViewById<View?>(R.id.obOrbit)?.let { out += VisualTweens.spin(it, ORBIT_MS) }
-        listOf(R.id.obTile1, R.id.obTile2, R.id.obTile3, R.id.obTile4).forEach { id ->
+        root.findViewById<View?>(R.id.obOrbitVw)?.let { out += VisualTweens.spin(it, ORBIT_MS) }
+        listOf(R.id.obTile1Vw, R.id.obTile2Vw, R.id.obTile3Vw, R.id.obTile4Vw).forEach { id ->
             root.findViewById<View?>(id)?.let { out += VisualTweens.spin(it, ORBIT_MS, reverse = true) }
         }
         return out

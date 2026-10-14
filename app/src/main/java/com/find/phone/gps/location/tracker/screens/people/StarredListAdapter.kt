@@ -19,9 +19,9 @@ class StarredListAdapter(
 
     inner class VH(private val binding: CardContactFavBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(contact: PersonPhone) {
-            binding.tvInitials.text = contact.initials
-            binding.tvInitials.setBackgroundResource(PeopleListAdapter.AVATARS[contact.avatar])
-            binding.tvFirstName.text = contact.firstName
+            binding.lblInitials.text = contact.initials
+            binding.lblInitials.setBackgroundResource(PeopleListAdapter.AVATARS[contact.avatar])
+            binding.lblFirstName.text = contact.firstName
             binding.root.setOnClickListener { onLocate(contact) }
         }
     }

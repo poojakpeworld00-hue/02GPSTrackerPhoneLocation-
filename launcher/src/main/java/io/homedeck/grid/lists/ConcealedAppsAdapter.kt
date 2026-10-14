@@ -40,7 +40,7 @@ class ConcealedAppsAdapter(
 
     override fun actionItemPressed(id: Int) {
         when (id) {
-            R.id.cab_unhide_iconUi -> unHideSelection()
+            R.id.cab_unhide_iconView -> unHideSelection()
         }
     }
 
@@ -104,10 +104,10 @@ class ConcealedAppsAdapter(
 
     private fun setupView(view: View, icon: ConcealedApp) {
         HdkRowHiddenIconBinding.bind(view).apply {
-            hiddenIconHolderUi.isSelected = selectedKeys.contains(icon.hashCode())
-            hiddenIconLabelUi.text = icon.title
-            hiddenIconLabelUi.setTextColor(textColor)
-            hiddenIconUi.setPadding(iconPadding, iconPadding, iconPadding, 0)
+            hiddenIconHolderView.isSelected = selectedKeys.contains(icon.hashCode())
+            hiddenIconLabelView.text = icon.title
+            hiddenIconLabelView.setTextColor(textColor)
+            hiddenIconView.setPadding(iconPadding, iconPadding, iconPadding, 0)
 
             val factory = DrawableCrossFadeFactory.Builder(150).setCrossFadeEnabled(true).build()
 
@@ -115,7 +115,7 @@ class ConcealedAppsAdapter(
                 .load(icon.drawable)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .transition(DrawableTransitionOptions.withCrossFade(factory))
-                .into(hiddenIconUi)
+                .into(hiddenIconView)
         }
     }
 }

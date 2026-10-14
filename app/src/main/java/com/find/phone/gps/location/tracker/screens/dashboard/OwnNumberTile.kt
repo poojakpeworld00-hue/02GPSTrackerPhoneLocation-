@@ -42,8 +42,8 @@ class OwnNumberTile(
 ) {
 
     init {
-        views.btnMyNumber.setOnClickListener { onButton() }
-        views.btnManage.setOnClickListener {
+        views.padMyNumber.setOnClickListener { onButton() }
+        views.padManage.setOnClickListener {
             activity.logKeyEvent("MyNumber_Manage_Click")
             activity.startActivity(OwnNumberActivity.intent(activity))
         }
@@ -60,18 +60,18 @@ class OwnNumberTile(
 
         val lines = OwnSimLines.read(context)
         val showing = lines.isNotEmpty()
-        views.btnMyNumber.isVisible = !showing
+        views.padMyNumber.isVisible = !showing
         // SIMs visible → offer "Manage" (the My number page); otherwise the "Show" button.
-        views.btnManage.isVisible = showing
-        views.btnMyNumber.setText(if (isPermanentlyDenied()) R.string.my_number_settings else R.string.my_number_show)
+        views.padManage.isVisible = showing
+        views.padMyNumber.setText(if (isPermanentlyDenied()) R.string.my_number_settings else R.string.my_number_show)
         // Only the "ask for access" state needs the subtitle; once the SIMs show, the rows say it all.
-        views.tvMyNumberSub.isVisible = !showing
-        views.tvMyNumberSub.setText(R.string.my_number_sub)
+        views.lblMyNumberSub.isVisible = !showing
+        views.lblMyNumberSub.setText(R.string.my_number_sub)
 
-        views.simRows.removeAllViews()
-        views.simRows.isVisible = showing
+        views.simRowsVw.removeAllViews()
+        views.simRowsVw.isVisible = showing
         val inflater = LayoutInflater.from(views.root.context)
-        lines.forEach { line -> views.simRows.addView(bindRow(inflater, context, line)) }
+        lines.forEach { line -> views.simRowsVw.addView(bindRow(inflater, context, line)) }
     }
 
     fun onPermissionResult(result: Map<String, Boolean>) {
@@ -115,32 +115,32 @@ class OwnNumberTile(
     }
 
     private fun bindRow(inflater: LayoutInflater, context: Context, line: OwnSimLines.SimSlotLine) =
-        CardMyNumberSimBinding.inflate(inflater, views.simRows, false).apply {
+        CardMyNumberSimBinding.inflate(inflater, views.simRowsVw, false).apply {
             // Badge "SIM1" / "SIM2": slot 1 filled primary, the rest a light tint.
             val primarySlot = line.slot <= 1
-            tvSimBadge.text = context.getString(R.string.my_number_sim_badge, line.slot)
-            tvSimBadge.setBackgroundResource(
+            lblSimBadge.text = context.getString(R.string.my_number_sim_badge, line.slot)
+            lblSimBadge.setBackgroundResource(
                 if (primarySlot) R.drawable.vs_sim_badge_primary else R.drawable.vs_sim_badge_tint
             )
-            tvSimBadge.setTextColor(
+            lblSimBadge.setTextColor(
                 ContextCompat.getColor(context, if (primarySlot) R.color.white else R.color.ds_splash_blue)
             )
 
             val number = line.number
             if (number != null) {
-                tvSimNumber.text = number
-                tvSimNumber.setTextColor(ContextCompat.getColor(context, R.color.ds_ink_fixed))
-                btnCopySim.setOnClickListener { copy(context, number) }
+                lblSimNumber.text = number
+                lblSimNumber.setTextColor(ContextCompat.getColor(context, R.color.ds_ink_fixed))
+                padCopySim.setOnClickListener { copy(context, number) }
             } else {
-                tvSimNumber.setText(R.string.my_number_not_stored)
-                tvSimNumber.setTextColor(ContextCompat.getColor(context, R.color.ds_muted_fixed))
+                lblSimNumber.setText(R.string.my_number_not_stored)
+                lblSimNumber.setTextColor(ContextCompat.getColor(context, R.color.ds_muted_fixed))
             }
-            btnCopySim.isVisible = number != null
+            padCopySim.isVisible = number != null
 
             // Secondary line: "carrier · region", e.g. "Jio · Gujarat, India".
             val region = line.region
-            tvSimRegion.text = if (!region.isNullOrBlank()) "${line.carrier} · $region" else line.carrier
-            tvSimRegion.isVisible = tvSimRegion.text.isNotBlank()
+            lblSimRegion.text = if (!region.isNullOrBlank()) "${line.carrier} · $region" else line.carrier
+            lblSimRegion.isVisible = lblSimRegion.text.isNotBlank()
         }.root
 
     private fun copy(context: Context, number: String) {

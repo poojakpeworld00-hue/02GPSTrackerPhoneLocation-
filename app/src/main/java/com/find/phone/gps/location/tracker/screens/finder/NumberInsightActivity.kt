@@ -72,12 +72,12 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         // The map runs under the status bar; the top bar sits below it.
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
-        val topPad = binding.mapTopBar.paddingTop
-        val mapHeight = binding.mapBox.layoutParams.height
-        ViewCompat.setOnApplyWindowInsetsListener(binding.detailRoot) { v, insets ->
+        val topPad = binding.mapTopBarVw.paddingTop
+        val mapHeight = binding.mapBoxVw.layoutParams.height
+        ViewCompat.setOnApplyWindowInsetsListener(binding.detailRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.mapTopBar.updatePadding(top = topPad + bars.top)
-            binding.mapBox.updateLayoutParams { height = mapHeight + bars.top }
+            binding.mapTopBarVw.updatePadding(top = topPad + bars.top)
+            binding.mapBoxVw.updateLayoutParams { height = mapHeight + bars.top }
             if (topInset != bars.top) {
                 topInset = bars.top
                 if (::report.isInitialized) centerPin()
@@ -86,20 +86,20 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
             insets
         }
 
-        binding.btnBack.setOnClickListener { goBack() }
-        binding.btnShare.setOnClickListener { share() }
-        binding.btnRetry.setOnClickListener { retry() }
-        binding.mapTap.setOnClickListener { openFullMap() }
-        binding.btnFullMap.setOnClickListener { openFullMap() }
-        VisualTweens.pressScale(binding.btnFullMap)
-        binding.identityCard.clipToOutline = false
+        binding.padBack.setOnClickListener { goBack() }
+        binding.padShare.setOnClickListener { share() }
+        binding.padRetry.setOnClickListener { retry() }
+        binding.mapTapVw.setOnClickListener { openFullMap() }
+        binding.padFullMap.setOnClickListener { openFullMap() }
+        VisualTweens.pressScale(binding.padFullMap)
+        binding.identityCardVw.clipToOutline = false
 
-        action(binding.actCall, R.drawable.vs_ic_call, R.string.ds_act_call, lead = true) { placeCall(report.e164) }
-        action(binding.actSms, R.drawable.vs_ic_message, R.string.ds_act_sms) { sendSms() }
-        action(binding.actMap, R.drawable.vs_ic_navigation, R.string.ds_act_map) { openFullMap() }
-        action(binding.actCopy, R.drawable.vs_ic_copy, R.string.ds_act_copy) { copyNumber() }
+        action(binding.actCallVw, R.drawable.vs_ic_call, R.string.ds_act_call, lead = true) { placeCall(report.e164) }
+        action(binding.actSmsVw, R.drawable.vs_ic_message, R.string.ds_act_sms) { sendSms() }
+        action(binding.actMapVw, R.drawable.vs_ic_navigation, R.string.ds_act_map) { openFullMap() }
+        action(binding.actCopyVw, R.drawable.vs_ic_copy, R.string.ds_act_copy) { copyNumber() }
 
-        OpenStreetTiles.style(binding.mapView, interactive = false)
+        OpenStreetTiles.style(binding.mapViewVw, interactive = false)
         bind()
         placeOnMap()
     }
@@ -108,10 +108,10 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
 
     private fun bind() {
         val r = report
-        binding.tvIso.text = r.iso2
-        binding.tvNumber.text = r.international
-        binding.tvPlace.text = listOfNotNull(r.city, r.state).distinct().joinToString(", ").ifEmpty { r.countryName }
-        binding.tvMapPlace.text = binding.tvPlace.text
+        binding.lblIso.text = r.iso2
+        binding.lblNumber.text = r.international
+        binding.lblPlace.text = listOfNotNull(r.city, r.state).distinct().joinToString(", ").ifEmpty { r.countryName }
+        binding.lblMapPlace.text = binding.lblPlace.text
 
         when {
             r.spam -> chip(R.string.ds_verdict_spam, R.drawable.vs_pill_danger, R.color.ds_danger)
@@ -119,40 +119,40 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
             else -> chip(R.string.ds_verdict_unverified, R.drawable.vs_pill_warn, R.color.ds_warn)
         }
         val line = r.lineType.label(this)
-        binding.chipLine.text = line
-        binding.chipLine.isVisible = line != null
-        binding.offlineCard.isVisible = !r.serverReached
+        binding.flagLine.text = line
+        binding.flagLine.isVisible = line != null
+        binding.offlineCardVw.isVisible = !r.serverReached
 
-        cell(binding.cellCountry, R.string.ds_label_country, r.countryName)
-        cell(binding.cellPlace, R.string.ds_detail_city_region, listOfNotNull(r.city, r.state).distinct().joinToString(", "))
-        cell(binding.cellCarrier, R.string.ds_fact_carrier, r.carrier)
-        cell(binding.cellLine, R.string.ds_fact_line, line)
+        cell(binding.cellCountryVw, R.string.ds_label_country, r.countryName)
+        cell(binding.cellPlaceVw, R.string.ds_detail_city_region, listOfNotNull(r.city, r.state).distinct().joinToString(", "))
+        cell(binding.cellCarrierVw, R.string.ds_fact_carrier, r.carrier)
+        cell(binding.cellLineVw, R.string.ds_fact_line, line)
 
         bindNames()
     }
 
     private fun chip(@StringRes text: Int, @DrawableRes pill: Int, color: Int) {
-        binding.chipVerdict.setText(text)
-        binding.chipVerdict.setBackgroundResource(pill)
-        binding.chipVerdict.setTextColor(ContextCompat.getColor(this, color))
+        binding.flagVerdict.setText(text)
+        binding.flagVerdict.setBackgroundResource(pill)
+        binding.flagVerdict.setTextColor(ContextCompat.getColor(this, color))
     }
 
     private fun cell(cell: CardDetailCellBinding, @StringRes label: Int, value: String?) {
-        cell.tvLabel.setText(label)
+        cell.lblLabel.setText(label)
         val known = !value.isNullOrBlank()
-        cell.tvValue.text = if (known) value else getString(R.string.ds_not_available)
-        cell.tvValue.setTextColor(ContextCompat.getColor(this, if (known) R.color.ds_ink else R.color.ds_muted))
+        cell.lblValue.text = if (known) value else getString(R.string.ds_not_available)
+        cell.lblValue.setTextColor(ContextCompat.getColor(this, if (known) R.color.ds_ink else R.color.ds_muted))
     }
 
     private fun action(tile: CardDetailActionBinding, @DrawableRes icon: Int, @StringRes label: Int, lead: Boolean = false, onClick: () -> Unit) {
-        tile.ivIcon.setImageResource(icon)
-        tile.tvLabel.setText(label)
+        tile.picIcon.setImageResource(icon)
+        tile.lblLabel.setText(label)
         if (lead) {
-            tile.iconBox.setBackgroundResource(R.drawable.vs_tile_primary_r16)
-            tile.ivIcon.setColorFilter(ContextCompat.getColor(this, R.color.white))
+            tile.iconBoxVw.setBackgroundResource(R.drawable.vs_tile_primary_r16)
+            tile.picIcon.setColorFilter(ContextCompat.getColor(this, R.color.white))
         }
-        VisualTweens.pressScale(tile.actionRoot)
-        tile.actionRoot.setOnClickListener { onClick() }
+        VisualTweens.pressScale(tile.actionRootVw)
+        tile.actionRootVw.setOnClickListener { onClick() }
     }
 
     /** Every name found: the best match came with the unlock; the others one ad each. */
@@ -164,37 +164,37 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
 
     private fun bindNames() {
         val all = names
-        binding.namesBlock.isVisible = all.isNotEmpty()
-        binding.namesList.removeAllViews()
+        binding.namesBlockVw.isVisible = all.isNotEmpty()
+        binding.namesListVw.removeAllViews()
         // The lookup can return up to 100 names: the first few, then "Show all" on demand.
         val shown = if (allNamesShown) all else all.take(NAMES_PREVIEW)
-        binding.btnShowAllNames.isVisible = shown.size < all.size
-        binding.btnShowAllNames.text = getString(R.string.ds_names_show_all, all.size)
-        binding.btnShowAllNames.setOnClickListener {
+        binding.padShowAllNames.isVisible = shown.size < all.size
+        binding.padShowAllNames.text = getString(R.string.ds_names_show_all, all.size)
+        binding.padShowAllNames.setOnClickListener {
             allNamesShown = true
             bindNames()
         }
         shown.forEachIndexed { i, name ->
-            val item = CardDetailNameBinding.inflate(LayoutInflater.from(this), binding.namesList, true)
-            item.tvName.text = name
-            item.nameDivider.isVisible = i < shown.lastIndex
+            val item = CardDetailNameBinding.inflate(LayoutInflater.from(this), binding.namesListVw, true)
+            item.lblName.text = name
+            item.nameDividerVw.isVisible = i < shown.lastIndex
             showName(item, name, isRevealed(i, name))
-            item.btnReveal.setOnClickListener { revealName(item, name) }
+            item.padReveal.setOnClickListener { revealName(item, name) }
         }
         updateRevealedCount()
         if (all.indices.any { !isRevealed(it, all[it]) }) BonusAdSponsor.preload(this)
     }
 
     private fun showName(item: CardDetailNameBinding, name: String, revealed: Boolean) {
-        item.tvName.setBlurred(!revealed)
-        item.tvRevealed.isVisible = revealed
-        item.btnReveal.isVisible = !revealed
+        item.lblName.setBlurred(!revealed)
+        item.lblRevealed.isVisible = revealed
+        item.padReveal.isVisible = !revealed
         if (revealed) {
-            item.tvAvatar.text = initials(name)
-            item.tvAvatar.setBackgroundResource(PeopleListAdapter.AVATARS[abs(name.hashCode()) % PeopleListAdapter.AVATARS.size])
+            item.lblAvatar.text = initials(name)
+            item.lblAvatar.setBackgroundResource(PeopleListAdapter.AVATARS[abs(name.hashCode()) % PeopleListAdapter.AVATARS.size])
         } else {
-            item.tvAvatar.text = ""
-            item.tvAvatar.setBackgroundResource(R.drawable.vs_circle_track)
+            item.lblAvatar.text = ""
+            item.lblAvatar.setBackgroundResource(R.drawable.vs_circle_track)
         }
     }
 
@@ -206,20 +206,20 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
     private fun updateRevealedCount() {
         val all = names
         val revealed = all.indices.count { isRevealed(it, all[it]) }
-        binding.tvRevealedCount.text = getString(R.string.ds_names_count, revealed, all.size)
-        binding.tvNamesNote.isVisible = revealed < all.size
+        binding.lblRevealedCount.text = getString(R.string.ds_names_count, revealed, all.size)
+        binding.lblNamesNote.isVisible = revealed < all.size
     }
 
     /** One rewarded ad reveals one name (remembered); closing the ad early keeps it hidden. */
     private fun revealName(item: CardDetailNameBinding, name: String) {
         if (revealing) return
         revealing = true
-        item.tvReveal.isInvisible = true
-        item.pbReveal.isVisible = true
+        item.lblReveal.isInvisible = true
+        item.pbRevealVw.isVisible = true
         BonusAdSponsor().show(this) { result ->
             revealing = false
-            item.tvReveal.isInvisible = false
-            item.pbReveal.isVisible = false
+            item.lblReveal.isInvisible = false
+            item.pbRevealVw.isVisible = false
             if (result != BonusAdSponsor.Result.EARNED) {
                 if (result == BonusAdSponsor.Result.NOT_EARNED) {
                     Toast.makeText(this, R.string.ds_reward_not_earned, Toast.LENGTH_SHORT).show()
@@ -235,8 +235,8 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
     // ── Map ───────────────────────────────────────────────────────────────
 
     private fun placeOnMap() {
-        overlay?.let { it.stop(); binding.mapView.overlays.remove(it) }
-        overlay = OpenStreetTiles.place(binding.mapView, report, coarse = false)
+        overlay?.let { it.stop(); binding.mapViewVw.overlays.remove(it) }
+        overlay = OpenStreetTiles.place(binding.mapViewVw, report, coarse = false)
         centerPin()
     }
 
@@ -248,20 +248,20 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         val d = resources.displayMetrics.density
         val above = topInset + (46 * d).roundToInt()
         val below = (34 * d).roundToInt()
-        binding.mapView.setMapCenterOffset(0, (above - below) / 2)
-        binding.mapView.invalidate()
+        binding.mapViewVw.setMapCenterOffset(0, (above - below) / 2)
+        binding.mapViewVw.invalidate()
     }
 
     // ── Retry ─────────────────────────────────────────────────────────────
 
     private fun retry() {
-        binding.btnRetry.isVisible = false
-        binding.pbRetry.isVisible = true
+        binding.padRetry.isVisible = false
+        binding.pbRetryVw.isVisible = true
         lifecycleScope.launch {
             // The E.164 number re-parses on its own; the region only matters when it doesn't.
             val fresh = NumberFinder.run(this@NumberInsightActivity, report.e164, report.iso2, "")
-            binding.btnRetry.isVisible = true
-            binding.pbRetry.isVisible = false
+            binding.padRetry.isVisible = true
+            binding.pbRetryVw.isVisible = false
             if (!fresh.serverReached) {
                 Toast.makeText(this@NumberInsightActivity, R.string.ds_offline_note, Toast.LENGTH_SHORT).show()
                 return@launch
@@ -314,11 +314,11 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
 
     override fun onResume() {
         super.onResume()
-        if (::report.isInitialized) binding.mapView.onResume()
+        if (::report.isInitialized) binding.mapViewVw.onResume()
     }
 
     override fun onPause() {
-        if (::report.isInitialized) binding.mapView.onPause()
+        if (::report.isInitialized) binding.mapViewVw.onPause()
         super.onPause()
     }
 

@@ -48,10 +48,10 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
         // The map runs under the status bar; the top bar sits below it.
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
-        val topPad = binding.mapTopBar.paddingTop
-        ViewCompat.setOnApplyWindowInsetsListener(binding.mapRoot) { v, insets ->
+        val topPad = binding.mapTopBarVw.paddingTop
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mapRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.mapTopBar.updatePadding(top = topPad + bars.top)
+            binding.mapTopBarVw.updatePadding(top = topPad + bars.top)
             if (topInset != bars.top) {
                 topInset = bars.top
                 if (::report.isInitialized) centerPin()
@@ -62,31 +62,31 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
 
         val r = report
         val place = listOfNotNull(r.city, r.state).distinct().joinToString(", ")
-        binding.tvTitle.text = place.ifEmpty { r.countryName }
-        binding.tvIso.text = r.iso2
-        binding.tvNumber.text = r.international
-        binding.tvPlace.text = r.placeLabel.ifEmpty { r.countryName }
+        binding.lblTitle.text = place.ifEmpty { r.countryName }
+        binding.lblIso.text = r.iso2
+        binding.lblNumber.text = r.international
+        binding.lblPlace.text = r.placeLabel.ifEmpty { r.countryName }
 
-        binding.btnBack.setOnClickListener { goBack() }
-        binding.btnZoomIn.setOnClickListener { binding.mapView.controller.zoomIn() }
-        binding.btnZoomOut.setOnClickListener { binding.mapView.controller.zoomOut() }
-        binding.btnRecenter.setOnClickListener { recenter() }
-        binding.btnDirections.setOnClickListener { openInMaps() }
-        listOf(binding.btnZoomIn, binding.btnZoomOut, binding.btnRecenter, binding.btnDirections)
+        binding.padBack.setOnClickListener { goBack() }
+        binding.padZoomIn.setOnClickListener { binding.mapViewVw.controller.zoomIn() }
+        binding.padZoomOut.setOnClickListener { binding.mapViewVw.controller.zoomOut() }
+        binding.padRecenter.setOnClickListener { recenter() }
+        binding.padDirections.setOnClickListener { openInMaps() }
+        listOf(binding.padZoomIn, binding.padZoomOut, binding.padRecenter, binding.padDirections)
             .forEach { VisualTweens.pressScale(it) }
 
-        OpenStreetTiles.style(binding.mapView, interactive = true)
-        overlay = OpenStreetTiles.place(binding.mapView, r, coarse = false)
+        OpenStreetTiles.style(binding.mapViewVw, interactive = true)
+        overlay = OpenStreetTiles.place(binding.mapViewVw, r, coarse = false)
         // No point for the area (country-only result): the whole country's name is all we have.
-        binding.btnRecenter.isEnabled = r.pin != null
-        binding.btnRecenter.alpha = if (r.pin != null) 1f else 0.4f
+        binding.padRecenter.isEnabled = r.pin != null
+        binding.padRecenter.alpha = if (r.pin != null) 1f else 0.4f
         centerPin()
     }
 
     /** Back to the area at its own zoom, after the user panned or zoomed away. */
     private fun recenter() {
         val pin = report.pin ?: return
-        binding.mapView.controller.animateTo(
+        binding.mapViewVw.controller.animateTo(
             org.osmdroid.util.GeoPoint(pin.lat, pin.lng), report.precision.zoom, RECENTER_MS,
         )
     }
@@ -96,12 +96,12 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
      * over its bottom — half the difference below centre.
      */
     private fun centerPin() {
-        binding.placeCard.post {
+        binding.placeCardVw.post {
             val d = resources.displayMetrics.density
             val above = topInset + (52 * d).roundToInt()
-            val below = binding.placeCard.height + (16 * d).roundToInt()
-            binding.mapView.setMapCenterOffset(0, (above - below) / 2)
-            binding.mapView.invalidate()
+            val below = binding.placeCardVw.height + (16 * d).roundToInt()
+            binding.mapViewVw.setMapCenterOffset(0, (above - below) / 2)
+            binding.mapViewVw.invalidate()
         }
     }
 
@@ -119,11 +119,11 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
 
     override fun onResume() {
         super.onResume()
-        if (::report.isInitialized) binding.mapView.onResume()
+        if (::report.isInitialized) binding.mapViewVw.onResume()
     }
 
     override fun onPause() {
-        if (::report.isInitialized) binding.mapView.onPause()
+        if (::report.isInitialized) binding.mapViewVw.onPause()
         super.onPause()
     }
 

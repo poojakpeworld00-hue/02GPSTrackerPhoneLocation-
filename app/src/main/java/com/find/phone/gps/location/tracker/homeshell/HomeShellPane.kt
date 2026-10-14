@@ -41,7 +41,7 @@ class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHos
     private val host: HomeShellOwner? get() = HomeShellOwner.of(activity)
 
     private val home: DashboardMainFragment?
-        get() = childFragmentManager.findFragmentById(R.id.panelContent) as? DashboardMainFragment
+        get() = childFragmentManager.findFragmentById(R.id.panelContentVw) as? DashboardMainFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Under the app theme: the launcher Activity carries the module's own theme, whose fonts
@@ -55,16 +55,16 @@ class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHos
         if (home == null) {
             // commitNow, so setPanelVisible on this same open reaches the content.
             childFragmentManager.beginTransaction()
-                .replace(R.id.panelContent, DashboardMainFragment())
+                .replace(R.id.panelContentVw, DashboardMainFragment())
                 .commitNow()
         }
         // The panel itself slides on horizontal gestures; the drawer opens from the menu button
         // only, so the two never fight over an edge swipe.
-        binding.panelDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        binding.panelDrawerVw.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         (activity as? AppCompatActivity)?.let { activity ->
             drawerMenu = DashboardSideMenu(
                 activity,
-                binding.drawerMenu,
+                binding.drawerMenuVw,
                 requestPhonePermission = { phonePermission.launch(it) },
             ) { closeMenu() }.also { it.bind() }
         }
@@ -78,15 +78,15 @@ class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHos
 
     /** 3e: the header's menu button opens the drawer, as on the main page. */
     override fun openHomeMenu() {
-        _binding?.panelDrawer?.openDrawer(GravityCompat.START)
+        _binding?.panelDrawerVw?.openDrawer(GravityCompat.START)
     }
 
     private fun closeMenu() {
-        _binding?.panelDrawer?.closeDrawer(GravityCompat.START)
+        _binding?.panelDrawerVw?.closeDrawer(GravityCompat.START)
     }
 
     private val isMenuOpen: Boolean
-        get() = _binding?.panelDrawer?.isDrawerOpen(GravityCompat.START) == true
+        get() = _binding?.panelDrawerVw?.isDrawerOpen(GravityCompat.START) == true
 
     override fun setPanelVisible(visible: Boolean) {
         host?.shellVisible = visible
@@ -94,7 +94,7 @@ class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHos
         // launcher Activity have to be taken down with it or they are left over the home grid.
         if (!visible) {
             host?.homeShellController?.onShellHidden()
-            _binding?.panelDrawer?.closeDrawer(GravityCompat.START, false)
+            _binding?.panelDrawerVw?.closeDrawer(GravityCompat.START, false)
         }
         // The content requests its ads only while it is on screen.
         home?.setOnScreen(visible)

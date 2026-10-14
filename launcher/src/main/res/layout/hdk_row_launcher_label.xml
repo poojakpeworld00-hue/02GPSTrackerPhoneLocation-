@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/launcher_holderUi"
+    android:id="@+id/launcher_holderView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clickable="true"
@@ -16,7 +16,7 @@
         width otherwise.
     -->
     <ImageView
-        android:id="@+id/launcher_iconUi"
+        android:id="@+id/launcher_iconView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/launcher_launcher_icon_size"
         android:layout_gravity="center_horizontal|bottom"
@@ -35,10 +35,10 @@
         carried the same shadow all along (DeskGrid.textPaint).
     -->
     <org.fossify.commons.views.MyTextView
-        android:id="@+id/launcher_labelUi"
+        android:id="@+id/launcher_labelView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/launcher_iconUi"
+        android:layout_below="@+id/launcher_iconView"
         android:ellipsize="end"
         android:gravity="center_horizontal|top"
         android:maxLines="1"
@@ -51,7 +51,7 @@
         android:textSize="12sp" />
 
     <View
-        android:id="@+id/popup_anchorUi"
+        android:id="@+id/popup_anchorView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center_horizontal|top" />

@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <com.facebook.ads.NativeAdLayout
-        android:id="@+id/nativview"
+        android:id="@+id/nativviewVw"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/_192sdp"
         android:background="@drawable/art_ads_bg"
@@ -19,13 +19,13 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/iconeview"
+                android:id="@+id/iconeviewVw"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/_38sdp"
                 android:orientation="horizontal">
 
                 <com.facebook.ads.MediaView
-                    android:id="@+id/native_ad_icon"
+                    android:id="@+id/promo_ad_icon"
                     android:layout_width="@dimen/_38sdp"
                     android:layout_height="@dimen/_38sdp" />
 
@@ -41,7 +41,7 @@
                     android:paddingBottom="@dimen/_6sdp">
 
                     <TextView
-                        android:id="@+id/native_ad_title"
+                        android:id="@+id/promo_ad_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -53,7 +53,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/adText"
+                        android:id="@+id/adTextVw"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -63,7 +63,7 @@
                         android:textSize="@dimen/_8sdp" />
 
                     <TextView
-                        android:id="@+id/native_ad_sponsored_label"
+                        android:id="@+id/promo_ad_sponsored_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -74,7 +74,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ad_choices_container"
+                    android:id="@+id/ad_choices_containerVw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -85,7 +85,7 @@
             </LinearLayout>
 
             <com.facebook.ads.MediaView
-                android:id="@+id/native_ad_media"
+                android:id="@+id/promo_ad_media"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_marginVertical="@dimen/_2sdp"
@@ -93,7 +93,7 @@
                 android:gravity="center" />
 
             <LinearLayout
-                android:id="@+id/iconeview_main"
+                android:id="@+id/iconeview_mainVw"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -107,7 +107,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/native_ad_social_context"
+                        android:id="@+id/promo_ad_social_context"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -118,7 +118,7 @@
                         android:textSize="@dimen/_8sdp" />
 
                     <TextView
-                        android:id="@+id/native_ad_body"
+                        android:id="@+id/promo_ad_body"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
@@ -134,7 +134,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/native_ad_call_to_action"
+                    android:id="@+id/promo_ad_call_to_action"
                     android:layout_width="@dimen/_100sdp"
                     android:layout_height="@dimen/_30sdp"
                     android:layout_alignParentRight="true"

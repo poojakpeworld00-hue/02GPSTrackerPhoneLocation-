@@ -67,16 +67,16 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
     override fun initView() {
         // Dark icons on the light canvas, light icons in dark mode.
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !isNightMode(this)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.myNumberRoot) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.myNumberRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updatePadding(top = bars.top, bottom = bars.bottom)
             insets
         }
-        binding.btnBack.setOnClickListener { goBack() }
-        binding.btnShow.setOnClickListener { onShow() }
-        binding.rowShareQr.setOnClickListener { openShare() }
-        binding.rowDashboard.setOnClickListener { startActivity(TwinSimOverviewActivity.intent(this)) }
-        binding.rowCarrierCodes.setOnClickListener {
+        binding.padBack.setOnClickListener { goBack() }
+        binding.padShow.setOnClickListener { onShow() }
+        binding.rowShareQrVw.setOnClickListener { openShare() }
+        binding.rowDashboardVw.setOnClickListener { startActivity(TwinSimOverviewActivity.intent(this)) }
+        binding.rowCarrierCodesVw.setOnClickListener {
             startActivity(OperatorDialCodesActivity.intent(this, selectedSlot))
         }
         render()
@@ -96,23 +96,23 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         stopSignals()
         val lines = if (OwnSimLines.hasReadySim(this)) OwnSimLines.read(this) else emptyList()
         val showing = lines.isNotEmpty()
-        binding.simCards.isVisible = showing
-        binding.simToolsSection.isVisible = showing
-        binding.emptyState.isVisible = !showing
-        binding.btnShow.setText(if (isPermanentlyDenied()) R.string.my_number_settings else R.string.my_number_show)
+        binding.simCardsVw.isVisible = showing
+        binding.simToolsSectionVw.isVisible = showing
+        binding.emptyStateVw.isVisible = !showing
+        binding.padShow.setText(if (isPermanentlyDenied()) R.string.my_number_settings else R.string.my_number_show)
 
-        binding.simCards.removeAllViews()
+        binding.simCardsVw.removeAllViews()
         if (!showing) {
             cards = emptyList()
             return
         }
         val inflater = LayoutInflater.from(this)
         cards = lines.mapIndexed { i, line ->
-            val v = CardMyNumberCardCompactBinding.inflate(inflater, binding.simCards, false)
+            val v = CardMyNumberCardCompactBinding.inflate(inflater, binding.simCardsVw, false)
             v.root.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
                 if (i > 0) marginStart = dp(12)
             }
-            binding.simCards.addView(v.root)
+            binding.simCardsVw.addView(v.root)
             Card(line, SimSignal.subIdForSlot(this, line.slot), v)
         }
         if (cards.none { it.line.slot == selectedSlot }) selectedSlot = cards.first().line.slot
@@ -127,22 +127,22 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
     private fun bindStatic(card: Card) {
         val v = card.views
         val line = card.line
-        v.tvBadge.text = getString(R.string.my_number_sim_badge, line.slot)
+        v.lblBadge.text = getString(R.string.my_number_sim_badge, line.slot)
         val network = card.subId?.let { SimSignal.networkLabel(this, it) }
-        v.tvCarrier.text = if (network != null) "${line.carrier} · $network" else line.carrier
-        v.tvRegion.text = line.region.orEmpty()
-        v.tvRegion.isVisible = !line.region.isNullOrBlank()
+        v.lblCarrier.text = if (network != null) "${line.carrier} · $network" else line.carrier
+        v.lblRegion.text = line.region.orEmpty()
+        v.lblRegion.isVisible = !line.region.isNullOrBlank()
 
         val number = line.number
         if (number != null) {
-            v.tvNumber.text = number
-            v.btnCopy.isVisible = true
-            v.btnCopy.setOnClickListener { copy(number) }
+            v.lblNumber.text = number
+            v.padCopy.isVisible = true
+            v.padCopy.setOnClickListener { copy(number) }
         } else {
-            v.tvNumber.setText(R.string.my_number_not_stored)
-            v.btnCopy.isVisible = false
+            v.lblNumber.setText(R.string.my_number_not_stored)
+            v.padCopy.isVisible = false
         }
-        v.badgeDefault.isVisible = card.subId != null && card.subId == SimSignal.defaultVoiceSubId()
+        v.badgeDefaultVw.isVisible = card.subId != null && card.subId == SimSignal.defaultVoiceSubId()
 
         // Warm the name cache for Share (vCard), but the card shows the region, per the design.
         line.e164?.let { e164 ->
@@ -172,20 +172,20 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         // ink/grey — the adaptive ds_ink/ds_muted flip light in dark mode and vanish on the white card.
         val ink = color(if (on) R.color.white else R.color.ds_ink_fixed)
         val sub = if (on) 0xCCFFFFFF.toInt() else color(R.color.ds_muted_fixed)
-        v.tvCarrier.setTextColor(ink)
-        v.tvNumber.setTextColor(ink)
-        v.tvRegion.setTextColor(sub)
+        v.lblCarrier.setTextColor(ink)
+        v.lblNumber.setTextColor(ink)
+        v.lblRegion.setTextColor(sub)
 
-        v.tvBadge.setBackgroundResource(if (on) R.drawable.vs_sim_badge_white else R.drawable.vs_tile_tint_r8)
-        v.tvBadge.setTextColor(if (on) color(R.color.white) else color(R.color.ds_splash_blue))
+        v.lblBadge.setBackgroundResource(if (on) R.drawable.vs_sim_badge_white else R.drawable.vs_tile_tint_r8)
+        v.lblBadge.setTextColor(if (on) color(R.color.white) else color(R.color.ds_splash_blue))
 
-        v.btnCopy.setBackgroundResource(if (on) R.drawable.vs_copy_translucent_r12 else R.drawable.vs_copy_gray_fixed_r12)
+        v.padCopy.setBackgroundResource(if (on) R.drawable.vs_copy_translucent_r12 else R.drawable.vs_copy_gray_fixed_r12)
         val copyInk = if (on) color(R.color.white) else color(R.color.ds_ink_fixed)
-        v.btnCopy.setTextColor(copyInk)
-        TextViewCompat.setCompoundDrawableTintList(v.btnCopy, ColorStateList.valueOf(copyInk))
+        v.padCopy.setTextColor(copyInk)
+        TextViewCompat.setCompoundDrawableTintList(v.padCopy, ColorStateList.valueOf(copyInk))
 
-        v.badgeDefault.setBackgroundResource(if (on) R.drawable.vs_pill_white_solid else R.drawable.vs_pill_success)
-        v.badgeDefault.setTextColor(if (on) color(R.color.ds_splash_blue) else color(R.color.ds_success))
+        v.badgeDefaultVw.setBackgroundResource(if (on) R.drawable.vs_pill_white_solid else R.drawable.vs_pill_success)
+        v.badgeDefaultVw.setTextColor(if (on) color(R.color.ds_splash_blue) else color(R.color.ds_success))
 
         setBars(card, levels[card.line.slot] ?: 0, on)
     }
@@ -193,7 +193,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
     private fun setBars(card: Card, level: Int, on: Boolean) {
         val onColor = if (on) color(R.color.white) else color(R.color.ds_splash_blue)
         val offColor = if (on) 0x55FFFFFF else color(R.color.ds_border)
-        listOf(card.views.bar1, card.views.bar2, card.views.bar3, card.views.bar4).forEachIndexed { i, bar ->
+        listOf(card.views.bar1Vw, card.views.bar2Vw, card.views.bar3Vw, card.views.bar4Vw).forEachIndexed { i, bar ->
             ViewCompat.setBackgroundTintList(bar, ColorStateList.valueOf(if (i < level) onColor else offColor))
         }
     }

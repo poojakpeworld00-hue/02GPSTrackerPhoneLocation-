@@ -54,33 +54,33 @@ class SendNumberActivity : FoundationActivity<PageShareNumberBinding>() {
 
         // Dark icons on the light canvas, light icons in dark mode.
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !isNightMode(this)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.shareRoot) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.shareRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updatePadding(top = bars.top, bottom = bars.bottom)
             insets
         }
 
-        binding.tvNumber.text = display
-        binding.tvSubtitle.text = getString(R.string.share_number_scan_fmt, slot, carrier)
+        binding.lblNumber.text = display
+        binding.lblSubtitle.text = getString(R.string.share_number_scan_fmt, slot, carrier)
 
         qr = runCatching { QuickCodeMaker.encode("tel:$e164", QR_PX) }.getOrNull()
-        binding.imgQr.setImageBitmap(qr)
+        binding.photoQr.setImageBitmap(qr)
 
-        binding.btnBack.setOnClickListener { goBack() }
-        binding.segText.setOnClickListener { pick(SendAs.TEXT) }
-        binding.segContact.setOnClickListener { pick(SendAs.CONTACT) }
-        binding.segQr.setOnClickListener { pick(SendAs.QR) }
-        binding.btnCopy.setOnClickListener { copy() }
-        binding.btnSaveQr.setOnClickListener { saveQr() }
-        binding.btnShare.setOnClickListener { share() }
+        binding.padBack.setOnClickListener { goBack() }
+        binding.segTextVw.setOnClickListener { pick(SendAs.TEXT) }
+        binding.segContactVw.setOnClickListener { pick(SendAs.CONTACT) }
+        binding.segQrVw.setOnClickListener { pick(SendAs.QR) }
+        binding.padCopy.setOnClickListener { copy() }
+        binding.padSaveQr.setOnClickListener { saveQr() }
+        binding.padShare.setOnClickListener { share() }
         pick(SendAs.TEXT)
     }
 
     private fun pick(which: SendAs) {
         selected = which
-        style(binding.segText, which == SendAs.TEXT)
-        style(binding.segContact, which == SendAs.CONTACT)
-        style(binding.segQr, which == SendAs.QR)
+        style(binding.segTextVw, which == SendAs.TEXT)
+        style(binding.segContactVw, which == SendAs.CONTACT)
+        style(binding.segQrVw, which == SendAs.QR)
     }
 
     private fun style(view: TextView, on: Boolean) {

@@ -18,14 +18,14 @@ class TourPagerAdapter(
 
         fun bind(page: TourSlide) {
             VisualTweens.cancelAll(anims)
-            val container = binding.artContainer
+            val container = binding.artContainerVw
             container.removeAllViews()
             LayoutInflater.from(container.context).inflate(page.sceneRes, container, true)
             // The self-animating views (ping rings, roads, typing) start on attach; the
             // element loops that need ids (floaty, spin, fade-in, blink, glow) are wired here.
             anims += TourTransitions.attach(container)
-            binding.tvTitle.setText(page.titleRes)
-            binding.tvDesc.setText(page.descRes)
+            binding.lblTitle.setText(page.titleRes)
+            binding.lblDesc.setText(page.descRes)
         }
 
         fun recycle() = VisualTweens.cancelAll(anims)

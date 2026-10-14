@@ -77,14 +77,14 @@ class TipSheetActivity : AppCompatActivity() {
          */
         fun applyMode(root: View, mode: String) {
             if (mode != MODE_HOME) return
-            root.findViewById<TextView>(R.id.guideTitleTv)?.setText(R.string.home_guide_title)
-            root.findViewById<TextView>(R.id.guideDescTv)?.setText(R.string.home_guide_desc)
-            root.findViewById<TextView>(R.id.guideRowHintTv)?.setText(R.string.home_guide_row_hint)
+            root.findViewById<TextView>(R.id.guideTitleTvVw)?.setText(R.string.home_guide_title)
+            root.findViewById<TextView>(R.id.guideDescTvVw)?.setText(R.string.home_guide_desc)
+            root.findViewById<TextView>(R.id.guideRowHintTvVw)?.setText(R.string.home_guide_row_hint)
 
             // The label the system list actually prints, rather than a second copy of it that
             // can drift: the row is only useful if it matches the real one character for
             // character.
-            root.findViewById<TextView>(R.id.guideRowNameTv)?.let { name ->
+            root.findViewById<TextView>(R.id.guideRowNameTvVw)?.let { name ->
                 name.text = runCatching {
                     val ctx = name.context.applicationContext
                     ctx.applicationInfo.loadLabel(ctx.packageManager).toString().trim()
@@ -95,8 +95,8 @@ class TipSheetActivity : AppCompatActivity() {
             // CONTROL on that row too. "Appear on top" is a switch list; "Default home app" is
             // a radio list — showing the toggle Lottie there pointed at something the page
             // does not have.
-            root.findViewById<View>(R.id.animation_view)?.visibility = View.GONE
-            root.findViewById<CompoundButton>(R.id.guideRadioRb)?.let {
+            root.findViewById<View>(R.id.animation_viewVw)?.visibility = View.GONE
+            root.findViewById<CompoundButton>(R.id.guideRadioRbVw)?.let {
                 it.visibility = View.VISIBLE
                 pulseRadio(it)
             }
@@ -139,7 +139,7 @@ class TipSheetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.page_overlay_guide)
 
-        val root = findViewById<View>(R.id.llMain)
+        val root = findViewById<View>(R.id.rowMain)
 
         applyMode(root, mode)
 
@@ -162,7 +162,7 @@ class TipSheetActivity : AppCompatActivity() {
         // Slide the card up on entry. The window itself is translucent and the dim
         // fades in on its own, so animating the card is what makes it read as a
         // sheet rising over the Settings page rather than a frame-one pop-in.
-        findViewById<View>(R.id.overlayCardVw)?.apply {
+        findViewById<View>(R.id.overlayCardNode)?.apply {
             alpha = 0f
             post {
                 translationY = height.toFloat()

@@ -48,7 +48,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
     override fun initView() {
         TourUnveilRules.markShown(this, TourUnveilSettings.ONBOARDING)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.onboardingRoot) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.onboardingRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
             insets
@@ -58,36 +58,36 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
         HomeAdsSettings.showSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.INTRO),
-            container = binding.adNativeFrame,
-            shimmer = binding.adShimmer,
+            container = binding.adNativeFrameVw,
+            shimmer = binding.adShimmerVw,
         )
 
-        binding.viewPager.adapter = TourPagerAdapter(pages)
-        binding.viewPager.offscreenPageLimit = 1
+        binding.vuPager.adapter = TourPagerAdapter(pages)
+        binding.vuPager.offscreenPageLimit = 1
         buildDots()
         updateDots(0)
 
         // Swipe: the illustration moves at 0.6× the page (parallax), the copy fades out over
         // the first fifth of the swipe (≈200ms of a 1s page change).
-        binding.viewPager.setPageTransformer { page, position ->
+        binding.vuPager.setPageTransformer { page, position ->
             val w = page.width.toFloat()
-            page.findViewById<View?>(R.id.artContainer)?.translationX = position * w * 0.4f
-            page.findViewById<View?>(R.id.copy)?.alpha = (1f - abs(position) * 5f).coerceIn(0f, 1f)
+            page.findViewById<View?>(R.id.artContainerVw)?.translationX = position * w * 0.4f
+            page.findViewById<View?>(R.id.copyVw)?.alpha = (1f - abs(position) * 5f).coerceIn(0f, 1f)
         }
 
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.vuPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) = updateDots(position)
         })
 
         val ui = HomeAdsSettings.onboardingUi(this, HomeAdsSettings.OnboardScreen.INTRO)
-        binding.btnSkip.isVisible = ui.skipEnabled
+        binding.padSkip.isVisible = ui.skipEnabled
 
-        VisualTweens.pressScale(binding.btnNext)
-        binding.btnSkip.setOnClickListener { finishOnboarding() }
-        binding.btnNext.setOnClickListener {
-            val current = binding.viewPager.currentItem
+        VisualTweens.pressScale(binding.padNext)
+        binding.padSkip.setOnClickListener { finishOnboarding() }
+        binding.padNext.setOnClickListener {
+            val current = binding.vuPager.currentItem
             if (current < pages.lastIndex) {
-                binding.viewPager.currentItem = current + 1
+                binding.vuPager.currentItem = current + 1
             } else {
                 finishOnboarding()
             }
@@ -98,10 +98,10 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
         // for the next screen straight away.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val current = binding.viewPager.currentItem
+                val current = binding.vuPager.currentItem
                 if (!HomeRoleJourney.backMovesForward(this@GuidedTourActivity)) {
                     when {
-                        current > 0 -> binding.viewPager.setCurrentItem(current - 1, true)
+                        current > 0 -> binding.vuPager.setCurrentItem(current - 1, true)
                         // A later-launch intro (intro_display) has nothing behind it: land on Home
                         // instead of closing the app.
                         !HomeRoleJourney.isOnboardingActive(this@GuidedTourActivity) ->
@@ -111,7 +111,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
                     return
                 }
                 if (!ui.backAdvances && current < pages.lastIndex) {
-                    binding.viewPager.setCurrentItem(current + 1, true)
+                    binding.vuPager.setCurrentItem(current + 1, true)
                 } else if (!forwarding) {
                     forwarding = true
                     finishOnboarding()
@@ -130,7 +130,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
             dot.layoutParams = LinearLayout.LayoutParams(size, size).apply {
                 if (i < pages.lastIndex) marginEnd = gap
             }
-            binding.dots.addView(dot)
+            binding.dotsVw.addView(dot)
             dots.add(dot)
         }
     }
@@ -143,8 +143,8 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
             dot.setBackgroundResource(if (i == active) R.drawable.vs_dot_active else R.drawable.vs_dot)
         }
         val last = active == pages.lastIndex
-        binding.btnNextLabel.setText(if (last) R.string.ds_get_started else R.string.ds_next)
-        binding.btnNextIcon.isVisible = !last
+        binding.padNextLabel.setText(if (last) R.string.ds_get_started else R.string.ds_next)
+        binding.padNextIcon.isVisible = !last
         if (last != wasLast) {
             wasLast = last
             popCta()
@@ -170,10 +170,10 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
 
     /** Scale spring when the CTA morphs between Next and Get Started. */
     private fun popCta() {
-        binding.btnNext.animate().cancel()
-        binding.btnNext.scaleX = 0.94f
-        binding.btnNext.scaleY = 0.94f
-        binding.btnNext.animate()
+        binding.padNext.animate().cancel()
+        binding.padNext.scaleX = 0.94f
+        binding.padNext.scaleY = 0.94f
+        binding.padNext.animate()
             .scaleX(1f).scaleY(1f)
             .setInterpolator(spring)
             .setDuration(340L)

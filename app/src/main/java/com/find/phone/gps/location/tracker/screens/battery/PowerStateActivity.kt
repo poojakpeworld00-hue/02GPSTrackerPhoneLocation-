@@ -63,15 +63,15 @@ class PowerStateActivity : AppCompatActivity() {
         setContentView(R.layout.page_charging_status)
 
         // Content under the transparent status bar; pad the functional block down past it.
-        val content = findViewById<View>(R.id.chargingFunctionalContent)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chargingRoot)) { _, insets ->
+        val content = findViewById<View>(R.id.chargingFunctionalContentVw)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chargingRootVw)) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             content.updatePadding(top = bars.top)
-            findViewById<View>(R.id.chargingAdSlot).updatePadding(bottom = bars.bottom)
+            findViewById<View>(R.id.chargingAdSlotVw).updatePadding(bottom = bars.bottom)
             insets
         }
 
-        findViewById<ImageButton>(R.id.btnCloseCharging).setOnClickListener { close() }
+        findViewById<ImageButton>(R.id.padCloseCharging).setOnClickListener { close() }
         onBackPressedDispatcher.addCallback(this) { close() }
         render(registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED)))
         fillAd()
@@ -122,31 +122,31 @@ class PowerStateActivity : AppCompatActivity() {
         val plugged = battery?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) ?: 0
         val connected = plugged != 0
 
-        findViewById<PowerFlowView>(R.id.chargingEnergyView).apply {
+        findViewById<PowerFlowView>(R.id.chargingEnergyViewVw).apply {
             setConnected(connected)
             setProgress(level, animate = true)
         }
-        findViewById<TextView>(R.id.chargingPercentage).text =
+        findViewById<TextView>(R.id.chargingPercentageVw).text =
             getString(R.string.charging_percentage_value, level)
 
         if (connected) {
-            findViewById<TextView>(R.id.chargingModeLabel).setText(R.string.charging_live_energy)
-            findViewById<TextView>(R.id.chargingTitle).setText(R.string.charging_connected_title)
-            findViewById<TextView>(R.id.chargingSubtitle).text =
+            findViewById<TextView>(R.id.chargingModeLabelVw).setText(R.string.charging_live_energy)
+            findViewById<TextView>(R.id.chargingTitleVw).setText(R.string.charging_connected_title)
+            findViewById<TextView>(R.id.chargingSubtitleVw).text =
                 getString(R.string.charging_connected_subtitle, sourceLabel(plugged))
-            findViewById<TextView>(R.id.chargingMetricLeftLabel).setText(R.string.charging_until_full)
-            findViewById<TextView>(R.id.chargingMetricLeftValue).text = timeToFull(level)
-            findViewById<TextView>(R.id.chargingMetricRightLabel).setText(R.string.charging_power_source)
-            findViewById<TextView>(R.id.chargingMetricRightValue).text = sourceLabel(plugged)
-            findViewById<TextView>(R.id.chargingStatusText).setText(R.string.charging_power_flow_active)
-            findViewById<View>(R.id.chargingInfoCard).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.chargingMetricLeftLabelVw).setText(R.string.charging_until_full)
+            findViewById<TextView>(R.id.chargingMetricLeftValueVw).text = timeToFull(level)
+            findViewById<TextView>(R.id.chargingMetricRightLabelVw).setText(R.string.charging_power_source)
+            findViewById<TextView>(R.id.chargingMetricRightValueVw).text = sourceLabel(plugged)
+            findViewById<TextView>(R.id.chargingStatusTextVw).setText(R.string.charging_power_flow_active)
+            findViewById<View>(R.id.chargingInfoCardVw).visibility = View.VISIBLE
         } else {
-            findViewById<TextView>(R.id.chargingModeLabel).setText(R.string.charging_session_complete)
-            findViewById<TextView>(R.id.chargingTitle).setText(R.string.charging_disconnected_title)
-            findViewById<TextView>(R.id.chargingSubtitle).text =
+            findViewById<TextView>(R.id.chargingModeLabelVw).setText(R.string.charging_session_complete)
+            findViewById<TextView>(R.id.chargingTitleVw).setText(R.string.charging_disconnected_title)
+            findViewById<TextView>(R.id.chargingSubtitleVw).text =
                 getString(R.string.charging_ready_to_use, level)
-            findViewById<TextView>(R.id.chargingStatusText).setText(R.string.charging_disconnected_safely)
-            findViewById<View>(R.id.chargingInfoCard).visibility = View.GONE
+            findViewById<TextView>(R.id.chargingStatusTextVw).setText(R.string.charging_disconnected_safely)
+            findViewById<View>(R.id.chargingInfoCardVw).visibility = View.GONE
         }
     }
 
@@ -179,7 +179,7 @@ class PowerStateActivity : AppCompatActivity() {
 
     private fun fillAd() {
         if (!settings.showsBodyNative) return
-        val slot = findViewById<FrameLayout>(R.id.chargingAdSlot)
+        val slot = findViewById<FrameLayout>(R.id.chargingAdSlotVw)
         slot.visibility = View.VISIBLE
         when (settings.nativeType.trim().lowercase()) {
             "big", "big_native", "bignative" -> InlineSponsor().showBigNative(this, slot)
@@ -196,7 +196,7 @@ class PowerStateActivity : AppCompatActivity() {
     private fun close() {
         if (closed) return
         closed = true
-        findViewById<ImageButton>(R.id.btnCloseCharging).isEnabled = false
+        findViewById<ImageButton>(R.id.padCloseCharging).isEnabled = false
         // `charge_*` / `discharge_*` (`ad_flow` or a link chain) override `close_ad` when set.
         if (HomeSlotAds.hasOwnFlow(this, trigger)) {
             HomeSlotAds.showInterstitial(this, trigger) { finishSafely() }

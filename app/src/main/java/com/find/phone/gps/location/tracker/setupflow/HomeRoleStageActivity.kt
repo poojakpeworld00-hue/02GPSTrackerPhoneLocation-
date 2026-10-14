@@ -88,18 +88,18 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
 
         if (savedInstanceState == null) logKeyEvent("default_home_view")
 
-        VisualTweens.pressScale(binding.onboardingSetDefault)
-        binding.onboardingSetDefault.setOnClickListener {
+        VisualTweens.pressScale(binding.onboardingSetDefaultVw)
+        binding.onboardingSetDefaultVw.setOnClickListener {
             if (isDefaultLauncher()) goHome() else openHomeSettings()
         }
-        binding.onboardingSkip.setOnClickListener {
+        binding.onboardingSkipVw.setOnClickListener {
             logKeyEvent("default_home_skip")
             goToNextStep()
         }
 
         val ui = HomeAdsSettings.onboardingUi(this, HomeAdsSettings.OnboardScreen.SET_DEFAULT)
         skipEnabled = ui.skipEnabled
-        binding.onboardingSkip.isVisible = ui.skipEnabled
+        binding.onboardingSkipVw.isVisible = ui.skipEnabled
 
         // Paid users: Back gets one last ask (the role dialog). Organic users: Back is Back.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -114,12 +114,12 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         HomeAdsSettings.showSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.SET_DEFAULT),
-            container = binding.adNativeFrame,
-            shimmer = binding.adShimmer,
+            container = binding.adNativeFrameVw,
+            shimmer = binding.adShimmerVw,
         )
 
         // Small phones: the hero card gives way to the ad while one is on screen.
-        binding.imageHero.hideWhileAdVisible(binding.adNativeFrame, binding.heroCompact)
+        binding.imageHeroVw.hideWhileAdVisible(binding.adNativeFrameVw, binding.heroCompactVw)
 
         HomeRoleJourney.bindStepHeader(this, HomeAdsSettings.OnboardScreen.SET_DEFAULT, binding.root)
 
@@ -135,8 +135,8 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
     /** The chooser card and the swipe chip float (`floaty 4s`, the chip offset 1.4s). */
     private fun playMotion() {
         if (VisualTweens.animationsDisabled(this)) return
-        animators += VisualTweens.floaty(binding.chooserCard)
-        animators += VisualTweens.floaty(binding.chipSwipe, delayMs = 1400L)
+        animators += VisualTweens.floaty(binding.chooserCardVw)
+        animators += VisualTweens.floaty(binding.flagSwipe, delayMs = 1400L)
     }
 
     // ===== the two-stage request =====

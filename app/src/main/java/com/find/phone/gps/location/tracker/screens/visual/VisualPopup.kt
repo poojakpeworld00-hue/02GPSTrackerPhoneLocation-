@@ -37,19 +37,19 @@ class VisualPopup(private val context: Context) {
         selected: Boolean = false,
         onClick: () -> Unit,
     ): VisualPopup {
-        val row = CardPopupRowBinding.inflate(LayoutInflater.from(context), binding.rows, false)
-        row.tvLabel.text = label
-        row.ivIcon.setImageResource(icon)
-        row.tvBadge.text = badge
-        row.tvBadge.isVisible = !badge.isNullOrEmpty()
-        row.ivCheck.isVisible = selected
-        row.iconTile.setBackgroundResource(if (selected) R.drawable.vs_tile_primary_r12 else R.drawable.vs_tile_tint_r12)
-        row.ivIcon.imageTintList = ContextCompat.getColorStateList(context, if (selected) R.color.white else R.color.ds_primary)
+        val row = CardPopupRowBinding.inflate(LayoutInflater.from(context), binding.rowsVw, false)
+        row.lblLabel.text = label
+        row.picIcon.setImageResource(icon)
+        row.lblBadge.text = badge
+        row.lblBadge.isVisible = !badge.isNullOrEmpty()
+        row.picCheck.isVisible = selected
+        row.iconTileVw.setBackgroundResource(if (selected) R.drawable.vs_tile_primary_r12 else R.drawable.vs_tile_tint_r12)
+        row.picIcon.imageTintList = ContextCompat.getColorStateList(context, if (selected) R.color.white else R.color.ds_primary)
         row.root.setOnClickListener {
             window.dismiss()
             onClick()
         }
-        binding.rows.addView(row.root)
+        binding.rowsVw.addView(row.root)
         return this
     }
 

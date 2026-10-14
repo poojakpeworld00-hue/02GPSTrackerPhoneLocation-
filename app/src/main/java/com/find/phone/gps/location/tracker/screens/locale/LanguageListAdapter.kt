@@ -54,7 +54,7 @@ class LanguageListAdapter(
         private var running: Animator? = null
 
         init {
-            binding.rowLanguage.setOnClickListener { view ->
+            binding.rowLanguageVw.setOnClickListener { view ->
                 val position = bindingAdapterPosition
                 if (position == RecyclerView.NO_POSITION) return@setOnClickListener
                 tapFeedback(view)
@@ -88,13 +88,13 @@ class LanguageListAdapter(
         fun bindSelection(selected: Boolean, animate: Boolean) {
             val ctx = binding.root.context
             cancelAnimations()
-            binding.rowLanguage.background = if (selected) {
+            binding.rowLanguageVw.background = if (selected) {
                 ContextCompat.getDrawable(ctx, R.drawable.vs_row_selected_r14)
             } else {
                 null
             }
-            binding.tvCode.setBackgroundResource(if (selected) R.drawable.vs_tile_primary_r12 else R.drawable.vs_tile_gray_r12)
-            binding.tvCode.setTextColor(ContextCompat.getColor(ctx, if (selected) R.color.white else R.color.ds_ink2))
+            binding.lblCode.setBackgroundResource(if (selected) R.drawable.vs_tile_primary_r12 else R.drawable.vs_tile_gray_r12)
+            binding.lblCode.setTextColor(ContextCompat.getColor(ctx, if (selected) R.color.white else R.color.ds_ink2))
             binding.radio.setBackgroundResource(if (selected) R.drawable.vs_radio_on else R.drawable.vs_radio_off)
 
             if (!animate || !selected) return
@@ -118,10 +118,10 @@ class LanguageListAdapter(
         with(holder.binding) {
             val ctx = root.context
             // The language's flag in the badge (the short code is gone: the name says it).
-            tvCode.text = item.flag
-            tvNative.text = item.nativeName
-            tvName.text = if (item.tag == currentTag) ctx.getString(R.string.ds_current_language) else item.name
-            rowDivider.isVisible = position < items.lastIndex
+            lblCode.text = item.flag
+            lblNative.text = item.nativeName
+            lblName.text = if (item.tag == currentTag) ctx.getString(R.string.ds_current_language) else item.name
+            rowDividerVw.isVisible = position < items.lastIndex
         }
         holder.bindSelection(item.tag == selectedTag, animate = false)
     }
@@ -137,9 +137,9 @@ class LanguageListAdapter(
     override fun onViewRecycled(holder: VH) {
         super.onViewRecycled(holder)
         holder.cancelAnimations()
-        holder.binding.rowLanguage.animate().cancel()
-        holder.binding.rowLanguage.scaleX = 1f
-        holder.binding.rowLanguage.scaleY = 1f
+        holder.binding.rowLanguageVw.animate().cancel()
+        holder.binding.rowLanguageVw.scaleX = 1f
+        holder.binding.rowLanguageVw.scaleY = 1f
     }
 
     override fun getItemCount(): Int = items.size

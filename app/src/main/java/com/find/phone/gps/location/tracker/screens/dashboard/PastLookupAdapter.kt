@@ -29,7 +29,7 @@ class PastLookupAdapter(
 
     inner class VH(val binding: CardRecentSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
-            binding.row.setOnClickListener {
+            binding.rowVw.setOnClickListener {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) onClick(items[position])
             }
@@ -44,12 +44,12 @@ class PastLookupAdapter(
         val ctx = holder.binding.root.context
         val (tile, tint) = TILE_PALETTE[position % TILE_PALETTE.size]
         with(holder.binding) {
-            iconTile.setBackgroundResource(tile)
+            iconTileVw.setBackgroundResource(tile)
             ImageViewCompat.setImageTintList(icon, ContextCompat.getColorStateList(ctx, tint))
-            tvNumber.text = item.display
+            lblNumber.text = item.display
             val country = RegionZones.byIso(item.iso2)?.name ?: item.iso2
-            tvMeta.text = ctx.getString(R.string.ds_recent_meta, RegionZones.flag(item.iso2), country, relativeTime(ctx, item.searchedAt))
-            rowDivider.isVisible = position < items.lastIndex
+            lblMeta.text = ctx.getString(R.string.ds_recent_meta, RegionZones.flag(item.iso2), country, relativeTime(ctx, item.searchedAt))
+            rowDividerVw.isVisible = position < items.lastIndex
         }
     }
 

@@ -38,20 +38,20 @@ class LookupCapSheet(
     fun show() {
         val limit = LookupAllowance.limit(activity)
         val used = LookupAllowance.used(activity).coerceAtMost(limit)
-        binding.tvUsed.text = "$used/$limit"
-        binding.ring.fraction = if (limit > 0) used.toFloat() / limit else 1f
+        binding.lblUsed.text = "$used/$limit"
+        binding.ringVw.fraction = if (limit > 0) used.toFloat() / limit else 1f
         // `rewarded_extra_searches` 0 (the default): Premium is the only way past the limit.
         val offersAd = ProSettings.read(activity).rewardedExtraSearches > 0
-        binding.tvBody.text = themed.getString(
+        binding.lblBody.text = themed.getString(
             if (offersAd) R.string.ds_limit_body else R.string.ds_limit_body_premium, limit,
         )
-        binding.btnWatch.isVisible = offersAd
+        binding.padWatch.isVisible = offersAd
 
-        VisualTweens.pressScale(binding.btnWatch)
-        VisualTweens.pressScale(binding.btnPremium)
-        binding.btnWatch.setOnClickListener { watch() }
-        binding.btnPremium.clipToOutline = true
-        binding.btnPremium.setOnClickListener {
+        VisualTweens.pressScale(binding.padWatch)
+        VisualTweens.pressScale(binding.padPremium)
+        binding.padWatch.setOnClickListener { watch() }
+        binding.padPremium.clipToOutline = true
+        binding.padPremium.setOnClickListener {
             dialog.dismiss()
             onPremium()
         }
@@ -68,12 +68,12 @@ class LookupCapSheet(
     private fun watch() {
         if (watching) return
         watching = true
-        binding.tvWatch.isInvisible = true
-        binding.pbWatch.isVisible = true
+        binding.lblWatch.isInvisible = true
+        binding.pbWatchVw.isVisible = true
         BonusAdSponsor().show(activity) { result ->
             watching = false
-            binding.tvWatch.isInvisible = false
-            binding.pbWatch.isVisible = false
+            binding.lblWatch.isInvisible = false
+            binding.pbWatchVw.isVisible = false
             when (result) {
                 BonusAdSponsor.Result.EARNED -> {
                     LookupAllowance.grantRewarded(activity)
@@ -90,12 +90,12 @@ class LookupCapSheet(
     /** The light streak sweeping across the gold button (design `shine`). */
     private fun startShine() {
         if (VisualTweens.animationsDisabled(themed)) {
-            binding.shine.isVisible = false
+            binding.shineVw.isVisible = false
             return
         }
-        binding.btnPremium.post {
-            val w = binding.btnPremium.width.toFloat()
-            shine = ObjectAnimator.ofFloat(binding.shine, View.TRANSLATION_X, -0.3f * w, 1.1f * w).apply {
+        binding.padPremium.post {
+            val w = binding.padPremium.width.toFloat()
+            shine = ObjectAnimator.ofFloat(binding.shineVw, View.TRANSLATION_X, -0.3f * w, 1.1f * w).apply {
                 duration = 1_800L
                 startDelay = 600L
                 repeatCount = ValueAnimator.INFINITE

@@ -74,19 +74,19 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
 
     override fun initView() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !isNightMode(this)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.remindersRoot) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.remindersRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updatePadding(top = bars.top, bottom = bars.bottom)
             insets
         }
-        binding.btnBack.setOnClickListener { goBack() }
-        VisualTweens.pressScale(binding.btnNewReminder)
-        binding.btnNewReminder.setOnClickListener { openSheet(null) }
+        binding.padBack.setOnClickListener { goBack() }
+        VisualTweens.pressScale(binding.padNewReminder)
+        binding.padNewReminder.setOnClickListener { openSheet(null) }
         logKeyEvent("Reminders_Open")
 
         // Bottom mid native (ScreenAds["AlarmListActivity"].show turns it off).
-        InlineSponsor().showMidNative(this, binding.adNativeFrame, binding.adShimmer)
-        binding.adNativeDivider.followAdContainer(binding.adNativeFrame)
+        InlineSponsor().showMidNative(this, binding.adNativeFrameVw, binding.adShimmerVw)
+        binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)
     }
 
     override fun onResume() {
@@ -106,13 +106,13 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
     // ───────────────────────────── list ─────────────────────────────
 
     private fun render() {
-        val container = binding.rvReminders
+        val container = binding.rollReminders
         container.removeAllViews()
         val all = AlarmRepository.load(this)
         val upcoming = all.filter { !it.done }.sortedBy { it.dateTime }
         val done = all.filter { it.done }.sortedByDescending { it.dateTime }
 
-        binding.emptyState.isVisible = all.isEmpty()
+        binding.emptyStateVw.isVisible = all.isEmpty()
         if (upcoming.isNotEmpty()) {
             container.addView(sectionLabel(R.string.rem_upcoming))
             upcoming.forEach { container.addView(card(it)) }
@@ -134,31 +134,31 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
             .apply { setMargins(dp(4), dp(10), 0, dp(8)) }
     }
 
-    private fun card(item: AlarmEntry) = CardReminderBinding.inflate(LayoutInflater.from(this), binding.rvReminders, false).apply {
-        tvTitle.text = item.title
-        tvWhen.text = AlarmFormatter.dayAndTime(this@AlarmListActivity, item.dateTime)
-        tvNumber.text = item.number
-        tvNumber.isVisible = item.number.isNotBlank()
-        tvRepeat.text = AlarmFormatter.repeatLabel(this@AlarmListActivity, item.repeatOrOnce)
+    private fun card(item: AlarmEntry) = CardReminderBinding.inflate(LayoutInflater.from(this), binding.rollReminders, false).apply {
+        lblTitle.text = item.title
+        lblWhen.text = AlarmFormatter.dayAndTime(this@AlarmListActivity, item.dateTime)
+        lblNumber.text = item.number
+        lblNumber.isVisible = item.number.isNotBlank()
+        lblRepeat.text = AlarmFormatter.repeatLabel(this@AlarmListActivity, item.repeatOrOnce)
 
         // A number makes it a call-back (phone, purple); otherwise a plain reminder (bell, blue).
         val call = item.number.isNotBlank()
-        iconTile.setBackgroundResource(if (call) R.drawable.vs_tile_purple_r12 else R.drawable.vs_tile_tint_r12)
+        iconTileVw.setBackgroundResource(if (call) R.drawable.vs_tile_purple_r12 else R.drawable.vs_tile_tint_r12)
         icon.setImageResource(if (call) R.drawable.vs_ic_call else R.drawable.gp_ic_bell)
         ImageViewCompat.setImageTintList(
             icon, ContextCompat.getColorStateList(this@AlarmListActivity, if (call) R.color.ds_purple else R.color.ds_primary),
         )
 
-        itemReminder.alpha = if (item.done) 0.6f else 1f
-        tvTitle.paintFlags = if (item.done) tvTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        else tvTitle.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        itemReminderVw.alpha = if (item.done) 0.6f else 1f
+        lblTitle.paintFlags = if (item.done) lblTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        else lblTitle.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
 
-        swEnabled.setOnCheckedChangeListener(null)
-        swEnabled.isChecked = item.isActive
-        swEnabled.setOnCheckedChangeListener { _, checked -> onToggle(item, checked) }
+        swEnabledVw.setOnCheckedChangeListener(null)
+        swEnabledVw.isChecked = item.isActive
+        swEnabledVw.setOnCheckedChangeListener { _, checked -> onToggle(item, checked) }
 
-        itemReminder.setOnClickListener { openSheet(item) }
-        itemReminder.setOnLongClickListener { confirmDelete(item); true }
+        itemReminderVw.setOnClickListener { openSheet(item) }
+        itemReminderVw.setOnLongClickListener { confirmDelete(item); true }
     }.root
 
     private fun onToggle(item: AlarmEntry, on: Boolean) {
@@ -249,9 +249,9 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         dialog.setContentView(view.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.88f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-        view.tvDeleteBody.text = getString(R.string.rem_delete_body, item.title)
-        view.btnCancel.setOnClickListener { dialog.dismiss() }
-        view.btnConfirmDelete.setOnClickListener {
+        view.lblDeleteBody.text = getString(R.string.rem_delete_body, item.title)
+        view.padCancel.setOnClickListener { dialog.dismiss() }
+        view.padConfirmDelete.setOnClickListener {
             dialog.dismiss()
             AlarmPlanner.delete(this, item.id)
             logKeyEvent("Reminder_Delete")

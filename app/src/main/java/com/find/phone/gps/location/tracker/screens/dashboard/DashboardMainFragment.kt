@@ -128,8 +128,8 @@ class DashboardMainFragment : Fragment() {
         }
         countryIso = recent.iso2
         bindCountry()
-        binding.phoneInput.setText(recent.digits)
-        binding.phoneInput.setSelection(recent.digits.length)
+        binding.phoneInputVw.setText(recent.digits)
+        binding.phoneInputVw.setSelection(recent.digits.length)
     }
 
     private val contactPicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -220,7 +220,7 @@ class DashboardMainFragment : Fragment() {
      * answered the search box is cleared. Premium bought from it shows here too.
      */
     private val locatingPage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.data?.getBooleanExtra(PinpointingActivity.EXTRA_FOUND, false) == true) _binding?.phoneInput?.setText("")
+        if (result.data?.getBooleanExtra(PinpointingActivity.EXTRA_FOUND, false) == true) _binding?.phoneInputVw?.setText("")
         refreshRecents()
         bindQuota()
         bindProChip()
@@ -238,8 +238,8 @@ class DashboardMainFragment : Fragment() {
         // padding, the root the sides and the bottom (the banner slot sits above the nav bar).
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.header.updatePadding(top = bars.top)
-            binding.header.layoutParams.height = dp(56) + bars.top
+            binding.crest.updatePadding(top = bars.top)
+            binding.crest.layoutParams.height = dp(56) + bars.top
             navBarBottom = bars.bottom
             v.updatePadding(left = bars.left, right = bars.right)
             applyBottomInset(v)
@@ -256,26 +256,26 @@ class DashboardMainFragment : Fragment() {
 
         // The menu only exists where there is a drawer to open (the standalone home).
         val menuHost = (parentFragment as? MenuHost) ?: (activity as? MenuHost)
-        binding.btnMenu.isVisible = menuHost != null
-        binding.btnMenu.setOnClickListener { menuHost?.openHomeMenu() }
-        binding.btnHistory.setOnClickListener { historyPage.launch(PastLookupsActivity.intent(requireContext())) }
+        binding.padMenu.isVisible = menuHost != null
+        binding.padMenu.setOnClickListener { menuHost?.openHomeMenu() }
+        binding.padHistory.setOnClickListener { historyPage.launch(PastLookupsActivity.intent(requireContext())) }
 
         // Free searches today (design 9a); "Unlimited" → the Premium paywall.
-        binding.btnUnlimited.setOnClickListener {
+        binding.padUnlimited.setOnClickListener {
             requireContext().logKeyEvent("home_quota_unlimited")
             startActivity(ProUpgradeActivity.intent(requireContext()))
         }
         bindQuota()
 
         // PRO chip (design 9a) → the Premium paywall.
-        VisualTweens.pressScale(binding.btnPro)
-        binding.btnPro.clipToOutline = true
-        binding.btnPro.setOnClickListener {
+        VisualTweens.pressScale(binding.padPro)
+        binding.padPro.clipToOutline = true
+        binding.padPro.setOnClickListener {
             requireContext().logKeyEvent("home_pro_chip")
             startActivity(ProUpgradeActivity.intent(requireContext()))
         }
         bindProChip()
-        binding.countryChip.setOnClickListener {
+        binding.countryChipVw.setOnClickListener {
             NationSelectSheet.newInstance(countryIso).show(childFragmentManager, "country")
         }
         childFragmentManager.setFragmentResultListener(NationSelectSheet.RESULT_KEY, viewLifecycleOwner) { _, bundle ->
@@ -286,21 +286,21 @@ class DashboardMainFragment : Fragment() {
         }
 
         // Field: rest → focus (white, 2dp primary, 4dp halo) and the hero shrinks (3b).
-        binding.phoneInput.setOnFocusChangeListener { _, focused -> setTypingState(focused) }
-        binding.phoneInput.doAfterTextChanged { updateInputState() }
-        binding.phoneInput.setOnEditorActionListener { _, action, _ ->
+        binding.phoneInputVw.setOnFocusChangeListener { _, focused -> setTypingState(focused) }
+        binding.phoneInputVw.doAfterTextChanged { updateInputState() }
+        binding.phoneInputVw.setOnEditorActionListener { _, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) { startSearch(); true } else false
         }
-        binding.btnContact.setOnClickListener { pickContact() }
-        binding.btnClear.setOnClickListener { binding.phoneInput.setText("") }
-        VisualTweens.pressScale(binding.btnSearch)
-        binding.btnSearch.setOnClickListener { startSearch() }
+        binding.padContact.setOnClickListener { pickContact() }
+        binding.padClear.setOnClickListener { binding.phoneInputVw.setText("") }
+        VisualTweens.pressScale(binding.padSearch)
+        binding.padSearch.setOnClickListener { startSearch() }
         updateInputState()
 
         recentsAdapter = PastLookupAdapter { openRecent(it) }
-        binding.rvRecents.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvRecents.adapter = recentsAdapter
-        binding.btnClearAll.setOnClickListener {
+        binding.rollRecents.layoutManager = LinearLayoutManager(requireContext())
+        binding.rollRecents.adapter = recentsAdapter
+        binding.padClearAll.setOnClickListener {
             store.clear()
             refreshRecents()
         }
@@ -309,8 +309,8 @@ class DashboardMainFragment : Fragment() {
         // The slot frame and the bottom banner are hidden until the content is on screen, so an
         // off-screen panel never requests an ad; the standalone home calls setOnScreen(true)
         // straight away. The ad layer shows the banner frame itself once a load starts.
-        binding.adNativeCard.isVisible = false
-        binding.root.findViewById<View>(R.id.bannerAdFrame)?.isVisible = false
+        binding.adNativeCardVw.isVisible = false
+        binding.root.findViewById<View>(R.id.bannerAdFrameVw)?.isVisible = false
         if (onScreen) renderAds()
     }
 
@@ -327,20 +327,20 @@ class DashboardMainFragment : Fragment() {
         val b = _binding ?: return
         val context = requireContext()
         val show = ProSettings.read(context).enabled && !ProStoreBilling.isPremium(context)
-        b.btnPro.isVisible = show
+        b.padPro.isVisible = show
         if (!show) {
             proShine?.cancel()
             proShine = null
             return
         }
         if (proShine != null || VisualTweens.animationsDisabled(context)) {
-            b.proShine.isVisible = proShine != null
+            b.proShineVw.isVisible = proShine != null
             return
         }
-        b.btnPro.post {
-            val chip = _binding?.btnPro ?: return@post
+        b.padPro.post {
+            val chip = _binding?.padPro ?: return@post
             val w = chip.width.toFloat()
-            proShine = ObjectAnimator.ofFloat(_binding?.proShine, View.TRANSLATION_X, -0.4f * w, 1.2f * w).apply {
+            proShine = ObjectAnimator.ofFloat(_binding?.proShineVw, View.TRANSLATION_X, -0.4f * w, 1.2f * w).apply {
                 duration = 1_800L
                 startDelay = 1_200L
                 repeatCount = ValueAnimator.INFINITE
@@ -373,15 +373,15 @@ class DashboardMainFragment : Fragment() {
         val activity = activity ?: return
         val slot = HomeAdsSettings.rightPanelNativeSlot(activity)
         val adsOn = AdPrefsStore.getInstance(activity).getBoolean("IsAdsON")
-        binding.adNativeCard.isVisible = adsOn && slot.visible
+        binding.adNativeCardVw.isVisible = adsOn && slot.visible
         if (adsOn && slot.visible) {
             // `launcher_ads.right_panel.native`: requested once, then refreshed only when a
             // fresh native is actually in hand (see HomeAdsSettings.refreshSlot).
             if (!nativeRequested) {
                 nativeRequested = true
-                HomeAdsSettings.showSlot(activity, slot, binding.adNativeFrame, binding.adShimmer)
+                HomeAdsSettings.showSlot(activity, slot, binding.adNativeFrameVw, binding.adShimmerVw)
             } else {
-                HomeAdsSettings.refreshSlot(activity, slot, binding.adNativeFrame, binding.adShimmer)
+                HomeAdsSettings.refreshSlot(activity, slot, binding.adNativeFrameVw, binding.adShimmerVw)
             }
         }
         renderBanner()
@@ -394,18 +394,18 @@ class DashboardMainFragment : Fragment() {
      */
     private fun renderBanner() {
         val activity = activity ?: return
-        val container = binding.root.findViewById<FrameLayout>(R.id.bannerAdFrame) ?: return
-        val shimmer = binding.root.findViewById<ShimmerFrameLayout>(R.id.bannerShimmer)
+        val container = binding.root.findViewById<FrameLayout>(R.id.bannerAdFrameVw) ?: return
+        val shimmer = binding.root.findViewById<ShimmerFrameLayout>(R.id.bannerShimmerVw)
         if (store.all().isEmpty()) return
         if (bannerRequested || bannerHoldsAd(container)) return
         bannerRequested = true
         PageSponsorSettings.showAd(BANNER_SCREEN_KEY, activity, container, shimmer)
-        binding.adBannerDivider.followAdContainer(container)
+        binding.adBannerDividerVw.followAdContainer(container)
     }
 
     /** The shimmer skeleton is a child too; only a real ad view counts. */
     private fun bannerHoldsAd(container: FrameLayout): Boolean {
-        val shimmer = container.findViewById<View>(R.id.bannerShimmer)
+        val shimmer = container.findViewById<View>(R.id.bannerShimmerVw)
         return (0 until container.childCount).any { container.getChildAt(it) !== shimmer }
     }
 
@@ -429,38 +429,38 @@ class DashboardMainFragment : Fragment() {
     }
 
     private fun bindCountry() {
-        binding.tvFlag.text = RegionZones.flag(countryIso)
-        binding.tvDial.text = "+" + (RegionZones.dialOf(countryIso) ?: "1")
-        formatter?.let { binding.phoneInput.removeTextChangedListener(it) }
+        binding.lblFlag.text = RegionZones.flag(countryIso)
+        binding.lblDial.text = "+" + (RegionZones.dialOf(countryIso) ?: "1")
+        formatter?.let { binding.phoneInputVw.removeTextChangedListener(it) }
         formatter = PhoneNumberFormattingTextWatcher(countryIso).also {
-            binding.phoneInput.addTextChangedListener(it)
+            binding.phoneInputVw.addTextChangedListener(it)
         }
     }
 
     /** Contacts ↔ clear swap on input; the Search button glows only when the number is valid. */
     private fun updateInputState() {
-        val digits = binding.phoneInput.text?.filter { it.isDigit() }?.length ?: 0
-        binding.btnContact.isVisible = digits == 0
-        binding.btnClear.isVisible = digits > 0
+        val digits = binding.phoneInputVw.text?.filter { it.isDigit() }?.length ?: 0
+        binding.padContact.isVisible = digits == 0
+        binding.padClear.isVisible = digits > 0
         val valid = digits >= MIN_DIGITS
         if (valid && glowAnimator == null && !VisualTweens.animationsDisabled(requireContext())) {
-            binding.searchGlow.isInvisible = false
-            glowAnimator = VisualTweens.glow(binding.searchGlow, 2400L).also { animators += it }
+            binding.searchGlowVw.isInvisible = false
+            glowAnimator = VisualTweens.glow(binding.searchGlowVw, 2400L).also { animators += it }
         } else if (!valid && glowAnimator != null) {
             glowAnimator?.cancel()
             animators.remove(glowAnimator)
             glowAnimator = null
-            binding.searchGlow.isInvisible = true
+            binding.searchGlowVw.isInvisible = true
         }
     }
 
     /** 3a ↔ 3b: focus turns the field white with the primary ring and halo, hero 300 → 230dp. */
     private fun setTypingState(typing: Boolean) {
-        binding.phoneField.setBackgroundResource(if (typing) R.drawable.vs_field_focus_r16 else R.drawable.vs_field_rest_r16)
-        binding.fieldHalo.isInvisible = !typing
-        binding.pillGps.isVisible = !typing
-        binding.tvHeadline.textSize = if (typing) 24f else 26f
-        val from = binding.heroBox.layoutParams.height
+        binding.phoneFieldVw.setBackgroundResource(if (typing) R.drawable.vs_field_focus_r16 else R.drawable.vs_field_rest_r16)
+        binding.fieldHaloVw.isInvisible = !typing
+        binding.capGps.isVisible = !typing
+        binding.lblHeadline.textSize = if (typing) 24f else 26f
+        val from = binding.heroBoxVw.layoutParams.height
         val to = dp(if (typing) 230 else 300)
         heroAnimator?.cancel()
         heroAnimator = ValueAnimator.ofInt(from, to).apply {
@@ -468,8 +468,8 @@ class DashboardMainFragment : Fragment() {
             interpolator = VisualTweens.EASE_IN_OUT
             addUpdateListener {
                 val b = _binding ?: return@addUpdateListener
-                b.heroBox.layoutParams.height = it.animatedValue as Int
-                b.heroBox.requestLayout()
+                b.heroBoxVw.layoutParams.height = it.animatedValue as Int
+                b.heroBoxVw.requestLayout()
             }
             start()
         }
@@ -517,14 +517,14 @@ class DashboardMainFragment : Fragment() {
             countryIso = iso
             bindCountry()
         }
-        binding.phoneInput.setText(digits)
-        binding.phoneInput.setSelection(binding.phoneInput.text?.length ?: 0)
+        binding.phoneInputVw.setText(digits)
+        binding.phoneInputVw.setSelection(binding.phoneInputVw.text?.length ?: 0)
     }
 
     // ── Search ────────────────────────────────────────────────────────────
 
     private fun startSearch() {
-        val typed = binding.phoneInput.text?.filter { it.isDigit() }?.toString().orEmpty()
+        val typed = binding.phoneInputVw.text?.filter { it.isDigit() }?.toString().orEmpty()
         if (typed.length < MIN_DIGITS || !DialFactsReader.isValid(typed, countryIso)) {
             showInvalid(typed)
             return
@@ -586,26 +586,26 @@ class DashboardMainFragment : Fragment() {
         val b = _binding ?: return
         val context = requireContext()
         val unlimited = LookupAllowance.isUnlimited(context)
-        b.quotaRow.isVisible = !unlimited
+        b.quotaRowVw.isVisible = !unlimited
         if (unlimited) return
         val limit = LookupAllowance.limit(context)
         val left = LookupAllowance.remaining(context)
-        b.tvQuota.text = getString(R.string.ds_quota_left, left, limit)
-        b.quotaBar.progress = (100 * left.coerceAtMost(limit) / limit.coerceAtLeast(1))
+        b.lblQuota.text = getString(R.string.ds_quota_left, left, limit)
+        b.quotaBarVw.progress = (100 * left.coerceAtMost(limit) / limit.coerceAtLeast(1))
     }
 
     /** Design 11d: what's wrong with the number, with Edit number and Change country. */
     private fun showInvalid(digits: String) {
         val context = requireContext()
-        val shown = binding.phoneInput.text?.toString()?.trim().orEmpty().ifEmpty { digits }
+        val shown = binding.phoneInputVw.text?.toString()?.trim().orEmpty().ifEmpty { digits }
         BadNumberSheet(
             requireActivity(),
             number = "+" + (RegionZones.dialOf(countryIso) ?: "") + " " + shown,
             country = RegionZones.byIso(countryIso)?.name ?: countryIso,
             onEdit = {
-                binding.phoneInput.requestFocus()
-                binding.phoneInput.setSelection(binding.phoneInput.text?.length ?: 0)
-                ViewCompat.getWindowInsetsController(binding.phoneInput)?.show(WindowInsetsCompat.Type.ime())
+                binding.phoneInputVw.requestFocus()
+                binding.phoneInputVw.setSelection(binding.phoneInputVw.text?.length ?: 0)
+                ViewCompat.getWindowInsetsController(binding.phoneInputVw)?.show(WindowInsetsCompat.Type.ime())
             },
             onChangeCountry = { NationSelectSheet.newInstance(countryIso).show(childFragmentManager, "country") },
         ).show()
@@ -613,21 +613,21 @@ class DashboardMainFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
-        binding.phoneInput.clearFocus()
-        ViewCompat.getWindowInsetsController(binding.phoneInput)?.hide(WindowInsetsCompat.Type.ime())
+        binding.phoneInputVw.clearFocus()
+        ViewCompat.getWindowInsetsController(binding.phoneInputVw)?.hide(WindowInsetsCompat.Type.ime())
     }
 
     private fun refreshRecents() {
         val b = _binding ?: return
         val recents = store.all()
         recentsAdapter.submitList(recents)
-        b.emptyState.isVisible = recents.isEmpty()
-        b.rvRecents.isVisible = recents.isNotEmpty()
-        b.btnClearAll.isVisible = recents.isNotEmpty()
+        b.emptyStateVw.isVisible = recents.isEmpty()
+        b.rollRecents.isVisible = recents.isNotEmpty()
+        b.padClearAll.isVisible = recents.isNotEmpty()
         // Design 3b: the adaptive banner docks at the bottom once recents exist. The frame is only
         // forced on when it holds a real ad; otherwise the ad layer's own state stands (it hides
         // the frame when there is nothing to show, and forcing it on exposed the loading skeleton).
-        val banner = b.root.findViewById<FrameLayout>(R.id.bannerAdFrame)
+        val banner = b.root.findViewById<FrameLayout>(R.id.bannerAdFrameVw)
         val holdsAd = banner != null && bannerHoldsAd(banner)
         if (recents.isEmpty()) {
             banner?.isVisible = false
@@ -635,7 +635,7 @@ class DashboardMainFragment : Fragment() {
         } else if (holdsAd) {
             banner?.isVisible = true
         }
-        b.adBannerDivider.isVisible = recents.isNotEmpty() && holdsAd && banner?.isVisible == true
+        b.adBannerDividerVw.isVisible = recents.isNotEmpty() && holdsAd && banner?.isVisible == true
         if (recents.isNotEmpty() && onScreen) renderBanner()
     }
 

@@ -7,7 +7,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tileRoot"
+    android:id="@+id/tileRootVw"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/vs_card_border_r16"
@@ -18,13 +18,13 @@
     android:paddingBottom="10dp">
 
     <FrameLayout
-        android:id="@+id/tileIconBox"
+        android:id="@+id/tileIconBoxVw"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:background="@drawable/vs_tile_tint_r12">
 
         <ImageView
-            android:id="@+id/tileIcon"
+            android:id="@+id/tileIconVw"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_gravity="center"
@@ -35,7 +35,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/tileTitle"
+        android:id="@+id/tileTitleVw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -48,7 +48,7 @@
         tools:text="Swipe up" />
 
     <TextView
-        android:id="@+id/tileBody"
+        android:id="@+id/tileBodyVw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

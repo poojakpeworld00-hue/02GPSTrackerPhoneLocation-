@@ -71,35 +71,35 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         WindowCompat.getInsetsController(window, binding.root).isAppearanceLightStatusBars = true
-        val closeTop = (binding.btnClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
-        val bottomPad = binding.bottomBar.paddingBottom
-        ViewCompat.setOnApplyWindowInsetsListener(binding.premiumRoot) { _, insets ->
+        val closeTop = (binding.padClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+        val bottomPad = binding.footerBar.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.premiumRootVw) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.btnClose.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = closeTop + bars.top }
-            binding.hero.updateLayoutParams { height = dp(300) + bars.top }
-            binding.bottomBar.updatePadding(bottom = bottomPad + bars.bottom)
-            binding.premiumRoot.updatePadding(left = bars.left, right = bars.right)
+            binding.padClose.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = closeTop + bars.top }
+            binding.heroVw.updateLayoutParams { height = dp(300) + bars.top }
+            binding.footerBar.updatePadding(bottom = bottomPad + bars.bottom)
+            binding.premiumRootVw.updatePadding(left = bars.left, right = bars.right)
             insets
         }
 
-        rows = listOf(binding.plan1, binding.plan2, binding.plan3)
+        rows = listOf(binding.plan1Vw, binding.plan2Vw, binding.plan3Vw)
         rows.forEachIndexed { i, row ->
             row.root.isVisible = i < plans.size
-            row.planCard.setOnClickListener { select(i) }
+            row.planCardVw.setOnClickListener { select(i) }
         }
         bindPlans()
 
-        VisualTweens.pressScale(binding.btnContinue)
-        binding.btnContinue.clipToOutline = true
-        binding.btnContinue.setOnClickListener { buy() }
-        binding.btnRestore.setOnClickListener { restore() }
-        binding.btnTerms.setOnClickListener { openTermLink() }
-        binding.btnPrivacy.setOnClickListener { openPolicyLink() }
-        binding.btnClose.setOnClickListener { if (binding.btnClose.closable) leave() }
-        binding.btnClose.start(config.closeDelaySec, config.closeButtonOpacity) {}
-        binding.btnContinueFree.paintFlags = binding.btnContinueFree.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        VisualTweens.pressScale(binding.padContinue)
+        binding.padContinue.clipToOutline = true
+        binding.padContinue.setOnClickListener { buy() }
+        binding.padRestore.setOnClickListener { restore() }
+        binding.padTerms.setOnClickListener { openTermLink() }
+        binding.padPrivacy.setOnClickListener { openPolicyLink() }
+        binding.padClose.setOnClickListener { if (binding.padClose.closable) leave() }
+        binding.padClose.start(config.closeDelaySec, config.closeButtonOpacity) {}
+        binding.padContinueFree.paintFlags = binding.padContinueFree.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         // Shown and usable from the start: close_delay_sec paces only the X.
-        binding.btnContinueFree.setOnClickListener {
+        binding.padContinueFree.setOnClickListener {
             logKeyEvent("premium_continue_free")
             leave()
         }
@@ -107,7 +107,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         // Back does nothing until the close control has appeared; then it leaves like the X.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (binding.btnClose.closable) leave()
+                if (binding.padClose.closable) leave()
             }
         })
 
@@ -133,25 +133,25 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
             val row = rows[i]
             val on = i == selected
             // The selected plan fills with the CTA's gradient, turns its copy white and lifts.
-            row.planCard.setBackgroundResource(if (on) R.drawable.vs_plan_on_r18 else R.drawable.vs_plan_off_r18)
-            row.tvName.setTextColor(getColor(if (on) R.color.white else R.color.ds_ink))
-            row.tvPrice.setTextColor(getColor(if (on) R.color.white else R.color.ds_ink))
-            row.tvPeriod.setTextColor(if (on) getColor(R.color.white) and 0xD9FFFFFF.toInt() else getColor(R.color.ds_muted))
-            row.planCard.elevation = if (on) dp(10).toFloat() else 0f
+            row.planCardVw.setBackgroundResource(if (on) R.drawable.vs_plan_on_r18 else R.drawable.vs_plan_off_r18)
+            row.lblName.setTextColor(getColor(if (on) R.color.white else R.color.ds_ink))
+            row.lblPrice.setTextColor(getColor(if (on) R.color.white else R.color.ds_ink))
+            row.lblPeriod.setTextColor(if (on) getColor(R.color.white) and 0xD9FFFFFF.toInt() else getColor(R.color.ds_muted))
+            row.planCardVw.elevation = if (on) dp(10).toFloat() else 0f
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                row.planCard.outlineSpotShadowColor = getColor(R.color.ds_primary)
-                row.planCard.outlineAmbientShadowColor = getColor(R.color.ds_primary)
+                row.planCardVw.outlineSpotShadowColor = getColor(R.color.ds_primary)
+                row.planCardVw.outlineAmbientShadowColor = getColor(R.color.ds_primary)
             }
             val scale = if (on) SELECTED_SCALE else 1f
             row.root.animate().scaleX(scale).scaleY(scale).setDuration(180L).start()
-            row.tvName.setText(nameOf(plan))
+            row.lblName.setText(nameOf(plan))
             // The monthly card reads per week (its Play price / 4); the CTA and the price line
             // below keep the amount actually billed each month.
-            row.tvPrice.text = (if (plan.kind == ProTier.Kind.MONTHLY) ProStoreBilling.weeklyPrice(plan)
+            row.lblPrice.text = (if (plan.kind == ProTier.Kind.MONTHLY) ProStoreBilling.weeklyPrice(plan)
             else ProStoreBilling.price(plan)) ?: PRICE_PENDING
-            row.tvPeriod.setText(periodOf(plan))
-            row.tvTag.text = plan.tag
-            row.tvTag.isVisible = plan.tag.isNotBlank()
+            row.lblPeriod.setText(periodOf(plan))
+            row.lblTag.text = plan.tag
+            row.lblTag.isVisible = plan.tag.isNotBlank()
         }
         val plan = plans.getOrNull(selected) ?: return
         val trial = trialOf(plan)
@@ -166,25 +166,25 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         if (price == null) {
             // No Play price for this plan yet: a spinner while Play is asked, Retry once it failed.
             val failed = priceState == PriceState.FAILED
-            binding.tvPriceLine.text = if (failed) getString(R.string.ds_premium_unavailable) else ""
-            binding.tvCta.text = getString(R.string.ds_retry)
+            binding.lblPriceLine.text = if (failed) getString(R.string.ds_premium_unavailable) else ""
+            binding.lblCta.text = getString(R.string.ds_retry)
             if (!buying) {
-                binding.tvCta.isInvisible = !failed
-                binding.pbCta.isVisible = !failed
+                binding.lblCta.isInvisible = !failed
+                binding.pbCtaVw.isVisible = !failed
             }
             return
         }
         if (!buying) {
-            binding.tvCta.isInvisible = false
-            binding.pbCta.isVisible = false
+            binding.lblCta.isInvisible = false
+            binding.pbCtaVw.isVisible = false
         }
-        binding.tvCta.text = when {
+        binding.lblCta.text = when {
             trial > 0 -> getString(R.string.ds_premium_cta_trial, trial)
             plan.kind == ProTier.Kind.WEEKLY -> getString(R.string.ds_premium_cta_week, price)
             plan.kind == ProTier.Kind.MONTHLY -> getString(R.string.ds_premium_cta_month, price)
             else -> getString(R.string.ds_premium_cta_lifetime, price)
         }
-        binding.tvPriceLine.text = when (plan.kind) {
+        binding.lblPriceLine.text = when (plan.kind) {
             ProTier.Kind.WEEKLY -> if (trial > 0) getString(R.string.ds_premium_price_trial_week, price, trial)
             else getString(R.string.ds_premium_price_week, price)
             ProTier.Kind.MONTHLY -> if (trial > 0) getString(R.string.ds_premium_price_trial_month, price, trial)
@@ -239,8 +239,8 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         }
         link(terms) { openTermLink() }
         link(privacy) { openPolicyLink() }
-        binding.tvNote.text = spannable
-        binding.tvNote.movementMethod = LinkMovementMethod.getInstance()
+        binding.lblNote.text = spannable
+        binding.lblNote.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun nameOf(plan: ProTier) = when (plan.kind) {
@@ -291,11 +291,11 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
     }
 
     private fun restore() {
-        binding.btnRestore.isEnabled = false
+        binding.padRestore.isEnabled = false
         ProStoreBilling.sync(this) { active ->
             runOnUiThread {
                 if (isFinishing || isDestroyed) return@runOnUiThread
-                binding.btnRestore.isEnabled = true
+                binding.padRestore.isEnabled = true
                 when (active) {
                     true -> {
                         Toast.makeText(this, R.string.ds_premium_restored, Toast.LENGTH_SHORT).show()
@@ -311,8 +311,8 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
 
     private fun setBuying(on: Boolean) {
         buying = on
-        binding.tvCta.isInvisible = on
-        binding.pbCta.isVisible = on
+        binding.lblCta.isInvisible = on
+        binding.pbCtaVw.isVisible = on
     }
 
     /** Leaves the paywall: on to the next first-run step after the intro, else just back. */
@@ -327,12 +327,12 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
     /** The light streak sweeping across the CTA every 3 s (design `shine`). */
     private fun startShine() {
         if (VisualTweens.animationsDisabled(this)) {
-            binding.shine.isVisible = false
+            binding.shineVw.isVisible = false
             return
         }
-        binding.btnContinue.post {
-            val w = binding.btnContinue.width.toFloat()
-            shine = ObjectAnimator.ofFloat(binding.shine, View.TRANSLATION_X, -0.3f * w, 1.1f * w).apply {
+        binding.padContinue.post {
+            val w = binding.padContinue.width.toFloat()
+            shine = ObjectAnimator.ofFloat(binding.shineVw, View.TRANSLATION_X, -0.3f * w, 1.1f * w).apply {
                 duration = 1_800L
                 startDelay = 400L
                 repeatCount = ValueAnimator.INFINITE

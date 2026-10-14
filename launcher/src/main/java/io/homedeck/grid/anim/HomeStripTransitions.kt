@@ -49,7 +49,7 @@ object HomeStripTransitions {
     fun bind(binding: HdkDefaultLauncherBannerBinding) {
         val root = binding.root
         // the card's rounded shape is its outline: clip the corner discs and the sheen to it
-        binding.bannerCardUi.clipToOutline = true
+        binding.bannerCardView.clipToOutline = true
         if (!shouldAnimate(root.context)) return
 
         var loops = mutableListOf<Animator>()
@@ -57,7 +57,7 @@ object HomeStripTransitions {
 
         fun start() {
             if (loops.isNotEmpty()) return
-            enter(binding.bannerCardUi)
+            enter(binding.bannerCardView)
             loops = idle(binding)
         }
 
@@ -108,26 +108,26 @@ object HomeStripTransitions {
         val density = b.root.resources.displayMetrics.density
         val loops = mutableListOf<Animator>()
 
-        loops += loop(ObjectAnimator.ofFloat(b.bannerArtUi, View.TRANSLATION_Y, 0f, -FLOAT_DP * density), FLOAT_MS, 0L)
-        loops += loop(ObjectAnimator.ofFloat(b.bannerArtUi, View.ROTATION, -SWAY_DEG, SWAY_DEG), SWAY_MS, 300L)
+        loops += loop(ObjectAnimator.ofFloat(b.bannerArtView, View.TRANSLATION_Y, 0f, -FLOAT_DP * density), FLOAT_MS, 0L)
+        loops += loop(ObjectAnimator.ofFloat(b.bannerArtView, View.ROTATION, -SWAY_DEG, SWAY_DEG), SWAY_MS, 300L)
 
         loops += loop(
             ObjectAnimator.ofPropertyValuesHolder(
-                b.bannerGlowUi,
+                b.bannerGlowView,
                 PropertyValuesHolder.ofFloat(View.ALPHA, GLOW_ALPHA_MIN, 1f),
                 PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, GLOW_TO_SCALE),
                 PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, GLOW_TO_SCALE),
             ), GLOW_MS, 0L,
         )
 
-        loops += ObjectAnimator.ofFloat(b.bannerRingUi, View.ROTATION, 0f, 360f).apply {
+        loops += ObjectAnimator.ofFloat(b.bannerRingView, View.ROTATION, 0f, 360f).apply {
             duration = RING_MS
             repeatCount = ValueAnimator.INFINITE
             interpolator = LinearInterpolator()
             start()
         }
 
-        listOf(b.bannerSparkle1Ui, b.bannerSparkle2Ui).forEachIndexed { index, sparkle ->
+        listOf(b.bannerSparkle1View, b.bannerSparkle2View).forEachIndexed { index, sparkle ->
             loops += loop(
                 ObjectAnimator.ofPropertyValuesHolder(
                     sparkle,
@@ -139,9 +139,9 @@ object HomeStripTransitions {
             )
         }
 
-        loops += loop(ObjectAnimator.ofFloat(b.bannerChevronUi, View.TRANSLATION_X, 0f, NUDGE_DP * density), NUDGE_MS, 600L)
+        loops += loop(ObjectAnimator.ofFloat(b.bannerChevronView, View.TRANSLATION_X, 0f, NUDGE_DP * density), NUDGE_MS, 600L)
 
-        loops += sheen(b.bannerSheenUi, b.bannerCardUi)
+        loops += sheen(b.bannerSheenView, b.bannerCardView)
         return loops
     }
 

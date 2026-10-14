@@ -32,54 +32,54 @@ class PastLookupsActivity : FoundationActivity<PageHistoryBinding>() {
     private val store by lazy { PastLookupStore(this) }
 
     override fun initView() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.historyRoot) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.historyRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updatePadding(left = bars.left, top = bars.top, right = bars.right, bottom = bars.bottom)
             insets
         }
-        binding.btnBack.setOnClickListener { goBack() }
-        binding.btnClearAll.setOnClickListener {
+        binding.padBack.setOnClickListener { goBack() }
+        binding.padClearAll.setOnClickListener {
             store.clear()
             render()
         }
-        VisualTweens.pressScale(binding.btnClearAll)
+        VisualTweens.pressScale(binding.padClearAll)
         render()
     }
 
     private fun render() {
         val all = store.all()
-        binding.sections.removeAllViews()
-        binding.emptyState.isVisible = all.isEmpty()
-        binding.btnClearAll.isVisible = all.isNotEmpty()
-        binding.tvCount.text = resources.getQuantityString(R.plurals.ds_history_count, all.size, all.size)
-        binding.tvCount.isVisible = all.isNotEmpty()
+        binding.sectionsVw.removeAllViews()
+        binding.emptyStateVw.isVisible = all.isEmpty()
+        binding.padClearAll.isVisible = all.isNotEmpty()
+        binding.lblCount.text = resources.getQuantityString(R.plurals.ds_history_count, all.size, all.size)
+        binding.lblCount.isVisible = all.isNotEmpty()
         if (all.isEmpty()) return
 
         val inflater = LayoutInflater.from(this)
         val groups = all.groupBy { bucket(it.searchedAt) }
         listOf(Bucket.TODAY, Bucket.YESTERDAY, Bucket.EARLIER).forEach { bucket ->
             val rows = groups[bucket] ?: return@forEach
-            val section = CardHistorySectionBinding.inflate(inflater, binding.sections, false)
-            section.tvSection.setText(bucket.label)
+            val section = CardHistorySectionBinding.inflate(inflater, binding.sectionsVw, false)
+            section.lblSection.setText(bucket.label)
             rows.forEachIndexed { i, recent ->
-                val row = CardRecentSearchBinding.inflate(inflater, section.rows, false)
+                val row = CardRecentSearchBinding.inflate(inflater, section.rowsVw, false)
                 bindRow(row, recent, i, i < rows.lastIndex)
-                section.rows.addView(row.root)
+                section.rowsVw.addView(row.root)
             }
-            binding.sections.addView(section.root)
+            binding.sectionsVw.addView(section.root)
         }
     }
 
     private fun bindRow(row: CardRecentSearchBinding, recent: PastLookup, index: Int, divider: Boolean) {
         val (tile, tint) = TILE_PALETTE[index % TILE_PALETTE.size]
-        row.iconTile.setBackgroundResource(tile)
+        row.iconTileVw.setBackgroundResource(tile)
         row.icon.imageTintList = ContextCompat.getColorStateList(this, tint)
-        row.tvNumber.text = recent.display
+        row.lblNumber.text = recent.display
         val country = RegionZones.byIso(recent.iso2)?.name ?: recent.iso2
-        row.tvMeta.text = getString(R.string.ds_recent_meta, RegionZones.flag(recent.iso2), country, relativeTime(recent.searchedAt))
-        row.rowDivider.isVisible = divider
-        row.row.setOnClickListener { pick(recent) }
-        row.row.setOnLongClickListener {
+        row.lblMeta.text = getString(R.string.ds_recent_meta, RegionZones.flag(recent.iso2), country, relativeTime(recent.searchedAt))
+        row.rowDividerVw.isVisible = divider
+        row.rowVw.setOnClickListener { pick(recent) }
+        row.rowVw.setOnLongClickListener {
             remove(recent)
             true
         }
@@ -94,7 +94,7 @@ class PastLookupsActivity : FoundationActivity<PageHistoryBinding>() {
     private fun remove(recent: PastLookup) {
         store.remove(recent)
         render()
-        Snackbar.make(binding.historyRoot, R.string.ds_history_removed, Snackbar.LENGTH_LONG)
+        Snackbar.make(binding.historyRootVw, R.string.ds_history_removed, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.ds_snackbar_bg))
             .setTextColor(ContextCompat.getColor(this, R.color.white))
             .setActionTextColor(ContextCompat.getColor(this, R.color.ds_cyan))

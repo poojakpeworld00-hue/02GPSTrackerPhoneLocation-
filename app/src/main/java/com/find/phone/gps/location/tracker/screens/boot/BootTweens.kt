@@ -36,13 +36,13 @@ class BootTweens(private val binding: PageSplashBinding) {
             showFinalFrame()
             return
         }
-        animators += st1e(binding.stageSignal)
-        animators += st1c(binding.statusSignal)
-        animators += st3(binding.stagePin)
-        animators += st3(binding.statusPin)
-        animators += st4(binding.stageLogo)
-        animators += st4(binding.statusLogo)
-        drop(binding.splashPin)
+        animators += st1e(binding.stageSignalVw)
+        animators += st1c(binding.statusSignalVw)
+        animators += st3(binding.stagePinVw)
+        animators += st3(binding.statusPinVw)
+        animators += st4(binding.stageLogoVw)
+        animators += st4(binding.statusLogoVw)
+        drop(binding.splashPinVw)
         bar()
     }
 
@@ -50,11 +50,11 @@ class BootTweens(private val binding: PageSplashBinding) {
 
     /** "Remove animations": the final frame — the logo held, the bar full. */
     private fun showFinalFrame() {
-        listOf(binding.stageSignal, binding.stagePin, binding.statusSignal, binding.statusPin)
+        listOf(binding.stageSignalVw, binding.stagePinVw, binding.statusSignalVw, binding.statusPinVw)
             .forEach { it.alpha = 0f }
-        binding.stageLogo.alpha = 1f
-        binding.statusLogo.alpha = 1f
-        binding.progressTrack.post { setFillFraction(1f) }
+        binding.stageLogoVw.alpha = 1f
+        binding.statusLogoVw.alpha = 1f
+        binding.progTrack.post { setFillFraction(1f) }
     }
 
     // ── the three stage timelines (fractions of the 6.4 s cycle) ──
@@ -116,11 +116,11 @@ class BootTweens(private val binding: PageSplashBinding) {
     }
 
     private fun setFillFraction(fraction: Float) {
-        val track = binding.progressTrack.width
+        val track = binding.progTrack.width
         if (track <= 0) return
-        val lp = binding.progressFill.layoutParams
+        val lp = binding.progFill.layoutParams
         lp.width = (track * fraction).toInt()
-        binding.progressFill.layoutParams = lp
+        binding.progFill.layoutParams = lp
     }
 
     companion object {

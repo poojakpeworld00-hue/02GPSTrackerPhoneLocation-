@@ -25,15 +25,15 @@ object PanelArtwork {
         when (page) {
             PanelSlide.CONTACTS -> {
                 // Last four digits per row (2104 / 2114 / 2124).
-                listOf(R.id.sub1 to "2104", R.id.sub2 to "2114", R.id.sub3 to "2124").forEach { (id, digits) ->
+                listOf(R.id.sub1Vw to "2104", R.id.sub2Vw to "2114", R.id.sub3Vw to "2124").forEach { (id, digits) ->
                     root.findViewById<TextView>(id).text = root.context.getString(R.string.ps_contacts_mobile, digits)
                 }
             }
             PanelSlide.SIM -> {
-                val without = root.findViewById<View>(R.id.tvWithout)
-                val with = root.findViewById<View>(R.id.tvWith)
+                val without = root.findViewById<View>(R.id.lblWithout)
+                val with = root.findViewById<View>(R.id.lblWith)
                 // wOff / wOn: the active side reads at full strength, the other at 35%.
-                root.findViewById<UnveilSplitLayout>(R.id.reveal).onFractionChanged = { f ->
+                root.findViewById<UnveilSplitLayout>(R.id.revealVw).onFractionChanged = { f ->
                     without.alpha = 1f - 0.65f * f
                     with.alpha = 0.35f + 0.65f * f
                 }
@@ -45,7 +45,7 @@ object PanelArtwork {
     /** Starts [page]'s loops; returns them so the caller can [stop] them. */
     fun start(page: PanelSlide, root: View): List<Animator> {
         if (page == PanelSlide.SIM) {
-            root.findViewById<UnveilSplitLayout>(R.id.reveal).start()
+            root.findViewById<UnveilSplitLayout>(R.id.revealVw).start()
             return emptyList()
         }
         if (VisualTweens.animationsDisabled(root.context)) return emptyList()
@@ -58,7 +58,7 @@ object PanelArtwork {
     }
 
     fun stop(page: PanelSlide, root: View, running: MutableList<Animator>) {
-        if (page == PanelSlide.SIM) root.findViewById<UnveilSplitLayout>(R.id.reveal).stop()
+        if (page == PanelSlide.SIM) root.findViewById<UnveilSplitLayout>(R.id.revealVw).stop()
         running.forEach { it.cancel() }
         running.clear()
         resetToRest(root)
@@ -66,8 +66,8 @@ object PanelArtwork {
 
     /** Puts every animated view back on its resting frame (what the layout draws). */
     private fun resetToRest(root: View) {
-        listOf(R.id.ring, R.id.bell, R.id.badge, R.id.cardA, R.id.cardB, R.id.row1, R.id.row2, R.id.row3,
-            R.id.rowCheck, R.id.areaPing, R.id.pin).forEach { id ->
+        listOf(R.id.ringVw, R.id.bellVw, R.id.badgeVw, R.id.panelA, R.id.panelB, R.id.row1Vw, R.id.row2Vw, R.id.row3Vw,
+            R.id.rowCheckVw, R.id.areaPingVw, R.id.pinVw).forEach { id ->
             root.findViewById<View>(id)?.apply {
                 alpha = 1f; scaleX = 1f; scaleY = 1f; rotation = 0f; translationX = 0f; translationY = 0f
             }
@@ -91,26 +91,26 @@ object PanelArtwork {
 
     private fun notifications(root: View): List<Animator> {
         val ctx = root.context
-        val bell = root.findViewById<View>(R.id.bell)
+        val bell = root.findViewById<View>(R.id.bellVw)
         // transform-origin: 50% 10% — the bell swings from its hanger.
         bell.post { bell.pivotX = bell.width / 2f; bell.pivotY = bell.height * 0.1f }
         val e = VisualTweens.EASE_IN_OUT
         val up12 = ctx.dp(12f)
         val down6 = ctx.dp(6f)
         return listOf(
-            ping(root.findViewById(R.id.ring), 2400L),
+            ping(root.findViewById(R.id.ringVw), 2400L),
             loop(
                 bell, 2400L, 0L,
                 pvh(View.ROTATION, e, 0f to 0f, 0.1f to 14f, 0.2f to -12f, 0.3f to 8f, 0.4f to -4f, 0.5f to 0f, 1f to 0f),
             ),
-            pop(root.findViewById(R.id.badge), 2400L),
+            pop(root.findViewById(R.id.badgeVw), 2400L),
             loop(
-                root.findViewById(R.id.cardA), 4800L, 0L,
+                root.findViewById(R.id.panelA), 4800L, 0L,
                 pvh(View.ALPHA, e, 0f to 0f, 0.08f to 0f, 0.18f to 1f, 0.8f to 1f, 0.92f to 0f, 1f to 0f),
                 pvh(View.TRANSLATION_Y, e, 0f to up12, 0.08f to up12, 0.18f to 0f, 0.8f to 0f, 0.92f to -down6, 1f to -down6),
             ),
             loop(
-                root.findViewById(R.id.cardB), 4800L, 0L,
+                root.findViewById(R.id.panelB), 4800L, 0L,
                 pvh(View.ALPHA, e, 0f to 0f, 0.3f to 0f, 0.4f to 1f, 0.84f to 1f, 0.94f to 0f, 1f to 0f),
                 pvh(View.TRANSLATION_Y, e, 0f to -up12, 0.3f to -up12, 0.4f to 0f, 1f to 0f),
             ),
@@ -119,7 +119,7 @@ object PanelArtwork {
 
     private fun contacts(root: View): List<Animator> {
         val shift = root.context.dp(10f)
-        val rows = listOf(R.id.row1, R.id.row2, R.id.row3).mapIndexed { i, id ->
+        val rows = listOf(R.id.row1Vw, R.id.row2Vw, R.id.row3Vw).mapIndexed { i, id ->
             val row = root.findViewById<View>(id)
             // rowIn, staggered 0 / .2 / .4s; hidden until its delay runs out.
             row.alpha = 0f
@@ -129,16 +129,16 @@ object PanelArtwork {
                 pvh(View.TRANSLATION_X, VisualTweens.EASE_OUT, 0f to -shift, 0.04f to -shift, 0.16f to 0f, 1f to 0f),
             )
         }
-        return rows + pop(root.findViewById(R.id.rowCheck), 3600L)
+        return rows + pop(root.findViewById(R.id.rowCheckVw), 3600L)
     }
 
     private fun location(root: View): List<Animator> {
         val ctx = root.context
         return listOf(
-            ping(root.findViewById(R.id.areaPing), 2600L),
+            ping(root.findViewById(R.id.areaPingVw), 2600L),
             // drop: falls 50dp, bounces 4 / -3, settles by 40%.
             loop(
-                root.findViewById(R.id.pin), 2600L, 0L,
+                root.findViewById(R.id.pinVw), 2600L, 0L,
                 pvh(
                     View.TRANSLATION_Y, VisualTweens.EASE_OUT,
                     0f to -ctx.dp(50f), 0.25f to ctx.dp(4f), 0.33f to -ctx.dp(3f), 0.4f to 0f, 1f to 0f,

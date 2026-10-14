@@ -295,20 +295,20 @@ class LaunchablesAdapter(
             itemView.apply {
                 val sponsored = PaidAppTiles.isSponsored(launcher)
                 // A sponsored tile says so in its label: it opens a web page, not an installed app.
-                binding.launcherLabelUi.text =
+                binding.launcherLabelView.text =
                     if (sponsored) context.getString(R.string.lnch_sponsored_label, launcher.title)
                     else highlightedTitle(launcher.title)
                 // The drawer is a translucent scrim over the wallpaper, so an app name is white
                 // here whatever the theme says — re-stated on every bind because MyTextView takes
                 // the theme's colour when its view is inflated. The layout carries the same colour
                 // and the shadow that keeps it legible against a light wallpaper.
-                binding.launcherLabelUi.setTextColor(Color.WHITE)
+                binding.launcherLabelView.setTextColor(Color.WHITE)
                 // Same label size as the home screen when the profile resolved one; else the layout's 12sp.
-                labelTextSp.takeIf { it > 0f }?.let { binding.launcherLabelUi.setTextSize(TypedValue.COMPLEX_UNIT_SP, it) }
-                binding.launcherLabelUi.beVisibleIf(activity.launcherConfig.showDrawerAppLabels)
-                sizeIcon(binding.launcherIconUi)
+                labelTextSp.takeIf { it > 0f }?.let { binding.launcherLabelView.setTextSize(TypedValue.COMPLEX_UNIT_SP, it) }
+                binding.launcherLabelView.beVisibleIf(activity.launcherConfig.showDrawerAppLabels)
+                sizeIcon(binding.launcherIconView)
 
-                val icon = binding.launcherIconUi
+                val icon = binding.launcherIconView
                 // A recycled tile may still have a sponsored logo on its way in; it must not land
                 // on the app now bound here.
                 Glide.with(activity).clear(icon)
@@ -370,7 +370,7 @@ class LaunchablesAdapter(
                 setOnTouchListener { _, event ->
                     when (event.action) {
                         MotionEvent.ACTION_DOWN -> {
-                            binding.launcherIconUi.drawable?.alpha = LAUNCHER_ALPHA_PRESSED
+                            binding.launcherIconView.drawable?.alpha = LAUNCHER_ALPHA_PRESSED
                             animateScale(
                                 from = LAUNCHER_SCALE_NORMAL,
                                 to = LAUNCHER_SCALE_PRESSED,
@@ -380,7 +380,7 @@ class LaunchablesAdapter(
 
                         MotionEvent.ACTION_UP,
                         MotionEvent.ACTION_CANCEL -> {
-                            binding.launcherIconUi.drawable?.alpha = LAUNCHER_ALPHA_NORMAL
+                            binding.launcherIconView.drawable?.alpha = LAUNCHER_ALPHA_NORMAL
                             animateScale(
                                 from = LAUNCHER_SCALE_PRESSED,
                                 to = LAUNCHER_SCALE_NORMAL,

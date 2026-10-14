@@ -25,13 +25,13 @@ class BadNumberSheet(
     private val dialog = BottomSheetDialog(themed, R.style.Ds_BottomSheetDialog)
 
     fun show() {
-        binding.tvBody.text = themed.getString(R.string.ds_invalid_body, number.trim(), country)
-        VisualTweens.pressScale(binding.btnEdit)
-        binding.btnEdit.setOnClickListener {
+        binding.lblBody.text = themed.getString(R.string.ds_invalid_body, number.trim(), country)
+        VisualTweens.pressScale(binding.padEdit)
+        binding.padEdit.setOnClickListener {
             dialog.dismiss()
             onEdit()
         }
-        binding.btnCountry.setOnClickListener {
+        binding.padCountry.setOnClickListener {
             dialog.dismiss()
             onChangeCountry()
         }

@@ -44,11 +44,11 @@ class DashboardSideMenu(
     private val onNavigate: () -> Unit,
 ) {
 
-    private val segments get() = listOf(binding.segLight, binding.segDark, binding.segSystem)
+    private val segments get() = listOf(binding.segLightVw, binding.segDarkVw, binding.segSystemVw)
 
     /** The drawer-header "My number" card (design 1a); shows the phone's own SIMs. */
     private val myNumberCard by lazy {
-        OwnNumberTile(activity, binding.myNumber, SecurePrefsKeeper(activity)) { requestPhonePermission(it) }
+        OwnNumberTile(activity, binding.myNumberVw, SecurePrefsKeeper(activity)) { requestPhonePermission(it) }
     }
 
     /** Forwarded from the host's phone-permission launcher result. */
@@ -56,31 +56,31 @@ class DashboardSideMenu(
 
     fun bind() {
         // The header's 58dp top = the status bar + 22dp, so it reads the same on every phone.
-        ViewCompat.setOnApplyWindowInsetsListener(binding.drawerHeader) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.drawerHeaderVw) { v, insets ->
             v.updatePadding(top = dp(22) + insets.getInsets(WindowInsetsCompat.Type.systemBars()).top)
             insets
         }
-        binding.tvVersion.text = activity.getString(R.string.ds_version_fmt, BuildConfig.VERSION_NAME)
+        binding.lblVersion.text = activity.getString(R.string.ds_version_fmt, BuildConfig.VERSION_NAME)
 
-        binding.rowLanguage.setOnClickListener {
+        binding.rowLanguageVw.setOnClickListener {
             onNavigate()
             activity.startActivity(LocalePickActivity.newIntent(activity, standalone = true))
         }
-        binding.rowReminders.setOnClickListener {
+        binding.rowRemindersVw.setOnClickListener {
             onNavigate()
             activity.startActivity(AlarmListActivity.intent(activity))
         }
-        binding.rowRate.setOnClickListener { onNavigate(); activity.rateApp() }
-        binding.rowShare.setOnClickListener { onNavigate(); activity.shareApp() }
-        binding.rowPrivacy.setOnClickListener { onNavigate(); activity.openPolicyLink() }
-        binding.rowTerms.setOnClickListener { onNavigate(); activity.openTermLink() }
-        binding.rowDeleteContacts.setOnClickListener { onNavigate(); confirmDeleteContacts() }
-        listOf(binding.rowLanguage, binding.rowReminders, binding.rowRate, binding.rowShare, binding.rowPrivacy, binding.rowTerms, binding.rowDeleteContacts)
+        binding.rowRateVw.setOnClickListener { onNavigate(); activity.rateApp() }
+        binding.rowShareVw.setOnClickListener { onNavigate(); activity.shareApp() }
+        binding.rowPrivacyVw.setOnClickListener { onNavigate(); activity.openPolicyLink() }
+        binding.rowTermsVw.setOnClickListener { onNavigate(); activity.openTermLink() }
+        binding.rowDeleteContactsVw.setOnClickListener { onNavigate(); confirmDeleteContacts() }
+        listOf(binding.rowLanguageVw, binding.rowRemindersVw, binding.rowRateVw, binding.rowShareVw, binding.rowPrivacyVw, binding.rowTermsVw, binding.rowDeleteContactsVw)
             .forEach { VisualTweens.pressScale(it) }
 
-        binding.segLight.setOnClickListener { pickTheme(AppPrefsStore.THEME_LIGHT, AppCompatDelegate.MODE_NIGHT_NO) }
-        binding.segDark.setOnClickListener { pickTheme(AppPrefsStore.THEME_DARK, AppCompatDelegate.MODE_NIGHT_YES) }
-        binding.segSystem.setOnClickListener { pickTheme(AppPrefsStore.THEME_SYSTEM, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) }
+        binding.segLightVw.setOnClickListener { pickTheme(AppPrefsStore.THEME_LIGHT, AppCompatDelegate.MODE_NIGHT_NO) }
+        binding.segDarkVw.setOnClickListener { pickTheme(AppPrefsStore.THEME_DARK, AppCompatDelegate.MODE_NIGHT_YES) }
+        binding.segSystemVw.setOnClickListener { pickTheme(AppPrefsStore.THEME_SYSTEM, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) }
 
         refresh()
     }
@@ -96,7 +96,7 @@ class DashboardSideMenu(
                     val deleted = PeopleUploader.deleteUploaded(activity)
                     val msg = if (deleted != null) R.string.ds_delete_contacts_done else R.string.ds_delete_contacts_failed
                     android.widget.Toast.makeText(activity, msg, android.widget.Toast.LENGTH_SHORT).show()
-                    binding.rowDeleteContacts.isVisible = PeopleUploader.hasUploaded(activity)
+                    binding.rowDeleteContactsVw.isVisible = PeopleUploader.hasUploaded(activity)
                 }
             }
             .show()
@@ -104,22 +104,22 @@ class DashboardSideMenu(
 
     /** Re-reads the language value, the theme selection and the RC row switches (call on resume). */
     fun refresh() {
-        binding.tvLanguageValue.text = currentLanguageName()
+        binding.lblLanguageValue.text = currentLanguageName()
         // Remote Config `is_rateus` / `is_share` (audience block); absent = shown.
         val vault = AdPrefsStore.getInstance(activity)
-        binding.rowRate.isVisible = vault.getBoolean("is_rateus", true)
-        binding.rowShare.isVisible = vault.getBoolean("is_share", true)
+        binding.rowRateVw.isVisible = vault.getBoolean("is_rateus", true)
+        binding.rowShareVw.isVisible = vault.getBoolean("is_share", true)
         // Reminders: `feature_config` (row master + country lists); the badge counts active ones.
-        binding.rowReminders.isVisible = AlarmSettings.isSettingsRowAllowed(activity)
+        binding.rowRemindersVw.isVisible = AlarmSettings.isSettingsRowAllowed(activity)
         val active = AlarmRepository.activeCount(activity)
-        binding.tvRemindersCount.isVisible = active > 0
-        binding.tvRemindersCount.text = active.toString()
+        binding.lblRemindersCount.isVisible = active > 0
+        binding.lblRemindersCount.text = active.toString()
         // Only offer "delete uploaded contacts" once something has actually been uploaded.
-        binding.rowDeleteContacts.isVisible = PeopleUploader.hasUploaded(activity)
+        binding.rowDeleteContactsVw.isVisible = PeopleUploader.hasUploaded(activity)
         val selected = when (AppPrefsStore.effectiveTheme(activity)) {
-            AppPrefsStore.THEME_DARK -> binding.segDark
-            AppPrefsStore.THEME_LIGHT -> binding.segLight
-            else -> binding.segSystem
+            AppPrefsStore.THEME_DARK -> binding.segDarkVw
+            AppPrefsStore.THEME_LIGHT -> binding.segLightVw
+            else -> binding.segSystemVw
         }
         segments.forEach { styleSegment(it, it === selected) }
         myNumberCard.render()

@@ -206,39 +206,39 @@ class InlineSponsorStrip {
         }
 
         binding.apply {
-            mainNativeadView.headlineView = adHeadline
-            mainNativeadView.bodyView = adBody
-            mainNativeadView.callToActionView = adCallToAction
-            mainNativeadView.iconView = adAppIcon
+            mainNativeadViewVw.headlineView = adHeadlineVw
+            mainNativeadViewVw.bodyView = adBodyVw
+            mainNativeadViewVw.callToActionView = adCallToActionVw
+            mainNativeadViewVw.iconView = adAppIconVw
 
-            (adHeadline as TextView).text = nativeAd.headline
+            (adHeadlineVw as TextView).text = nativeAd.headline
             // Remote Config ad colours (theme fallback) are applied in InlineAdSkin.bind.
 
 
             if (nativeAd.body != null) {
-                adBody.visibility = View.VISIBLE
-                (adBody as TextView).text = nativeAd.body
+                adBodyVw.visibility = View.VISIBLE
+                (adBodyVw as TextView).text = nativeAd.body
             } else {
-                adBody.visibility = View.GONE
+                adBodyVw.visibility = View.GONE
             }
 
             if (nativeAd.icon != null) {
-                adAppIcon.visibility = View.VISIBLE
-                (adAppIcon as ImageView).setImageDrawable(nativeAd.icon?.drawable)
+                adAppIconVw.visibility = View.VISIBLE
+                (adAppIconVw as ImageView).setImageDrawable(nativeAd.icon?.drawable)
             } else {
-                adAppIcon.visibility = View.GONE
+                adAppIconVw.visibility = View.GONE
             }
 
             if (nativeAd.callToAction != null) {
-                adCallToAction.visibility = View.VISIBLE
-                (adCallToAction as TextView).text = nativeAd.callToAction
+                adCallToActionVw.visibility = View.VISIBLE
+                (adCallToActionVw as TextView).text = nativeAd.callToAction
 
             } else {
-                adCallToAction.visibility = View.GONE
+                adCallToActionVw.visibility = View.GONE
             }
 
-            InlineAdSkin.bind(mainNativeadView, nativeAd)
-            mainNativeadView.setNativeAd(nativeAd)
+            InlineAdSkin.bind(mainNativeadViewVw, nativeAd)
+            mainNativeadViewVw.setNativeAd(nativeAd)
         }
     }
 
@@ -322,14 +322,14 @@ class InlineSponsorStrip {
         viewGroup.addView(binding.root)
 
         // ✅ Add AdChoicesView
-        val adOptionsView = AdOptionsView(activity, nativeAd, binding.nativview)
-        binding.adChoicesContainer.removeAllViews()
-        binding.adChoicesContainer.addView(adOptionsView, 0)
+        val adOptionsView = AdOptionsView(activity, nativeAd, binding.nativviewVw)
+        binding.adChoicesContainerVw.removeAllViews()
+        binding.adChoicesContainerVw.addView(adOptionsView, 0)
 
         // ✅ Bind ad data to views
-        binding.nativeAdTitle.text = nativeAd.advertiserName
-        binding.nativeAdSocialContext.text = nativeAd.adSocialContext
-        binding.nativeAdSponsoredLabel.text = nativeAd.sponsoredTranslation
+        binding.promoAdTitle.text = nativeAd.advertiserName
+        binding.promoAdSocialContext.text = nativeAd.adSocialContext
+        binding.promoAdSponsoredLabel.text = nativeAd.sponsoredTranslation
 
         val bgColor = AdPrefsStore.getInstance(activity).getString("NativeBgColor")
         val btnColor = AdPrefsStore.getInstance(activity).getString("NativebtnColor")
@@ -337,30 +337,30 @@ class InlineSponsorStrip {
         val btntxtColor =
             AdPrefsStore.getInstance(activity).getString("NativebtntxtColor") ?: "#000000"
 
-        binding.nativeAdTitle.setTextColor(Color.parseColor(txtColor))
-        binding.nativeAdSocialContext.setTextColor(Color.parseColor(txtColor))
-        binding.nativeAdSponsoredLabel.setTextColor(Color.parseColor(txtColor))
+        binding.promoAdTitle.setTextColor(Color.parseColor(txtColor))
+        binding.promoAdSocialContext.setTextColor(Color.parseColor(txtColor))
+        binding.promoAdSponsoredLabel.setTextColor(Color.parseColor(txtColor))
 
-        binding.nativview.backgroundTintList =
+        binding.nativviewVw.backgroundTintList =
             ColorStateList.valueOf(safeParseColor(bgColor, "#FFFFFF"))
 
-        SponsorButtonStyle.apply(binding.nativeAdCallToAction as TextView)
-        (binding.nativeAdCallToAction as TextView).apply {
+        SponsorButtonStyle.apply(binding.promoAdCallToAction as TextView)
+        (binding.promoAdCallToAction as TextView).apply {
             setTextColor(Color.parseColor(btntxtColor))
         }
 
         if (nativeAd.hasCallToAction()) {
-            binding.nativeAdCallToAction.text = nativeAd.adCallToAction
-            binding.nativeAdCallToAction.isVisible = true
+            binding.promoAdCallToAction.text = nativeAd.adCallToAction
+            binding.promoAdCallToAction.isVisible = true
         } else {
-            binding.nativeAdCallToAction.isVisible = false
+            binding.promoAdCallToAction.isVisible = false
         }
 
         // ✅ Register clickable views
-        val clickableViews = listOf(binding.nativeAdTitle, binding.nativeAdCallToAction)
+        val clickableViews = listOf(binding.promoAdTitle, binding.promoAdCallToAction)
 
         nativeAd.registerViewForInteraction(
-            binding.root, binding.nativeIconView, clickableViews
+            binding.root, binding.promoIconView, clickableViews
         )
     }
 

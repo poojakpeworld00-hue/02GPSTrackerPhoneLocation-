@@ -31,13 +31,13 @@ class WelcomeStageActivity : ShellHubActivity() {
         setContentView(binding.root)
         excludeAppFromRecents()
 
-        VisualTweens.pressScale(binding.onboardingContinue)
-        binding.onboardingContinue.setOnClickListener { requestOnboardingPermissions() }
-        binding.onboardingSkip.setOnClickListener { goToNextStep() }
+        VisualTweens.pressScale(binding.onboardingContinueVw)
+        binding.onboardingContinueVw.setOnClickListener { requestOnboardingPermissions() }
+        binding.onboardingSkipVw.setOnClickListener { goToNextStep() }
 
         // `onboarding.welcome.skip_enabled: false` makes the screen a required step.
         val ui = HomeAdsSettings.onboardingUi(this, HomeAdsSettings.OnboardScreen.WELCOME)
-        binding.onboardingSkip.isVisible = ui.skipEnabled
+        binding.onboardingSkipVw.isVisible = ui.skipEnabled
 
         // Paid users: Back behaves like Skip and moves the flow on. Organic users: Back is Back.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -52,12 +52,12 @@ class WelcomeStageActivity : ShellHubActivity() {
         HomeAdsSettings.showSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.WELCOME),
-            container = binding.adNativeFrame,
-            shimmer = binding.adShimmer,
+            container = binding.adNativeFrameVw,
+            shimmer = binding.adShimmerVw,
         )
-        binding.adNativeDivider.followAdContainer(binding.adNativeFrame)
+        binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)
         // Small phones: the hero card gives way to the ad while one is on screen.
-        binding.onboardingHero.hideWhileAdVisible(binding.adNativeFrame, binding.heroCompact)
+        binding.onboardingHeroVw.hideWhileAdVisible(binding.adNativeFrameVw, binding.heroCompactVw)
 
         HomeRoleJourney.bindStepHeader(this, HomeAdsSettings.OnboardScreen.WELCOME, binding.root)
 
@@ -67,32 +67,32 @@ class WelcomeStageActivity : ShellHubActivity() {
 
     /** The four launcher gestures: one arrow glyph rotated per direction; "Swipe right" is active. */
     private fun bindGestureTiles() = with(binding) {
-        bindTile(tileSwipeUp, -90f, R.string.gesture_swipe_up, R.string.gesture_swipe_up_body, active = false)
-        bindTile(tileSwipeRight, 0f, R.string.gesture_swipe_right, R.string.gesture_swipe_right_body, active = true)
-        bindTile(tileSwipeDown, 90f, R.string.gesture_swipe_down, R.string.gesture_swipe_down_body, active = false)
-        bindTile(tileSwipeLeft, 180f, R.string.gesture_swipe_left, R.string.gesture_swipe_left_body, active = false)
+        bindTile(tileSwipeUpVw, -90f, R.string.gesture_swipe_up, R.string.gesture_swipe_up_body, active = false)
+        bindTile(tileSwipeRightVw, 0f, R.string.gesture_swipe_right, R.string.gesture_swipe_right_body, active = true)
+        bindTile(tileSwipeDownVw, 90f, R.string.gesture_swipe_down, R.string.gesture_swipe_down_body, active = false)
+        bindTile(tileSwipeLeftVw, 180f, R.string.gesture_swipe_left, R.string.gesture_swipe_left_body, active = false)
     }
 
     private fun bindTile(tile: CardGestureTileBinding, rotation: Float, title: Int, body: Int, active: Boolean) {
-        tile.tileIcon.rotation = rotation
-        tile.tileTitle.setText(title)
-        tile.tileBody.setText(body)
+        tile.tileIconVw.rotation = rotation
+        tile.tileTitleVw.setText(title)
+        tile.tileBodyVw.setText(body)
         if (active) {
-            tile.tileRoot.setBackgroundResource(R.drawable.vs_gesture_active_r16)
-            tile.tileRoot.elevation = resources.displayMetrics.density * 6f
-            tile.tileIconBox.setBackgroundResource(R.drawable.vs_tile_white20_r12)
-            ImageViewCompat.setImageTintList(tile.tileIcon, ContextCompat.getColorStateList(this, R.color.white))
-            tile.tileTitle.setTextColor(ContextCompat.getColor(this, R.color.white))
-            tile.tileBody.setTextColor(ContextCompat.getColor(this, R.color.ds_white90))
+            tile.tileRootVw.setBackgroundResource(R.drawable.vs_gesture_active_r16)
+            tile.tileRootVw.elevation = resources.displayMetrics.density * 6f
+            tile.tileIconBoxVw.setBackgroundResource(R.drawable.vs_tile_white20_r12)
+            ImageViewCompat.setImageTintList(tile.tileIconVw, ContextCompat.getColorStateList(this, R.color.white))
+            tile.tileTitleVw.setTextColor(ContextCompat.getColor(this, R.color.white))
+            tile.tileBodyVw.setTextColor(ContextCompat.getColor(this, R.color.ds_white90))
         }
     }
 
     /** The design's loops: badge `fadein .6s .4s`, chips `floaty 4s` (the second offset 1.2s). */
     private fun playMotion() {
         if (VisualTweens.animationsDisabled(this)) return
-        animators += VisualTweens.fadeIn(binding.onboardingBadge, durationMs = 600L, delayMs = 400L)
-        animators += VisualTweens.floaty(binding.chipDial)
-        animators += VisualTweens.floaty(binding.chipGps, delayMs = 1200L)
+        animators += VisualTweens.fadeIn(binding.onboardingBadgeVw, durationMs = 600L, delayMs = 400L)
+        animators += VisualTweens.floaty(binding.flagDial)
+        animators += VisualTweens.floaty(binding.flagGps, delayMs = 1200L)
     }
 
     override fun onDestroy() {

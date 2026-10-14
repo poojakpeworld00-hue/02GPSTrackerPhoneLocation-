@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/rowLanguage"
+        android:id="@+id/rowLanguageVw"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@drawable/vs_row_selected_r14"
@@ -19,7 +19,7 @@
         android:paddingHorizontal="10dp">
 
         <TextView
-            android:id="@+id/tvCode"
+            android:id="@+id/lblCode"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:background="@drawable/vs_tile_gray_r12"
@@ -39,7 +39,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvNative"
+                android:id="@+id/lblNative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -50,7 +50,7 @@
                 tools:text="English" />
 
             <TextView
-                android:id="@+id/tvName"
+                android:id="@+id/lblName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -70,7 +70,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/rowDivider"
+        android:id="@+id/rowDividerVw"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/ds_divider" />

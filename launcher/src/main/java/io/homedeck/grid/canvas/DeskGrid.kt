@@ -677,7 +677,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         redrawGrid()
 
         val widgetView = widgetViews.firstOrNull { it.tag == resizedWidget!!.widgetId }
-        binding.resizeFrameUi.beGone()
+        binding.resizeFrameView.beGone()
         if (widgetView != null) {
             val viewX = widgetView.x.toInt()
             val viewY = widgetView.y.toInt()
@@ -686,7 +686,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                 .filter { !it.outOfBounds() }
                 .filter { it.widgetId != item.widgetId }
                 .toMutableList() as ArrayList<DeskGridEntry>
-            binding.resizeFrameUi.updateFrameCoords(
+            binding.resizeFrameView.updateFrameCoords(
                 coords = frameRect,
                 cellWidth = cellWidth,
                 cellHeight = cellHeight,
@@ -694,13 +694,13 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                 gridItem = item,
                 allGridItems = otherGridItems
             )
-            binding.resizeFrameUi.beVisible()
-            binding.resizeFrameUi.z = 1f     // make sure the frame isnt behind the widget itself
-            binding.resizeFrameUi.onClickListener = {
+            binding.resizeFrameView.beVisible()
+            binding.resizeFrameView.z = 1f     // make sure the frame isnt behind the widget itself
+            binding.resizeFrameView.onClickListener = {
                 hideResizeLines()
             }
 
-            binding.resizeFrameUi.onResizeListener = { cellsRect ->
+            binding.resizeFrameView.onResizeListener = { cellsRect ->
                 item.left = cellsRect.left
                 item.top = cellsRect.top
                 item.right = cellsRect.right
@@ -754,7 +754,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
 
             widgetView.ignoreTouches = true
             widgetView.setOnTouchListener { v, event ->
-                binding.resizeFrameUi.onTouchEvent(event)
+                binding.resizeFrameView.onTouchEvent(event)
                 return@setOnTouchListener true
             }
         }
@@ -765,7 +765,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
             return
         }
 
-        binding.resizeFrameUi.beGone()
+        binding.resizeFrameView.beGone()
         widgetViews.firstOrNull { it.tag == resizedWidget!!.widgetId }?.apply {
             ignoreTouches = false
             setOnTouchListener(null)
@@ -1403,7 +1403,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                     PSEUDO_WIDGET_TIME -> setOnClickListener { openClock() }
                     PSEUDO_WIDGET_GOOGLE_SEARCH -> {
                         setOnClickListener { openGoogleSearch(voice = false) }
-                        findViewById<View>(R.id.google_bar_micUi)?.setOnClickListener { openGoogleSearch(voice = true) }
+                        findViewById<View>(R.id.google_bar_micView)?.setOnClickListener { openGoogleSearch(voice = true) }
                     }
                 }
             }
@@ -1515,7 +1515,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         post {
             setWillNotDraw(false)
             invalidate()
-            binding.drawingAreaUi.invalidate()
+            binding.drawingAreaView.invalidate()
         }
     }
 

@@ -31,10 +31,10 @@ class PaneAppsAdapter(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindView(launcher: LaunchableApp) {
-            itemView.findViewById<TextView>(R.id.item_titleUi).text = launcher.title
+            itemView.findViewById<TextView>(R.id.item_titleView).text = launcher.title
             // the icons are already loaded in memory by the drawer, no need for Glide here; one that
             // is not yet (a cold start) is decoded on its own instead of waiting for the full scan
-            val icon = itemView.findViewById<ImageView>(R.id.item_iconUi)
+            val icon = itemView.findViewById<ImageView>(R.id.item_iconView)
             val ready = launcher.drawable ?: GlyphFetcher.cached(launcher.packageName, launcher.activityName)
             icon.setImageDrawable(ready)
             if (ready == null) {

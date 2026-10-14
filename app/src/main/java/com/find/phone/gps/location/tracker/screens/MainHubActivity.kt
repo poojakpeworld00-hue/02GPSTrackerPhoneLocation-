@@ -56,10 +56,10 @@ class MainHubActivity : FoundationActivity<PageMainBinding>(), DashboardShellOwn
         }
 
     private val homeFragment: DashboardMainFragment?
-        get() = supportFragmentManager.findFragmentById(R.id.homeContainer) as? DashboardMainFragment
+        get() = supportFragmentManager.findFragmentById(R.id.homeContainerVw) as? DashboardMainFragment
 
     override fun showUpdateReadyPrompt() {
-        Snackbar.make(binding.main, R.string.update_ready_msg, Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(binding.mainVw, R.string.update_ready_msg, Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.update_restart) { StoreUpdateKeeper.completeUpdate() }
             .show()
     }
@@ -79,16 +79,16 @@ class MainHubActivity : FoundationActivity<PageMainBinding>(), DashboardShellOwn
 
         drawerMenu = DashboardSideMenu(
             this,
-            binding.drawerMenu,
+            binding.drawerMenuVw,
             requestPhonePermission = { phonePermission.launch(it) },
         ) {
-            binding.main.closeDrawer(GravityCompat.START)
+            binding.mainVw.closeDrawer(GravityCompat.START)
         }.also { it.bind() }
 
         // Back: close the drawer first; then back leaves for the launcher home (launcher mode) or,
         // with launcher mode off, a double back exits the app.
         onBackPressedDispatcher.addCallback(this) {
-            if (binding.main.isDrawerOpen(GravityCompat.START)) binding.main.closeDrawer(GravityCompat.START)
+            if (binding.mainVw.isDrawerOpen(GravityCompat.START)) binding.mainVw.closeDrawer(GravityCompat.START)
             else onShellBackExhausted()
         }
 
@@ -100,7 +100,7 @@ class MainHubActivity : FoundationActivity<PageMainBinding>(), DashboardShellOwn
 
     /** 3e: the header's menu button opens the left drawer. */
     override fun openHomeMenu() {
-        binding.main.openDrawer(GravityCompat.START)
+        binding.mainVw.openDrawer(GravityCompat.START)
     }
 
     override fun onResume() {

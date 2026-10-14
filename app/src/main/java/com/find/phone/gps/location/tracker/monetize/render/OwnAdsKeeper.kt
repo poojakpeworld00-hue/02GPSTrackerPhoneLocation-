@@ -126,22 +126,22 @@ class OwnAdsKeeper {
             val txtColor = color(pref.getString("NativetxtColor"), "#000000")
             val btnTxtColor = color(pref.getString("NativebtntxtColor"), "#FFFFFF")
 
-            val main = view.findViewById<LinearLayout?>(R.id.mainlnr)
+            val main = view.findViewById<LinearLayout?>(R.id.mainlnrVw)
             main?.backgroundTintList = ColorStateList.valueOf(bgColor)
 
-            val button = view.findViewById<TextView?>(R.id.btntext)
+            val button = view.findViewById<TextView?>(R.id.btntextVw)
             button?.let { SponsorButtonStyle.apply(it) }
             button?.setTextColor(btnTxtColor)
 
-            val bannerButton = view.findViewById<TextView?>(R.id.only_banner_button)
+            val bannerButton = view.findViewById<TextView?>(R.id.only_banner_buttonVw)
             bannerButton?.let { SponsorButtonStyle.apply(it) }
             bannerButton?.setTextColor(btnTxtColor)
 
-            view.findViewById<TextView?>(R.id.titileText)?.setTextColor(txtColor)
-            view.findViewById<TextView?>(R.id.Texttext)?.setTextColor(txtColor)
+            view.findViewById<TextView?>(R.id.titileTextVw)?.setTextColor(txtColor)
+            view.findViewById<TextView?>(R.id.TexttextVw)?.setTextColor(txtColor)
 
-            view.findViewById<TextView?>(R.id.only_banner_title)?.setTextColor(txtColor)
-            view.findViewById<TextView?>(R.id.only_banner_desc)?.setTextColor(txtColor)
+            view.findViewById<TextView?>(R.id.only_banner_titleVw)?.setTextColor(txtColor)
+            view.findViewById<TextView?>(R.id.only_banner_descVw)?.setTextColor(txtColor)
 
         } catch (_: Exception) {
             // Silent fail → do not crash
@@ -153,19 +153,19 @@ class OwnAdsKeeper {
     // --------------------------------------------------------
     private fun bindData(view: View, ad: InHouseOffer) {
         // Big / Mid Native
-        view.findViewById<TextView?>(R.id.titileText)?.text = ad.title
-        view.findViewById<TextView?>(R.id.Texttext)?.text = ad.description
-        view.findViewById<TextView?>(R.id.btntext)?.text = ad.buttonText
+        view.findViewById<TextView?>(R.id.titileTextVw)?.text = ad.title
+        view.findViewById<TextView?>(R.id.TexttextVw)?.text = ad.description
+        view.findViewById<TextView?>(R.id.btntextVw)?.text = ad.buttonText
 
         // Banner Native
-        view.findViewById<TextView?>(R.id.only_banner_title)?.text = ad.title
-        view.findViewById<TextView?>(R.id.only_banner_desc)?.text = ad.description
-        view.findViewById<TextView?>(R.id.only_banner_button)?.text = ad.buttonText
+        view.findViewById<TextView?>(R.id.only_banner_titleVw)?.text = ad.title
+        view.findViewById<TextView?>(R.id.only_banner_descVw)?.text = ad.description
+        view.findViewById<TextView?>(R.id.only_banner_buttonVw)?.text = ad.buttonText
 
         // Images
-        view.findViewById<ImageView?>(R.id.gif_image)?.let { bindGlideSafe(it, ad.icon) }
-        view.findViewById<ImageView?>(R.id.only_banner_logo)?.let { bindGlideSafe(it, ad.icon) }
-        view.findViewById<ImageView?>(R.id.custom_native)?.let { bindGlideSafe(it, ad.bannerImage) }
+        view.findViewById<ImageView?>(R.id.gif_imageVw)?.let { bindGlideSafe(it, ad.icon) }
+        view.findViewById<ImageView?>(R.id.only_banner_logoVw)?.let { bindGlideSafe(it, ad.icon) }
+        view.findViewById<ImageView?>(R.id.custom_nativeVw)?.let { bindGlideSafe(it, ad.bannerImage) }
     }
 
     private fun Context.findHostActivity(): Activity? {
@@ -201,8 +201,8 @@ class OwnAdsKeeper {
         }
 
         view.setOnClickListener(click)
-        view.findViewById<View?>(R.id.btntext)?.setOnClickListener(click)
-        view.findViewById<View?>(R.id.only_banner_button)?.setOnClickListener(click)
+        view.findViewById<View?>(R.id.btntextVw)?.setOnClickListener(click)
+        view.findViewById<View?>(R.id.only_banner_buttonVw)?.setOnClickListener(click)
     }
 
     // --------------------------------------------------------

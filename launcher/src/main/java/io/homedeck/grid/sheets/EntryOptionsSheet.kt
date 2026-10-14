@@ -111,17 +111,17 @@ class EntryOptionsSheet(
     }
 
     private fun build() {
-        binding.trayShortcutsUi.removeAllViews()
-        shortcuts.forEach { binding.trayShortcutsUi.addView(shortcutRow(it)) }
+        binding.trayShortcutsView.removeAllViews()
+        shortcuts.forEach { binding.trayShortcutsView.addView(shortcutRow(it)) }
         val hasShortcuts = shortcuts.isNotEmpty()
-        binding.trayShortcutsUi.visibility = if (hasShortcuts) View.VISIBLE else View.GONE
-        binding.trayDividerUi.visibility = if (hasShortcuts && actions.isNotEmpty()) View.VISIBLE else View.GONE
+        binding.trayShortcutsView.visibility = if (hasShortcuts) View.VISIBLE else View.GONE
+        binding.trayDividerView.visibility = if (hasShortcuts && actions.isNotEmpty()) View.VISIBLE else View.GONE
 
-        binding.trayActionsUi.removeAllViews()
+        binding.trayActionsView.removeAllViews()
         actions.forEach {
-            binding.trayActionsUi.addView(actionButton(it), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            binding.trayActionsView.addView(actionButton(it), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         }
-        binding.trayActionsUi.visibility = if (actions.isEmpty()) View.GONE else View.VISIBLE
+        binding.trayActionsView.visibility = if (actions.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun shortcutRow(shortcut: Shortcut): View = LinearLayout(activity).apply {

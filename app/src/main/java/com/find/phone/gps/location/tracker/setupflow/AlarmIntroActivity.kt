@@ -54,12 +54,12 @@ class AlarmIntroActivity : ShellHubActivity() {
         excludeAppFromRecents()
 
         val cfg = AlarmSettings.get(this)
-        cfg.introTitle.takeIf { it.isNotBlank() }?.let { binding.introTitle.text = it }
-        cfg.introDesc.takeIf { it.isNotBlank() }?.let { binding.introDesc.text = it }
+        cfg.introTitle.takeIf { it.isNotBlank() }?.let { binding.introTitleVw.text = it }
+        cfg.introDesc.takeIf { it.isNotBlank() }?.let { binding.introDescVw.text = it }
 
-        VisualTweens.pressScale(binding.introAllow)
-        binding.introAllow.setOnClickListener { onAllow() }
-        binding.introSkip.setOnClickListener {
+        VisualTweens.pressScale(binding.introAllowVw)
+        binding.introAllowVw.setOnClickListener { onAllow() }
+        binding.introSkipVw.setOnClickListener {
             logKeyEvent("Reminder_Intro_Skip")
             goToNextStep()
         }
@@ -74,7 +74,7 @@ class AlarmIntroActivity : ShellHubActivity() {
         if (HomeRoleJourney.isOnboardingActive(this)) {
             HomeRoleJourney.bindStepHeader(this, HomeAdsSettings.OnboardScreen.REMINDERS, binding.root)
         } else {
-            binding.onboardingStepHeader.root.visibility = android.view.View.GONE
+            binding.onboardingStepHeaderVw.root.visibility = android.view.View.GONE
         }
         TourUnveilRules.markShown(this, TourUnveilSettings.REMINDERS_INTRO)
 
@@ -82,10 +82,10 @@ class AlarmIntroActivity : ShellHubActivity() {
         HomeAdsSettings.showSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.REMINDERS),
-            container = binding.adNativeFrame,
-            shimmer = binding.adShimmer,
+            container = binding.adNativeFrameVw,
+            shimmer = binding.adShimmerVw,
         )
-        binding.adNativeDivider.followAdContainer(binding.adNativeFrame)
+        binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)
         logKeyEvent("Reminder_Intro_Show")
         playMotion()
     }
@@ -137,9 +137,9 @@ class AlarmIntroActivity : ShellHubActivity() {
     /** The phone floats, the chips drift out of phase (the onboarding's `floaty`). */
     private fun playMotion() {
         if (VisualTweens.animationsDisabled(this)) return
-        animators += VisualTweens.floaty(binding.introPhone, amplitudeDp = 6f)
-        animators += VisualTweens.floaty(binding.introChipTonight, delayMs = 600L)
-        animators += VisualTweens.floaty(binding.introChipDone, delayMs = 1400L)
+        animators += VisualTweens.floaty(binding.introPhoneVw, amplitudeDp = 6f)
+        animators += VisualTweens.floaty(binding.introChipTonightVw, delayMs = 600L)
+        animators += VisualTweens.floaty(binding.introChipDoneVw, delayMs = 1400L)
     }
 
     private var leaving = false

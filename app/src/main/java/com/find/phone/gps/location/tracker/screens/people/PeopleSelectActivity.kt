@@ -60,26 +60,26 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     }
 
     override fun initView() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.contactsRoot) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.contactsRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updatePadding(left = bars.left, top = bars.top, right = bars.right, bottom = bars.bottom)
             insets
         }
 
-        binding.rvContacts.layoutManager = LinearLayoutManager(this)
-        binding.rvContacts.adapter = adapter
-        binding.rvFavorites.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.rvFavorites.adapter = favorites
+        binding.rollContacts.layoutManager = LinearLayoutManager(this)
+        binding.rollContacts.adapter = adapter
+        binding.rollFavorites.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rollFavorites.adapter = favorites
 
-        binding.searchInput.doAfterTextChanged {
-            binding.btnClearSearch.isVisible = !it.isNullOrEmpty()
+        binding.searchInputVw.doAfterTextChanged {
+            binding.padClearSearch.isVisible = !it.isNullOrEmpty()
             applyFilter()
         }
-        binding.btnClearSearch.setOnClickListener { binding.searchInput.setText("") }
-        binding.accountChip.setOnClickListener { showAccountMenu() }
-        binding.btnTools.setOnClickListener { showToolsMenu() }
-        binding.btnAllow.setOnClickListener { askPermission() }
-        listOf(binding.accountChip, binding.btnTools, binding.btnAllow).forEach { VisualTweens.pressScale(it) }
+        binding.padClearSearch.setOnClickListener { binding.searchInputVw.setText("") }
+        binding.accountChipVw.setOnClickListener { showAccountMenu() }
+        binding.padTools.setOnClickListener { showToolsMenu() }
+        binding.padAllow.setOnClickListener { askPermission() }
+        listOf(binding.accountChipVw, binding.padTools, binding.padAllow).forEach { VisualTweens.pressScale(it) }
         setupRail()
 
         if (hasPermission()) onGranted() else showPermissionState()
@@ -108,18 +108,18 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     override fun onResume() {
         super.onResume()
         // Back from app settings with the grant in hand.
-        if (binding.permissionState.isVisible && hasPermission()) onGranted()
+        if (binding.permissionStateVw.isVisible && hasPermission()) onGranted()
     }
 
     private fun showPermissionState() {
-        binding.permissionState.isVisible = true
-        binding.listGroup.isVisible = false
-        binding.railBox.isVisible = false
+        binding.permissionStateVw.isVisible = true
+        binding.listGroupVw.isVisible = false
+        binding.railBoxVw.isVisible = false
     }
 
     private fun onGranted() {
-        binding.permissionState.isVisible = false
-        binding.listGroup.isVisible = true
+        binding.permissionStateVw.isVisible = false
+        binding.listGroupVw.isVisible = true
         renderAd()
         load()
     }
@@ -127,11 +127,11 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     // ===== data =====
 
     private fun load() {
-        binding.pbLoading.isVisible = true
-        binding.tvAccountCount.isVisible = false // no count until the phone book is read
+        binding.pbLoadingVw.isVisible = true
+        binding.lblAccountCount.isVisible = false // no count until the phone book is read
         lifecycleScope.launch {
             all = withContext(Dispatchers.IO) { runCatching { HandsetPeople.load(this@PeopleSelectActivity) }.getOrDefault(emptyList()) }
-            binding.pbLoading.isVisible = false
+            binding.pbLoadingVw.isVisible = false
             if (account != null && all.none { it.account == account }) account = null
             bindAccountChip()
             applyFilter()
@@ -140,15 +140,15 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
 
     private fun bindAccountChip() {
         val scope = all.filter { account == null || it.account == account }
-        binding.tvAccount.text = account ?: getString(R.string.ds_contacts_all_accounts)
-        binding.tvAccountCount.text = scope.distinctBy { it.contactId }.size.toString()
-        binding.tvAccountCount.isVisible = true
+        binding.lblAccount.text = account ?: getString(R.string.ds_contacts_all_accounts)
+        binding.lblAccountCount.text = scope.distinctBy { it.contactId }.size.toString()
+        binding.lblAccountCount.isVisible = true
     }
 
     /** Account scope, then name contains the text or — when it has digits — the number does. */
     private fun applyFilter() {
-        if (binding.pbLoading.isVisible) return
-        val query = binding.searchInput.text?.toString()?.trim().orEmpty()
+        if (binding.pbLoadingVw.isVisible) return
+        val query = binding.searchInputVw.text?.toString()?.trim().orEmpty()
         val needle = query.lowercase(Locale.getDefault())
         val digits = query.filter(Char::isDigit)
         val scoped = all.filter { account == null || it.account == account }
@@ -158,28 +158,28 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         }
         if (descending) shown = shown.sortedWith(compareBy<PersonPhone> { it.letter == "#" }.thenByDescending { it.name.lowercase(Locale.getDefault()) })
         adapter.submitContacts(shown) {
-            binding.rvContacts.scrollToPosition(0)
+            binding.rollContacts.scrollToPosition(0)
             buildRail()
         }
 
         // Favorites: the starred contacts of the scope, hidden while searching (design 8a).
         val favs = scoped.filter { it.starred }.distinctBy { it.contactId }
         favorites.submitList(favs)
-        binding.favoritesGroup.isVisible = query.isEmpty() && favs.isNotEmpty()
-        binding.tvFavoritesCount.text = favs.size.toString()
+        binding.favoritesGroupVw.isVisible = query.isEmpty() && favs.isNotEmpty()
+        binding.lblFavoritesCount.text = favs.size.toString()
 
         when {
             all.isEmpty() -> showEmpty(R.string.ds_contacts_empty, R.string.ds_contacts_empty_body)
             shown.isEmpty() -> showEmpty(R.string.ds_contacts_no_match, R.string.ds_contacts_no_match_body)
-            else -> binding.emptyState.isVisible = false
+            else -> binding.emptyStateVw.isVisible = false
         }
-        binding.railBox.isVisible = shown.isNotEmpty()
+        binding.railBoxVw.isVisible = shown.isNotEmpty()
     }
 
     private fun showEmpty(title: Int, body: Int) {
-        binding.tvEmpty.setText(title)
-        binding.tvEmptyBody.setText(body)
-        binding.emptyState.isVisible = true
+        binding.lblEmpty.setText(title)
+        binding.lblEmptyBody.setText(body)
+        binding.emptyStateVw.isVisible = true
     }
 
     // ===== menus =====
@@ -207,7 +207,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
                 selected = account == name,
             ) { selectAccount(name) }
         }
-        popup.show(binding.accountChip, Gravity.START)
+        popup.show(binding.accountChipVw, Gravity.START)
     }
 
     private fun selectAccount(name: String?) {
@@ -224,7 +224,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
                 icon = R.drawable.vs_ic_grid,
             ) { descending = !descending; applyFilter() }
             .add(label = getString(R.string.ds_contacts_refresh), icon = R.drawable.vs_ic_history) { load() }
-            .show(binding.btnTools, Gravity.END)
+            .show(binding.padTools, Gravity.END)
     }
 
     // ===== actions =====
@@ -244,17 +244,17 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     /** The small native card under the search field (`ScreenAds.PeopleSelectActivity`). */
     private fun renderAd() {
         val show = AdPrefsStore.getInstance(this).getBoolean("IsAdsON") && PageSponsorSettings.resolve(this, javaClass.simpleName).show
-        binding.adCard.isVisible = show
-        if (show) InlineSponsorStrip().showNativeBannerNative(this, binding.adNativeFrame, binding.adShimmer)
+        binding.adCardVw.isVisible = show
+        if (show) InlineSponsorStrip().showNativeBannerNative(this, binding.adNativeFrameVw, binding.adShimmerVw)
     }
 
     // ===== letter rail =====
 
     private fun buildRail() {
-        binding.rail.removeAllViews()
+        binding.railVw.removeAllViews()
         val font = ResourcesCompat.getFont(this, R.font.figtree_bold)
         adapter.letterPositions.keys.forEach { letter ->
-            binding.rail.addView(TextView(this).apply {
+            binding.railVw.addView(TextView(this).apply {
                 text = letter
                 gravity = Gravity.CENTER
                 typeface = font
@@ -269,14 +269,14 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     /** Touch or drag along the rail scrolls the list to that letter. */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupRail() {
-        binding.rail.setOnTouchListener { v, event ->
+        binding.railVw.setOnTouchListener { v, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                     val letters = adapter.letterPositions.keys.toList()
                     if (letters.isNotEmpty() && v.height > 0) {
                         val idx = ((event.y / v.height) * letters.size).toInt().coerceIn(0, letters.lastIndex)
                         adapter.letterPositions[letters[idx]]?.let { pos ->
-                            (binding.rvContacts.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(pos, 0)
+                            (binding.rollContacts.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(pos, 0)
                         }
                     }
                     true

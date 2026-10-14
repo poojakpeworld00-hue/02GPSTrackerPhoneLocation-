@@ -56,9 +56,9 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
         this.binding = HdkWidgetsFragmentBinding.bind(this)
         getAppWidgets()
 
-        binding.widgetsListUi.setOnTouchListener { v, event ->
-            if (event.actionMasked == MotionEvent.ACTION_DOWN && binding.searchBarUi.hasFocus()) {
-                binding.searchBarUi.binding.topToolbarSearch.clearFocus()
+        binding.widgetsListView.setOnTouchListener { v, event ->
+            if (event.actionMasked == MotionEvent.ACTION_DOWN && binding.searchBarView.hasFocus()) {
+                binding.searchBarView.binding.topToolbarSearch.clearFocus()
                 activity?.hideKeyboard()
             }
 
@@ -72,7 +72,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
     }
 
     fun onConfigurationChanged() {
-        binding.widgetsListUi.scrollToPosition(0)
+        binding.widgetsListView.scrollToPosition(0)
         setupViews()
 
         if (widgets.isNotEmpty()) {
@@ -113,9 +113,9 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
         // has to clear the touch slop, otherwise the drift of a held finger cancels the long press on a widget
         if (touchDownY != -1) {
             shouldIntercept =
-                event.y.toInt() - touchDownY > touchSlop && binding.widgetsListUi.computeVerticalScrollOffset() == 0
+                event.y.toInt() - touchDownY > touchSlop && binding.widgetsListView.computeVerticalScrollOffset() == 0
             if (shouldIntercept) {
-                if (binding.searchBarUi.hasFocus()) {
+                if (binding.searchBarView.hasFocus()) {
                     activity?.hideKeyboard()
                 }
                 activity?.startHandlingTouches(touchDownY)
@@ -156,7 +156,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
     }
 
     /** True once the widget list has been built at least once. */
-    fun hasWidgets() = binding.widgetsListUi.adapter != null
+    fun hasWidgets() = binding.widgetsListView.adapter != null
 
     @SuppressLint("WrongConstant")
     fun getAppWidgets() {
@@ -265,7 +265,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun splitWidgetsByApps() {
-        val searchQuery = binding.searchBarUi.getCurrentQuery()
+        val searchQuery = binding.searchBarView.getCurrentQuery()
         val filteredWidgets = if (searchQuery.isNotEmpty()) {
             widgets.filter { widget ->
                 widget.appTitle.normalizeString().contains(searchQuery.normalizeString(), ignoreCase = true) ||
@@ -302,14 +302,14 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
 
     private fun setupAdapter(widgetsListItems: ArrayList<WidgetPickerEntry>) {
         activity?.runOnUiThread {
-            val currAdapter = binding.widgetsListUi.adapter
+            val currAdapter = binding.widgetsListView.adapter
             if (currAdapter == null) {
                 WidgetPickerAdapter(activity!!, widgetsListItems, this) {
                     context.toast(R.string.launcher_touch_hold_widget)
                     ignoreTouches = false
                     touchDownY = -1
                 }.apply {
-                    binding.widgetsListUi.adapter = this
+                    binding.widgetsListView.adapter = this
                 }
             } else {
                 (currAdapter as WidgetPickerAdapter).updateItems(widgetsListItems)
@@ -322,14 +322,14 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
             return
         }
 
-        binding.widgetsFastscrollerUi.updateColors(context.getProperPrimaryColor())
-        (binding.widgetsListUi.adapter as? WidgetPickerAdapter)?.updateTextColor(context.getProperTextColor())
+        binding.widgetsFastscrollerView.updateColors(context.getProperPrimaryColor())
+        (binding.widgetsListView.adapter as? WidgetPickerAdapter)?.updateTextColor(context.getProperTextColor())
         setupDrawerBackground()
 
-        binding.searchBarUi.requireToolbar().beGone()
-        binding.searchBarUi.updateColors()
-        binding.searchBarUi.setupMenu()
-        binding.searchBarUi.onSearchTextChangedListener = {
+        binding.searchBarView.requireToolbar().beGone()
+        binding.searchBarView.updateColors()
+        binding.searchBarView.setupMenu()
+        binding.searchBarView.onSearchTextChangedListener = {
             splitWidgetsByApps()
         }
     }

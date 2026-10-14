@@ -273,8 +273,8 @@ class BonusAdSponsor {
         val (dialog, view) = dialogFor(activity)
         var retrying = false
         dialog.setOnDismissListener { if (!retrying) onDone(Result.CANCELED) }
-        view.btnRetryCancel.setOnClickListener { dialog.dismiss() }
-        view.btnRetry.setOnClickListener {
+        view.padRetryCancel.setOnClickListener { dialog.dismiss() }
+        view.padRetry.setOnClickListener {
             retrying = true
             dialog.dismiss()
             show(activity, onDone, attempt + 1)
@@ -305,8 +305,8 @@ class BonusAdSponsor {
         var unlock = false
 
         fun setUnlockEnabled(on: Boolean) {
-            view.btnWaitUnlock.isEnabled = on
-            view.btnWaitUnlock.alpha = if (on) 1f else 0.45f
+            view.padWaitUnlock.isEnabled = on
+            view.padWaitUnlock.alpha = if (on) 1f else 0.45f
         }
         setUnlockEnabled(false)
 
@@ -314,15 +314,15 @@ class BonusAdSponsor {
             override fun run() {
                 val left = BonusAdCooldown.remainingMs(activity)
                 if (left > 0) {
-                    view.ringWait.progress = (left / total * view.ringWait.max).toInt()
-                    view.tvWaitTime.text = DateUtils.formatElapsedTime((left + 999) / 1000)
+                    view.ringWaitVw.progress = (left / total * view.ringWaitVw.max).toInt()
+                    view.lblWaitTime.text = DateUtils.formatElapsedTime((left + 999) / 1000)
                     handler.postDelayed(this, RING_TICK_MS)
                 } else {
-                    view.ringWait.progress = 0
-                    view.tvWaitTime.isVisible = false
-                    view.ivWaitDone.isVisible = true
-                    view.tvWaitTitle.setText(R.string.ds_reward_wait_ready_title)
-                    view.tvWaitBody.setText(R.string.ds_reward_wait_ready)
+                    view.ringWaitVw.progress = 0
+                    view.lblWaitTime.isVisible = false
+                    view.picWaitDone.isVisible = true
+                    view.lblWaitTitle.setText(R.string.ds_reward_wait_ready_title)
+                    view.lblWaitBody.setText(R.string.ds_reward_wait_ready)
                     setUnlockEnabled(true)
                 }
             }
@@ -333,8 +333,8 @@ class BonusAdSponsor {
             handler.removeCallbacksAndMessages(null)
             if (unlock) show(activity, onDone) else onDone(Result.CANCELED)
         }
-        view.btnWaitLater.setOnClickListener { dialog.dismiss() }
-        view.btnWaitUnlock.setOnClickListener {
+        view.padWaitLater.setOnClickListener { dialog.dismiss() }
+        view.padWaitUnlock.setOnClickListener {
             unlock = true
             dialog.dismiss()
         }

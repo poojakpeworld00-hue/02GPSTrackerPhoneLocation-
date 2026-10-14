@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <com.facebook.ads.NativeAdLayout
-        android:id="@+id/nativview"
+        android:id="@+id/nativviewVw"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/art_ads_bg"
@@ -23,13 +23,13 @@
                 android:orientation="horizontal">
 
                 <RelativeLayout
-                    android:id="@+id/ad_choices_container"
+                    android:id="@+id/ad_choices_containerVw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="2dp" />
 
                 <TextView
-                    android:id="@+id/native_ad_sponsored_label"
+                    android:id="@+id/promo_ad_sponsored_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content">
 
                 <com.facebook.ads.MediaView
-                    android:id="@+id/native_icon_view"
+                    android:id="@+id/promo_icon_view"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentStart="true"
@@ -61,7 +61,7 @@
                     android:paddingRight="83dp">
 
                     <TextView
-                        android:id="@+id/native_ad_title"
+                        android:id="@+id/promo_ad_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -71,7 +71,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/native_ad_social_context"
+                        android:id="@+id/promo_ad_social_context"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -80,7 +80,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/native_ad_call_to_action"
+                    android:id="@+id/promo_ad_call_to_action"
                     android:layout_width="80dp"
                     android:layout_height="50dp"
                     android:layout_alignParentEnd="true"

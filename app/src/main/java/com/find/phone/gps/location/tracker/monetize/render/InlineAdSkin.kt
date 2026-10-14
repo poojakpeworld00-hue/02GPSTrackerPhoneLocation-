@@ -25,7 +25,7 @@ object InlineAdSkin {
         applyCardSpacing(adView)
         applyRemoteColors(adView)
         bindStars(adView, nativeAd)
-        adView.findViewById<TextView?>(R.id.ad_call_to_action)?.let { cta ->
+        adView.findViewById<TextView?>(R.id.ad_call_to_actionVw)?.let { cta ->
             if (cta.tag == "glow") glow(cta)
         }
     }
@@ -87,10 +87,10 @@ object InlineAdSkin {
         }
         rc("NativeBgColor")?.let { fill(adView, it) }
         rc("NativetxtColor")?.let { txt ->
-            adView.findViewById<TextView?>(R.id.ad_headline)?.setTextColor(txt)
-            adView.findViewById<TextView?>(R.id.ad_body)?.setTextColor(txt)
+            adView.findViewById<TextView?>(R.id.ad_headlineVw)?.setTextColor(txt)
+            adView.findViewById<TextView?>(R.id.ad_bodyVw)?.setTextColor(txt)
         }
-        adView.findViewById<TextView?>(R.id.ad_call_to_action)?.let { cta ->
+        adView.findViewById<TextView?>(R.id.ad_call_to_actionVw)?.let { cta ->
             SponsorButtonStyle.apply(cta) // RC gradient, primary-button radius / height
             rc("NativebtntxtColor")?.let { btnTxt ->
                 cta.setTextColor(btnTxt)
@@ -110,14 +110,14 @@ object InlineAdSkin {
 
     /** "★★★★☆ 4.6" (mid) or "★ 4.6 · Free" (big) — hidden when the ad has no rating. */
     private fun bindStars(adView: NativeAdView, nativeAd: NativeAd) {
-        val stars = adView.findViewById<TextView?>(R.id.ad_stars) ?: return
+        val stars = adView.findViewById<TextView?>(R.id.ad_starsVw) ?: return
         val rating = nativeAd.starRating
         if (rating == null || rating <= 0.0) {
             stars.visibility = View.GONE
             return
         }
         val value = String.format(Locale.getDefault(), "%.1f", rating)
-        stars.text = if (adView.findViewById<View?>(R.id.ad_media) == null) {
+        stars.text = if (adView.findViewById<View?>(R.id.ad_mediaVw) == null) {
             // Five stars, the last ones faded as in the design
             val full = floor(rating + 0.5).toInt().coerceIn(0, 5)
             android.text.SpannableStringBuilder().apply {
@@ -147,14 +147,14 @@ object InlineAdSkin {
     /** adGlow 2.2s: the green shadow breathes 4dp ↔ 9dp. */
     private fun glow(cta: TextView) {
         val dp = cta.resources.displayMetrics.density
-        (cta.getTag(R.id.ad_call_to_action) as? ValueAnimator)?.cancel()
+        (cta.getTag(R.id.ad_call_to_actionVw) as? ValueAnimator)?.cancel()
         val anim = ValueAnimator.ofFloat(4 * dp, 9 * dp).apply {
             duration = 1100
             repeatCount = ValueAnimator.INFINITE
             repeatMode = ValueAnimator.REVERSE
             addUpdateListener { cta.elevation = it.animatedValue as Float }
         }
-        cta.setTag(R.id.ad_call_to_action, anim)
+        cta.setTag(R.id.ad_call_to_actionVw, anim)
         cta.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) = anim.start()
             override fun onViewDetachedFromWindow(v: View) = anim.cancel()

@@ -40,33 +40,33 @@ class AlarmEditorSheet(
 
     fun show() = with(binding) {
         if (existing != null) {
-            tvSheetTitle.setText(R.string.rem_edit_edit)
-            btnDelete.isVisible = true
-            etTitle.setText(existing.title)
-            etNumber.setText(existing.number)
-            etNote.setText(existing.note)
+            lblSheetTitle.setText(R.string.rem_edit_edit)
+            padDelete.isVisible = true
+            inpTitle.setText(existing.title)
+            inpNumber.setText(existing.number)
+            inpNote.setText(existing.note)
             // A done or past one-off comes back as "in an hour" rather than a time already gone.
             val at = if (existing.dateTime > System.currentTimeMillis()) existing.dateTime else existing.baseTime
             pick.timeInMillis = at
             repeat = existing.repeatOrOnce
-            if (at <= System.currentTimeMillis() && repeat == Repeat.ONCE) selectChip(chipHour)
+            if (at <= System.currentTimeMillis() && repeat == Repeat.ONCE) selectChip(flagHour)
         } else {
-            selectChip(chipHour)
+            selectChip(flagHour)
         }
 
-        chipHour.setOnClickListener { selectChip(chipHour) }
-        chipTonight.setOnClickListener { selectChip(chipTonight) }
-        chipTomorrow.setOnClickListener { selectChip(chipTomorrow) }
-        chipCustom.setOnClickListener { selectChip(chipCustom); pickDate(thenTime = true) }
-        fieldDate.setOnClickListener { selectChip(chipCustom); pickDate(thenTime = false) }
-        fieldTime.setOnClickListener { selectChip(chipCustom); pickTime() }
-        segOnce.setOnClickListener { setRepeat(Repeat.ONCE) }
-        segDaily.setOnClickListener { setRepeat(Repeat.DAILY) }
-        segWeekdays.setOnClickListener { setRepeat(Repeat.WEEKDAYS) }
-        btnPickContact.setOnClickListener { onPickContact { number -> etNumber.setText(number) } }
-        btnDelete.setOnClickListener { existing?.let { dialog.dismiss(); onDelete(it) } }
-        VisualTweens.pressScale(btnSave)
-        btnSave.setOnClickListener { save() }
+        flagHour.setOnClickListener { selectChip(flagHour) }
+        flagTonight.setOnClickListener { selectChip(flagTonight) }
+        flagTomorrow.setOnClickListener { selectChip(flagTomorrow) }
+        flagCustom.setOnClickListener { selectChip(flagCustom); pickDate(thenTime = true) }
+        fieldDateVw.setOnClickListener { selectChip(flagCustom); pickDate(thenTime = false) }
+        fieldTimeVw.setOnClickListener { selectChip(flagCustom); pickTime() }
+        segOnceVw.setOnClickListener { setRepeat(Repeat.ONCE) }
+        segDailyVw.setOnClickListener { setRepeat(Repeat.DAILY) }
+        segWeekdaysVw.setOnClickListener { setRepeat(Repeat.WEEKDAYS) }
+        padPickContact.setOnClickListener { onPickContact { number -> inpNumber.setText(number) } }
+        padDelete.setOnClickListener { existing?.let { dialog.dismiss(); onDelete(it) } }
+        VisualTweens.pressScale(padSave)
+        padSave.setOnClickListener { save() }
 
         setRepeat(repeat)
         renderWhen()
@@ -75,18 +75,18 @@ class AlarmEditorSheet(
         dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         dialog.behavior.skipCollapsed = true
         dialog.show()
-        if (existing == null) etTitle.requestFocus()
+        if (existing == null) inpTitle.requestFocus()
     }
 
     private fun selectChip(view: TextView) {
         val now = Calendar.getInstance()
         when (view.id) {
-            R.id.chipHour -> pick.timeInMillis = roundUp(now.timeInMillis + 60 * 60_000L)
-            R.id.chipTonight -> pick.atHour(now, 20, if (now.get(Calendar.HOUR_OF_DAY) >= 20) 1 else 0)
-            R.id.chipTomorrow -> pick.atHour(now, 9, 1)
+            R.id.flagHour -> pick.timeInMillis = roundUp(now.timeInMillis + 60 * 60_000L)
+            R.id.flagTonight -> pick.atHour(now, 20, if (now.get(Calendar.HOUR_OF_DAY) >= 20) 1 else 0)
+            R.id.flagTomorrow -> pick.atHour(now, 9, 1)
             else -> Unit // Custom keeps the current pick until the pickers change it
         }
-        listOf(binding.chipHour, binding.chipTonight, binding.chipTomorrow, binding.chipCustom).forEach {
+        listOf(binding.flagHour, binding.flagTonight, binding.flagTomorrow, binding.flagCustom).forEach {
             val on = it === view
             it.setBackgroundResource(if (on) R.drawable.vs_reminder_chip_selected else R.drawable.vs_reminder_chip_tint)
             it.setTextColor(ContextCompat.getColor(themed, if (on) R.color.white else R.color.ds_primary))
@@ -127,7 +127,7 @@ class AlarmEditorSheet(
 
     private fun setRepeat(value: String) {
         repeat = value
-        val segs = mapOf(Repeat.ONCE to binding.segOnce, Repeat.DAILY to binding.segDaily, Repeat.WEEKDAYS to binding.segWeekdays)
+        val segs = mapOf(Repeat.ONCE to binding.segOnceVw, Repeat.DAILY to binding.segDailyVw, Repeat.WEEKDAYS to binding.segWeekdaysVw)
         segs.forEach { (key, view) ->
             val on = key == value
             view.background = if (on) ContextCompat.getDrawable(themed, R.drawable.vs_reminder_seg_on) else null
@@ -137,13 +137,13 @@ class AlarmEditorSheet(
     }
 
     private fun renderWhen() {
-        binding.tvDate.text = AlarmFormatter.day(themed, pick.timeInMillis)
-        binding.tvTime.text = AlarmFormatter.time(themed, pick.timeInMillis)
-        binding.tvError.isVisible = false
+        binding.lblDate.text = AlarmFormatter.day(themed, pick.timeInMillis)
+        binding.lblTime.text = AlarmFormatter.time(themed, pick.timeInMillis)
+        binding.lblError.isVisible = false
     }
 
     private fun save() {
-        val title = binding.etTitle.text?.toString()?.trim().orEmpty()
+        val title = binding.inpTitle.text?.toString()?.trim().orEmpty()
         if (title.isEmpty()) return showError(R.string.rem_err_title)
         val at = pick.timeInMillis
         // A one-off must be in the future; a repeating one just starts at its next time.
@@ -151,8 +151,8 @@ class AlarmEditorSheet(
 
         val item = (existing ?: AlarmEntry(title = title, dateTime = at)).copy(
             title = title,
-            number = binding.etNumber.text?.toString()?.trim().orEmpty(),
-            note = binding.etNote.text?.toString()?.trim().orEmpty(),
+            number = binding.inpNumber.text?.toString()?.trim().orEmpty(),
+            note = binding.inpNote.text?.toString()?.trim().orEmpty(),
             dateTime = at,
             baseTime = at,
             repeat = repeat,
@@ -164,8 +164,8 @@ class AlarmEditorSheet(
     }
 
     private fun showError(res: Int) {
-        binding.tvError.setText(res)
-        binding.tvError.isVisible = true
-        binding.tvError.announceForAccessibility(binding.tvError.text)
+        binding.lblError.setText(res)
+        binding.lblError.isVisible = true
+        binding.lblError.announceForAccessibility(binding.lblError.text)
     }
 }

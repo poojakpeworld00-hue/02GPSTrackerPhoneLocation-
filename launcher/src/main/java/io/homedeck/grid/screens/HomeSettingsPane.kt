@@ -37,14 +37,14 @@ class HomeSettingsPane : HomeFoundationPane() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        setupEdgeToEdge(padBottomSystem = listOf(binding.settingsNestedScrollviewUi))
-        setupMaterialScrollListener(binding.settingsNestedScrollviewUi, binding.settingsAppbarUi)
+        setupEdgeToEdge(padBottomSystem = listOf(binding.settingsNestedScrollviewView))
+        setupMaterialScrollListener(binding.settingsNestedScrollviewView, binding.settingsAppbarView)
         setupOptionsMenu()
     }
 
     override fun onResume() {
         super.onResume()
-        setupTopAppBar(binding.settingsAppbarUi, NavigationIcon.Arrow)
+        setupTopAppBar(binding.settingsAppbarView, NavigationIcon.Arrow)
         refreshMenuItems()
 
         setupCustomizeColors()
@@ -62,23 +62,23 @@ class HomeSettingsPane : HomeFoundationPane() {
         setupShowHomeAppLabels()
         setupLanguage()
         setupManageHiddenIcons()
-        updateTextColors(binding.settingsHolderUi)
+        updateTextColors(binding.settingsHolderView)
 
         arrayOf(
-            binding.settingsColorCustomizationSectionLabelUi,
-            binding.settingsGeneralSettingsLabelUi,
-            binding.settingsDrawerSettingsLabelUi,
-            binding.settingsHomeScreenLabelUi
+            binding.settingsColorCustomizationSectionLabelView,
+            binding.settingsGeneralSettingsLabelView,
+            binding.settingsDrawerSettingsLabelView,
+            binding.settingsHomeScreenLabelView
         ).forEach {
             it.setTextColor(getProperPrimaryColor())
         }
     }
 
     private fun setupOptionsMenu() {
-        binding.settingsToolbarUi.setOnMenuItemClickListener { menuItem ->
+        binding.settingsToolbarView.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.aboutUi -> launchAbout()
-                R.id.more_apps_from_usUi -> launchMoreAppsFromUsIntent()
+                R.id.aboutView -> launchAbout()
+                R.id.more_apps_from_usView -> launchMoreAppsFromUsIntent()
                 else -> return@setOnMenuItemClickListener false
             }
             return@setOnMenuItemClickListener true
@@ -86,14 +86,14 @@ class HomeSettingsPane : HomeFoundationPane() {
     }
 
     private fun refreshMenuItems() {
-        binding.settingsToolbarUi.menu.apply {
-            findItem(R.id.more_apps_from_usUi).isVisible =
+        binding.settingsToolbarView.menu.apply {
+            findItem(R.id.more_apps_from_usView).isVisible =
                 !resources.getBoolean(org.fossify.commons.R.bool.hide_google_relations)
         }
     }
 
     private fun setupCustomizeColors() {
-        binding.settingsColorCustomizationHolderUi.setOnClickListener {
+        binding.settingsColorCustomizationHolderView.setOnClickListener {
             // see HomeFoundationPane.withFossifyPackageNameSpoofed — startCustomizationActivity()
             // carries its own copy of the anti-rebrand check, separate from the one in onCreate()
             withFossifyPackageNameSpoofed { startCustomizationActivity() }
@@ -101,26 +101,26 @@ class HomeSettingsPane : HomeFoundationPane() {
     }
 
     private fun setupUseEnglish() {
-        binding.settingsUseEnglishHolderUi.beVisibleIf(
+        binding.settingsUseEnglishHolderView.beVisibleIf(
             beVisible = (launcherConfig.wasUseEnglishToggled || Locale.getDefault().language != "en")
                     && !isTiramisuPlus()
         )
 
-        binding.settingsUseEnglishUi.isChecked = launcherConfig.useEnglish
-        binding.settingsUseEnglishHolderUi.setOnClickListener {
-            binding.settingsUseEnglishUi.toggle()
-            launcherConfig.useEnglish = binding.settingsUseEnglishUi.isChecked
+        binding.settingsUseEnglishView.isChecked = launcherConfig.useEnglish
+        binding.settingsUseEnglishHolderView.setOnClickListener {
+            binding.settingsUseEnglishView.toggle()
+            launcherConfig.useEnglish = binding.settingsUseEnglishView.isChecked
             exitProcess(0)
         }
     }
 
     private fun setupDoubleTapToLock() {
         val devicePolicyManager = getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
-        binding.settingsDoubleTapToLockUi.isChecked = devicePolicyManager.isAdminActive(
+        binding.settingsDoubleTapToLockView.isChecked = devicePolicyManager.isAdminActive(
             ComponentName(this, ScreenLockAdminReceiver::class.java)
         )
 
-        binding.settingsDoubleTapToLockHolderUi.setOnClickListener {
+        binding.settingsDoubleTapToLockHolderView.setOnClickListener {
             val isLockDeviceAdminActive = devicePolicyManager.isAdminActive(
                 ComponentName(this, ScreenLockAdminReceiver::class.java)
             )
@@ -152,17 +152,17 @@ class HomeSettingsPane : HomeFoundationPane() {
     private fun setupAppDrawerEnabled() {
         fun refresh() {
             val enabled = launcherConfig.isDrawerEnabled
-            binding.settingsAppDrawerEnabledUi.isChecked = enabled
-            binding.settingsAppDrawerDisabledHintUi.beVisibleIf(!enabled)
-            binding.settingsDrawerStyleHolderUi.beVisibleIf(enabled)
-            binding.settingsDrawerColumnCountHolderUi.beVisibleIf(enabled)
-            binding.settingsDrawerSearchHolderUi.beVisibleIf(enabled)
-            binding.settingsOpenKeyboardOnAppDrawerHolderUi.beVisibleIf(enabled && launcherConfig.showSearchBar)
-            binding.settingsCloseAppDrawerOnOtherAppHolderUi.beVisibleIf(enabled)
-            binding.settingsShowDrawerAppLabelsHolderUi.beVisibleIf(enabled)
+            binding.settingsAppDrawerEnabledView.isChecked = enabled
+            binding.settingsAppDrawerDisabledHintView.beVisibleIf(!enabled)
+            binding.settingsDrawerStyleHolderView.beVisibleIf(enabled)
+            binding.settingsDrawerColumnCountHolderView.beVisibleIf(enabled)
+            binding.settingsDrawerSearchHolderView.beVisibleIf(enabled)
+            binding.settingsOpenKeyboardOnAppDrawerHolderView.beVisibleIf(enabled && launcherConfig.showSearchBar)
+            binding.settingsCloseAppDrawerOnOtherAppHolderView.beVisibleIf(enabled)
+            binding.settingsShowDrawerAppLabelsHolderView.beVisibleIf(enabled)
         }
         refresh()
-        binding.settingsAppDrawerEnabledHolderUi.setOnClickListener {
+        binding.settingsAppDrawerEnabledHolderView.setOnClickListener {
             // Turning the drawer back on restores the style it had before it went off.
             if (launcherConfig.isDrawerEnabled) {
                 launcherConfig.drawerStyleWhenOn = launcherConfig.drawerMode
@@ -177,8 +177,8 @@ class HomeSettingsPane : HomeFoundationPane() {
 
     private fun setupDrawerStyle() {
         val paged = launcherConfig.drawerMode == TrayLayoutMode.PAGED
-        binding.settingsDrawerStyleUi.text = getString(if (paged) R.string.launcher_drawer_style_paged else R.string.launcher_drawer_style_vertical)
-        binding.settingsDrawerStyleHolderUi.setOnClickListener {
+        binding.settingsDrawerStyleView.text = getString(if (paged) R.string.launcher_drawer_style_paged else R.string.launcher_drawer_style_vertical)
+        binding.settingsDrawerStyleHolderView.setOnClickListener {
             val items = arrayListOf(
                 RadioItem(DRAWER_STYLE_VERTICAL, getString(R.string.launcher_drawer_style_vertical)),
                 RadioItem(DRAWER_STYLE_PAGED, getString(R.string.launcher_drawer_style_paged)),
@@ -192,26 +192,26 @@ class HomeSettingsPane : HomeFoundationPane() {
     }
 
     private fun setupOpenKeyboardOnAppDrawer() {
-        binding.settingsOpenKeyboardOnAppDrawerHolderUi.beVisibleIf(launcherConfig.showSearchBar && launcherConfig.isDrawerEnabled)
-        binding.settingsOpenKeyboardOnAppDrawerUi.isChecked = launcherConfig.autoShowKeyboardInAppDrawer
-        binding.settingsOpenKeyboardOnAppDrawerHolderUi.setOnClickListener {
-            binding.settingsOpenKeyboardOnAppDrawerUi.toggle()
-            launcherConfig.autoShowKeyboardInAppDrawer = binding.settingsOpenKeyboardOnAppDrawerUi.isChecked
+        binding.settingsOpenKeyboardOnAppDrawerHolderView.beVisibleIf(launcherConfig.showSearchBar && launcherConfig.isDrawerEnabled)
+        binding.settingsOpenKeyboardOnAppDrawerView.isChecked = launcherConfig.autoShowKeyboardInAppDrawer
+        binding.settingsOpenKeyboardOnAppDrawerHolderView.setOnClickListener {
+            binding.settingsOpenKeyboardOnAppDrawerView.toggle()
+            launcherConfig.autoShowKeyboardInAppDrawer = binding.settingsOpenKeyboardOnAppDrawerView.isChecked
         }
     }
 
     private fun setupCloseAppDrawerOnOtherAppOpen() {
-        binding.settingsCloseAppDrawerOnOtherAppUi.isChecked = launcherConfig.closeAppDrawer
-        binding.settingsCloseAppDrawerOnOtherAppHolderUi.setOnClickListener {
-            binding.settingsCloseAppDrawerOnOtherAppUi.toggle()
-            launcherConfig.closeAppDrawer = binding.settingsCloseAppDrawerOnOtherAppUi.isChecked
+        binding.settingsCloseAppDrawerOnOtherAppView.isChecked = launcherConfig.closeAppDrawer
+        binding.settingsCloseAppDrawerOnOtherAppHolderView.setOnClickListener {
+            binding.settingsCloseAppDrawerOnOtherAppView.toggle()
+            launcherConfig.closeAppDrawer = binding.settingsCloseAppDrawerOnOtherAppView.isChecked
         }
     }
 
     private fun setupDrawerColumnCount() {
         val currentColumnCount = launcherConfig.drawerColumnCount
-        binding.settingsDrawerColumnCountUi.text = currentColumnCount.toString()
-        binding.settingsDrawerColumnCountHolderUi.setOnClickListener {
+        binding.settingsDrawerColumnCountView.text = currentColumnCount.toString()
+        binding.settingsDrawerColumnCountHolderView.setOnClickListener {
             val items = ArrayList<RadioItem>()
             for (i in 1..MAX_COLUMN_COUNT) {
                 items.add(
@@ -236,26 +236,26 @@ class HomeSettingsPane : HomeFoundationPane() {
 
     private fun setupDrawerSearchBar() {
         val showSearchBar = launcherConfig.showSearchBar
-        binding.settingsShowSearchBarUi.isChecked = showSearchBar
-        binding.settingsDrawerSearchHolderUi.setOnClickListener {
-            binding.settingsShowSearchBarUi.toggle()
-            launcherConfig.showSearchBar = binding.settingsShowSearchBarUi.isChecked
-            binding.settingsOpenKeyboardOnAppDrawerHolderUi.beVisibleIf(launcherConfig.showSearchBar && launcherConfig.isDrawerEnabled)
+        binding.settingsShowSearchBarView.isChecked = showSearchBar
+        binding.settingsDrawerSearchHolderView.setOnClickListener {
+            binding.settingsShowSearchBarView.toggle()
+            launcherConfig.showSearchBar = binding.settingsShowSearchBarView.isChecked
+            binding.settingsOpenKeyboardOnAppDrawerHolderView.beVisibleIf(launcherConfig.showSearchBar && launcherConfig.isDrawerEnabled)
         }
     }
 
     private fun setupShowDrawerAppLabels() {
-        binding.settingsShowDrawerAppLabelsUi.isChecked = launcherConfig.showDrawerAppLabels
-        binding.settingsShowDrawerAppLabelsHolderUi.setOnClickListener {
-            binding.settingsShowDrawerAppLabelsUi.toggle()
-            launcherConfig.showDrawerAppLabels = binding.settingsShowDrawerAppLabelsUi.isChecked
+        binding.settingsShowDrawerAppLabelsView.isChecked = launcherConfig.showDrawerAppLabels
+        binding.settingsShowDrawerAppLabelsHolderView.setOnClickListener {
+            binding.settingsShowDrawerAppLabelsView.toggle()
+            launcherConfig.showDrawerAppLabels = binding.settingsShowDrawerAppLabelsView.isChecked
         }
     }
 
     private fun setupHomeRowCount() {
         val currentRowCount = launcherConfig.homeRowCount
-        binding.settingsHomeScreenRowCountUi.text = currentRowCount.toString()
-        binding.settingsHomeScreenRowCountHolderUi.setOnClickListener {
+        binding.settingsHomeScreenRowCountView.text = currentRowCount.toString()
+        binding.settingsHomeScreenRowCountHolderView.setOnClickListener {
             val items = ArrayList<RadioItem>()
             for (i in MIN_ROW_COUNT..MAX_ROW_COUNT) {
                 items.add(
@@ -280,8 +280,8 @@ class HomeSettingsPane : HomeFoundationPane() {
 
     private fun setupHomeColumnCount() {
         val currentColumnCount = launcherConfig.homeColumnCount
-        binding.settingsHomeScreenColumnCountUi.text = currentColumnCount.toString()
-        binding.settingsHomeScreenColumnCountHolderUi.setOnClickListener {
+        binding.settingsHomeScreenColumnCountView.text = currentColumnCount.toString()
+        binding.settingsHomeScreenColumnCountHolderView.setOnClickListener {
             val items = ArrayList<RadioItem>()
             for (i in MIN_COLUMN_COUNT..MAX_COLUMN_COUNT) {
                 items.add(
@@ -305,24 +305,24 @@ class HomeSettingsPane : HomeFoundationPane() {
     }
 
     private fun setupShowHomeAppLabels() {
-        binding.settingsShowHomeAppLabelsUi.isChecked = launcherConfig.showHomeAppLabels
-        binding.settingsShowHomeAppLabelsHolderUi.setOnClickListener {
-            binding.settingsShowHomeAppLabelsUi.toggle()
-            launcherConfig.showHomeAppLabels = binding.settingsShowHomeAppLabelsUi.isChecked
+        binding.settingsShowHomeAppLabelsView.isChecked = launcherConfig.showHomeAppLabels
+        binding.settingsShowHomeAppLabelsHolderView.setOnClickListener {
+            binding.settingsShowHomeAppLabelsView.toggle()
+            launcherConfig.showHomeAppLabels = binding.settingsShowHomeAppLabelsView.isChecked
         }
     }
 
     @SuppressLint("NewApi")
     private fun setupLanguage() {
-        binding.settingsLanguageUi.text = Locale.getDefault().displayLanguage
-        binding.settingsLanguageHolderUi.beVisibleIf(isTiramisuPlus())
-        binding.settingsLanguageHolderUi.setOnClickListener {
+        binding.settingsLanguageView.text = Locale.getDefault().displayLanguage
+        binding.settingsLanguageHolderView.beVisibleIf(isTiramisuPlus())
+        binding.settingsLanguageHolderView.setOnClickListener {
             launchChangeAppLanguageIntent()
         }
     }
 
     private fun setupManageHiddenIcons() {
-        binding.settingsManageHiddenIconsHolderUi.setOnClickListener {
+        binding.settingsManageHiddenIconsHolderView.setOnClickListener {
             startActivity(Intent(this, ConcealedAppsPane::class.java))
         }
     }

@@ -4,7 +4,7 @@
 <com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainNativeadView"
+    android:id="@+id/mainNativeadViewVw"
     style="@style/AdCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/ad_app_icon"
+                android:id="@+id/ad_app_iconVw"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
                 android:adjustViewBounds="true"
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content">
 
                     <TextView
-                    android:id="@+id/ad_headline"
+                    android:id="@+id/ad_headlineVw"
                     style="@style/AdHeadline"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                         tools:text="FitTrack — Workout Planner"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/ad_badge"
+                    app:layout_constraintEnd_toStartOf="@id/ad_badgeVw"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
@@ -64,16 +64,16 @@
                     app:layout_constraintWidth_default="wrap" />
 
                     <TextView
-                    android:id="@+id/ad_badge"
+                    android:id="@+id/ad_badgeVw"
                     style="@style/AdTag"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ad_headline"
+                    app:layout_constraintStart_toEndOf="@id/ad_headlineVw"
                     app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
-                    android:id="@+id/ad_stars"
+                    android:id="@+id/ad_starsVw"
                     style="@style/AdStars"
                     android:layout_marginTop="4dp"
                     tools:text="★★★★★ 4.6"
@@ -82,7 +82,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/ad_body"
+            android:id="@+id/ad_bodyVw"
             style="@style/AdBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
             tools:text="Plan workouts, track progress and hit your goals in 10 minutes a day." />
 
         <TextView
-            android:id="@+id/ad_call_to_action"
+            android:id="@+id/ad_call_to_actionVw"
             style="@style/AdCta"
             android:layout_width="match_parent"
             android:layout_height="46dp"

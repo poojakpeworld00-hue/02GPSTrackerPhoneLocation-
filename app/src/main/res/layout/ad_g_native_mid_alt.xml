@@ -4,7 +4,7 @@
 <com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainNativeadView"
+    android:id="@+id/mainNativeadViewVw"
     style="@style/AdCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 app:cardElevation="0dp">
 
                 <com.google.android.gms.ads.nativead.MediaView
-                    android:id="@+id/ad_media"
+                    android:id="@+id/ad_mediaVw"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </androidx.cardview.widget.CardView>
@@ -52,7 +52,7 @@
                     android:orientation="horizontal">
 
                     <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/ad_app_icon"
+                        android:id="@+id/ad_app_iconVw"
                         android:layout_width="34dp"
                         android:layout_height="34dp"
                         android:adjustViewBounds="true"
@@ -68,7 +68,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/ad_headline"
+                            android:id="@+id/ad_headlineVw"
                             style="@style/AdHeadline"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/ad_body"
+                    android:id="@+id/ad_bodyVw"
                     style="@style/AdBody"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/ad_call_to_action"
+            android:id="@+id/ad_call_to_actionVw"
             style="@style/AdCta"
             android:layout_width="match_parent"
             android:layout_height="40dp"

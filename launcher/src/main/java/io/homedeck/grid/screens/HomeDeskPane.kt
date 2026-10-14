@@ -213,7 +213,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
 
         if (!isAllAppsFragmentExpanded() && GlyphMemo.launchers.isNotEmpty()) {
             // Same apps, but the config may have moved rows (the ad row): resubmit regardless.
-            binding.allAppsFragmentUi.root.gotLaunchers(GlyphMemo.launchers, force = true)
+            binding.allAppsFragmentView.root.gotLaunchers(GlyphMemo.launchers, force = true)
         }
 
         // The update gate is asked on resume, and on a cold start that resume can easily beat the
@@ -284,28 +284,28 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         appLaunched(packageName)
         setupEdgeToEdge(
             padTopSystem = listOf(
-                binding.allAppsFragmentUi.root,
-                binding.widgetsFragmentUi.root,
-                binding.leftPanelUi.root,
+                binding.allAppsFragmentView.root,
+                binding.widgetsFragmentView.root,
+                binding.leftPanelView.root,
                 // Not the host panel: the host's screens pad their own headers for the status
                 // bar (edge-to-edge, as in the app itself), so padding the panel too doubled the
                 // gap above them.
-                binding.defaultLauncherBannerUi.root
+                binding.defaultLauncherBannerView.root
             ),
             padBottomImeAndSystem = listOf(
-                binding.allAppsFragmentUi.allAppsGridUi,
-                binding.allAppsFragmentUi.allAppsPageDotsUi,
-                binding.widgetsFragmentUi.widgetsListUi,
-                binding.leftPanelUi.panelScrollUi,
+                binding.allAppsFragmentView.allAppsGridView,
+                binding.allAppsFragmentView.allAppsPageDotsView,
+                binding.widgetsFragmentView.widgetsListView,
+                binding.leftPanelView.panelScrollView,
                 // HomeShellFragment (the inbox) is committed into this
-                binding.hostPanelUi.hostPanelContainerUi
+                binding.hostPanelView.hostPanelContainerView
             ),
             // The apps panel's bottom native slot is a sibling of its scroll view, pinned to the
             // panel's bottom edge — so the scroll view's inset above does not cover it and the ad
             // draws underneath the navigation bar. It takes the inset itself instead.
             padBottomSystem = listOf(
-                binding.homeScreenGridUi.root,
-                binding.leftPanelUi.panelNativeFrameUi
+                binding.homeScreenGridView.root,
+                binding.leftPanelView.panelNativeFrameView
             )
         )
 
@@ -318,8 +318,8 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         mMoveGestureThreshold = resources.getDimensionPixelSize(R.dimen.launcher_move_gesture_threshold)
 
         arrayOf(
-            binding.allAppsFragmentUi.root as HomeDeskFragment<*>,
-            binding.widgetsFragmentUi.root as HomeDeskFragment<*>
+            binding.allAppsFragmentView.root as HomeDeskFragment<*>,
+            binding.widgetsFragmentView.root as HomeDeskFragment<*>
         ).forEach { fragment ->
             fragment.setupFragment(this)
             fragment.y = mScreenHeight.toFloat()
@@ -328,13 +328,13 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
 
         // the side panels are parked off screen horizontally instead, each just past the edge
         // it slides in from: app search on the right, messages on the left
-        binding.leftPanelUi.root.apply {
+        binding.leftPanelView.root.apply {
             setupFragment(this@HomeDeskPane)
             x = mScreenWidth.toFloat()
             beVisible()
         }
 
-        binding.hostPanelUi.root.apply {
+        binding.hostPanelView.root.apply {
             setupFragment(this@HomeDeskPane)
             x = -mScreenWidth.toFloat()
             beVisible()
@@ -342,13 +342,13 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
 
         handleIntentAction(intent)
 
-        binding.homeScreenGridUi.root.itemClickListener = {
+        binding.homeScreenGridView.root.itemClickListener = {
             performItemClick(it)
         }
 
-        binding.homeScreenGridUi.root.itemLongClickListener = {
+        binding.homeScreenGridView.root.itemLongClickListener = {
             performItemLongClick(
-                x = binding.homeScreenGridUi.root.getClickableRect(it).left.toFloat(),
+                x = binding.homeScreenGridView.root.getClickableRect(it).left.toFloat(),
                 clickedGridItem = it
             )
         }
@@ -367,7 +367,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         // about to be taken off would be pointing at nothing.
         //
         // Posted so the first step is measured against a laid-out workspace.
-        binding.mainHolderUi.post { maybeShowGuide() }
+        binding.mainHolderView.post { maybeShowGuide() }
 
         // After the workspace has had its first frames, not inside them: the inbox commit is the
         // single most expensive thing this Activity does, and a Home press should paint the grid
@@ -375,13 +375,13 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         // waits for the main thread to go idle - on a cold start that first second is already
         // full of layout passes and the SDKs' own posts, and the commit on top of them was a
         // 1.3 s frame with the grid frozen under the user's finger.
-        binding.mainHolderUi.postDelayed({
+        binding.mainHolderView.postDelayed({
             Looper.myQueue().addIdleHandler {
                 // A host panel switched off by launcher_config is never committed at all; if the
                 // config turns it on later, showHostPanel's refresh() builds it on first open.
                 if (!isFinishing && !isDestroyed &&
                     HomeAdsSettings.panelEnabled(HomeAdsSettings.RIGHT_SWIPE)
-                ) binding.hostPanelUi.root.warmUp()
+                ) binding.hostPanelView.root.warmUp()
                 false
             }
         }, HOST_PANEL_WARM_UP_DELAY)
@@ -397,7 +397,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         // Before the first tap can happen: a low-memory kill while the user was in Settings must
         // resume knowing it still owes them the escalation, not start the sequence over.
         defaultLauncherRequester.restoreState(savedInstanceState)
-        binding.defaultLauncherBannerUi.root.setOnClickListener {
+        binding.defaultLauncherBannerView.root.setOnClickListener {
             HomeServiceLocator.bridge.onEvent("default_home_card_tap")
             defaultLauncherRequester.start()
         }
@@ -405,13 +405,13 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         // (topReserve), so it is not hung below the time widget.
         // It belongs to the first page: it slides away with it, like the time and search widgets,
         // instead of staying behind the icons of every other page.
-        binding.homeScreenGridUi.root.onFirstPageScrolled = { x ->
-            binding.defaultLauncherBannerUi.root.translationX = x
+        binding.homeScreenGridView.root.onFirstPageScrolled = { x ->
+            binding.defaultLauncherBannerView.root.translationX = x
         }
-        HomeStripTransitions.bind(binding.defaultLauncherBannerUi)
+        HomeStripTransitions.bind(binding.defaultLauncherBannerView)
         // Its height is only known once laid out (text wraps per width and language), so the grid's
         // reserve follows every layout pass rather than a guessed constant.
-        binding.defaultLauncherBannerUi.root.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+        binding.defaultLauncherBannerView.root.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             syncGridTopReserve()
         }
         refreshDefaultLauncherBanner()
@@ -425,9 +425,9 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
      * frame would redraw the whole workspace during a drag for a screen nobody can see.
      */
     private fun syncGridTopReserve() {
-        val banner = binding.defaultLauncherBannerUi.root
+        val banner = binding.defaultLauncherBannerView.root
         val wanted = needsDefaultLauncherBanner && mDefaultLauncherPromptEnabled
-        val grid = binding.homeScreenGridUi.root
+        val grid = binding.homeScreenGridView.root
         grid.topReserve = when {
             !wanted -> 0
             // The banner is padded by the status-bar inset, which the grid already accounts for.
@@ -484,13 +484,13 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
      * no-ops when the visibility is unchanged, which it is on all but one frame of a drag.
      */
     private fun updateDefaultLauncherBannerVisibility() {
-        binding.defaultLauncherBannerUi.root.beVisibleIf(
+        binding.defaultLauncherBannerView.root.beVisibleIf(
             needsDefaultLauncherBanner &&
                 mDefaultLauncherPromptEnabled &&
                 !isAllAppsFragmentExpanded() &&
                 !isWidgetsFragmentExpanded() &&
                 mOpenSidePanel == null &&
-                !binding.swipeHintUi.isVisible
+                !binding.swipeHintView.isVisible
         )
     }
 
@@ -530,7 +530,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         val step = nextGuideStep()
         if (step == null) {
             hideSwipeHint()
-        } else if (mGuideStep != step || !binding.swipeHintUi.isVisible) {
+        } else if (mGuideStep != step || !binding.swipeHintView.isVisible) {
             showGuideStep(step)
         }
 
@@ -552,9 +552,9 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         mGuideStep = step
 
         val chevrons = listOf(
-            binding.swipeHintChevron1Ui,
-            binding.swipeHintChevron2Ui,
-            binding.swipeHintChevron3Ui,
+            binding.swipeHintChevron1View,
+            binding.swipeHintChevron2View,
+            binding.swipeHintChevron3View,
         )
         val travel = resources.getDimension(R.dimen.launcher_swipe_hint_travel)
 
@@ -589,7 +589,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             }
         }
 
-        binding.swipeHintChevronsUi.orientation =
+        binding.swipeHintChevronsView.orientation =
             if (vertical) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
         // Leading chevron brightest. The run's first child is the leading one when travel is
         // negative (left, up) and the last one when it is positive (right).
@@ -602,13 +602,13 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             view.translationX = 0f
             view.translationY = 0f
         }
-        binding.swipeHintChevronsUi.translationX = 0f
-        binding.swipeHintChevronsUi.translationY = 0f
-        binding.swipeHintLabelUi.setText(label)
-        binding.swipeHintUi.beVisible()
+        binding.swipeHintChevronsView.translationX = 0f
+        binding.swipeHintChevronsView.translationY = 0f
+        binding.swipeHintLabelView.setText(label)
+        binding.swipeHintView.beVisible()
 
         mSwipeHintAnimator = ObjectAnimator.ofFloat(
-            binding.swipeHintChevronsUi,
+            binding.swipeHintChevronsView,
             property,
             0f,
             distance,
@@ -648,7 +648,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
      */
     private fun performGuideStep(): Boolean {
         val step = mGuideStep ?: return false
-        if (!binding.swipeHintUi.isVisible) return false
+        if (!binding.swipeHintView.isVisible) return false
 
         // Down *before* the surface starts moving. The scrim is declared above the panels and the
         // drawer, so without this they would slide in dimmed and only brighten once finished.
@@ -659,7 +659,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         when (step) {
             HomeTutorialStage.SWIPE_RIGHT_HOST -> showHostPanel()
             HomeTutorialStage.SWIPE_LEFT_APPS -> showLeftPanel()
-            HomeTutorialStage.SWIPE_UP_DRAWER -> showFragment(binding.allAppsFragmentUi)
+            HomeTutorialStage.SWIPE_UP_DRAWER -> showFragment(binding.allAppsFragmentView)
         }
         return true
     }
@@ -677,12 +677,12 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
      * what the user is looking at, and only the gesture itself retires a step.
      */
     private fun hideSwipeHint() {
-        if (!binding.swipeHintUi.isVisible) {
+        if (!binding.swipeHintView.isVisible) {
             return
         }
 
         cancelGuideAnimation()
-        binding.swipeHintUi.beGone()
+        binding.swipeHintView.beGone()
     }
 
     private fun setupWallpaperColorListener() {
@@ -749,10 +749,10 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         val wasAnyPanelOpen = isLeftPanelExpanded() || isHostPanelExpanded()
         if (wasJustPaused) {
             if (isAllAppsFragmentExpanded()) {
-                hideFragment(binding.allAppsFragmentUi)
+                hideFragment(binding.allAppsFragmentView)
             }
             if (isWidgetsFragmentExpanded()) {
-                hideFragment(binding.widgetsFragmentUi)
+                hideFragment(binding.widgetsFragmentView)
             }
         } else {
             closeAppDrawer()
@@ -767,12 +767,12 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             hideHostPanel()
         }
 
-        binding.allAppsFragmentUi.searchBarUi.closeSearch()
+        binding.allAppsFragmentView.searchBarView.closeSearch()
 
         // scroll to first page when home button is pressed
         val alreadyOnHome = intent.flags and FLAG_ACTIVITY_BROUGHT_TO_FRONT == 0
         if (alreadyOnHome && !wasAnyFragmentOpen) {
-            binding.homeScreenGridUi.root.skipToPage(0)
+            binding.homeScreenGridView.root.skipToPage(0)
         }
 
         // Home pressed on the home screen itself, with nothing open for it to close: the host's
@@ -796,7 +796,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         if (!intent.getBooleanExtra(EXTRA_OPEN_HOST_PANEL, false)) return
         intent.removeExtra(EXTRA_OPEN_HOST_PANEL)
         if (!HomeAdsSettings.panelEnabled(HomeAdsSettings.RIGHT_SWIPE)) return
-        binding.mainHolderUi.post {
+        binding.mainHolderView.post {
             if (isFinishing || isDestroyed || isHostPanelExpanded()) return@post
             revealHostPanel()
         }
@@ -804,7 +804,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
 
     override fun onStart() {
         super.onStart()
-        binding.homeScreenGridUi.root.appWidgetHost.startListening()
+        binding.homeScreenGridView.root.appWidgetHost.startListening()
     }
 
     override fun onResume() {
@@ -812,8 +812,8 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         // A surface left open across a recreate or a trip away must still hide the workspace
         // behind it; the grid's alpha is otherwise only set by the open and close animations.
         if (isWorkspaceCovered()) {
-            binding.homeScreenGridUi.root.animate().cancel()
-            binding.homeScreenGridUi.root.alpha = 0f
+            binding.homeScreenGridView.root.animate().cancel()
+            binding.homeScreenGridView.root.alpha = 0f
         }
         // Remote Config switched the layout while this screen was alive: rebuild it on the new grid.
         if (reapplyLauncherStyle()) return
@@ -834,10 +834,10 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             maybeShowGuide()
         }, ANIMATION_DURATION)
 
-        with(binding.mainHolderUi) {
+        with(binding.mainHolderView) {
             onGlobalLayout {
-                binding.allAppsFragmentUi.root.setupViews()
-                binding.widgetsFragmentUi.root.setupViews()
+                binding.allAppsFragmentView.root.setupViews()
+                binding.widgetsFragmentView.root.setupViews()
             }
         }
 
@@ -867,26 +867,26 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
                 GlyphMemo.installedSignature = null
             }
 
-            binding.allAppsFragmentUi.root.gotLaunchers(GlyphMemo.launchers)
-            binding.leftPanelUi.root.gotLaunchers(GlyphMemo.launchers)
+            binding.allAppsFragmentView.root.gotLaunchers(GlyphMemo.launchers)
+            binding.leftPanelView.root.gotLaunchers(GlyphMemo.launchers)
             refreshLaunchers()
         }
 
         refreshDefaultLauncherBanner()
         syncHostDockItem()
 
-        binding.homeScreenGridUi.root.resizeGrid(
+        binding.homeScreenGridView.root.resizeGrid(
             newRowCount = launcherConfig.homeRowCount,
             newColumnCount = launcherConfig.homeColumnCount
         )
-        binding.homeScreenGridUi.root.updateColors()
-        binding.allAppsFragmentUi.root.onResume()
+        binding.homeScreenGridView.root.updateColors()
+        binding.allAppsFragmentView.root.onResume()
     }
 
     override fun onStop() {
         super.onStop()
         try {
-            binding.homeScreenGridUi.root.appWidgetHost.stopListening()
+            binding.homeScreenGridView.root.appWidgetHost.stopListening()
         } catch (_: Exception) {
         }
 
@@ -936,21 +936,21 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             true
         } else if (isHostPanelExpanded()) {
             // the inbox gets back first (closes search / clears a selection), then the panel goes
-            if (!binding.hostPanelUi.root.handleBack()) hideHostPanel()
+            if (!binding.hostPanelView.root.handleBack()) hideHostPanel()
             true
         } else if (isAllAppsFragmentExpanded()) {
-            binding.allAppsFragmentUi.root.resetSearch()
-            hideFragment(binding.allAppsFragmentUi)
+            binding.allAppsFragmentView.root.resetSearch()
+            hideFragment(binding.allAppsFragmentView)
             true
         } else if (isWidgetsFragmentExpanded()) {
-            if (binding.widgetsFragmentUi.searchBarUi.isSearchOpen) {
+            if (binding.widgetsFragmentView.searchBarView.isSearchOpen) {
                 clearWidgetsSearch()
             } else {
-                hideFragment(binding.widgetsFragmentUi)
+                hideFragment(binding.widgetsFragmentView)
             }
             true
-        } else if (binding.homeScreenGridUi.resizeFrameUi.isVisible) {
-            binding.homeScreenGridUi.root.hideResizeLines()
+        } else if (binding.homeScreenGridView.resizeFrameView.isVisible) {
+            binding.homeScreenGridView.root.hideResizeLines()
             true
         } else {
             // this is a home launcher app, so back never leaves it; with nothing open to close it
@@ -1020,8 +1020,8 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        binding.allAppsFragmentUi.root.onConfigurationChanged()
-        binding.widgetsFragmentUi.root.onConfigurationChanged()
+        binding.allAppsFragmentView.root.onConfigurationChanged()
+        binding.widgetsFragmentView.root.onConfigurationChanged()
         // a theme flip lands here without a recreate; the bar follows it
         updateStatusBarIcons(currentSurfaceColor())
     }
@@ -1059,8 +1059,8 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             MotionEvent.ACTION_DOWN -> {
                 mTouchDownX = event.x.toInt()
                 mTouchDownY = event.y.toInt()
-                mAllAppsFragmentY = binding.allAppsFragmentUi.root.y.toInt()
-                mWidgetsFragmentY = binding.widgetsFragmentUi.root.y.toInt()
+                mAllAppsFragmentY = binding.allAppsFragmentView.root.y.toInt()
+                mWidgetsFragmentY = binding.widgetsFragmentView.root.y.toInt()
                 mIgnoreUpEvent = false
             }
 
@@ -1078,12 +1078,12 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
                 if (mLongPressedIcon != null && (mOpenPopupMenu != null) && hasFingerMoved) {
                     mOpenPopupMenu?.dismiss()
                     mOpenPopupMenu = null
-                    binding.homeScreenGridUi.root.itemDraggingStarted(mLongPressedIcon!!)
-                    hideFragment(binding.allAppsFragmentUi)
+                    binding.homeScreenGridView.root.itemDraggingStarted(mLongPressedIcon!!)
+                    hideFragment(binding.allAppsFragmentView)
                 }
 
                 if (mLongPressedIcon != null && hasFingerMoved) {
-                    binding.homeScreenGridUi.root.draggedItemMoved(event.x.toInt(), event.y.toInt())
+                    binding.homeScreenGridView.root.draggedItemMoved(event.x.toInt(), event.y.toInt())
                 }
 
                 if (hasFingerMoved && !mIgnoreMoveEvents) {
@@ -1101,12 +1101,12 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
                         mIgnoreXMoveEvents = true
                         if (isWidgetsFragmentExpanded()) {
                             val newY = mWidgetsFragmentY - diffY
-                            binding.widgetsFragmentUi.root.y = min(
+                            binding.widgetsFragmentView.root.y = min(
                                 a = max(0f, newY), b = mScreenHeight.toFloat()
                             )
                         } else if (mLongPressedIcon == null && mDrawerEnabled) {
                             val newY = mAllAppsFragmentY - diffY
-                            binding.allAppsFragmentUi.root.y = min(
+                            binding.allAppsFragmentView.root.y = min(
                                 a = max(0f, newY), b = mScreenHeight.toFloat()
                             )
                         }
@@ -1115,7 +1115,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
                         updateDefaultLauncherBannerVisibility()
                     } else if (abs(diffX) > abs(diffY) && !mIgnoreXMoveEvents) {
                         mIgnoreYMoveEvents = true
-                        binding.homeScreenGridUi.root.setSwipeMovement(diffX)
+                        binding.homeScreenGridView.root.setSwipeMovement(diffX)
                     }
                 }
 
@@ -1130,28 +1130,28 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
                 mLongPressedIcon = null
                 mLastTouchCoords = Pair(-1f, -1f)
                 resetFragmentTouches()
-                binding.homeScreenGridUi.root.itemDraggingStopped()
+                binding.homeScreenGridView.root.itemDraggingStopped()
 
                 if (!mIgnoreUpEvent) {
                     if (!mIgnoreYMoveEvents) {
-                        if (binding.allAppsFragmentUi.root.y < mScreenHeight * 0.5) {
+                        if (binding.allAppsFragmentView.root.y < mScreenHeight * 0.5) {
                             // A drag that began with the drawer already up is a settle-back, not an
                             // open: the slot must not swap its creative out from under the finger
                             // that just pulled the sheet down and let go. mAllAppsFragmentY is the
                             // sheet's y as of ACTION_DOWN, which is the only thing left that still
                             // knows — root.y has been following the finger since.
                             showFragment(
-                                fragment = binding.allAppsFragmentUi,
+                                fragment = binding.allAppsFragmentView,
                                 refreshAds = mAllAppsFragmentY == mScreenHeight
                             )
                         } else if (isAllAppsFragmentExpanded()) {
-                            hideFragment(binding.allAppsFragmentUi)
+                            hideFragment(binding.allAppsFragmentView)
                         }
 
-                        if (binding.widgetsFragmentUi.root.y < mScreenHeight * 0.5) {
-                            showFragment(binding.widgetsFragmentUi)
+                        if (binding.widgetsFragmentView.root.y < mScreenHeight * 0.5) {
+                            showFragment(binding.widgetsFragmentView)
                         } else if (isWidgetsFragmentExpanded()) {
-                            hideFragment(binding.widgetsFragmentUi)
+                            hideFragment(binding.widgetsFragmentView)
                         }
                     }
 
@@ -1162,7 +1162,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
                 // between two pages - icons cut at both edges, the indicator dot frozen mid-way -
                 // until the next horizontal drag.
                 if (!mIgnoreXMoveEvents) {
-                    val grid = binding.homeScreenGridUi.root
+                    val grid = binding.homeScreenGridView.root
                     // No fling claimed this release, yet the swipe was quick: commit the page.
                     if (!mIgnoreUpEvent && mIgnoreYMoveEvents && event.actionMasked == MotionEvent.ACTION_UP) {
                         quickSwipeDirection(event)?.let { grid.flingSwipe(towardsNext = it) }
@@ -1187,7 +1187,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         if (savedInstanceState.getBoolean(APP_DRAWER_STATE)) {
-            showFragment(binding.allAppsFragmentUi, 0L)
+            showFragment(binding.allAppsFragmentView, 0L)
         }
     }
 
@@ -1227,14 +1227,14 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
                 )
 
                 runOnUiThread {
-                    binding.homeScreenGridUi.root.skipToPage(page)
+                    binding.homeScreenGridView.root.skipToPage(page)
                 }
                 // delay showing the shortcut both to let the user see adding it in realtime and hackily avoid concurrent modification exception at DeskGrid
                 Thread.sleep(2000)
 
                 try {
                     item.accept()
-                    binding.homeScreenGridUi.root.storeAndShowGridItem(gridItem)
+                    binding.homeScreenGridView.root.storeAndShowGridItem(gridItem)
                 } catch (_: IllegalStateException) {
                 }
             }
@@ -1300,7 +1300,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         ensureBackgroundThread {
             SelfUninstall.hide(this)
             runOnUiThread {
-                if (!isFinishing && !isDestroyed) binding.homeScreenGridUi.root.fetchGridItems()
+                if (!isFinishing && !isDestroyed) binding.homeScreenGridView.root.fetchGridItems()
             }
         }
     }
@@ -1367,7 +1367,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             getDefaultAppPackages()
             launcherConfig.wasHomeScreenInit = true
             launcherConfig.wasSearchBarPurged = true
-            binding.homeScreenGridUi.root.fetchGridItems()
+            binding.homeScreenGridView.root.fetchGridItems()
         }
 
         // First run: everything that only places apps needs their names, not their icons. Seeding
@@ -1381,7 +1381,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             if (!launcherConfig.isDrawerEnabled || launcherConfig.homeAndDrawer) {
                 HomeIconsPopulator.placeMissing(this, names)
             }
-            binding.homeScreenGridUi.root.fetchGridItems()
+            binding.homeScreenGridView.root.fetchGridItems()
         }
 
         val knownSignature = GlyphMemo.installedSignature
@@ -1390,10 +1390,10 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         // (installs, removals, updates). Same signature, same providers: the list is not rebuilt -
         // that decoded every installed widget's preview again on every return to the home screen.
         val appsChanged = knownSignature == null || knownSignature != GlyphMemo.installedSignature
-        binding.allAppsFragmentUi.root.gotLaunchers(launchers)
-        binding.leftPanelUi.root.gotLaunchers(launchers)
-        if (appsChanged || !binding.widgetsFragmentUi.root.hasWidgets()) {
-            binding.widgetsFragmentUi.root.getAppWidgets()
+        binding.allAppsFragmentView.root.gotLaunchers(launchers)
+        binding.leftPanelView.root.gotLaunchers(launchers)
+        if (appsChanged || !binding.widgetsFragmentView.root.hasWidgets()) {
+            binding.widgetsFragmentView.root.getAppWidgets()
         }
 
         // An app being updated drops out of the launcher list for a moment (onPackagesUnavailable
@@ -1434,11 +1434,11 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             ensureBackgroundThread {
                 purgeSeededSearchBarIfNeeded()
                 // the row is gone; this drops the view if the grid has already placed one
-                binding.homeScreenGridUi.root.removePlacedSearchBars()
-                binding.homeScreenGridUi.root.fetchGridItems()
+                binding.homeScreenGridView.root.removePlacedSearchBars()
+                binding.homeScreenGridView.root.fetchGridItems()
             }
         } else {
-            binding.homeScreenGridUi.root.fetchGridItems()
+            binding.homeScreenGridView.root.fetchGridItems()
         }
     }
 
@@ -1453,14 +1453,14 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         return true
     }
 
-    fun isAllAppsFragmentExpanded() = binding.allAppsFragmentUi.root.y != mScreenHeight.toFloat()
+    fun isAllAppsFragmentExpanded() = binding.allAppsFragmentView.root.y != mScreenHeight.toFloat()
 
     private fun isWidgetsFragmentExpanded() =
-        binding.widgetsFragmentUi.root.y != mScreenHeight.toFloat()
+        binding.widgetsFragmentView.root.y != mScreenHeight.toFloat()
 
-    fun isLeftPanelExpanded() = binding.leftPanelUi.root.x != mScreenWidth.toFloat()
+    fun isLeftPanelExpanded() = binding.leftPanelView.root.x != mScreenWidth.toFloat()
 
-    fun isHostPanelExpanded() = binding.hostPanelUi.root.x != -mScreenWidth.toFloat()
+    fun isHostPanelExpanded() = binding.hostPanelView.root.x != -mScreenWidth.toFloat()
 
     /**
      * Keys name the *gesture direction*, not the panel. The apps panel is parked off the right edge
@@ -1476,9 +1476,9 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         HomeSponsorDriver.run(this, HomeAdsSettings.LEFT_SWIPE) {
             // Before the slide, so the request is already in flight while the panel travels. After
             // the promo interstitial rather than before it, so the two are never in the air at once.
-            binding.leftPanelUi.root.refreshAds()
-            binding.leftPanelUi.root.onOpened()
-            showSidePanel(binding.leftPanelUi.root)
+            binding.leftPanelView.root.refreshAds()
+            binding.leftPanelView.root.onOpened()
+            showSidePanel(binding.leftPanelView.root)
             // The gesture the guide's second step teaches has now been made — by swipe or by tap,
             // both of which land here.
             completeGuideStep(HomeTutorialStage.SWIPE_LEFT_APPS)
@@ -1486,10 +1486,10 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
     }
 
     fun hideLeftPanel() {
-        hideSidePanel(binding.leftPanelUi.root, mScreenWidth.toFloat())
+        hideSidePanel(binding.leftPanelView.root, mScreenWidth.toFloat())
         // clear the query only once it is off screen, else the sections visibly swap mid slide
         Handler(Looper.getMainLooper()).postDelayed({
-            binding.leftPanelUi.root.resetSearch()
+            binding.leftPanelView.root.resetSearch()
         }, ANIMATION_DURATION)
     }
 
@@ -1524,18 +1524,18 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
 
     /** The slide itself: commit the inbox, bring the panel in, hand it Back. */
     private fun revealHostPanel() {
-        binding.hostPanelUi.root.refresh()
-        showSidePanel(binding.hostPanelUi.root)
+        binding.hostPanelView.root.refresh()
+        showSidePanel(binding.hostPanelView.root)
         // After the commit above, so the fragment exists to be told. Back belongs to the inbox
         // from here until the panel closes.
-        binding.hostPanelUi.root.setPanelVisible(true)
+        binding.hostPanelView.root.setPanelVisible(true)
     }
 
     fun hideHostPanel() {
         // Before the slide, not after: a Back press landing during the animation has to reach the
         // launcher's own handler, not the inbox that is on its way off screen.
-        binding.hostPanelUi.root.setPanelVisible(false)
-        hideSidePanel(binding.hostPanelUi.root, -mScreenWidth.toFloat())
+        binding.hostPanelView.root.setPanelVisible(false)
+        hideSidePanel(binding.hostPanelView.root, -mScreenWidth.toFloat())
     }
 
     /** The inbox asking to dismiss itself. In a panel that means closing the panel, not finishing. */
@@ -1555,9 +1555,9 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         // After hideSwipeHint above, because the guide's visibility is one of the inputs.
         updateDefaultLauncherBannerVisibility()
         window.navigationBarColor = resources.getColor(R.color.launcher_semitransparent_navigation)
-        binding.homeScreenGridUi.root.fragmentExpanded()
-        binding.homeScreenGridUi.root.hideResizeLines()
-        binding.homeScreenGridUi.root.animate()
+        binding.homeScreenGridView.root.fragmentExpanded()
+        binding.homeScreenGridView.root.hideResizeLines()
+        binding.homeScreenGridView.root.animate()
             .alpha(0f)
             .setDuration(ANIMATION_DURATION)
             .start()
@@ -1588,7 +1588,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             updateDefaultLauncherBannerVisibility()
         }
         window.navigationBarColor = Color.TRANSPARENT
-        binding.homeScreenGridUi.root.fragmentCollapsed()
+        binding.homeScreenGridView.root.fragmentCollapsed()
         updateStatusBarIcons()
         hideKeyboard()
     }
@@ -1613,8 +1613,8 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
     fun startHandlingTouches(touchDownY: Int) {
         mLongPressedIcon = null
         mTouchDownY = touchDownY
-        mAllAppsFragmentY = binding.allAppsFragmentUi.root.y.toInt()
-        mWidgetsFragmentY = binding.widgetsFragmentUi.root.y.toInt()
+        mAllAppsFragmentY = binding.allAppsFragmentView.root.y.toInt()
+        mWidgetsFragmentY = binding.widgetsFragmentView.root.y.toInt()
         mIgnoreUpEvent = false
     }
 
@@ -1641,8 +1641,8 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         }
 
         window.navigationBarColor = resources.getColor(R.color.launcher_semitransparent_navigation)
-        binding.homeScreenGridUi.root.fragmentExpanded()
-        binding.homeScreenGridUi.root.hideResizeLines()
+        binding.homeScreenGridView.root.fragmentExpanded()
+        binding.homeScreenGridView.root.hideResizeLines()
         // So does the guide. The user found the drawer instead — they are clearly not stuck.
         hideSwipeHint()
         // The alert belongs to the workspace the sheet is about to cover. After the hint, because
@@ -1671,7 +1671,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             && launcherConfig.autoShowKeyboardInAppDrawer
         ) {
             fragment.root.post {
-                showKeyboard(fragment.searchBarUi.binding.topToolbarSearch)
+                showKeyboard(fragment.searchBarView.binding.topToolbarSearch)
             }
         }
 
@@ -1680,10 +1680,10 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             // onRestoreInstanceState after a theme flip: the sheet's animator above lands this
             // frame, but a view animator only runs on the next one, so the restored drawer sat over
             // a fully drawn workspace until then - or for good, when that frame never ran it.
-            binding.homeScreenGridUi.root.animate().cancel()
-            binding.homeScreenGridUi.root.alpha = 0f
+            binding.homeScreenGridView.root.animate().cancel()
+            binding.homeScreenGridView.root.alpha = 0f
         } else {
-            binding.homeScreenGridUi.root.animate()
+            binding.homeScreenGridView.root.animate()
                 .alpha(0f)
                 .setDuration(animationDuration)
                 .start()
@@ -1711,7 +1711,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         }
 
         window.navigationBarColor = Color.TRANSPARENT
-        binding.homeScreenGridUi.root.fragmentCollapsed()
+        binding.homeScreenGridView.root.fragmentCollapsed()
         updateStatusBarIcons()
         // As hideSidePanel does: the sheet may be going away with its search field focused — the
         // drawer even opens the keyboard for it when autoShowKeyboardInAppDrawer is on — and an IME
@@ -1722,11 +1722,11 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         }
         Handler(Looper.getMainLooper()).postDelayed({
             if (fragment is HdkAllAppsFragmentBinding) {
-                fragment.allAppsGridUi.scrollToPosition(0)
+                fragment.allAppsGridView.scrollToPosition(0)
                 fragment.root.resetToFirstPage()
                 fragment.root.touchDownY = -1
             } else if (fragment is HdkWidgetsFragmentBinding) {
-                fragment.widgetsListUi.scrollToPosition(0)
+                fragment.widgetsListView.scrollToPosition(0)
                 fragment.root.touchDownY = -1
             }
         }, animationDuration)
@@ -1741,9 +1741,9 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         // it opens is its own window, so it would otherwise land on top of the dimmed scrim.
         hideSwipeHint()
 
-        val (x, y) = binding.homeScreenGridUi.root.intoViewSpaceCoords(eventX, eventY)
+        val (x, y) = binding.homeScreenGridView.root.intoViewSpaceCoords(eventX, eventY)
         mIgnoreMoveEvents = true
-        val clickedGridItem = binding.homeScreenGridUi.root.isClickingGridItem(x.toInt(), y.toInt())
+        val clickedGridItem = binding.homeScreenGridView.root.isClickingGridItem(x.toInt(), y.toInt())
         if (clickedGridItem != null) {
             performItemLongClick(x, clickedGridItem)
         }
@@ -1772,14 +1772,14 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             return
         }
 
-        binding.homeScreenGridUi.root.hideResizeLines()
-        val (x, y) = binding.homeScreenGridUi.root.intoViewSpaceCoords(eventX, eventY)
-        val clickedGridItem = binding.homeScreenGridUi.root.isClickingGridItem(x.toInt(), y.toInt())
+        binding.homeScreenGridView.root.hideResizeLines()
+        val (x, y) = binding.homeScreenGridView.root.intoViewSpaceCoords(eventX, eventY)
+        val clickedGridItem = binding.homeScreenGridView.root.isClickingGridItem(x.toInt(), y.toInt())
         if (clickedGridItem != null) {
             performItemClick(clickedGridItem)
         }
         if (clickedGridItem?.type != ITEM_TYPE_FOLDER) {
-            binding.homeScreenGridUi.root.closeFolder(redraw = true)
+            binding.homeScreenGridView.root.closeFolder(redraw = true)
         }
     }
 
@@ -1789,8 +1789,8 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             return
         }
 
-        val (x, y) = binding.homeScreenGridUi.root.intoViewSpaceCoords(eventX, eventY)
-        val clickedGridItem = binding.homeScreenGridUi.root.isClickingGridItem(x.toInt(), y.toInt())
+        val (x, y) = binding.homeScreenGridView.root.intoViewSpaceCoords(eventX, eventY)
+        val clickedGridItem = binding.homeScreenGridView.root.isClickingGridItem(x.toInt(), y.toInt())
         if (clickedGridItem != null) {
             return
         }
@@ -1811,11 +1811,11 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             // search result slid the host panel in under a keyboard nobody asked for.
             hideKeyboard()
             val close = {
-                binding.allAppsFragmentUi.root.y = mScreenHeight.toFloat()
-                binding.allAppsFragmentUi.allAppsGridUi.scrollToPosition(0)
-                binding.allAppsFragmentUi.root.resetToFirstPage()
-                binding.allAppsFragmentUi.root.touchDownY = -1
-                binding.homeScreenGridUi.root.fragmentCollapsed()
+                binding.allAppsFragmentView.root.y = mScreenHeight.toFloat()
+                binding.allAppsFragmentView.allAppsGridView.scrollToPosition(0)
+                binding.allAppsFragmentView.root.resetToFirstPage()
+                binding.allAppsFragmentView.root.touchDownY = -1
+                binding.homeScreenGridView.root.fragmentCollapsed()
                 updateStatusBarIcons()
                 // Snapped rather than animated, so the state is already settled here — no listener
                 // to hang these off, and none needed.
@@ -1833,11 +1833,11 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
     fun closeWidgetsFragment(delayed: Boolean = false) {
         if (isWidgetsFragmentExpanded()) {
             val close = {
-                binding.widgetsFragmentUi.root.y = mScreenHeight.toFloat()
-                binding.widgetsFragmentUi.widgetsListUi.scrollToPosition(0)
+                binding.widgetsFragmentView.root.y = mScreenHeight.toFloat()
+                binding.widgetsFragmentView.widgetsListView.scrollToPosition(0)
                 clearWidgetsSearch()
-                binding.widgetsFragmentUi.root.touchDownY = -1
-                binding.homeScreenGridUi.root.fragmentCollapsed()
+                binding.widgetsFragmentView.root.touchDownY = -1
+                binding.homeScreenGridView.root.fragmentCollapsed()
                 updateStatusBarIcons()
                 // see closeAppDrawer
                 maybeShowGuide()
@@ -1852,7 +1852,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
     }
 
     fun clearWidgetsSearch() {
-        binding.widgetsFragmentUi.searchBarUi.closeSearch()
+        binding.widgetsFragmentView.searchBarView.closeSearch()
     }
 
     private fun performItemClick(clickedGridItem: DeskGridEntry) {
@@ -1869,7 +1869,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
                 val id = clickedGridItem.shortcutId
                 val packageName = clickedGridItem.packageName
                 val userHandle = android.os.Process.myUserHandle()
-                val shortcutBounds = binding.homeScreenGridUi.root.getClickableRect(clickedGridItem)
+                val shortcutBounds = binding.homeScreenGridView.root.getClickableRect(clickedGridItem)
                 val launcherApps =
                     applicationContext.getSystemService(LAUNCHER_APPS_SERVICE) as LauncherApps
                 launcherApps.startShortcut(packageName, id, shortcutBounds, null, userHandle)
@@ -1878,16 +1878,16 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
     }
 
     private fun openFolder(folder: DeskGridEntry) {
-        binding.homeScreenGridUi.root.openFolder(folder)
+        binding.homeScreenGridView.root.openFolder(folder)
     }
 
     private fun performItemLongClick(x: Float, clickedGridItem: DeskGridEntry) {
         if (clickedGridItem.type == ITEM_TYPE_ICON || clickedGridItem.type == ITEM_TYPE_SHORTCUT || clickedGridItem.type == ITEM_TYPE_FOLDER) {
-            binding.mainHolderUi.performHapticFeedback()
+            binding.mainHolderView.performHapticFeedback()
         }
 
-        val anchorY = binding.homeScreenGridUi.root.sideMargins.top +
-                (clickedGridItem.top * binding.homeScreenGridUi.root.cellHeight.toFloat())
+        val anchorY = binding.homeScreenGridView.root.sideMargins.top +
+                (clickedGridItem.top * binding.homeScreenGridView.root.cellHeight.toFloat())
         showHomeIconMenu(x, anchorY, clickedGridItem, false)
     }
 
@@ -1897,11 +1897,11 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         gridItem: DeskGridEntry,
         isOnAllAppsFragment: Boolean,
     ) {
-        binding.homeScreenGridUi.root.hideResizeLines()
+        binding.homeScreenGridView.root.hideResizeLines()
         mLongPressedIcon = gridItem
         // The card is placed against the item's bounds on screen, so it can sit clear of it. A
         // drawer tile reports screen coordinates already; grid rows and widgets are in the grid's.
-        val grid = binding.homeScreenGridUi.root
+        val grid = binding.homeScreenGridView.root
         val gridOnScreen = IntArray(2).also { grid.getLocationOnScreen(it) }
         val (centerX, itemTop, itemBottom) = when {
             isOnAllAppsFragment -> {
@@ -1933,17 +1933,17 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
 
     fun widgetLongPressedOnList(gridItem: DeskGridEntry) {
         mLongPressedIcon = gridItem
-        hideFragment(binding.widgetsFragmentUi)
-        binding.homeScreenGridUi.root.itemDraggingStarted(mLongPressedIcon!!)
+        hideFragment(binding.widgetsFragmentView)
+        binding.homeScreenGridView.root.itemDraggingStarted(mLongPressedIcon!!)
     }
 
     private fun resetFragmentTouches() {
-        binding.widgetsFragmentUi.root.apply {
+        binding.widgetsFragmentView.root.apply {
             touchDownY = -1
             ignoreTouches = false
         }
 
-        binding.allAppsFragmentUi.root.apply {
+        binding.allAppsFragmentView.root.apply {
             touchDownY = -1
             ignoreTouches = false
         }
@@ -1955,14 +1955,14 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             hiddenIconsDB.insert(hiddenIconUi)
 
             runOnUiThread {
-                binding.allAppsFragmentUi.root.onIconHidden(item)
+                binding.allAppsFragmentView.root.onIconHidden(item)
             }
         }
     }
 
     private fun renameItem(homeScreenGridItem: DeskGridEntry) {
         RelabelEntrySheet(this, homeScreenGridItem) {
-            binding.homeScreenGridUi.root.fetchGridItems()
+            binding.homeScreenGridView.root.fetchGridItems()
         }
     }
 
@@ -1980,7 +1980,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         }
 
         override fun resize(gridItem: DeskGridEntry) {
-            binding.homeScreenGridUi.root.widgetLongPressed(gridItem)
+            binding.homeScreenGridView.root.widgetLongPressed(gridItem)
         }
 
         override fun appInfoUi(gridItem: DeskGridEntry) {
@@ -1988,7 +1988,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         }
 
         override fun remove(gridItem: DeskGridEntry) {
-            binding.homeScreenGridUi.root.removeAppIcon(gridItem)
+            binding.homeScreenGridView.root.removeAppIcon(gridItem)
         }
 
         override fun uninstall(gridItem: DeskGridEntry) {
@@ -2069,7 +2069,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
 
         if (!isWidgetsFragmentExpanded()) {
             mIgnoreUpEvent = true
-            showFragment(binding.allAppsFragmentUi)
+            showFragment(binding.allAppsFragmentView)
         }
     }
 
@@ -2081,9 +2081,9 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
 
         mIgnoreUpEvent = true
         if (isAllAppsFragmentExpanded()) {
-            hideFragment(binding.allAppsFragmentUi)
+            hideFragment(binding.allAppsFragmentView)
         } else if (isWidgetsFragmentExpanded()) {
-            hideFragment(binding.widgetsFragmentUi)
+            hideFragment(binding.widgetsFragmentView)
         } else {
             try {
                 Class.forName("android.app.StatusBarManager")
@@ -2100,7 +2100,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         }
 
         mIgnoreUpEvent = true
-        val grid = binding.homeScreenGridUi.root
+        val grid = binding.homeScreenGridView.root
         // Paging owns the fling while a page is dragged or still settling (see flingSwipe). The
         // host panel sits left of the home page, so it opens only from there, at rest; anywhere
         // else a rightward fling is just the previous page.
@@ -2120,7 +2120,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         }
 
         mIgnoreUpEvent = true
-        val grid = binding.homeScreenGridUi.root
+        val grid = binding.homeScreenGridView.root
         // see onFlingRight: the apps panel sits right of the last page and opens only from it
         if (grid.flingSwipe(towardsNext = true)) {
             return
@@ -2136,12 +2136,12 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
     fun getAllAppLaunchers(): ArrayList<LaunchableApp> = HomeRoleProbe.scan(
         this,
         onQuick = { quick ->
-            binding.allAppsFragmentUi.root.gotLaunchers(quick)
-            binding.leftPanelUi.root.gotLaunchers(quick)
+            binding.allAppsFragmentView.root.gotLaunchers(quick)
+            binding.leftPanelView.root.gotLaunchers(quick)
         },
         onProgress = { partial ->
-            binding.allAppsFragmentUi.root.gotLaunchers(partial)
-            binding.leftPanelUi.root.gotLaunchers(partial)
+            binding.allAppsFragmentView.root.gotLaunchers(partial)
+            binding.leftPanelView.root.gotLaunchers(partial)
         },
     )
 
@@ -2253,7 +2253,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
                 val slotFilled = items.any { it.docked && it.left == DOCK_HOST_SLOT && it.parentId == null }
                 if (!slotFilled) {
                     hostDockItem(wanted)?.let { homeScreenGridItemsDB.insert(it) }
-                    binding.homeScreenGridUi.root.fetchGridItems()
+                    binding.homeScreenGridView.root.fetchGridItems()
                 }
                 launcherConfig.dockHostPackage = placed
                 return@ensureBackgroundThread
@@ -2268,7 +2268,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
             }
             launcherConfig.dockHostPackage = wanted
             Timber.d("HomeDeskPane: dock host slot $placed -> $wanted (slotTaken=$slotTaken)")
-            binding.homeScreenGridUi.root.fetchGridItems()
+            binding.homeScreenGridView.root.fetchGridItems()
         }
     }
 
@@ -2487,10 +2487,10 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
      * either runs from a resumed, idle screen or is posted past the animation.
      */
     private fun currentSurfaceColor(): Int? = when {
-        isAllAppsFragmentExpanded() -> sheetBackgroundColor(binding.allAppsFragmentUi)
-        isWidgetsFragmentExpanded() -> sheetBackgroundColor(binding.widgetsFragmentUi)
-        isLeftPanelExpanded() -> sidePanelBackgroundColor(binding.leftPanelUi.root)
-        isHostPanelExpanded() -> sidePanelBackgroundColor(binding.hostPanelUi.root)
+        isAllAppsFragmentExpanded() -> sheetBackgroundColor(binding.allAppsFragmentView)
+        isWidgetsFragmentExpanded() -> sheetBackgroundColor(binding.widgetsFragmentView)
+        isLeftPanelExpanded() -> sidePanelBackgroundColor(binding.leftPanelView.root)
+        isHostPanelExpanded() -> sidePanelBackgroundColor(binding.hostPanelView.root)
         else -> null
     }
 

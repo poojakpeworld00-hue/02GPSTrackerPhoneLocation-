@@ -418,4 +418,9 @@
     <string name="so_msg_sync">正在同步位置…</string>
     <string name="so_msg_fetch">正在从服务器获取数据…</string>
     <string name="so_msg_map">正在准备地图…</string>
+    <string name="il_searching">正在搜索位置…</string>
+    <string name="il_carrier">运营商</string>
+    <string name="il_timezone">时区</string>
+    <string name="il_meta_us">美国 · 2 小时前</string>
+    <string name="il_meta_uk">英国 · 昨天</string>
 </resources>

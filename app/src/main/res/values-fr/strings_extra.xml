@@ -418,4 +418,9 @@
     <string name="so_msg_sync">Synchronisation de la position…</string>
     <string name="so_msg_fetch">Récupération des données…</string>
     <string name="so_msg_map">Préparation de votre carte…</string>
+    <string name="il_searching">Recherche de la position…</string>
+    <string name="il_carrier">Opérateur</string>
+    <string name="il_timezone">Fuseau horaire</string>
+    <string name="il_meta_us">États-Unis · il y a 2 h</string>
+    <string name="il_meta_uk">Royaume-Uni · Hier</string>
 </resources>

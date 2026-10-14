@@ -152,7 +152,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:fontFamily="@font/figtree_semibold"
-                            android:text="Searching location…"
+                            android:text="@string/il_searching"
                             android:textColor="@color/white"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -215,7 +215,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/figtree_bold"
-                            android:text="Location found"
+                            android:text="@string/ds_location_found"
                             android:textColor="@color/ds_ink"
                             android:textSize="14sp" />
 
@@ -259,7 +259,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/figtree_medium"
-                        android:text="Location"
+                        android:text="@string/lookup_location"
                         android:textColor="@color/ds_muted"
                         android:textSize="12sp" />
 
@@ -283,7 +283,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/figtree_medium"
-                        android:text="Carrier"
+                        android:text="@string/il_carrier"
                         android:textColor="@color/ds_muted"
                         android:textSize="12sp" />
 
@@ -307,7 +307,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/figtree_medium"
-                        android:text="Time zone"
+                        android:text="@string/il_timezone"
                         android:textColor="@color/ds_muted"
                         android:textSize="12sp" />
 

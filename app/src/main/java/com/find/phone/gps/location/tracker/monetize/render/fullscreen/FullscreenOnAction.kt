@@ -219,7 +219,7 @@ class FullscreenOnAction {
         val adType = AdFormatKind.fromString(pref.getString("IsAdType"))
 
         if (adType == AdFormatKind.GOOGLE) {
-            activity.safeLog("google_inter_load_start")
+            activity.safeLog("admob_inter_load_start")
             val id = pref.getString("googleInter") ?: return
             AdPulse.req(activity, "interstitial")
             InterstitialAd.load(
@@ -228,13 +228,13 @@ class FullscreenOnAction {
                     override fun onAdFailedToLoad(error: LoadAdError) {
                         AdPulse.loadFailed(activity, "interstitial", error.code, AdPulse.GOOGLE)
                         googleInterAd = null
-                        activity.safeLog("google_inter_load_failed_${error.code}")
+                        activity.safeLog("admob_inter_load_failed_${error.code}")
                         Log.e("FullscreenOnAction", "Load Failed: ${error.message}")
                     }
                     override fun onAdLoaded(ad: InterstitialAd) {
                         AdPulse.loaded(activity, "interstitial")
                         googleInterAd = ad
-                        activity.safeLog("google_inter_loaded")
+                        activity.safeLog("admob_inter_loaded")
                         Log.d("FullscreenOnAction", "Google inter loaded")
                     }
                 })
@@ -349,11 +349,11 @@ class FullscreenOnAction {
 
         val inter = googleInterAd
         if (inter == null) {
-            activity.safeLog("google_inter_null")
+            activity.safeLog("admob_inter_null")
             return processGoogleFail(activity, pref, safeClose)
         }
 
-        activity.trackEvent("google_inter_show_attempt")
+        activity.trackEvent("admob_inter_show_attempt")
 
         if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
 
@@ -373,14 +373,14 @@ class FullscreenOnAction {
                 AdPulse.close(activity, "interstitial")
                 isInterShow = false
                 googleInterAd = null
-                activity.safeLog("google_inter_dismiss")
+                activity.safeLog("admob_inter_dismiss")
                 safeClose("google_dismiss")
                 if (pref.getBoolean("is_preload_ads")) fetchInterAds(activity)
             }
 
             override fun onAdFailedToShowFullScreenContent(error: AdError) {
                 googleInterAd = null
-                activity.safeLog("google_inter_failed_show_${error.code}")
+                activity.safeLog("admob_inter_failed_show_${error.code}")
                 processGoogleFail(activity, pref, safeClose)
                 if (pref.getBoolean("is_preload_ads")) fetchInterAds(activity)
             }
@@ -390,7 +390,7 @@ class FullscreenOnAction {
             inter.show(activity)
         } catch (e: Exception) {
             googleInterAd = null
-            activity.safeLog("google_inter_exception")
+            activity.safeLog("admob_inter_exception")
             processGoogleFail(activity, pref, safeClose)
             fetchInterAds(activity)
         }
@@ -404,7 +404,7 @@ class FullscreenOnAction {
         val id = pref.getString("googleInter") ?: return processGoogleFail(activity, pref, safeClose)
         val isLoader = BlockingLoaderDialog.isEnabled(activity)
 
-        activity.safeLog("google_inter_ondemand_load_start")
+        activity.safeLog("admob_inter_ondemand_load_start")
         BlockingLoaderDialog.show(activity, isLoader)
 
         AdPulse.req(activity, "interstitial")
@@ -415,14 +415,14 @@ class FullscreenOnAction {
                     AdPulse.loaded(activity, "interstitial")
                     BlockingLoaderDialog.hide()
                     googleInterAd = ad
-                    activity.safeLog("google_inter_ondemand_loaded")
+                    activity.safeLog("admob_inter_ondemand_loaded")
                     presentGoogleInterstitial(activity, pref, safeClose)
                 }
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     AdPulse.loadFailed(activity, "interstitial", error.code, AdPulse.GOOGLE)
                     BlockingLoaderDialog.hide()
                     googleInterAd = null
-                    activity.safeLog("google_inter_ondemand_fail_${error.code}")
+                    activity.safeLog("admob_inter_ondemand_fail_${error.code}")
                     processGoogleFail(activity, pref, safeClose)
                 }
             }
@@ -460,14 +460,14 @@ class FullscreenOnAction {
         pref: AdPrefsStore,
         safeClose: (String) -> Unit
     ) {
-        activity.safeLog("google_fail_start")
+        activity.safeLog("admob_fail_start")
 
         val fbEnabled = pref.getBoolean("IsFail_FB")
         val customEnabled = pref.getBoolean("IsCustomADS")
 
         if (fbEnabled) {
 
-            activity.safeLog("google_fail_try_facebook")
+            activity.safeLog("admob_fail_try_facebook")
 
             fetchAndShowFacebookInter(
                 activity,
@@ -479,11 +479,11 @@ class FullscreenOnAction {
             )
         } else if (HomeSlotAds.hasFallback(activity, APP_PLACEMENT)) {
 
-            activity.safeLog("google_fail_fallback_chain")
+            activity.safeLog("admob_fail_fallback_chain")
             HomeSlotAds.runFallback(activity, APP_PLACEMENT) { safeClose("google_fail_fallback") }
         } else {
             if (customEnabled) {
-                activity.safeLog("google_fail_open_custom")
+                activity.safeLog("admob_fail_open_custom")
                 unfoldDirectLink(activity) { safeClose("google_fail_custom") }
             } else safeClose("google_fail_no_fb_no_custom")
         }

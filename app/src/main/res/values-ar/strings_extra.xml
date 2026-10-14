@@ -430,4 +430,9 @@
     <string name="so_msg_sync">جارٍ مزامنة الموقع…</string>
     <string name="so_msg_fetch">جارٍ جلب البيانات من الخوادم…</string>
     <string name="so_msg_map">جارٍ تجهيز خريطتك…</string>
+    <string name="il_searching">جارٍ البحث عن الموقع…</string>
+    <string name="il_carrier">المشغّل</string>
+    <string name="il_timezone">المنطقة الزمنية</string>
+    <string name="il_meta_us">الولايات المتحدة · قبل ساعتين</string>
+    <string name="il_meta_uk">المملكة المتحدة · أمس</string>
 </resources>

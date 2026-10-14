@@ -2,6 +2,7 @@ package com.find.phone.gps.location.tracker.grants
 
 import android.app.Activity
 import android.content.Context
+import com.find.phone.gps.location.tracker.monetize.engine.permissionEventName
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import com.find.phone.gps.location.tracker.helpers.SafeLogger
@@ -84,7 +85,7 @@ object GrantOrchestrator {
             }
             if (!GrantToolbox.isApplicableOnThisSdk(spec) || GrantToolbox.isGranted(activity, spec)) {
 
-                activity.trackEvent("Permission_${spec.androidPermission.substringAfterLast('.')}_Bypass")
+                activity.trackEvent(permissionEventName(spec.androidPermission, "Bypass"))
                 fireComplete(onComplete); return
             }
             if (!GrantToolbox.isPrefGateOpen(activity, spec)) {
@@ -103,9 +104,7 @@ object GrantOrchestrator {
 
             prefs.markAsked(key)
             if (rule?.showOnce == true) prefs.markShown(key)
-
-            val shortName = spec.androidPermission.substringAfterLast('.')
-            activity.trackEvent("Permission_${shortName}_Show")
+            activity.trackEvent(permissionEventName(spec.androidPermission, "Show"))
             SafeLogger.log(TAG, "request(): asking '$key' on ${activity::class.java.simpleName}")
 
             GrantRequester.launch(activity, spec.androidPermission) { granted ->
@@ -164,9 +163,7 @@ object GrantOrchestrator {
             val prefs = GrantLedger(act)
             prefs.markAsked(rule.key)
             if (rule.showOnce) prefs.markShown(rule.key)
-
-            val shortName = spec.androidPermission.substringAfterLast('.')
-            act.trackEvent("Permission_${shortName}_Show")
+            act.trackEvent(permissionEventName(spec.androidPermission, "Show"))
 
             SafeLogger.log(TAG, "Requesting '${rule.key}' on ${act::class.java.simpleName}")
             GrantRequester.launch(act, spec.androidPermission) { granted ->

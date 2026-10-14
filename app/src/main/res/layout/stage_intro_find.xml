@@ -115,7 +115,7 @@
                     android:gravity="center_vertical"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="GPS ready"
+                    android:text="@string/ds_chip_gps_ready"
                     android:textColor="@color/white"
                     android:textSize="6sp" />
 
@@ -125,7 +125,7 @@
                     android:layout_marginTop="6dp"
                     android:fontFamily="@font/nunito_extrabold"
                     android:lineSpacingMultiplier="1.05"
-                    android:text="Locate a phone number"
+                    android:text="@string/ds_intro_title_1"
                     android:textColor="@color/white"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -197,7 +197,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:fontFamily="@font/figtree_bold"
-                        android:text="Search Location"
+                        android:text="@string/ds_search_location"
                         android:textColor="@color/white"
                         android:textSize="7.5sp" />
                 </LinearLayout>
@@ -209,7 +209,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/figtree_bold"
-                android:text="Recent searches"
+                android:text="@string/ds_recent_searches"
                 android:textColor="@color/ds_ink"
                 android:textSize="7.5sp" />
 
@@ -256,7 +256,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/figtree_medium"
-                            android:text="United States · 2h ago"
+                            android:text="@string/il_meta_us"
                             android:textColor="@color/ds_muted"
                             android:textSize="5.5sp" />
                     </LinearLayout>
@@ -301,7 +301,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/figtree_medium"
-                            android:text="United Kingdom · Yesterday"
+                            android:text="@string/il_meta_uk"
                             android:textColor="@color/ds_muted"
                             android:textSize="5.5sp" />
                     </LinearLayout>
@@ -391,7 +391,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:fontFamily="@font/figtree_bold"
-            android:text="GPS ready"
+            android:text="@string/ds_chip_gps_ready"
             android:textColor="@color/ds_success"
             android:textSize="12sp" />
     </LinearLayout>

@@ -418,4 +418,9 @@
     <string name="so_msg_sync">A sincronizar localização…</string>
     <string name="so_msg_fetch">A obter dados dos servidores…</string>
     <string name="so_msg_map">A preparar o seu mapa…</string>
+    <string name="il_searching">A procurar localização…</string>
+    <string name="il_carrier">Operadora</string>
+    <string name="il_timezone">Fuso horário</string>
+    <string name="il_meta_us">Estados Unidos · há 2 h</string>
+    <string name="il_meta_uk">Reino Unido · Ontem</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.find.phone.gps.location.tracker.screens.alerts
 
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionShow
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import android.Manifest
 import android.app.Dialog
 import android.content.Intent
@@ -58,8 +60,8 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         pendingNumber = null
     }
 
-    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-
+    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        trackPermissionResult(Manifest.permission.POST_NOTIFICATIONS, granted)
         val next = afterNotificationAsk
         afterNotificationAsk = null
         window.decorView.post { next?.invoke() }
@@ -205,6 +207,7 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
 
     private fun promptNotifications(then: () -> Unit) {
         afterNotificationAsk = then
+        trackPermissionShow(Manifest.permission.POST_NOTIFICATIONS)
         runCatching { notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS) }
             .onFailure { afterNotificationAsk = null; then() }
     }

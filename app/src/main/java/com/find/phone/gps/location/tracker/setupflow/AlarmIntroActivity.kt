@@ -1,5 +1,7 @@
 package com.find.phone.gps.location.tracker.setupflow
 
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionShow
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import android.Manifest
 import android.animation.Animator
 import android.content.Intent
@@ -32,7 +34,8 @@ class AlarmIntroActivity : ShellHubActivity() {
     private var awaitingAccess = false
     private var accessPollJob: Job? = null
 
-    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        trackPermissionResult(Manifest.permission.POST_NOTIFICATIONS, granted)
         window.decorView.post { unfoldAccessOrNext() }
     }
 
@@ -81,6 +84,7 @@ class AlarmIntroActivity : ShellHubActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !NotificationManagerCompat.from(this).areNotificationsEnabled()
         ) {
+            trackPermissionShow(Manifest.permission.POST_NOTIFICATIONS)
             notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             unfoldAccessOrNext()

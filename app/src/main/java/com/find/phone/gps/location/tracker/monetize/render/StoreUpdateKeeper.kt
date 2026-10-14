@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render
 
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import android.app.Activity
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -42,6 +43,7 @@ object StoreUpdateKeeper {
             when (result.resultCode) {
                 Activity.RESULT_OK -> {
                     Log.d(TAG, "User accepted the update.")
+                    note("inapp_update_accepted")
                     if (updateType == AppUpdateType.IMMEDIATE) {
                         callback?.onUpdateSuccess()
                     }
@@ -49,6 +51,7 @@ object StoreUpdateKeeper {
                 }
                 Activity.RESULT_CANCELED -> {
                     Log.d(TAG, "User canceled the update.")
+                    note("inapp_update_canceled")
                     callback?.onUpdateCanceled()
                     if (updateType == AppUpdateType.IMMEDIATE) {
                         activityRef?.get()?.finish()
@@ -56,6 +59,7 @@ object StoreUpdateKeeper {
                 }
                 else -> {
                     Log.e(TAG, "Update flow failed, resultCode=${result.resultCode}")
+                    note("inapp_update_failed")
                     callback?.onUpdateFailed()
                 }
             }
@@ -125,6 +129,7 @@ object StoreUpdateKeeper {
                 }
 
                 if (isAvailable && isAllowed) {
+                    note(if (updateType == AppUpdateType.IMMEDIATE) "inapp_update_prompt_force" else "inapp_update_prompt")
                     val launcher = updateLauncher
                     if (launcher != null) {
 
@@ -177,6 +182,7 @@ object StoreUpdateKeeper {
 
     fun completeUpdate() {
         Log.d(TAG, "completeUpdate() — restarting to install.")
+        note("inapp_update_install")
         updateManager?.completeUpdate()
     }
 
@@ -185,7 +191,12 @@ object StoreUpdateKeeper {
         verifyForUpdates()
     }
 
+    private fun note(event: String) {
+        activityRef?.get()?.trackEvent(event)
+    }
+
     private fun notifyDownloaded() {
+        note("inapp_update_downloaded")
         val listener = callback
         if (listener == null) {
             Log.w(TAG, "Update downloaded but no listener attached — deferring to the next launch.")

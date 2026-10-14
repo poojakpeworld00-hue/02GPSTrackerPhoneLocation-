@@ -424,4 +424,9 @@
     <string name="so_msg_sync">Синхронизация местоположения…</string>
     <string name="so_msg_fetch">Получение данных с серверов…</string>
     <string name="so_msg_map">Подготовка карты…</string>
+    <string name="il_searching">Поиск местоположения…</string>
+    <string name="il_carrier">Оператор</string>
+    <string name="il_timezone">Часовой пояс</string>
+    <string name="il_meta_us">США · 2 ч назад</string>
+    <string name="il_meta_uk">Великобритания · Вчера</string>
 </resources>

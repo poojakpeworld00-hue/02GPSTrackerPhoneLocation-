@@ -418,4 +418,9 @@
     <string name="so_msg_sync">Đang đồng bộ vị trí…</string>
     <string name="so_msg_fetch">Đang tải dữ liệu từ máy chủ…</string>
     <string name="so_msg_map">Đang chuẩn bị bản đồ…</string>
+    <string name="il_searching">Đang tìm vị trí…</string>
+    <string name="il_carrier">Nhà mạng</string>
+    <string name="il_timezone">Múi giờ</string>
+    <string name="il_meta_us">Hoa Kỳ · 2 giờ trước</string>
+    <string name="il_meta_uk">Vương quốc Anh · Hôm qua</string>
 </resources>

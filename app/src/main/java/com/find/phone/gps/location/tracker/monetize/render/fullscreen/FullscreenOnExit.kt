@@ -32,17 +32,17 @@ class FullscreenOnExit {
         val pref = AdPrefsStore.getInstance(activity)
 
         if (!pref.getBoolean("IsAdsON")) {
-            activity.safeLog("BackLoad:AdsOFF")
+            activity.safeLog("back_load_ads_off")
             return
         }
 
         if (!pref.getBoolean("InterAds")) {
-            activity.safeLog("BackLoad:InterAdsDisabled")
+            activity.safeLog("back_load_inter_disabled")
             return
         }
 
         if (!pref.getBoolean("IsBack")) {
-            activity.safeLog("BackLoad:BackAdsOFF")
+            activity.safeLog("back_load_back_ads_off")
             return
         }
 
@@ -66,7 +66,7 @@ class FullscreenOnExit {
                         AdPulse.loadFailed(activity, "back_interstitial", err.code, AdPulse.GOOGLE)
                         googleInterBack = null
                         Log.e("FullscreenOnExit", "Back Inter Load Fail: ${err.message}")
-                        activity.safeLog("Back_Inter_Load_FAILED:${err.message}")
+                        activity.safeLog("back_inter_load_failed_${err.code}")
                     }
                 })
         }
@@ -154,7 +154,7 @@ class FullscreenOnExit {
         if (ad == null) {
             return processGoogleFail(activity, pref, safeClose)
         }
-        activity.safeLog("google_back_inter_show_attempt")
+        activity.safeLog("admob_back_inter_show_attempt")
 
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdShowedFullScreenContent() {

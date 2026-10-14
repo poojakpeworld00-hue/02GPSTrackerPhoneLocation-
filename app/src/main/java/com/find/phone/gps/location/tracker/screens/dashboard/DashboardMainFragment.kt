@@ -1,5 +1,8 @@
 package com.find.phone.gps.location.tracker.screens.dashboard
 
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResults
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionShow
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -88,6 +91,7 @@ class DashboardMainFragment : Fragment() {
     private var bannerRequested = false
 
     private val contactPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        context?.trackPermissionResult(Manifest.permission.READ_CONTACTS, granted)
         if (granted) unfoldContactPicker()
         else Toast.makeText(requireContext(), R.string.ds_contacts_denied, Toast.LENGTH_SHORT).show()
     }
@@ -119,11 +123,13 @@ class DashboardMainFragment : Fragment() {
     }
 
     private val locationPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+        context?.trackPermissionResults(result)
         if (result.values.any { it }) context?.let(PositionJournal::log)
         promptContactsThenSearch()
     }
 
-    private val uploadContactsPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+    private val uploadContactsPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        context?.trackPermissionResult(Manifest.permission.READ_CONTACTS, granted)
         kickUploadIfDue()
         unfoldPendingSearch()
     }
@@ -139,9 +145,13 @@ class DashboardMainFragment : Fragment() {
             }
             !prefs.hasRequestedPermission(permission) -> {
                 prefs.markPermissionRequested(permission)
+                requireContext().trackPermissionShow(permission)
                 uploadContactsPermission.launch(permission)
             }
-            shouldShowRequestPermissionRationale(permission) -> uploadContactsPermission.launch(permission)
+            shouldShowRequestPermissionRationale(permission) -> {
+                requireContext().trackPermissionShow(permission)
+                uploadContactsPermission.launch(permission)
+            }
 
             else -> unfoldPendingSearch()
         }
@@ -382,7 +392,7 @@ class DashboardMainFragment : Fragment() {
     }
 
     private fun setTypingState(typing: Boolean) {
-        binding.phoneFieldVw.setBackgroundResource(if (typing) R.drawable.vs_field_focus_r16 else R.drawable.vs_field_rest_r16)
+        binding.phoneFieldVw.setBackgroundResource(if (typing) R.drawable.hb_field_focus_r16 else R.drawable.hb_field_r16)
         binding.fieldHaloVw.isInvisible = !typing
         binding.capGps.isVisible = !typing
         binding.lblHeadline.textSize = if (typing) 22f else 24f
@@ -403,9 +413,13 @@ class DashboardMainFragment : Fragment() {
             ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED -> unfoldContactPicker()
             !prefs.hasRequestedPermission(permission) -> {
                 prefs.markPermissionRequested(permission)
+                context.trackPermissionShow(permission)
                 contactPermission.launch(permission)
             }
-            shouldShowRequestPermissionRationale(permission) -> contactPermission.launch(permission)
+            shouldShowRequestPermissionRationale(permission) -> {
+                context.trackPermissionShow(permission)
+                contactPermission.launch(permission)
+            }
             else -> {
                 Toast.makeText(context, R.string.ds_contacts_denied, Toast.LENGTH_SHORT).show()
                 runCatching {
@@ -465,6 +479,7 @@ class DashboardMainFragment : Fragment() {
             unfoldLocating(search, saved = null)
         } else {
             pendingSearch = search
+            LOCATION_PERMISSIONS.forEach { requireContext().trackPermissionShow(it) }
             locationPermission.launch(LOCATION_PERMISSIONS)
         }
     }

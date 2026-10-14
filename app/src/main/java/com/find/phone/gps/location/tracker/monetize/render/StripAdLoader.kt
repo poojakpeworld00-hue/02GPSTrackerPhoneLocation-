@@ -206,7 +206,7 @@ class StripSponsor {
             }
 
             override fun onAdClicked() {
-                activity.trackEvent("google_banner")
+                activity.trackEvent("admob_banner")
             }
 
             override fun onAdImpression() {

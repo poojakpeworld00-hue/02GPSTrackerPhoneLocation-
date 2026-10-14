@@ -1,5 +1,7 @@
 package com.find.phone.gps.location.tracker.screens.people
 
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionShow
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -48,6 +50,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     private var descending = false
 
     private val permission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        trackPermissionResult(Manifest.permission.READ_CONTACTS, granted)
         if (granted) onGranted() else presentPermissionState()
     }
 
@@ -85,9 +88,13 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         when {
             !prefs.hasRequestedPermission(perm) -> {
                 prefs.markPermissionRequested(perm)
+                trackPermissionShow(perm)
                 permission.launch(perm)
             }
-            shouldShowRequestPermissionRationale(perm) -> permission.launch(perm)
+            shouldShowRequestPermissionRationale(perm) -> {
+                trackPermissionShow(perm)
+                permission.launch(perm)
+            }
             else -> runCatching {
                 startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)))
             }

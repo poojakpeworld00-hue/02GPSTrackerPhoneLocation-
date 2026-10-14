@@ -292,4 +292,9 @@
     <string name="so_msg_fetch">Fetching data from servers…</string>
     <string name="so_msg_map">Preparing your map…</string>
     <string name="hb_quota_short" translatable="false">%1$d/%2$d</string>
+    <string name="il_searching">Searching location…</string>
+    <string name="il_carrier">Carrier</string>
+    <string name="il_timezone">Time zone</string>
+    <string name="il_meta_us">United States · 2h ago</string>
+    <string name="il_meta_uk">United Kingdom · Yesterday</string>
 </resources>

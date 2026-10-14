@@ -418,4 +418,9 @@
     <string name="so_msg_sync">लोकेशन सिंक हो रही है…</string>
     <string name="so_msg_fetch">सर्वर से डेटा लाया जा रहा है…</string>
     <string name="so_msg_map">आपका मैप तैयार हो रहा है…</string>
+    <string name="il_searching">लोकेशन खोजी जा रही है…</string>
+    <string name="il_carrier">ऑपरेटर</string>
+    <string name="il_timezone">समय क्षेत्र</string>
+    <string name="il_meta_us">संयुक्त राज्य · 2 घंटे पहले</string>
+    <string name="il_meta_uk">यूनाइटेड किंगडम · कल</string>
 </resources>

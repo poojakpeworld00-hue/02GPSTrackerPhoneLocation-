@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render
 
+import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -89,12 +90,14 @@ class BonusAdSponsor {
             isLoading = true
             Log.d(TAG, "Preloading…")
 
+            AdPulse.req(context, "rewarded")
             RewardedAd.load(
                 app,
                 unitId,
                 AdRequest.Builder().build(),
                 object : RewardedAdLoadCallback() {
                     override fun onAdLoaded(ad: RewardedAd) {
+                        AdPulse.loaded(context, "rewarded")
                         loadedAd = ad
                         isLoading = false
                         BonusAdCooldown.reset(app)
@@ -103,6 +106,7 @@ class BonusAdSponsor {
                     }
 
                     override fun onAdFailedToLoad(error: LoadAdError) {
+                        AdPulse.loadFailed(context, "rewarded", error.code, AdPulse.GOOGLE)
                         loadedAd = null
                         isLoading = false
                         Log.e(TAG, "Preload failed (${error.code}): ${error.message}")
@@ -212,7 +216,12 @@ class BonusAdSponsor {
         var earned = false
 
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdShowedFullScreenContent() {
+                AdPulse.show(activity, "rewarded")
+            }
+
             override fun onAdDismissedFullScreenContent() {
+                AdPulse.close(activity, "rewarded")
                 Log.d(TAG, "Dismissed, earned=$earned")
                 preload(activity)
                 onDone(if (earned) Result.EARNED else Result.NOT_EARNED)

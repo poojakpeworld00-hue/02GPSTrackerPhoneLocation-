@@ -19,6 +19,10 @@ import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
 import com.find.phone.gps.location.tracker.monetize.engine.TAG_EVENT
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.BuildConfig
+import com.find.phone.gps.location.tracker.insights.AdPulse
+import com.find.phone.gps.location.tracker.insights.ScreenInsights
+import com.find.phone.gps.location.tracker.insights.ScreenTokens
+import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
 import com.find.phone.gps.location.tracker.databinding.AdMNativeStripBinding
 import com.find.phone.gps.location.tracker.databinding.AdGNativeStripBinding
 import com.facebook.ads.Ad
@@ -53,6 +57,7 @@ class InlineSponsorStrip {
                 val adUnitId = adsPref.getString("googleNative") ?: return
 
                 val adLoader = AdLoader.Builder(activity, adUnitId).forNativeAd { ad ->
+                    AdPulse.loaded(activity, "native_banner")
                     nativeAdBanner?.destroy()
                     nativeAdBanner = ad
                     try {
@@ -63,6 +68,7 @@ class InlineSponsorStrip {
                     Log.d("InlineSponsorStrip", "Ad loaded successfully")
                 }.withAdListener(object : AdListener() {
                     override fun onAdFailedToLoad(error: LoadAdError) {
+                        AdPulse.loadFailed(activity, "native_banner", error.code, AdPulse.GOOGLE)
                         Log.e("InlineSponsorStrip", "Ad failed to load: ${error.message}")
                         nativeAdBanner = null
                         // No retry logic
@@ -72,8 +78,23 @@ class InlineSponsorStrip {
                         } catch (e: Exception) {
                         }
                     }
+
+                    // The cached ad may be shown on a later screen than the one that loaded it,
+                    // so these resolve the screen in front rather than the loading activity.
+                    override fun onAdImpression() {
+                        super.onAdImpression()
+                        AdPulse.impression(activity.applicationContext, "native_banner")
+                    }
+
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                        if (ScreenInsights.currentToken() == ScreenTokens.tokenFor(LocalePickActivity::class.java)) {
+                            AdPulse.clicked(activity.applicationContext, "native_banner")
+                        }
+                    }
                 }).withNativeAdOptions(NativeAdOptions.Builder().build()).build()
 
+                AdPulse.req(activity, "native_banner")
                 adLoader.loadAd(AdRequest.Builder().build())
             }
 
@@ -271,6 +292,7 @@ class InlineSponsorStrip {
         }
 
         val fbNative = com.facebook.ads.NativeAd(context, fbId)
+        AdPulse.req(context, "native_banner", AdPulse.FACEBOOK)
         fbNative.loadAd(
             fbNative.buildLoadAdConfig().withAdListener(object : NativeAdListener {
                 override fun onMediaDownloaded(ad: Ad?) {
@@ -282,6 +304,7 @@ class InlineSponsorStrip {
                 }
 
                 override fun onError(ad: Ad?, adError: AdError?) {
+                    AdPulse.loadFailed(context, "native_banner", adError?.errorCode, AdPulse.FACEBOOK)
                     shimmer?.stopShimmer()
                     shimmer?.isVisible = false
                     Log.e("NativeAds", "FB MidNative failed: ${adError?.errorMessage}")
@@ -292,11 +315,16 @@ class InlineSponsorStrip {
 
                 override fun onAdLoaded(ad: Ad?) {
                     if (fbNative !== ad) return
+                    AdPulse.loaded(context, "native_banner", AdPulse.FACEBOOK)
                     fbNative.downloadMedia()
                 }
 
-                override fun onAdClicked(ad: Ad?) {}
-                override fun onLoggingImpression(ad: Ad?) {}
+                override fun onAdClicked(ad: Ad?) {
+                    if (context is LocalePickActivity) AdPulse.clicked(context, "native_banner", AdPulse.FACEBOOK)
+                }
+                override fun onLoggingImpression(ad: Ad?) {
+                    AdPulse.impression(context, "native_banner", AdPulse.FACEBOOK)
+                }
             }).build()
         )
     }

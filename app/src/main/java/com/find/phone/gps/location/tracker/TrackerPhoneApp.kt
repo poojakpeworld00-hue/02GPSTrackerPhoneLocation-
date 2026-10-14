@@ -174,6 +174,8 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
         }
 
         registerActivityLifecycleCallbacks(this)
+        // Analytics: {screen}_open / _back_press / _home_press for every screen.
+        com.find.phone.gps.location.tracker.insights.ScreenInsights.install(this)
         // `recent_playstore`: Recents pressed in the first session → Play Store home.
         RecentsAdObserver.install(this)
         // Home on a first-run screen moves onboarding forward, like Back (marketing).

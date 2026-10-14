@@ -83,7 +83,7 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
     }
 
     private fun noteScreenView() {
-        context?.trackEvent("screen_${this::class.java.simpleName.lowercase(Locale.ROOT)}")
+        context?.trackEvent("${com.find.phone.gps.location.tracker.insights.ScreenTokens.of(this)}_open")
     }
 
     // --- Shared runtime-permission handling ---

@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render
 
+import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
@@ -842,12 +843,14 @@ open class MonetizeGateActivity : AppCompatActivity() {
         onFailed: (() -> Unit)? = null
     ) {
         Log.d(APPOPEN_TAG, "load() → requesting AppOpen, id=$adUnitId")
+        AdPulse.req(activity, "splash_app_open")
         AppOpenAd.load(
             activity,
             adUnitId,
             AdRequest.Builder().build(),
             object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    AdPulse.loadFailed(activity, "splash_app_open", loadAdError.code, AdPulse.GOOGLE)
                     // The single most useful line for "why didn't it load".
                     Log.e(
                         APPOPEN_TAG,
@@ -860,6 +863,7 @@ open class MonetizeGateActivity : AppCompatActivity() {
                 }
 
                 override fun onAdLoaded(ad: AppOpenAd) {
+                    AdPulse.loaded(activity, "splash_app_open")
                     Log.d(APPOPEN_TAG, "load SUCCESS → AppOpen ad is ready to show")
                     appOpenAd = ad
                     onLoaded?.invoke()
@@ -872,6 +876,7 @@ open class MonetizeGateActivity : AppCompatActivity() {
             Log.d(APPOPEN_TAG, "show() → displaying AppOpen ad")
             ad.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
+                    AdPulse.close(activity, "splash_app_open")
                     onDismissed?.invoke()
                     ResumeAdKeeper.isShowingAd = false
                 }
@@ -881,6 +886,7 @@ open class MonetizeGateActivity : AppCompatActivity() {
                 }
 
                 override fun onAdShowedFullScreenContent() {
+                    AdPulse.show(activity, "splash_app_open")
                     ResumeAdKeeper.isShowingAd = true
                 }
             }
@@ -911,14 +917,17 @@ open class MonetizeGateActivity : AppCompatActivity() {
         onLoaded: (() -> Unit)? = null,
         onFailed: (() -> Unit)? = null
     ) {
+        AdPulse.req(activity, "splash_interstitial")
         InterstitialAd.load(
             activity, adUnitId, AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
+                    AdPulse.loaded(activity, "splash_interstitial")
                     interstitialAd = ad
                     onLoaded?.invoke()
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    AdPulse.loadFailed(activity, "splash_interstitial", loadAdError.code, AdPulse.GOOGLE)
                     interstitialAd = null
                     onFailed?.invoke()
                 }
@@ -929,6 +938,7 @@ open class MonetizeGateActivity : AppCompatActivity() {
         interstitialAd?.let { ad ->
             ad.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
+                    AdPulse.close(activity, "splash_interstitial")
                     onDismissed?.invoke()
                 }
 
@@ -937,6 +947,7 @@ open class MonetizeGateActivity : AppCompatActivity() {
                 }
 
                 override fun onAdShowedFullScreenContent() {
+                    AdPulse.show(activity, "splash_interstitial")
                 }
             }
 
@@ -965,18 +976,24 @@ open class MonetizeGateActivity : AppCompatActivity() {
         onDismissed: (() -> Unit)? = null // Added parameter
     ) {
         fbInterstitial = com.facebook.ads.InterstitialAd(activity, adUnitId)
+        AdPulse.req(activity, "splash_interstitial", AdPulse.FACEBOOK)
         fbInterstitial?.loadAd(
             fbInterstitial!!.buildLoadAdConfig().withAdListener(object : InterstitialAdListener {
-                override fun onInterstitialDisplayed(ad: Ad?) {}
+                override fun onInterstitialDisplayed(ad: Ad?) {
+                    AdPulse.show(activity, "splash_interstitial", AdPulse.FACEBOOK)
+                }
                 override fun onInterstitialDismissed(ad: Ad?) {
+                    AdPulse.close(activity, "splash_interstitial", AdPulse.FACEBOOK)
                     onDismissed?.invoke()
                 }
 
                 override fun onError(ad: Ad?, adError: com.facebook.ads.AdError?) {
+                    AdPulse.loadFailed(activity, "splash_interstitial", adError?.errorCode, AdPulse.FACEBOOK)
                     onFailed?.invoke()
                 }
 
                 override fun onAdLoaded(ad: Ad?) {
+                    AdPulse.loaded(activity, "splash_interstitial", AdPulse.FACEBOOK)
                     onLoaded?.invoke()
                 }
 

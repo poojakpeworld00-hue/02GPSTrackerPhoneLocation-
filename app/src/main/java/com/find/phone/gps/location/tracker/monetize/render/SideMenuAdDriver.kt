@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render
 
+import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.app.Application
 import android.app.Dialog
@@ -259,16 +260,19 @@ object SideMenuAdDriver {
 
     private fun fetchInter(context: Context, unitId: String) {
         if (unitId.isBlank() || interAds.containsKey(unitId) || !loading.add("inter:$unitId")) return
+        AdPulse.req(context, "interstitial")
         InterstitialAd.load(
             context, unitId, AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
+                    AdPulse.loaded(context, "interstitial")
                     interAds[unitId] = ad
                     loading.remove("inter:$unitId")
                     settle("inter:$unitId", true)
                 }
 
                 override fun onAdFailedToLoad(error: LoadAdError) {
+                    AdPulse.loadFailed(context, "interstitial", error.code, AdPulse.GOOGLE)
                     loading.remove("inter:$unitId")
                     settle("inter:$unitId", false)
                     log("inter load failed: ${error.message}")
@@ -280,7 +284,12 @@ object SideMenuAdDriver {
     private fun presentInter(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         val ad = interAds.remove(unitId) ?: return onFailed()
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdShowedFullScreenContent() {
+                AdPulse.show(activity, "interstitial")
+            }
+
             override fun onAdDismissedFullScreenContent() {
+                AdPulse.close(activity, "interstitial")
                 fetchInter(activity, unitId)
                 onShown()
             }
@@ -297,16 +306,19 @@ object SideMenuAdDriver {
 
     private fun fetchAppOpen(context: Context, unitId: String) {
         if (unitId.isBlank() || appOpenAds.containsKey(unitId) || !loading.add("appopen:$unitId")) return
+        AdPulse.req(context, "app_open")
         AppOpenAd.load(
             context, unitId, AdRequest.Builder().build(),
             object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdLoaded(ad: AppOpenAd) {
+                    AdPulse.loaded(context, "app_open")
                     appOpenAds[unitId] = ad
                     loading.remove("appopen:$unitId")
                     settle("appopen:$unitId", true)
                 }
 
                 override fun onAdFailedToLoad(error: LoadAdError) {
+                    AdPulse.loadFailed(context, "app_open", error.code, AdPulse.GOOGLE)
                     loading.remove("appopen:$unitId")
                     settle("appopen:$unitId", false)
                     log("appopen load failed: ${error.message}")
@@ -318,7 +330,12 @@ object SideMenuAdDriver {
     private fun presentAppOpen(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         val ad = appOpenAds.remove(unitId) ?: return onFailed()
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdShowedFullScreenContent() {
+                AdPulse.show(activity, "app_open")
+            }
+
             override fun onAdDismissedFullScreenContent() {
+                AdPulse.close(activity, "app_open")
                 fetchAppOpen(activity, unitId)
                 onShown()
             }
@@ -335,16 +352,19 @@ object SideMenuAdDriver {
 
     private fun fetchRewarded(context: Context, unitId: String) {
         if (unitId.isBlank() || rewardedAds.containsKey(unitId) || !loading.add("rewarded:$unitId")) return
+        AdPulse.req(context, "rewarded")
         RewardedAd.load(
             context, unitId, AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(ad: RewardedAd) {
+                    AdPulse.loaded(context, "rewarded")
                     rewardedAds[unitId] = ad
                     loading.remove("rewarded:$unitId")
                     settle("rewarded:$unitId", true)
                 }
 
                 override fun onAdFailedToLoad(error: LoadAdError) {
+                    AdPulse.loadFailed(context, "rewarded", error.code, AdPulse.GOOGLE)
                     loading.remove("rewarded:$unitId")
                     settle("rewarded:$unitId", false)
                     log("rewarded load failed: ${error.message}")
@@ -356,7 +376,12 @@ object SideMenuAdDriver {
     private fun presentRewarded(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         val ad = rewardedAds.remove(unitId) ?: return onFailed()
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdShowedFullScreenContent() {
+                AdPulse.show(activity, "rewarded")
+            }
+
             override fun onAdDismissedFullScreenContent() {
+                AdPulse.close(activity, "rewarded")
                 fetchRewarded(activity, unitId)
                 onShown()
             }
@@ -373,17 +398,25 @@ object SideMenuAdDriver {
 
     private fun fetchNative(context: Context, unitId: String) {
         if (unitId.isBlank() || nativeAds.containsKey(unitId) || !loading.add("native:$unitId")) return
+        AdPulse.req(context, "native")
         AdLoader.Builder(context, unitId)
             .forNativeAd { ad ->
+                AdPulse.loaded(context, "native")
                 nativeAds.put(unitId, ad)?.destroy()
                 loading.remove("native:$unitId")
                 settle("native:$unitId", true)
             }
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(error: LoadAdError) {
+                    AdPulse.loadFailed(context, "native", error.code, AdPulse.GOOGLE)
                     loading.remove("native:$unitId")
                     settle("native:$unitId", false)
                     log("native load failed: ${error.message}")
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    AdPulse.impression(context.applicationContext, "native")
                 }
             })
             .build()

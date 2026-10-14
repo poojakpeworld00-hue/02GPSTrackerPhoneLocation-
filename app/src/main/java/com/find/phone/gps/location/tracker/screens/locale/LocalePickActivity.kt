@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.screens.locale
 
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
@@ -90,7 +91,7 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         binding.rollLanguages.layoutManager = LinearLayoutManager(this)
         binding.rollLanguages.adapter = allAdapter
 
-        binding.padInfo.setOnClickListener { presentInfoDialog() }
+        binding.padInfo.setOnClickListener { trackEvent("language_info_click"); presentInfoDialog() }
         VisualTweens.pressScale(binding.padContinue)
         binding.padContinue.setOnClickListener { onContinue() }
 
@@ -178,6 +179,11 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
 
     private fun onContinue() {
         val tag = viewModel.selectedTag.value ?: AppPrefsStore.LANGUAGE_DEFAULT
+        trackEvent(
+            if (viewModel.userPicked) "language_selected" else "language_default_selected",
+            mapOf("language" to tag),
+        )
+        trackEvent("language_done_click")
         AppPrefsStore.setLanguage(this, tag)
         prefs.isLanguageSelected = true
 

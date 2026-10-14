@@ -22,6 +22,10 @@ import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.BuildConfig
+import com.find.phone.gps.location.tracker.insights.AdPulse
+import com.find.phone.gps.location.tracker.insights.ScreenInsights
+import com.find.phone.gps.location.tracker.insights.ScreenTokens
+import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
 import com.find.phone.gps.location.tracker.databinding.AdMNativeMidBinding
 import com.find.phone.gps.location.tracker.databinding.AdMNativeBinding
 import com.find.phone.gps.location.tracker.databinding.AdGNativeBigBinding
@@ -150,6 +154,7 @@ class InlineSponsor() {
         val adLoader =
             AdLoader.Builder(context, adUnit)
                 .forNativeAd { nativeAds ->
+                    AdPulse.loaded(context, "native")
                     // Always cache the ad — even when the activity that
                     // triggered this load is destroyed by the time the ad
                     // lands. The cache is a static field; it survives
@@ -182,6 +187,7 @@ class InlineSponsor() {
                 .withAdListener(object : AdListener() {
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                         super.onAdFailedToLoad(loadAdError)
+                        AdPulse.loadFailed(context, "native", loadAdError.code, AdPulse.GOOGLE)
                         loadingSince = 0L
                         settleWaiters(loaded = false)
                         if (context.isActivityDestroyedCompat()) return
@@ -196,10 +202,25 @@ class InlineSponsor() {
                         }
                         nativeAd = null
                     }
+
+                    // The cached ad may be shown on a later screen than the one that loaded it,
+                    // so these resolve the screen in front rather than the loading activity.
+                    override fun onAdImpression() {
+                        super.onAdImpression()
+                        AdPulse.impression(context.applicationContext, "native")
+                    }
+
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                        if (ScreenInsights.currentToken() == ScreenTokens.tokenFor(LocalePickActivity::class.java)) {
+                            AdPulse.clicked(context.applicationContext, "native")
+                        }
+                    }
                 })
                 .withNativeAdOptions(NativeAdOptions.Builder().build())
                 .build()
 
+        AdPulse.req(context, "native")
         adLoader.loadAd(AdRequest.Builder().build())
     }
 
@@ -444,6 +465,7 @@ class InlineSponsor() {
 
         val fbNative = com.facebook.ads.NativeAd(context, fbId)
 
+        AdPulse.req(context, "native", AdPulse.FACEBOOK)
         fbNative.loadAd(
             fbNative.buildLoadAdConfig().withAdListener(object : NativeAdListener {
                 override fun onMediaDownloaded(ad: Ad?) {
@@ -459,6 +481,7 @@ class InlineSponsor() {
                 }
 
                 override fun onError(ad: Ad?, adError: AdError?) {
+                    AdPulse.loadFailed(context, "native", adError?.errorCode, AdPulse.FACEBOOK)
                     if (context.isActivityDestroyedCompat()) return
                     layout.post {
                         if (context.isActivityDestroyedCompat()) return@post
@@ -476,12 +499,17 @@ class InlineSponsor() {
 
                 override fun onAdLoaded(ad: Ad?) {
                     if (fbNative !== ad) return
+                    AdPulse.loaded(context, "native", AdPulse.FACEBOOK)
                     context.trackEvent("NativeAds_showBigNative_FB_Load")
                     fbNative.downloadMedia()
                 }
 
-                override fun onAdClicked(ad: Ad?) {}
-                override fun onLoggingImpression(ad: Ad?) {}
+                override fun onAdClicked(ad: Ad?) {
+                    if (context is LocalePickActivity) AdPulse.clicked(context, "native", AdPulse.FACEBOOK)
+                }
+                override fun onLoggingImpression(ad: Ad?) {
+                    AdPulse.impression(context, "native", AdPulse.FACEBOOK)
+                }
             }).build()
         )
     }
@@ -691,6 +719,7 @@ class InlineSponsor() {
         }
 
         val fbNative = com.facebook.ads.NativeAd(context, fbId)
+        AdPulse.req(context, "native", AdPulse.FACEBOOK)
         fbNative.loadAd(
             fbNative.buildLoadAdConfig().withAdListener(object : NativeAdListener {
                 override fun onMediaDownloaded(ad: Ad?) {
@@ -707,6 +736,7 @@ class InlineSponsor() {
                 }
 
                 override fun onError(ad: Ad?, adError: AdError?) {
+                    AdPulse.loadFailed(context, "native", adError?.errorCode, AdPulse.FACEBOOK)
                     if (context.isActivityDestroyedCompat()) return
                     layout.post {
                         if (context.isActivityDestroyedCompat()) return@post
@@ -725,11 +755,16 @@ class InlineSponsor() {
 
                 override fun onAdLoaded(ad: Ad?) {
                     if (fbNative !== ad) return
+                    AdPulse.loaded(context, "native", AdPulse.FACEBOOK)
                     fbNative.downloadMedia()
                 }
 
-                override fun onAdClicked(ad: Ad?) {}
-                override fun onLoggingImpression(ad: Ad?) {}
+                override fun onAdClicked(ad: Ad?) {
+                    if (context is LocalePickActivity) AdPulse.clicked(context, "native", AdPulse.FACEBOOK)
+                }
+                override fun onLoggingImpression(ad: Ad?) {
+                    AdPulse.impression(context, "native", AdPulse.FACEBOOK)
+                }
             }).build()
         )
     }

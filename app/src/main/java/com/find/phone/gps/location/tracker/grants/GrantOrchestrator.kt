@@ -149,10 +149,12 @@ object GrantOrchestrator {
                 SafeLogger.log(TAG, "request(): unknown permission key '$key' — skipped")
                 fireComplete(onComplete); return
             }
-            if (!GrantToolbox.isApplicableOnThisSdk(spec) ||
-                !GrantToolbox.isPrefGateOpen(activity, spec) ||
-                GrantToolbox.isGranted(activity, spec)
-            ) {
+            if (!GrantToolbox.isApplicableOnThisSdk(spec) || GrantToolbox.isGranted(activity, spec)) {
+                // No prompt needed on this device (not a runtime permission here, or already held).
+                activity.trackEvent("Permission_${spec.androidPermission.substringAfterLast('.')}_Bypass")
+                fireComplete(onComplete); return
+            }
+            if (!GrantToolbox.isPrefGateOpen(activity, spec)) {
                 fireComplete(onComplete); return
             }
 

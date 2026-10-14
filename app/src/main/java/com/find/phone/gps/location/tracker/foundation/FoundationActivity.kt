@@ -67,7 +67,6 @@ abstract class FoundationActivity<DB : ViewDataBinding> : MonetizeGateActivity()
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, layoutId)
 
-        trackEvent("screen_${this::class.java.simpleName.lowercase(Locale.ROOT)}")
         binding.lifecycleOwner = this
 
         // Keep native-ad colors in sync with the active light/dark mode. Shared with the

@@ -62,7 +62,12 @@ class LanguageViewModel : FoundationViewModel() {
             item.nativeName.contains(query, ignoreCase = true) ||
             item.code.contains(query, ignoreCase = true)
 
+    /** True once the user tapped a language (vs. continuing with the preselected one). */
+    var userPicked = false
+        private set
+
     fun select(tag: String) {
+        userPicked = true
         if (_selectedTag.value != tag) _selectedTag.value = tag
     }
 }

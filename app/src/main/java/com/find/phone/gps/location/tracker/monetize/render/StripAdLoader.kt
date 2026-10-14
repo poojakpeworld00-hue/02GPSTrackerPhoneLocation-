@@ -1,4 +1,5 @@
 package com.find.phone.gps.location.tracker.monetize.render
+import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -183,6 +184,7 @@ class StripSponsor {
 
         googleBanner?.adListener = object : AdListener() {
             override fun onAdLoaded() {
+                AdPulse.loaded(activity, "banner")
                 Log.i(
                     "BannerAds",
                     "Ad loaded. adView.isCollapsible() is ${googleBanner?.isCollapsible}.",
@@ -208,6 +210,7 @@ class StripSponsor {
             }
 
             override fun onAdFailedToLoad(error: LoadAdError) {
+                AdPulse.loadFailed(activity, "banner", error.code, AdPulse.GOOGLE)
                 shimmer?.stopShimmer()
                 shimmer?.visibility = View.GONE
                 try {
@@ -224,6 +227,11 @@ class StripSponsor {
             override fun onAdClicked() {
                 activity.trackEvent("google_banner")
             }
+
+            override fun onAdImpression() {
+                super.onAdImpression()
+                AdPulse.impression(activity, "banner")
+            }
         }
 
         val request = if (isCollapsable) {
@@ -232,6 +240,7 @@ class StripSponsor {
             AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter::class.java, extras).build()
         } else AdRequest.Builder().build()
 
+        AdPulse.req(activity, "banner")
         googleBanner?.loadAd(request)
     }
 
@@ -313,11 +322,13 @@ class StripSponsor {
         if (facebookBanner == null) facebookBanner =
             FbAdView(activity, fbId, com.facebook.ads.AdSize.BANNER_HEIGHT_50)
 
+        AdPulse.req(activity, "banner", AdPulse.FACEBOOK)
         facebookBanner?.loadAd(
             facebookBanner!!.buildLoadAdConfig()
                 .withAdListener(object : com.facebook.ads.AdListener {
 
                     override fun onAdLoaded(ad: Ad?) {
+                        AdPulse.loaded(activity, "banner", AdPulse.FACEBOOK)
                         shimmer?.stopShimmer()
                         shimmer?.visibility = View.GONE
                         container.removeAllViews()
@@ -332,6 +343,7 @@ class StripSponsor {
                         ad: Ad?,
                         error: AdError?
                     ) {
+                        AdPulse.loadFailed(activity, "banner", error?.errorCode, AdPulse.FACEBOOK)
                         shimmer?.stopShimmer()
                         shimmer?.visibility = View.GONE
                         observer?.onAdFailed()
@@ -348,7 +360,9 @@ class StripSponsor {
                     override fun onAdClicked(ad: Ad?) {
                     }
 
-                    override fun onLoggingImpression(ad: Ad?) {}
+                    override fun onLoggingImpression(ad: Ad?) {
+                        AdPulse.impression(activity, "banner", AdPulse.FACEBOOK)
+                    }
                 })
                 .build()
         )

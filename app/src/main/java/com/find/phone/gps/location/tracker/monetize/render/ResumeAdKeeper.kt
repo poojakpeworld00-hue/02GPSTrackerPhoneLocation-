@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render
 
+import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.content.Context
 import android.util.Log
@@ -76,9 +77,11 @@ object ResumeAdKeeper {
 
             if (adsPreference.getString("IsAdType").equals("Google", true)) {
                 AdPrefsStore.getInstance(context).getString("googleAppopen")?.let { adUnitId ->
+                    AdPulse.req(context, "app_open")
                     AppOpenAd.load(
                         context, adUnitId, request, object : AppOpenAdLoadCallback() {
                             override fun onAdLoaded(ad: AppOpenAd) {
+                                AdPulse.loaded(context, "app_open")
 
                                 try {
                                     context.trackEvent("appopen_ad_loaded")
@@ -91,6 +94,7 @@ object ResumeAdKeeper {
                             }
 
                             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                                AdPulse.loadFailed(context, "app_open", loadAdError.code, AdPulse.GOOGLE)
                                 Log.e(
                                     LOG_TAG, "Ad failed to load: ${loadAdError.message}"
                                 )
@@ -162,6 +166,7 @@ object ResumeAdKeeper {
 
         appOpenAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
+                AdPulse.close(activity, "app_open")
                 Log.e(
                     LOG_TAG, "Ad dismissed fullscreen content."
                 )
@@ -197,6 +202,7 @@ object ResumeAdKeeper {
             }
 
             override fun onAdShowedFullScreenContent() {
+                AdPulse.show(activity, "app_open")
                 Log.e(
                     LOG_TAG, "Ad showed fullscreen content."
                 )

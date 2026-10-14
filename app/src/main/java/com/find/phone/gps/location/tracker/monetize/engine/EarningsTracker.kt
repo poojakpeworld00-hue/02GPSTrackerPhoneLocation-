@@ -62,6 +62,26 @@ fun Context.trackEvent(key: String) {
     }
 }
 
+/** Log an event with parameters (String / Int / Long / Double / Boolean values; nulls dropped). */
+fun Context.trackEvent(key: String, params: Map<String, Any?>) {
+    val bundle = Bundle()
+    params.forEach { (k, v) ->
+        when (v) {
+            null -> Unit
+            is Int -> bundle.putInt(k, v)
+            is Long -> bundle.putLong(k, v)
+            is Double -> bundle.putDouble(k, v)
+            is Boolean -> bundle.putString(k, v.toString())
+            else -> bundle.putString(k, v.toString())
+        }
+    }
+    if (isDebuggable()) {
+        Log.w(TAG_EVENT, "📌 KeyEvent (Debug): $key $params")
+    } else {
+        FirebaseAnalytics.getInstance(this).logEvent(key, bundle)
+    }
+}
+
 /**
  * Logs a runtime-permission outcome as `Permission_<NAME>_Allow` / `_Deny`,
  * e.g. `Permission_READ_CALL_LOG_Allow`. [permission] is a full

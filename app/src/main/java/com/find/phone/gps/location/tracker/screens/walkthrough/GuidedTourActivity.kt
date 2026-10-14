@@ -76,16 +76,20 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
         }
 
         binding.vuPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) = updateDots(position)
+            override fun onPageSelected(position: Int) {
+                updateDots(position)
+                trackEvent("onboarding_page${position + 1}")
+            }
         })
 
         val ui = HomeAdsSettings.onboardingUi(this, HomeAdsSettings.OnboardScreen.INTRO)
         binding.padSkip.isVisible = ui.skipEnabled
 
         VisualTweens.pressScale(binding.padNext)
-        binding.padSkip.setOnClickListener { finishOnboarding() }
+        binding.padSkip.setOnClickListener { trackEvent("onboarding_skip_click"); finishOnboarding() }
         binding.padNext.setOnClickListener {
             val current = binding.vuPager.currentItem
+            trackEvent("onboarding_next_click", mapOf("page" to current + 1))
             if (current < pages.lastIndex) {
                 binding.vuPager.currentItem = current + 1
             } else {

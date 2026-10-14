@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.setupflow
 
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import android.animation.Animator
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
@@ -32,8 +33,8 @@ class WelcomeStageActivity : ShellHubActivity() {
         excludeAppFromRecents()
 
         VisualTweens.pressScale(binding.onboardingContinueVw)
-        binding.onboardingContinueVw.setOnClickListener { seekOnboardingPermissions() }
-        binding.onboardingSkipVw.setOnClickListener { goToNextStep() }
+        binding.onboardingContinueVw.setOnClickListener { trackEvent("welcome_continue_click"); seekOnboardingPermissions() }
+        binding.onboardingSkipVw.setOnClickListener { trackEvent("welcome_skip_click"); goToNextStep() }
 
         // `onboarding.welcome.skip_enabled: false` makes the screen a required step.
         val ui = HomeAdsSettings.onboardingUi(this, HomeAdsSettings.OnboardScreen.WELCOME)

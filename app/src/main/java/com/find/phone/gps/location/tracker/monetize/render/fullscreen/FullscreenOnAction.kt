@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render.fullscreen
 
+import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
@@ -94,26 +95,32 @@ class FullscreenOnAction {
             val fbId = pref.getString("faceB_InterAds") ?: return
             isFbPreloading = true
             val inter = com.facebook.ads.InterstitialAd(context, fbId)
+            AdPulse.req(context, "interstitial", AdPulse.FACEBOOK)
             inter.loadAd(
                 inter.buildLoadAdConfig()
                     .withAdListener(object : com.facebook.ads.InterstitialAdListener {
                         override fun onAdLoaded(ad: com.facebook.ads.Ad?) {
+                            AdPulse.loaded(context, "interstitial", AdPulse.FACEBOOK)
                             preloadedFbAd = inter
                             isFbPreloading = false
                         }
                         override fun onError(ad: com.facebook.ads.Ad?, e: com.facebook.ads.AdError?) {
+                            AdPulse.loadFailed(context, "interstitial", e?.errorCode, AdPulse.FACEBOOK)
                             isFbPreloading = false
                             fbOnFail?.invoke()
                             fbOnFail = null
                             fbOnDismissed = null
                         }
                         override fun onInterstitialDismissed(ad: com.facebook.ads.Ad?) {
+                            AdPulse.close(context, "interstitial", AdPulse.FACEBOOK)
                             prefetchFbAd(context)   // replenish
                             fbOnDismissed?.invoke()
                             fbOnDismissed = null
                             fbOnFail = null
                         }
-                        override fun onInterstitialDisplayed(ad: com.facebook.ads.Ad?) {}
+                        override fun onInterstitialDisplayed(ad: com.facebook.ads.Ad?) {
+                            AdPulse.show(context, "interstitial", AdPulse.FACEBOOK)
+                        }
                         override fun onAdClicked(ad: com.facebook.ads.Ad?) {}
                         override fun onLoggingImpression(ad: com.facebook.ads.Ad?) {}
                     }).build()
@@ -232,15 +239,18 @@ class FullscreenOnAction {
         if (adType == AdFormatKind.GOOGLE) {
             activity.safeLog("google_inter_load_start")
             val id = pref.getString("googleInter") ?: return
+            AdPulse.req(activity, "interstitial")
             InterstitialAd.load(
                 activity, id, AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
                     override fun onAdFailedToLoad(error: LoadAdError) {
+                        AdPulse.loadFailed(activity, "interstitial", error.code, AdPulse.GOOGLE)
                         googleInterAd = null
                         activity.safeLog("google_inter_load_failed_${error.code}")
                         Log.e("FullscreenOnAction", "Load Failed: ${error.message}")
                     }
                     override fun onAdLoaded(ad: InterstitialAd) {
+                        AdPulse.loaded(activity, "interstitial")
                         googleInterAd = ad
                         activity.safeLog("google_inter_loaded")
                         Log.d("FullscreenOnAction", "Google inter loaded")
@@ -387,10 +397,12 @@ class FullscreenOnAction {
 
             override fun onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent()
+                AdPulse.show(activity, "interstitial")
                 isInterShow = true
             }
 
             override fun onAdDismissedFullScreenContent() {
+                AdPulse.close(activity, "interstitial")
                 isInterShow = false
                 googleInterAd = null
                 activity.safeLog("google_inter_dismiss")
@@ -430,16 +442,19 @@ class FullscreenOnAction {
         activity.safeLog("google_inter_ondemand_load_start")
         BlockingLoaderDialog.show(activity, isLoader)
 
+        AdPulse.req(activity, "interstitial")
         InterstitialAd.load(
             activity, id, AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
+                    AdPulse.loaded(activity, "interstitial")
                     BlockingLoaderDialog.hide()
                     googleInterAd = ad
                     activity.safeLog("google_inter_ondemand_loaded")
                     presentGoogleInterstitial(activity, pref, safeClose)
                 }
                 override fun onAdFailedToLoad(error: LoadAdError) {
+                    AdPulse.loadFailed(activity, "interstitial", error.code, AdPulse.GOOGLE)
                     BlockingLoaderDialog.hide()
                     googleInterAd = null
                     activity.safeLog("google_inter_ondemand_fail_${error.code}")
@@ -532,11 +547,13 @@ class FullscreenOnAction {
         // Show loader only if isLoader == true
         if (context is Activity) BlockingLoaderDialog.show(context, isLoader)
 
+        AdPulse.req(context, "interstitial", AdPulse.FACEBOOK)
         inter.loadAd(
             inter.buildLoadAdConfig()
                 .withAdListener(object : InterstitialAdListener {
 
                     override fun onAdLoaded(ad: Ad?) {
+                        AdPulse.loaded(context, "interstitial", AdPulse.FACEBOOK)
                         context.safeLog("facebook_inter_loaded")
                         if (context is Activity) BlockingLoaderDialog.hide()
                         try {
@@ -549,18 +566,21 @@ class FullscreenOnAction {
                     }
 
                     override fun onError(ad: Ad?, error: com.facebook.ads.AdError?) {
+                        AdPulse.loadFailed(context, "interstitial", error?.errorCode, AdPulse.FACEBOOK)
                         context.safeLog("facebook_inter_error_${error?.errorCode}")
                         if (context is Activity) BlockingLoaderDialog.hide()
                         onFail()
                     }
 
                     override fun onInterstitialDismissed(ad: Ad?) {
+                        AdPulse.close(context, "interstitial", AdPulse.FACEBOOK)
                         context.safeLog("facebook_inter_dismiss")
                         if (context is Activity) BlockingLoaderDialog.hide()
                         onDismissed()
                     }
 
                     override fun onInterstitialDisplayed(ad: Ad?) {
+                        AdPulse.show(context, "interstitial", AdPulse.FACEBOOK)
                         context.safeLog("facebook_inter_displayed")
 
                         if (context is Activity) BlockingLoaderDialog.hide()

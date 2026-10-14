@@ -11,7 +11,7 @@
 
     <!-- phone shell shadow -->
     <path
-        android:fillColor="#331D5CE8"
+        android:fillColor="#331A9B83"
         android:pathData="M20,9 h26 a6,6 0 0 1 6,6 v40 a6,6 0 0 1 -6,6 h-26 a6,6 0 0 1 -6,-6 v-40 a6,6 0 0 1 6,-6 z" />
 
     <!-- phone shell -->
@@ -31,16 +31,16 @@
 
     <!-- home grid: 2 x 2 app tiles -->
     <path
-        android:fillColor="#2F86FF"
+        android:fillColor="#28B091"
         android:pathData="M21,17 h7 a1.5,1.5 0 0 1 1.5,1.5 v7 a1.5,1.5 0 0 1 -1.5,1.5 h-7 a1.5,1.5 0 0 1 -1.5,-1.5 v-7 a1.5,1.5 0 0 1 1.5,-1.5 z" />
     <path
-        android:fillColor="#5EA3FF"
+        android:fillColor="#4EC2A7"
         android:pathData="M32,17 h7 a1.5,1.5 0 0 1 1.5,1.5 v7 a1.5,1.5 0 0 1 -1.5,1.5 h-7 a1.5,1.5 0 0 1 -1.5,-1.5 v-7 a1.5,1.5 0 0 1 1.5,-1.5 z" />
     <path
-        android:fillColor="#5EA3FF"
+        android:fillColor="#4EC2A7"
         android:pathData="M21,29 h7 a1.5,1.5 0 0 1 1.5,1.5 v7 a1.5,1.5 0 0 1 -1.5,1.5 h-7 a1.5,1.5 0 0 1 -1.5,-1.5 v-7 a1.5,1.5 0 0 1 1.5,-1.5 z" />
     <path
-        android:fillColor="#2F86FF"
+        android:fillColor="#28B091"
         android:pathData="M32,29 h7 a1.5,1.5 0 0 1 1.5,1.5 v7 a1.5,1.5 0 0 1 -1.5,1.5 h-7 a1.5,1.5 0 0 1 -1.5,-1.5 v-7 a1.5,1.5 0 0 1 1.5,-1.5 z" />
 
     <!-- dock -->
@@ -55,7 +55,7 @@
 
     <!-- chat bubble with tail -->
     <path
-        android:fillColor="#1D5CE8"
+        android:fillColor="#1A9B83"
         android:pathData="M40,1 h17 a6,6 0 0 1 6,6 v10 a6,6 0 0 1 -6,6 h-9 l-6,5 v-5 h-2 a6,6 0 0 1 -6,-6 v-10 a6,6 0 0 1 6,-6 z" />
     <path
         android:fillColor="#FFFFFF"
@@ -64,7 +64,7 @@
     <!-- check mark -->
     <path
         android:pathData="M43.5,12.5 L47.5,16.5 L54.5,8.5"
-        android:strokeColor="#1D5CE8"
+        android:strokeColor="#1A9B83"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:strokeWidth="2.6" />

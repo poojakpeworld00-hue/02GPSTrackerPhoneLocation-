@@ -21,7 +21,7 @@
                 android:endX="108"
                 android:endY="108">
                 <item
-                    android:color="#FF0E0BFF"
+                    android:color="#FF0FA29A"
                     android:offset="0" />
                 <item
                     android:color="#FF470CFF"

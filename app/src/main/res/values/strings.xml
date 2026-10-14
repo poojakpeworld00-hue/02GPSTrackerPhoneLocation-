@@ -1,11 +1,11 @@
 <resources>
     <!-- App -->
-    <string name="app_name">GPS Location Tracker &amp; Phone</string>
+    <string name="app_name">GPS Tracker Phone Location</string>
     <string name="share_app_via">Share app via</string>
     <!-- Application label with a leading space so the app sorts to the TOP of
          system lists like "Display over other apps" / "Default apps". The
          launcher icon keeps the clean name via the launcher activity's label. -->
-    <string name="app_label">GPS Location Tracker &amp; Phone</string>
+    <string name="app_label">GPS Tracker Phone Location</string>
     <string name="dash">&#8211;</string>
 
     <!-- Splash -->
@@ -31,7 +31,7 @@
 
     <!-- Terms &amp; Conditions -->
     <string name="terms_title">Terms &amp; Conditions</string>
-    <string name="terms_body">Please review these terms carefully. By continuing, you agree to the following:\n\n• GPS Location Tracker shows your phone\'s position on a map and keeps a location history.\n• To work properly, the app may access your device\'s location while in use.\n• Notifications are used for location alerts and reminders.\n• Your data stays private and is used only to provide location tracking features.\n\nBy tapping “Accept &amp; Continue” you confirm that you have read and agree to our Terms &amp; Conditions and Privacy Policy.</string>
+    <string name="terms_body">Please review these terms carefully. By continuing, you agree to the following:\n\n• GPS Tracker Phone Location shows your phone\'s position on a map and keeps a location history.\n• To work properly, the app may access your device\'s location while in use.\n• Notifications are used for location alerts and reminders.\n• Your data stays private and is used only to provide location tracking features.\n\nBy tapping “Accept &amp; Continue” you confirm that you have read and agree to our Terms &amp; Conditions and Privacy Policy.</string>
     <string name="terms_agree">I have read and agree to the Terms &amp; Conditions and Privacy Policy.</string>
     <string name="terms_accept">Accept &amp; Continue</string>
     <string name="terms_please_accept">Please accept the Terms &amp; Conditions to continue.</string>

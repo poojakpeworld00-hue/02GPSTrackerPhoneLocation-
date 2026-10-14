@@ -34,9 +34,9 @@
 
     <!-- Splash redesign dark overrides. Per Visual System, the hero gradient stays
          a rich Sapphire→Violet even in dark (just deepened) — not near-black. -->
-    <color name="splash_grad_start">#022B42</color>
-    <color name="splash_grad_center">#064262</color>
-    <color name="splash_grad_end">#165D83</color>
+    <color name="splash_grad_start">#05422F</color>
+    <color name="splash_grad_center">#073F2D</color>
+    <color name="splash_grad_end">#135A43</color>
     <color name="splash_card_bg">#11181B</color>
     <color name="splash_card_name">#EFF2F4</color>
     <color name="splash_card_sub">#80919B</color>

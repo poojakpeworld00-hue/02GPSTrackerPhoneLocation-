@@ -65,11 +65,11 @@
          The greens are sampled straight out of mipmap/ic_launcher.png so the splash
          and the app icon are the same brand colour: #047439 (icon's darkest, bottom
          right) → #15A73D (mid) → #37C747 (lightest, top right). ===== -->
-    <color name="splash_grad_start">#1F4BFF</color>
-    <color name="splash_grad_center">#3D63FF</color>
-    <color name="splash_grad_end">#4D70FF</color>
-    <color name="splash_accent">#0087CB</color>
-    <color name="splash_accent_2">#4D70FF</color>
+    <color name="splash_grad_start">#1CAA96</color>
+    <color name="splash_grad_center">#32B5A3</color>
+    <color name="splash_grad_end">#3FBBAA</color>
+    <color name="splash_accent">#067E57</color>
+    <color name="splash_accent_2">#3FBBAA</color>
     <color name="splash_ring">#47FFFFFF</color>
     <color name="splash_field_bg">#EDF4F7</color>
     <color name="splash_field_text">#0D1718</color>
@@ -110,11 +110,11 @@
     <color name="splash_tagline_on">#D9FFFFFF</color>
 
     <!-- ===== FSI intro Activity (design: All Screen Light+Dark). Own palette
-         (#00897B / #0F172A / greens); theme-aware via values-night. The floating
+         (#00897B / #102A25 / greens); theme-aware via values-night. The floating
          caller-ID card itself stays white in both themes. ===== -->
     <color name="fsi_bg_center">#DFF3F3</color>          <!-- radial bg, top-center -->
     <color name="fsi_bg_edge">#F3F7F7</color>            <!-- radial bg, edge -->
-    <color name="fsi_blue">#0087CB</color>              <!-- FSI accent (both themes) -->
+    <color name="fsi_blue">#067E57</color>              <!-- FSI accent (both themes) -->
     <color name="fsi_blue_2">#13AEE0</color>            <!-- avatar gradient end -->
     <color name="fsi_title">#0D1718</color>
     <color name="fsi_subtitle">#425D5D</color>

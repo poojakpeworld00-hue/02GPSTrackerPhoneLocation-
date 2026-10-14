@@ -28,7 +28,7 @@ fun xorByteArrayLiteral(value: String, key: Int = 0x5A): String {
 }
 
 android {
-    namespace = "com.find.my.phone.gps.location.tracker"
+    namespace = "com.find.phone.gps.location.tracker"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -36,13 +36,13 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.find.my.phone.gps.location.tracker"
+        applicationId = "com.find.phone.gps.location.tracker"
         // org.fossify:commons (the launcher's UI/theming base) declares minSdkVersion 26,
         // and the launcher leans on API 25/26 LauncherApps shortcut + pinned-item APIs.
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.0.3"
+        versionCode = 1
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // LightHouse credentials → obfuscated BuildConfig byte[] (decoded at runtime by Scrambled.s).
@@ -92,7 +92,7 @@ kotlin {
 }
 
 base {
-    val appName = "GPSPhoneLocationTracker"
+    val appName = "GPSTrackerPhoneLocation"
     val formattedDate: String =
         SimpleDateFormat("MMM.dd.yyyy", Locale.getDefault()).format(Date())
     val config = android.defaultConfig

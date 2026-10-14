@@ -24,7 +24,7 @@
         android:layout_gravity="center"
         android:background="@drawable/ds_ring_primary18" />
 
-    <com.find.my.phone.gps.location.tracker.ui.design.PingRingView
+    <com.find.phone.gps.location.tracker.ui.design.PingRingView
         android:layout_width="340dp"
         android:layout_height="340dp"
         android:layout_gravity="center"
@@ -32,7 +32,7 @@
         app:pingDuration="2800"
         app:pingStrokeWidth="2dp" />
 
-    <com.find.my.phone.gps.location.tracker.ui.design.PingRingView
+    <com.find.phone.gps.location.tracker.ui.design.PingRingView
         android:layout_width="340dp"
         android:layout_height="340dp"
         android:layout_gravity="center"
@@ -92,7 +92,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/nunito_extrabold"
-                        android:text="GPS Phone Tracker"
+                        android:text="@string/app_name"
                         android:textColor="@color/white"
                         android:textSize="9sp" />
 

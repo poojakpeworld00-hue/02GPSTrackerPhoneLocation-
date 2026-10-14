@@ -9,7 +9,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.databinding.TileRecentSearchBinding
+import com.find.phone.gps.location.tracker.databinding.CardRecentSearchBinding
 import com.find.phone.gps.location.tracker.screens.finder.RegionZones
 import java.util.concurrent.TimeUnit
 
@@ -27,7 +27,7 @@ class PastLookupAdapter(
         notifyDataSetChanged()
     }
 
-    inner class VH(val binding: TileRecentSearchBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class VH(val binding: CardRecentSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.row.setOnClickListener {
                 val position = bindingAdapterPosition
@@ -37,7 +37,7 @@ class PastLookupAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-        VH(TileRecentSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        VH(CardRecentSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
@@ -71,9 +71,9 @@ class PastLookupAdapter(
 
     private companion object {
         val TILE_PALETTE = listOf(
-            R.drawable.ds_tile_tint_r14 to R.color.ds_primary,
-            R.drawable.ds_tile_green_r14 to R.color.ds_success,
-            R.drawable.ds_tile_purple_r14 to R.color.ds_purple,
+            R.drawable.vs_tile_tint_r14 to R.color.ds_primary,
+            R.drawable.vs_tile_green_r14 to R.color.ds_success,
+            R.drawable.vs_tile_purple_r14 to R.color.ds_purple,
         )
     }
 }

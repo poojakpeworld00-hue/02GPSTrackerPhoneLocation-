@@ -32,8 +32,8 @@ import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import com.find.phone.gps.location.tracker.repo.simcard.OwnSimLabels
 import com.find.phone.gps.location.tracker.repo.simcard.OwnSimLines
-import com.find.phone.gps.location.tracker.databinding.TileMyNumberCardCompactBinding
-import com.find.phone.gps.location.tracker.databinding.ViewMyNumberBinding
+import com.find.phone.gps.location.tracker.databinding.CardMyNumberCardCompactBinding
+import com.find.phone.gps.location.tracker.databinding.PageMyNumberBinding
 import com.find.phone.gps.location.tracker.helpers.SimLineJournal
 import com.find.phone.gps.location.tracker.helpers.isNightMode
 import kotlinx.coroutines.launch
@@ -43,13 +43,13 @@ import kotlinx.coroutines.launch
  * (carrier · network, region, number, live signal, Copy, a Default badge); the selected SIM drives
  * the SIM tools below (Share + QR, Dual-SIM dashboard, Carrier codes). READ_PHONE_STATE only.
  */
-class OwnNumberActivity : FoundationActivity<ViewMyNumberBinding>() {
+class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
 
-    override val layoutId: Int = R.layout.view_my_number
+    override val layoutId: Int = R.layout.page_my_number
 
     private val prefs by lazy { SecurePrefsKeeper(this) }
 
-    private class Card(val line: OwnSimLines.SimSlotLine, val subId: Int?, val views: TileMyNumberCardCompactBinding)
+    private class Card(val line: OwnSimLines.SimSlotLine, val subId: Int?, val views: CardMyNumberCardCompactBinding)
 
     private var cards: List<Card> = emptyList()
     private var selectedSlot = -1
@@ -108,7 +108,7 @@ class OwnNumberActivity : FoundationActivity<ViewMyNumberBinding>() {
         }
         val inflater = LayoutInflater.from(this)
         cards = lines.mapIndexed { i, line ->
-            val v = TileMyNumberCardCompactBinding.inflate(inflater, binding.simCards, false)
+            val v = CardMyNumberCardCompactBinding.inflate(inflater, binding.simCards, false)
             v.root.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
                 if (i > 0) marginStart = dp(12)
             }
@@ -166,7 +166,7 @@ class OwnNumberActivity : FoundationActivity<ViewMyNumberBinding>() {
 
     private fun styleCard(card: Card, on: Boolean) {
         val v = card.views
-        v.root.setBackgroundResource(if (on) R.drawable.ds_sim_card_selected else R.drawable.ds_sim_card_unselected)
+        v.root.setBackgroundResource(if (on) R.drawable.vs_sim_card_selected else R.drawable.vs_sim_card_unselected)
 
         // The cards are fixed illustrations (gradient or white), so the unselected card uses fixed
         // ink/grey — the adaptive ds_ink/ds_muted flip light in dark mode and vanish on the white card.
@@ -176,15 +176,15 @@ class OwnNumberActivity : FoundationActivity<ViewMyNumberBinding>() {
         v.tvNumber.setTextColor(ink)
         v.tvRegion.setTextColor(sub)
 
-        v.tvBadge.setBackgroundResource(if (on) R.drawable.ds_sim_badge_white else R.drawable.ds_tile_tint_r8)
+        v.tvBadge.setBackgroundResource(if (on) R.drawable.vs_sim_badge_white else R.drawable.vs_tile_tint_r8)
         v.tvBadge.setTextColor(if (on) color(R.color.white) else color(R.color.ds_splash_blue))
 
-        v.btnCopy.setBackgroundResource(if (on) R.drawable.ds_copy_translucent_r12 else R.drawable.ds_copy_gray_fixed_r12)
+        v.btnCopy.setBackgroundResource(if (on) R.drawable.vs_copy_translucent_r12 else R.drawable.vs_copy_gray_fixed_r12)
         val copyInk = if (on) color(R.color.white) else color(R.color.ds_ink_fixed)
         v.btnCopy.setTextColor(copyInk)
         TextViewCompat.setCompoundDrawableTintList(v.btnCopy, ColorStateList.valueOf(copyInk))
 
-        v.badgeDefault.setBackgroundResource(if (on) R.drawable.ds_pill_white_solid else R.drawable.ds_pill_success)
+        v.badgeDefault.setBackgroundResource(if (on) R.drawable.vs_pill_white_solid else R.drawable.vs_pill_success)
         v.badgeDefault.setTextColor(if (on) color(R.color.ds_splash_blue) else color(R.color.ds_success))
 
         setBars(card, levels[card.line.slot] ?: 0, on)

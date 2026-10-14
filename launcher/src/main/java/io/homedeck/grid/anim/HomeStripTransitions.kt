@@ -12,7 +12,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.core.view.isVisible
-import io.homedeck.grid.databinding.LnchDefaultLauncherBannerBinding
+import io.homedeck.grid.databinding.HdkDefaultLauncherBannerBinding
 
 /**
  * Motion for the launcher's default-home card (`lnch_default_launcher_banner.xml`): the card pops
@@ -46,7 +46,7 @@ object HomeStripTransitions {
     private const val SHEEN_MS = 1200L
     private const val SHEEN_EVERY_MS = 4200L
 
-    fun bind(binding: LnchDefaultLauncherBannerBinding) {
+    fun bind(binding: HdkDefaultLauncherBannerBinding) {
         val root = binding.root
         // the card's rounded shape is its outline: clip the corner discs and the sheen to it
         binding.bannerCardUi.clipToOutline = true
@@ -104,7 +104,7 @@ object HomeStripTransitions {
             .start()
     }
 
-    private fun idle(b: LnchDefaultLauncherBannerBinding): MutableList<Animator> {
+    private fun idle(b: HdkDefaultLauncherBannerBinding): MutableList<Animator> {
         val density = b.root.resources.displayMetrics.density
         val loops = mutableListOf<Animator>()
 

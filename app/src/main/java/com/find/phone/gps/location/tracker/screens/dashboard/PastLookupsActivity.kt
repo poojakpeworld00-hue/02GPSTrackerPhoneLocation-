@@ -10,9 +10,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
-import com.find.phone.gps.location.tracker.databinding.TileHistorySectionBinding
-import com.find.phone.gps.location.tracker.databinding.TileRecentSearchBinding
-import com.find.phone.gps.location.tracker.databinding.ViewHistoryBinding
+import com.find.phone.gps.location.tracker.databinding.CardHistorySectionBinding
+import com.find.phone.gps.location.tracker.databinding.CardRecentSearchBinding
+import com.find.phone.gps.location.tracker.databinding.PageHistoryBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.screens.finder.RegionZones
 import com.google.android.material.snackbar.Snackbar
@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit
  * [EXTRA_DIAL]), which reopens its result or refills the search box exactly as the Home list
  * does; a long press removes the row (with Undo); Clear all empties the history.
  */
-class PastLookupsActivity : FoundationActivity<ViewHistoryBinding>() {
+class PastLookupsActivity : FoundationActivity<PageHistoryBinding>() {
 
-    override val layoutId: Int = R.layout.view_history
+    override val layoutId: Int = R.layout.page_history
 
     private val store by lazy { PastLookupStore(this) }
 
@@ -59,10 +59,10 @@ class PastLookupsActivity : FoundationActivity<ViewHistoryBinding>() {
         val groups = all.groupBy { bucket(it.searchedAt) }
         listOf(Bucket.TODAY, Bucket.YESTERDAY, Bucket.EARLIER).forEach { bucket ->
             val rows = groups[bucket] ?: return@forEach
-            val section = TileHistorySectionBinding.inflate(inflater, binding.sections, false)
+            val section = CardHistorySectionBinding.inflate(inflater, binding.sections, false)
             section.tvSection.setText(bucket.label)
             rows.forEachIndexed { i, recent ->
-                val row = TileRecentSearchBinding.inflate(inflater, section.rows, false)
+                val row = CardRecentSearchBinding.inflate(inflater, section.rows, false)
                 bindRow(row, recent, i, i < rows.lastIndex)
                 section.rows.addView(row.root)
             }
@@ -70,7 +70,7 @@ class PastLookupsActivity : FoundationActivity<ViewHistoryBinding>() {
         }
     }
 
-    private fun bindRow(row: TileRecentSearchBinding, recent: PastLookup, index: Int, divider: Boolean) {
+    private fun bindRow(row: CardRecentSearchBinding, recent: PastLookup, index: Int, divider: Boolean) {
         val (tile, tint) = TILE_PALETTE[index % TILE_PALETTE.size]
         row.iconTile.setBackgroundResource(tile)
         row.icon.imageTintList = ContextCompat.getColorStateList(this, tint)
@@ -142,9 +142,9 @@ class PastLookupsActivity : FoundationActivity<ViewHistoryBinding>() {
 
         /** The Home list's tile palette, so the same number keeps the same colour here. */
         private val TILE_PALETTE = listOf(
-            R.drawable.ds_tile_tint_r14 to R.color.ds_primary,
-            R.drawable.ds_tile_green_r14 to R.color.ds_success,
-            R.drawable.ds_tile_purple_r14 to R.color.ds_purple,
+            R.drawable.vs_tile_tint_r14 to R.color.ds_primary,
+            R.drawable.vs_tile_green_r14 to R.color.ds_success,
+            R.drawable.vs_tile_purple_r14 to R.color.ds_purple,
         )
     }
 }

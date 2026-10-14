@@ -22,7 +22,7 @@ import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.simcard.OwnSimLines
-import com.find.phone.gps.location.tracker.databinding.ViewDualSimDashboardBinding
+import com.find.phone.gps.location.tracker.databinding.PageDualSimDashboardBinding
 import com.find.phone.gps.location.tracker.helpers.isNightMode
 import java.util.Locale
 
@@ -31,9 +31,9 @@ import java.util.Locale
  * network type, roaming, country and SIM state; plus the default SIM for calls, data and SMS.
  * Read-only, READ_PHONE_STATE only. Signal updates while the screen is resumed.
  */
-class TwinSimOverviewActivity : FoundationActivity<ViewDualSimDashboardBinding>() {
+class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>() {
 
-    override val layoutId: Int = R.layout.view_dual_sim_dashboard
+    override val layoutId: Int = R.layout.page_dual_sim_dashboard
 
     private var subs: List<SubscriptionInfo> = emptyList()
     private var selectedIndex = 0
@@ -103,7 +103,7 @@ class TwinSimOverviewActivity : FoundationActivity<ViewDualSimDashboardBinding>(
             val on = i == selectedIndex
             tab.setTextColor(ContextCompat.getColor(this, if (on) R.color.ds_primary else R.color.ds_muted))
             tab.typeface = ResourcesCompat.getFont(this, if (on) R.font.figtree_bold else R.font.figtree_semibold)
-            tab.background = if (on) ContextCompat.getDrawable(this, R.drawable.ds_seg_thumb_r10) else null
+            tab.background = if (on) ContextCompat.getDrawable(this, R.drawable.vs_seg_thumb_r10) else null
             tab.elevation = if (on) dp(2).toFloat() else 0f
         }
     }

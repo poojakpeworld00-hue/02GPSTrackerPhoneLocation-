@@ -82,10 +82,10 @@ class OwnAdsKeeper {
         val ad = ads.random()
 
         val layoutId = when (type) {
-            OwnAdFormat.BIG_NATIVE -> R.layout.custom_native_ads1
-            OwnAdFormat.MID_NATIVE -> R.layout.custom_native_ads2
-            OwnAdFormat.BANNER -> R.layout.banner_custom_ads
-            OwnAdFormat.FULLSCREEN_NATIVE -> R.layout.custom_native_full_screen_ads1
+            OwnAdFormat.BIG_NATIVE -> R.layout.own_native_ads1
+            OwnAdFormat.MID_NATIVE -> R.layout.own_native_ads2
+            OwnAdFormat.BANNER -> R.layout.strip_custom_ads
+            OwnAdFormat.FULLSCREEN_NATIVE -> R.layout.own_native_full_screen_ads1
         }
         val view = try {
             LayoutInflater.from(container.context).inflate(layoutId, container, false)

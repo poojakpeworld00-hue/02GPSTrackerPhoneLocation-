@@ -10,7 +10,7 @@ import io.homedeck.grid.R
 import io.homedeck.grid.screens.HomeDeskPane
 import io.homedeck.grid.bridge.HomeDeskContent
 import io.homedeck.grid.bridge.HomeServiceLocator
-import io.homedeck.grid.databinding.LnchHostPanelBinding
+import io.homedeck.grid.databinding.HdkHostPanelBinding
 import kotlin.math.abs
 
 /**
@@ -25,7 +25,7 @@ import kotlin.math.abs
 class HostAppPane(
     context: Context,
     attributeSet: AttributeSet,
-) : HomeDeskFragment<LnchHostPanelBinding>(context, attributeSet) {
+) : HomeDeskFragment<HdkHostPanelBinding>(context, attributeSet) {
 
     // the panel covers the whole screen while open, so HomeDeskPane never sees these events
     private val gestureDetector = GestureDetectorCompat(context, object : SimpleOnGestureListener() {
@@ -48,7 +48,7 @@ class HostAppPane(
 
     override fun setupFragment(activity: HomeDeskPane) {
         this.activity = activity
-        this.binding = LnchHostPanelBinding.bind(this)
+        this.binding = HdkHostPanelBinding.bind(this)
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

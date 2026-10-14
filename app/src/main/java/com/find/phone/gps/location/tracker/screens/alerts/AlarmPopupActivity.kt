@@ -27,7 +27,7 @@ import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsor
-import com.find.phone.gps.location.tracker.databinding.ViewReminderAlertBinding
+import com.find.phone.gps.location.tracker.databinding.PageReminderAlertBinding
 import com.find.phone.gps.location.tracker.alarms.AlarmSettings
 import com.find.phone.gps.location.tracker.alarms.AlarmEntry
 import com.find.phone.gps.location.tracker.alarms.AlarmPlanner
@@ -54,7 +54,7 @@ import com.find.phone.gps.location.tracker.helpers.OsDialogAssist
  */
 class AlarmPopupActivity : AppCompatActivity() {
 
-    private lateinit var binding: ViewReminderAlertBinding
+    private lateinit var binding: PageReminderAlertBinding
     private var item: AlarmEntry? = null
     private var snoozeMinutes = 0
     private val animators = mutableListOf<Animator>()
@@ -73,7 +73,7 @@ class AlarmPopupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         showOverLockScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        binding = ViewReminderAlertBinding.inflate(layoutInflater)
+        binding = PageReminderAlertBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // The sheet sits on the navigation bar: its 22dp bottom padding plus the bar.
         val sheetBottom = binding.alertSheet.paddingBottom
@@ -125,7 +125,7 @@ class AlarmPopupActivity : AppCompatActivity() {
 
         val call = reminder.number.isNotBlank()
         binding.btnPrimary.setText(if (call) R.string.rem_call_now else R.string.rem_open)
-        binding.btnPrimary.setIconResource(if (call) R.drawable.ds_ic_call else 0)
+        binding.btnPrimary.setIconResource(if (call) R.drawable.vs_ic_call else 0)
         binding.btnPrimary.backgroundTintList =
             ContextCompat.getColorStateList(this, if (call) R.color.ds_success else R.color.ds_primary)
         binding.btnPrimary.setOnClickListener { if (call) callBack(reminder) else openList() }
@@ -219,7 +219,7 @@ class AlarmPopupActivity : AppCompatActivity() {
                     textSize = 15f
                     typeface = ResourcesCompat.getFont(context, R.font.figtree_bold)
                     setTextColor(ContextCompat.getColorStateList(context, R.color.ds_reminder_option_text))
-                    setBackgroundResource(R.drawable.ds_reminder_option)
+                    setBackgroundResource(R.drawable.vs_reminder_option)
                     isSelected = minutes == snoozeMinutes
                     setOnClickListener {
                         snoozeMinutes = minutes

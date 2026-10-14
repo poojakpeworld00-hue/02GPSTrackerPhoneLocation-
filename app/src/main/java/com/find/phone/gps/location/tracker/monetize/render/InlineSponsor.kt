@@ -22,12 +22,12 @@ import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
 import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
 import com.find.phone.gps.location.tracker.BuildConfig
-import com.find.phone.gps.location.tracker.databinding.FbMidNativeBinding
-import com.find.phone.gps.location.tracker.databinding.FbNativeBinding
-import com.find.phone.gps.location.tracker.databinding.GooglebignativeBinding
-import com.find.phone.gps.location.tracker.databinding.GooglebignativetopBinding
-import com.find.phone.gps.location.tracker.databinding.Googlemidnative2Binding
-import com.find.phone.gps.location.tracker.databinding.GooglemidnativeBinding
+import com.find.phone.gps.location.tracker.databinding.AdMNativeMidBinding
+import com.find.phone.gps.location.tracker.databinding.AdMNativeBinding
+import com.find.phone.gps.location.tracker.databinding.AdGNativeBigBinding
+import com.find.phone.gps.location.tracker.databinding.AdGNativeBigTopBinding
+import com.find.phone.gps.location.tracker.databinding.AdGNativeMidAltBinding
+import com.find.phone.gps.location.tracker.databinding.AdGNativeMidBinding
 import com.facebook.ads.Ad
 import com.facebook.ads.AdError
 import com.facebook.ads.AdOptionsView
@@ -265,13 +265,13 @@ class InlineSponsor() {
 
                             val rootView: View = if (isButtonTop == true) {
                                 val binding =
-                                    GooglebignativetopBinding.inflate(context.layoutInflater)
+                                    AdGNativeBigTopBinding.inflate(context.layoutInflater)
 
                                 bigNativeTemplateTop(nativeAd!!, binding, context)
                                 binding.root
                             } else {
                                 val binding =
-                                    GooglebignativeBinding.inflate(context.layoutInflater)
+                                    AdGNativeBigBinding.inflate(context.layoutInflater)
 
                                 bigNativeTemplate(nativeAd!!, binding, context)
                                 binding.root
@@ -341,7 +341,7 @@ class InlineSponsor() {
 
     private fun bigNativeTemplate(
         nativeAd: NativeAd,
-        binding: GooglebignativeBinding,
+        binding: AdGNativeBigBinding,
         context: Activity
     ) {
         binding.apply {
@@ -381,7 +381,7 @@ class InlineSponsor() {
 
     private fun bigNativeTemplateTop(
         nativeAd: NativeAd,
-        binding: GooglebignativetopBinding,
+        binding: AdGNativeBigTopBinding,
         context: Activity
     ) {
         binding.apply {
@@ -499,7 +499,7 @@ class InlineSponsor() {
         nativeAd.unregisterView()
 
         // ✅ Inflate layout with ViewBinding
-        val binding = FbNativeBinding.inflate(LayoutInflater.from(activity), viewGroup, false)
+        val binding = AdMNativeBinding.inflate(LayoutInflater.from(activity), viewGroup, false)
 
         // Clear old views and add new ad view
         viewGroup.removeAllViews()
@@ -603,7 +603,7 @@ class InlineSponsor() {
                     try {
                         if (context.isFinishing || context.isDestroyed) return@post
                         if (nativeAd != null) {
-                            val binding = GooglemidnativeBinding.inflate(context.layoutInflater)
+                            val binding = AdGNativeMidBinding.inflate(context.layoutInflater)
                             MidNativeTemplate(
                                 nativeAd!!,
                                 binding,
@@ -747,7 +747,7 @@ class InlineSponsor() {
         nativeAd.unregisterView()
 
         // ✅ Inflate layout with ViewBinding
-        val binding = FbMidNativeBinding.inflate(LayoutInflater.from(activity), viewGroup, false)
+        val binding = AdMNativeMidBinding.inflate(LayoutInflater.from(activity), viewGroup, false)
 
         // Clear old views and add new ad view
         viewGroup.removeAllViews()
@@ -801,7 +801,7 @@ class InlineSponsor() {
 
     private fun MidNativeTemplate(
         nativeAd: NativeAd,
-        binding: GooglemidnativeBinding,
+        binding: AdGNativeMidBinding,
         context: Activity
     ) {
         binding.apply {
@@ -905,7 +905,7 @@ class InlineSponsor() {
                     try {
                         if (context.isFinishing || context.isDestroyed) return@post
                         if (Companion.nativeAd != null) {
-                            val binding = Googlemidnative2Binding.inflate(context.layoutInflater)
+                            val binding = AdGNativeMidAltBinding.inflate(context.layoutInflater)
                             MidNativeTemplate2(
                                 Companion.nativeAd!!,
                                 binding,
@@ -968,7 +968,7 @@ class InlineSponsor() {
 
     private fun MidNativeTemplate2(
         nativeAd: NativeAd,
-        binding: Googlemidnative2Binding,
+        binding: AdGNativeMidAltBinding,
         context: Activity
     ) {
         binding.apply {

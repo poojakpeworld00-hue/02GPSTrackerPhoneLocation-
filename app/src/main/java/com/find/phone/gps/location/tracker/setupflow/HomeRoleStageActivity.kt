@@ -14,7 +14,7 @@ import androidx.core.view.isVisible
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnAction
-import com.find.phone.gps.location.tracker.databinding.ViewOnboardingDefaultLauncherBinding
+import com.find.phone.gps.location.tracker.databinding.PageOnboardingDefaultLauncherBinding
 import com.find.phone.gps.location.tracker.grants.GrantOrchestrator
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.helpers.hideWhileAdVisible
@@ -54,7 +54,7 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         private var grantLogged = false
     }
 
-    private val binding by viewBinding(ViewOnboardingDefaultLauncherBinding::inflate)
+    private val binding by viewBinding(PageOnboardingDefaultLauncherBinding::inflate)
     private val animators = mutableListOf<Animator>()
 
     /** One-way latch: once a destination is committed, nothing else may pick another. */

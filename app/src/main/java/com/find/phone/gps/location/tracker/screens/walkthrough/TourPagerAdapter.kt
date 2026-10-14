@@ -4,14 +4,14 @@ import android.animation.Animator
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.find.phone.gps.location.tracker.databinding.TileOnboardingBinding
+import com.find.phone.gps.location.tracker.databinding.CardOnboardingBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 
 class TourPagerAdapter(
     private val pages: List<TourSlide>,
 ) : RecyclerView.Adapter<TourPagerAdapter.VH>() {
 
-    inner class VH(val binding: TileOnboardingBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class VH(val binding: CardOnboardingBinding) : RecyclerView.ViewHolder(binding.root) {
 
         /** Looping animators of the current scene; cancelled on recycle. */
         private val anims = mutableListOf<Animator>()
@@ -32,7 +32,7 @@ class TourPagerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-        VH(TileOnboardingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        VH(CardOnboardingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) = holder.bind(pages[position])
 

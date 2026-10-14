@@ -28,10 +28,10 @@ import com.find.phone.gps.location.tracker.repo.finder.NumberFinder
 import com.find.phone.gps.location.tracker.repo.finder.NumberSummary
 import com.find.phone.gps.location.tracker.repo.finder.UnveiledLabels
 import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
-import com.find.phone.gps.location.tracker.databinding.TileDetailActionBinding
-import com.find.phone.gps.location.tracker.databinding.TileDetailCellBinding
-import com.find.phone.gps.location.tracker.databinding.TileDetailNameBinding
-import com.find.phone.gps.location.tracker.databinding.ViewNumberDetailBinding
+import com.find.phone.gps.location.tracker.databinding.CardDetailActionBinding
+import com.find.phone.gps.location.tracker.databinding.CardDetailCellBinding
+import com.find.phone.gps.location.tracker.databinding.CardDetailNameBinding
+import com.find.phone.gps.location.tracker.databinding.PageNumberDetailBinding
 import com.find.phone.gps.location.tracker.screens.people.PeopleListAdapter
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import kotlinx.coroutines.launch
@@ -45,9 +45,9 @@ import kotlin.math.roundToInt
  * revealed by the unlock and each other one behind its own rewarded ad (Premium: all shown).
  * When the lookup server couldn't be reached a note offers Retry, which re-runs it in place.
  */
-class NumberInsightActivity : FoundationActivity<ViewNumberDetailBinding>() {
+class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
 
-    override val layoutId: Int = R.layout.view_number_detail
+    override val layoutId: Int = R.layout.page_number_detail
 
     private lateinit var report: NumberSummary
     private var overlay: ZoneRippleOverlay? = null
@@ -94,10 +94,10 @@ class NumberInsightActivity : FoundationActivity<ViewNumberDetailBinding>() {
         VisualTweens.pressScale(binding.btnFullMap)
         binding.identityCard.clipToOutline = false
 
-        action(binding.actCall, R.drawable.ds_ic_call, R.string.ds_act_call, lead = true) { placeCall(report.e164) }
-        action(binding.actSms, R.drawable.ds_ic_message, R.string.ds_act_sms) { sendSms() }
-        action(binding.actMap, R.drawable.ds_ic_navigation, R.string.ds_act_map) { openFullMap() }
-        action(binding.actCopy, R.drawable.ds_ic_copy, R.string.ds_act_copy) { copyNumber() }
+        action(binding.actCall, R.drawable.vs_ic_call, R.string.ds_act_call, lead = true) { placeCall(report.e164) }
+        action(binding.actSms, R.drawable.vs_ic_message, R.string.ds_act_sms) { sendSms() }
+        action(binding.actMap, R.drawable.vs_ic_navigation, R.string.ds_act_map) { openFullMap() }
+        action(binding.actCopy, R.drawable.vs_ic_copy, R.string.ds_act_copy) { copyNumber() }
 
         OpenStreetTiles.style(binding.mapView, interactive = false)
         bind()
@@ -114,9 +114,9 @@ class NumberInsightActivity : FoundationActivity<ViewNumberDetailBinding>() {
         binding.tvMapPlace.text = binding.tvPlace.text
 
         when {
-            r.spam -> chip(R.string.ds_verdict_spam, R.drawable.ds_pill_danger, R.color.ds_danger)
-            r.valid -> chip(R.string.ds_result_valid_short, R.drawable.ds_pill_success_soft, R.color.ds_success)
-            else -> chip(R.string.ds_verdict_unverified, R.drawable.ds_pill_warn, R.color.ds_warn)
+            r.spam -> chip(R.string.ds_verdict_spam, R.drawable.vs_pill_danger, R.color.ds_danger)
+            r.valid -> chip(R.string.ds_result_valid_short, R.drawable.vs_pill_success_soft, R.color.ds_success)
+            else -> chip(R.string.ds_verdict_unverified, R.drawable.vs_pill_warn, R.color.ds_warn)
         }
         val line = r.lineType.label(this)
         binding.chipLine.text = line
@@ -137,18 +137,18 @@ class NumberInsightActivity : FoundationActivity<ViewNumberDetailBinding>() {
         binding.chipVerdict.setTextColor(ContextCompat.getColor(this, color))
     }
 
-    private fun cell(cell: TileDetailCellBinding, @StringRes label: Int, value: String?) {
+    private fun cell(cell: CardDetailCellBinding, @StringRes label: Int, value: String?) {
         cell.tvLabel.setText(label)
         val known = !value.isNullOrBlank()
         cell.tvValue.text = if (known) value else getString(R.string.ds_not_available)
         cell.tvValue.setTextColor(ContextCompat.getColor(this, if (known) R.color.ds_ink else R.color.ds_muted))
     }
 
-    private fun action(tile: TileDetailActionBinding, @DrawableRes icon: Int, @StringRes label: Int, lead: Boolean = false, onClick: () -> Unit) {
+    private fun action(tile: CardDetailActionBinding, @DrawableRes icon: Int, @StringRes label: Int, lead: Boolean = false, onClick: () -> Unit) {
         tile.ivIcon.setImageResource(icon)
         tile.tvLabel.setText(label)
         if (lead) {
-            tile.iconBox.setBackgroundResource(R.drawable.ds_tile_primary_r16)
+            tile.iconBox.setBackgroundResource(R.drawable.vs_tile_primary_r16)
             tile.ivIcon.setColorFilter(ContextCompat.getColor(this, R.color.white))
         }
         VisualTweens.pressScale(tile.actionRoot)
@@ -175,7 +175,7 @@ class NumberInsightActivity : FoundationActivity<ViewNumberDetailBinding>() {
             bindNames()
         }
         shown.forEachIndexed { i, name ->
-            val item = TileDetailNameBinding.inflate(LayoutInflater.from(this), binding.namesList, true)
+            val item = CardDetailNameBinding.inflate(LayoutInflater.from(this), binding.namesList, true)
             item.tvName.text = name
             item.nameDivider.isVisible = i < shown.lastIndex
             showName(item, name, isRevealed(i, name))
@@ -185,7 +185,7 @@ class NumberInsightActivity : FoundationActivity<ViewNumberDetailBinding>() {
         if (all.indices.any { !isRevealed(it, all[it]) }) BonusAdSponsor.preload(this)
     }
 
-    private fun showName(item: TileDetailNameBinding, name: String, revealed: Boolean) {
+    private fun showName(item: CardDetailNameBinding, name: String, revealed: Boolean) {
         item.tvName.setBlurred(!revealed)
         item.tvRevealed.isVisible = revealed
         item.btnReveal.isVisible = !revealed
@@ -194,7 +194,7 @@ class NumberInsightActivity : FoundationActivity<ViewNumberDetailBinding>() {
             item.tvAvatar.setBackgroundResource(PeopleListAdapter.AVATARS[abs(name.hashCode()) % PeopleListAdapter.AVATARS.size])
         } else {
             item.tvAvatar.text = ""
-            item.tvAvatar.setBackgroundResource(R.drawable.ds_circle_track)
+            item.tvAvatar.setBackgroundResource(R.drawable.vs_circle_track)
         }
     }
 
@@ -211,7 +211,7 @@ class NumberInsightActivity : FoundationActivity<ViewNumberDetailBinding>() {
     }
 
     /** One rewarded ad reveals one name (remembered); closing the ad early keeps it hidden. */
-    private fun revealName(item: TileDetailNameBinding, name: String) {
+    private fun revealName(item: CardDetailNameBinding, name: String) {
         if (revealing) return
         revealing = true
         item.tvReveal.isInvisible = true

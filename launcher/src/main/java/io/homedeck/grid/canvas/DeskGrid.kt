@@ -58,7 +58,7 @@ import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.helpers.isSPlus
 import io.homedeck.grid.R
 import io.homedeck.grid.screens.HomeDeskPane
-import io.homedeck.grid.databinding.LnchHomeScreenGridBinding
+import io.homedeck.grid.databinding.HdkHomeScreenGridBinding
 import io.homedeck.grid.ext.launcherConfig
 import io.homedeck.grid.ext.getDrawableForPackageName
 import io.homedeck.grid.ext.homeScreenGridItemsDB
@@ -87,7 +87,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
     RelativeLayout(context, attrs, defStyle) {
     constructor(context: Context, attrs: AttributeSet) : this(context, attrs, 0)
 
-    private lateinit var binding: LnchHomeScreenGridBinding
+    private lateinit var binding: HdkHomeScreenGridBinding
     private var columnCount = context.launcherConfig.homeColumnCount
     private var dockSlotCount = context.launcherConfig.dockColumnCount
     // Dock cells are narrowed when there are more slots than columns; icons in them shrink to match.
@@ -309,7 +309,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        binding = LnchHomeScreenGridBinding.bind(this)
+        binding = HdkHomeScreenGridBinding.bind(this)
     }
 
     fun fetchGridItems() {
@@ -1286,10 +1286,10 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
 
     // pseudo widgets are inflated by us, there is no provider to look up or bind to
     private fun DeskGridEntry.pseudoWidgetLayout() = when (className) {
-        PSEUDO_WIDGET_CLOCK -> R.layout.lnch_pseudo_widget_digital_clock
-        PSEUDO_WIDGET_SEARCH -> R.layout.lnch_pseudo_widget_search_bar
-        PSEUDO_WIDGET_TIME -> R.layout.lnch_pseudo_widget_time
-        PSEUDO_WIDGET_GOOGLE_SEARCH -> R.layout.lnch_pseudo_widget_google_search
+        PSEUDO_WIDGET_CLOCK -> R.layout.hdk_pseudo_widget_digital_clock
+        PSEUDO_WIDGET_SEARCH -> R.layout.hdk_pseudo_widget_search_bar
+        PSEUDO_WIDGET_TIME -> R.layout.hdk_pseudo_widget_time
+        PSEUDO_WIDGET_GOOGLE_SEARCH -> R.layout.hdk_pseudo_widget_google_search
         else -> null
     }
 

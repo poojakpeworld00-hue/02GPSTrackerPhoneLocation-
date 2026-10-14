@@ -28,8 +28,8 @@ import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
 import com.find.phone.gps.location.tracker.repo.billing.ProSettings
 import com.find.phone.gps.location.tracker.repo.billing.ProTier
-import com.find.phone.gps.location.tracker.databinding.TilePremiumPlanBinding
-import com.find.phone.gps.location.tracker.databinding.ViewPremiumBinding
+import com.find.phone.gps.location.tracker.databinding.CardPremiumPlanBinding
+import com.find.phone.gps.location.tracker.databinding.PagePremiumBinding
 import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.helpers.openPolicyLink
@@ -45,12 +45,12 @@ import kotlin.math.roundToInt
  * Opened [afterIntro] it is a first-run step: closing it — or buying — continues the onboarding
  * order exactly where the intro would have.
  */
-class ProUpgradeActivity : FoundationActivity<ViewPremiumBinding>() {
+class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
 
-    override val layoutId: Int = R.layout.view_premium
+    override val layoutId: Int = R.layout.page_premium
 
     private lateinit var config: ProSettings
-    private lateinit var rows: List<TilePremiumPlanBinding>
+    private lateinit var rows: List<CardPremiumPlanBinding>
     private var plans: List<ProTier> = emptyList()
     private var selected = 0
     private var buying = false
@@ -133,7 +133,7 @@ class ProUpgradeActivity : FoundationActivity<ViewPremiumBinding>() {
             val row = rows[i]
             val on = i == selected
             // The selected plan fills with the CTA's gradient, turns its copy white and lifts.
-            row.planCard.setBackgroundResource(if (on) R.drawable.ds_plan_on_r18 else R.drawable.ds_plan_off_r18)
+            row.planCard.setBackgroundResource(if (on) R.drawable.vs_plan_on_r18 else R.drawable.vs_plan_off_r18)
             row.tvName.setTextColor(getColor(if (on) R.color.white else R.color.ds_ink))
             row.tvPrice.setTextColor(getColor(if (on) R.color.white else R.color.ds_ink))
             row.tvPeriod.setTextColor(if (on) getColor(R.color.white) and 0xD9FFFFFF.toInt() else getColor(R.color.ds_muted))

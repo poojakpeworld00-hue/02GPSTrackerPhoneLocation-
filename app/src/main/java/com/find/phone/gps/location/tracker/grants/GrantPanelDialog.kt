@@ -95,7 +95,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
         val ctx = requireContext()
-        val view = inflater.inflate(R.layout.modal_permission_sheet, container, false)
+        val view = inflater.inflate(R.layout.overlay_permission_sheet, container, false)
         root = view
 
         pages = PanelSlide.all(ctx)
@@ -169,7 +169,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     // ─────────────────────────── Pages ───────────────────────────
 
     private fun buildPage(inflater: LayoutInflater, page: PanelSlide): View {
-        val v = inflater.inflate(R.layout.ps_page, null, false)
+        val v = inflater.inflate(R.layout.gp_page, null, false)
         v.layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         v.findViewById<TextView>(R.id.tvTitle).setText(page.title)
         v.findViewById<TextView>(R.id.tvBody).setText(page.body)
@@ -384,9 +384,9 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     }
 
     private enum class Chip(val bg: Int, val icon: Int, val iconTint: Int, val text: Int) {
-        SUCCESS(R.drawable.ps_bg_status_success, R.drawable.ps_ic_check, R.color.ps_success, R.color.ps_success_ink),
-        WARNING(R.drawable.ps_bg_status_warning, R.drawable.ps_ic_warning, R.color.ps_warning, R.color.ps_warning_ink),
-        INFO(R.drawable.ps_bg_status_info, R.drawable.ps_ic_check, R.color.ps_accent_ink, R.color.ps_info_ink),
+        SUCCESS(R.drawable.gp_bg_status_success, R.drawable.gp_ic_check, R.color.ps_success, R.color.ps_success_ink),
+        WARNING(R.drawable.gp_bg_status_warning, R.drawable.gp_ic_warning, R.color.ps_warning, R.color.ps_warning_ink),
+        INFO(R.drawable.gp_bg_status_info, R.drawable.gp_ic_check, R.color.ps_accent_ink, R.color.ps_info_ink),
     }
 
     private fun showChip(kind: Chip?, text: String? = null) {
@@ -460,10 +460,10 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         for (i in 0 until container.childCount) {
             val dot = container.getChildAt(i)
             if (i == current) {
-                dot.setBackgroundResource(R.drawable.ps_bg_gradient_r3)
+                dot.setBackgroundResource(R.drawable.gp_bg_gradient_r3)
                 dot.backgroundTintList = null
             } else {
-                dot.setBackgroundResource(R.drawable.ps_bg_dot)
+                dot.setBackgroundResource(R.drawable.gp_bg_dot)
                 dot.backgroundTintList = ContextCompat.getColorStateList(
                     ctx, if (i < current) R.color.ps_dot_past else R.color.ps_dot_future,
                 )

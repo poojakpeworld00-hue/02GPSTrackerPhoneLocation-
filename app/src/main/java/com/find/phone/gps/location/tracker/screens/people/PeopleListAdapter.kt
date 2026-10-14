@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.databinding.TileContactHeaderBinding
-import com.find.phone.gps.location.tracker.databinding.TileContactRowBinding
+import com.find.phone.gps.location.tracker.databinding.CardContactHeaderBinding
+import com.find.phone.gps.location.tracker.databinding.CardContactRowBinding
 
 /** The A–Z list (design 8a): letter headings, then that letter's contact cards with Locate and Call. */
 class PeopleListAdapter(
@@ -45,8 +45,8 @@ class PeopleListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return if (viewType == TYPE_HEADER) HeaderVH(TileContactHeaderBinding.inflate(inflater, parent, false))
-        else RowVH(TileContactRowBinding.inflate(inflater, parent, false))
+        return if (viewType == TYPE_HEADER) HeaderVH(CardContactHeaderBinding.inflate(inflater, parent, false))
+        else RowVH(CardContactRowBinding.inflate(inflater, parent, false))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -56,9 +56,9 @@ class PeopleListAdapter(
         }
     }
 
-    class HeaderVH(val binding: TileContactHeaderBinding) : RecyclerView.ViewHolder(binding.root)
+    class HeaderVH(val binding: CardContactHeaderBinding) : RecyclerView.ViewHolder(binding.root)
 
-    inner class RowVH(private val binding: TileContactRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class RowVH(private val binding: CardContactRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(contact: PersonPhone) {
             binding.tvInitial.text = contact.initials
             binding.tvInitial.setBackgroundResource(AVATARS[contact.avatar])
@@ -89,8 +89,8 @@ class PeopleListAdapter(
 
         /** The six avatar gradients of the design, indexed by [PersonPhone.avatar]. */
         val AVATARS = intArrayOf(
-            R.drawable.ds_avatar_g0, R.drawable.ds_avatar_g1, R.drawable.ds_avatar_g2,
-            R.drawable.ds_avatar_g3, R.drawable.ds_avatar_g4, R.drawable.ds_avatar_g5,
+            R.drawable.vs_avatar_g0, R.drawable.vs_avatar_g1, R.drawable.vs_avatar_g2,
+            R.drawable.vs_avatar_g3, R.drawable.vs_avatar_g4, R.drawable.vs_avatar_g5,
         )
     }
 }

@@ -9,9 +9,9 @@ import com.bumptech.glide.Glide
 import org.fossify.commons.extensions.getProperTextColor
 import io.homedeck.grid.R
 import io.homedeck.grid.screens.HomeFoundationPane
-import io.homedeck.grid.databinding.LnchItemWidgetListItemsHolderBinding
-import io.homedeck.grid.databinding.LnchItemWidgetListSectionBinding
-import io.homedeck.grid.databinding.LnchItemWidgetPreviewBinding
+import io.homedeck.grid.databinding.HdkRowWidgetListItemsHolderBinding
+import io.homedeck.grid.databinding.HdkRowWidgetListSectionBinding
+import io.homedeck.grid.databinding.HdkRowWidgetPreviewBinding
 import io.homedeck.grid.support.WIDGET_LIST_ITEMS_HOLDER
 import io.homedeck.grid.support.WIDGET_LIST_SECTION
 import io.homedeck.grid.contracts.WidgetPickerCallback
@@ -31,8 +31,8 @@ class WidgetPickerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = when (viewType) {
-            WIDGET_LIST_SECTION -> LnchItemWidgetListSectionBinding.inflate(inflater, parent, false)
-            else -> LnchItemWidgetListItemsHolderBinding.inflate(inflater, parent, false)
+            WIDGET_LIST_SECTION -> HdkRowWidgetListSectionBinding.inflate(inflater, parent, false)
+            else -> HdkRowWidgetListItemsHolderBinding.inflate(inflater, parent, false)
         }
 
         return ViewHolder(binding.root)
@@ -56,7 +56,7 @@ class WidgetPickerAdapter(
     }
 
     private fun setupListSection(view: View, section: WidgetPickerGroup) {
-        LnchItemWidgetListSectionBinding.bind(view).apply {
+        HdkRowWidgetListSectionBinding.bind(view).apply {
             widgetAppTitleUi.text = section.appTitle
             widgetAppTitleUi.setTextColor(textColor)
             widgetAppIconUi.setImageDrawable(section.appIcon)
@@ -64,12 +64,12 @@ class WidgetPickerAdapter(
     }
 
     private fun setupListItemsHolder(view: View, listItem: WidgetPickerEntries) {
-        val binding = LnchItemWidgetListItemsHolderBinding.bind(view)
+        val binding = HdkRowWidgetListItemsHolderBinding.bind(view)
         binding.widgetListItemsHolderUi.removeAllViews()
         binding.widgetListItemsScrollViewUi.scrollX = 0
         listItem.widgets.forEachIndexed { index, widget ->
             val imageSize = activity.resources.getDimension(R.dimen.launcher_widget_preview_size).toInt()
-            val widgetPreview = LnchItemWidgetPreviewBinding.inflate(LayoutInflater.from(activity))
+            val widgetPreview = HdkRowWidgetPreviewBinding.inflate(LayoutInflater.from(activity))
             binding.widgetListItemsHolderUi.addView(widgetPreview.root)
 
             val endMargin = if (index == listItem.widgets.size - 1) {

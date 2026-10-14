@@ -16,7 +16,7 @@ import org.fossify.commons.extensions.normalizeString
 import io.homedeck.grid.R
 import io.homedeck.grid.screens.HomeDeskPane
 import io.homedeck.grid.lists.PaneAppsAdapter
-import io.homedeck.grid.databinding.LnchLeftPanelFragmentBinding
+import io.homedeck.grid.databinding.HdkLeftPanelFragmentBinding
 import io.homedeck.grid.ext.launchApp
 import io.homedeck.grid.entities.LaunchableApp
 import io.homedeck.grid.sponsor.HomeAdsSettings
@@ -30,7 +30,7 @@ import kotlin.math.abs
 class AppTrayPane(
     context: Context,
     attributeSet: AttributeSet,
-) : HomeDeskFragment<LnchLeftPanelFragmentBinding>(context, attributeSet) {
+) : HomeDeskFragment<HdkLeftPanelFragmentBinding>(context, attributeSet) {
 
     private var launchers = emptyList<LaunchableApp>()
     private var resultsCap = COLLAPSED_RESULTS
@@ -59,12 +59,12 @@ class AppTrayPane(
 
     override fun setupFragment(activity: HomeDeskPane) {
         this.activity = activity
-        this.binding = LnchLeftPanelFragmentBinding.bind(this)
+        this.binding = HdkLeftPanelFragmentBinding.bind(this)
 
-        suggestedAdapter = PaneAppsAdapter(R.layout.lnch_item_panel_grid_app, ::launchLauncher)
-        recentAdapter = PaneAppsAdapter(R.layout.lnch_item_panel_grid_app, ::launchLauncher)
-        resultsAdapter = PaneAppsAdapter(R.layout.lnch_item_panel_result, ::launchLauncher)
-        searchInAdapter = PaneAppsAdapter(R.layout.lnch_item_panel_search_in, ::searchInApp)
+        suggestedAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_grid_app, ::launchLauncher)
+        recentAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_grid_app, ::launchLauncher)
+        resultsAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_result, ::launchLauncher)
+        searchInAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_search_in, ::searchInApp)
 
         binding.panelSuggestedGridUi.adapter = suggestedAdapter
         binding.panelRecentGridUi.adapter = recentAdapter

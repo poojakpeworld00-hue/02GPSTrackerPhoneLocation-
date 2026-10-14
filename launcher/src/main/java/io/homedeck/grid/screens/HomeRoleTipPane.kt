@@ -124,7 +124,7 @@ class HomeRoleTipPane : AppCompatActivity() {
                 return
             }
 
-        setContentView(R.layout.lnch_default_home_hint_panel)
+        setContentView(R.layout.hdk_default_home_hint_panel)
         applyKind()
 
         findViewById<View>(R.id.llMainUi)?.setOnClickListener { finish() }

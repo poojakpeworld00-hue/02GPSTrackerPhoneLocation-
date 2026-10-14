@@ -3,7 +3,7 @@ package com.find.phone.gps.location.tracker.screens.boot
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.view.View
-import com.find.phone.gps.location.tracker.databinding.ViewSplashBinding
+import com.find.phone.gps.location.tracker.databinding.PageSplashBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.dp
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.loop
@@ -25,7 +25,7 @@ import com.find.phone.gps.location.tracker.screens.visual.VisualTweens.pvh
  * satellites and the pin ping are owned by their views; navigation is owned by BootActivity,
  * which only waits for one full cycle.
  */
-class BootTweens(private val binding: ViewSplashBinding) {
+class BootTweens(private val binding: PageSplashBinding) {
 
     private val animators = mutableListOf<Animator>()
     private val context get() = binding.root.context

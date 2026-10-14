@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.databinding.TileLanguageBinding
+import com.find.phone.gps.location.tracker.databinding.CardLanguageBinding
 
 /**
  * Language rows (design 4c). The selected row gets the tint background, a primary code tile
@@ -49,7 +49,7 @@ class LanguageListAdapter(
         currentTag = tag
     }
 
-    inner class VH(val binding: TileLanguageBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class VH(val binding: CardLanguageBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private var running: Animator? = null
 
@@ -89,13 +89,13 @@ class LanguageListAdapter(
             val ctx = binding.root.context
             cancelAnimations()
             binding.rowLanguage.background = if (selected) {
-                ContextCompat.getDrawable(ctx, R.drawable.ds_row_selected_r14)
+                ContextCompat.getDrawable(ctx, R.drawable.vs_row_selected_r14)
             } else {
                 null
             }
-            binding.tvCode.setBackgroundResource(if (selected) R.drawable.ds_tile_primary_r12 else R.drawable.ds_tile_gray_r12)
+            binding.tvCode.setBackgroundResource(if (selected) R.drawable.vs_tile_primary_r12 else R.drawable.vs_tile_gray_r12)
             binding.tvCode.setTextColor(ContextCompat.getColor(ctx, if (selected) R.color.white else R.color.ds_ink2))
-            binding.radio.setBackgroundResource(if (selected) R.drawable.ds_radio_on else R.drawable.ds_radio_off)
+            binding.radio.setBackgroundResource(if (selected) R.drawable.vs_radio_on else R.drawable.vs_radio_off)
 
             if (!animate || !selected) return
             running = ObjectAnimator.ofPropertyValuesHolder(
@@ -111,7 +111,7 @@ class LanguageListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-        VH(TileLanguageBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        VH(CardLanguageBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]

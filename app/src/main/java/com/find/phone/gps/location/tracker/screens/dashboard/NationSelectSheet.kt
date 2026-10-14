@@ -10,8 +10,8 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.databinding.SheetCountryPickerBinding
-import com.find.phone.gps.location.tracker.databinding.TileCountryBinding
+import com.find.phone.gps.location.tracker.databinding.BsheetCountryPickerBinding
+import com.find.phone.gps.location.tracker.databinding.CardCountryBinding
 import com.find.phone.gps.location.tracker.screens.finder.RegionZones
 import com.find.phone.gps.location.tracker.screens.finder.RegionZone
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -25,7 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
  */
 class NationSelectSheet : BottomSheetDialogFragment() {
 
-    private var _binding: SheetCountryPickerBinding? = null
+    private var _binding: BsheetCountryPickerBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: NationListAdapter
 
@@ -40,7 +40,7 @@ class NationSelectSheet : BottomSheetDialogFragment() {
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = SheetCountryPickerBinding.inflate(inflater, container, false)
+        _binding = BsheetCountryPickerBinding.inflate(inflater, container, false)
         val screen = resources.displayMetrics.heightPixels
         binding.root.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (screen * SHEET_HEIGHT_FRACTION).toInt())
         return binding.root
@@ -98,7 +98,7 @@ class NationSelectSheet : BottomSheetDialogFragment() {
             notifyDataSetChanged()
         }
 
-        inner class VH(val binding: TileCountryBinding) : RecyclerView.ViewHolder(binding.root) {
+        inner class VH(val binding: CardCountryBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
                 binding.row.setOnClickListener {
                     val p = bindingAdapterPosition
@@ -108,7 +108,7 @@ class NationSelectSheet : BottomSheetDialogFragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-            VH(TileCountryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            VH(CardCountryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         override fun onBindViewHolder(holder: VH, position: Int) {
             val t = items[position]

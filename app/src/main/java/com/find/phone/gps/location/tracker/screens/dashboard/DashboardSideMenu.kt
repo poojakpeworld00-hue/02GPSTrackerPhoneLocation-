@@ -21,7 +21,7 @@ import com.find.phone.gps.location.tracker.alarms.AlarmSettings
 import com.find.phone.gps.location.tracker.alarms.AlarmRepository
 import com.find.phone.gps.location.tracker.screens.alerts.AlarmListActivity
 import kotlinx.coroutines.launch
-import com.find.phone.gps.location.tracker.databinding.PieceHomeDrawerBinding
+import com.find.phone.gps.location.tracker.databinding.PartHomeDrawerBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
 import com.find.phone.gps.location.tracker.screens.locale.Locales
@@ -39,7 +39,7 @@ import java.util.Locale
  */
 class DashboardSideMenu(
     private val activity: AppCompatActivity,
-    private val binding: PieceHomeDrawerBinding,
+    private val binding: PartHomeDrawerBinding,
     private val requestPhonePermission: (Array<String>) -> Unit = {},
     private val onNavigate: () -> Unit,
 ) {
@@ -142,7 +142,7 @@ class DashboardSideMenu(
         // The 14dp glyph the design uses, whatever the vector's intrinsic size.
         val icon = view.compoundDrawablesRelative[0]?.mutate()?.apply { setBounds(0, 0, dp(14), dp(14)) }
         view.setCompoundDrawablesRelative(icon, null, null, null)
-        view.background = if (selected) ContextCompat.getDrawable(activity, R.drawable.ds_seg_thumb_r10) else null
+        view.background = if (selected) ContextCompat.getDrawable(activity, R.drawable.vs_seg_thumb_r10) else null
         view.elevation = if (selected) dp(2).toFloat() else 0f
     }
 

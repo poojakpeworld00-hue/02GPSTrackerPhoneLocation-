@@ -28,7 +28,7 @@ import com.find.phone.gps.location.tracker.monetize.engine.HomeSlotAds
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsor
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.databinding.ViewPackageResultBinding
+import com.find.phone.gps.location.tracker.databinding.PagePackageResultBinding
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.helpers.OsDialogAssist
 
@@ -45,9 +45,9 @@ import com.find.phone.gps.location.tracker.helpers.OsDialogAssist
  * nothing is invented or claimed to have been done that was not. A removed package is already gone,
  * so its label and icon come from [InstallInfoMemo].
  */
-class InstallOutcomeActivity : FoundationActivity<ViewPackageResultBinding>() {
+class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
 
-    override val layoutId: Int = R.layout.view_package_result
+    override val layoutId: Int = R.layout.page_package_result
 
     private val installed: Boolean by lazy { intent.getBooleanExtra(EXTRA_INSTALLED, true) }
     private val affectedPackage: String by lazy { intent.getStringExtra(EXTRA_PACKAGE).orEmpty() }
@@ -99,11 +99,11 @@ class InstallOutcomeActivity : FoundationActivity<ViewPackageResultBinding>() {
     }
 
     private fun bindHeader() = with(binding) {
-        pkgresHeroVw.setBackgroundResource(R.drawable.shape_pkgres_hero_installed)
-        pkgresBadgeVw.setBackgroundResource(R.drawable.shape_pkgres_badge_installed)
-        pkgresBadgeIconVw.setImageResource(if (installed) R.drawable.glyph_shield_check else R.drawable.glyph_check)
+        pkgresHeroVw.setBackgroundResource(R.drawable.form_pkgres_hero_installed)
+        pkgresBadgeVw.setBackgroundResource(R.drawable.form_pkgres_badge_installed)
+        pkgresBadgeIconVw.setImageResource(if (installed) R.drawable.icn_shield_check else R.drawable.icn_check)
         pkgresStatusVw.apply {
-            setBackgroundResource(R.drawable.shape_pkgres_status_installed)
+            setBackgroundResource(R.drawable.form_pkgres_status_installed)
             setText(if (installed) R.string.pkgres_privacy_status else R.string.pkgres_optimize_status)
             setTextColor(getColor(R.color.pkgres_installed))
         }
@@ -240,7 +240,7 @@ class InstallOutcomeActivity : FoundationActivity<ViewPackageResultBinding>() {
     }
 
     private fun addRow(title: String, value: String, dotColor: Int) {
-        val row = LayoutInflater.from(this).inflate(R.layout.tile_pkgres_check, binding.pkgresChecksVw, false)
+        val row = LayoutInflater.from(this).inflate(R.layout.card_pkgres_check, binding.pkgresChecksVw, false)
         row.findViewById<TextView>(R.id.pkgresRowTitleVw).text = title
         row.findViewById<TextView>(R.id.pkgresRowValueVw).text = value
         row.findViewById<View>(R.id.pkgresRowDotVw).background.mutate().setTint(getColor(dotColor))

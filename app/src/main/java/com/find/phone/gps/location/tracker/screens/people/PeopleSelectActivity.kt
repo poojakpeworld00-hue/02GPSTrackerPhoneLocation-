@@ -27,7 +27,7 @@ import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsorStrip
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
-import com.find.phone.gps.location.tracker.databinding.ViewContactPickerBinding
+import com.find.phone.gps.location.tracker.databinding.PageContactPickerBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.screens.visual.VisualPopup
 import kotlinx.coroutines.Dispatchers
@@ -43,9 +43,9 @@ import java.util.Locale
  * Opened from Home as a picker: Locate hands the number back as [EXTRA_NUMBER]. Without the
  * Contacts permission the 8b state asks for it in place.
  */
-class PeopleSelectActivity : FoundationActivity<ViewContactPickerBinding>() {
+class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
 
-    override val layoutId: Int = R.layout.view_contact_picker
+    override val layoutId: Int = R.layout.page_contact_picker
 
     private val adapter = PeopleListAdapter(onLocate = { pick(it) }, onCall = { dial(it) })
     private val favorites = StarredListAdapter { pick(it) }
@@ -191,7 +191,7 @@ class PeopleSelectActivity : FoundationActivity<ViewContactPickerBinding>() {
         val popup = VisualPopup(this)
         popup.add(
             label = getString(R.string.ds_contacts_all_accounts),
-            icon = R.drawable.ds_ic_contact_card,
+            icon = R.drawable.vs_ic_contact_card,
             badge = people.size.toString(),
             selected = account == null,
         ) { selectAccount(null) }
@@ -199,9 +199,9 @@ class PeopleSelectActivity : FoundationActivity<ViewContactPickerBinding>() {
             popup.add(
                 label = name,
                 icon = when (name) {
-                    PersonPhone.ACCOUNT_PHONE -> R.drawable.ds_ic_phone
-                    PersonPhone.ACCOUNT_SIM -> R.drawable.ds_ic_contact_card
-                    else -> R.drawable.ds_ic_globe
+                    PersonPhone.ACCOUNT_PHONE -> R.drawable.vs_ic_phone
+                    PersonPhone.ACCOUNT_SIM -> R.drawable.vs_ic_contact_card
+                    else -> R.drawable.vs_ic_globe
                 },
                 badge = counts.getValue(name).toString(),
                 selected = account == name,
@@ -221,9 +221,9 @@ class PeopleSelectActivity : FoundationActivity<ViewContactPickerBinding>() {
         VisualPopup(this)
             .add(
                 label = getString(if (descending) R.string.ds_contacts_sort_az else R.string.ds_contacts_sort_za),
-                icon = R.drawable.ds_ic_grid,
+                icon = R.drawable.vs_ic_grid,
             ) { descending = !descending; applyFilter() }
-            .add(label = getString(R.string.ds_contacts_refresh), icon = R.drawable.ds_ic_history) { load() }
+            .add(label = getString(R.string.ds_contacts_refresh), icon = R.drawable.vs_ic_history) { load() }
             .show(binding.btnTools, Gravity.END)
     }
 

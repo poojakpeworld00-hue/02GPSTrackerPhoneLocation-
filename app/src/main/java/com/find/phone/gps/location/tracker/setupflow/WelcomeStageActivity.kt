@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
-import com.find.phone.gps.location.tracker.databinding.TileGestureTileBinding
-import com.find.phone.gps.location.tracker.databinding.ViewOnboardingWelcomeBinding
+import com.find.phone.gps.location.tracker.databinding.CardGestureTileBinding
+import com.find.phone.gps.location.tracker.databinding.PageOnboardingWelcomeBinding
 import com.find.phone.gps.location.tracker.grants.GrantOrchestrator
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.helpers.followAdContainer
@@ -23,7 +23,7 @@ import org.fossify.commons.extensions.viewBinding
  */
 class WelcomeStageActivity : ShellHubActivity() {
 
-    private val binding by viewBinding(ViewOnboardingWelcomeBinding::inflate)
+    private val binding by viewBinding(PageOnboardingWelcomeBinding::inflate)
     private val animators = mutableListOf<Animator>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,14 +73,14 @@ class WelcomeStageActivity : ShellHubActivity() {
         bindTile(tileSwipeLeft, 180f, R.string.gesture_swipe_left, R.string.gesture_swipe_left_body, active = false)
     }
 
-    private fun bindTile(tile: TileGestureTileBinding, rotation: Float, title: Int, body: Int, active: Boolean) {
+    private fun bindTile(tile: CardGestureTileBinding, rotation: Float, title: Int, body: Int, active: Boolean) {
         tile.tileIcon.rotation = rotation
         tile.tileTitle.setText(title)
         tile.tileBody.setText(body)
         if (active) {
-            tile.tileRoot.setBackgroundResource(R.drawable.ds_gesture_active_r16)
+            tile.tileRoot.setBackgroundResource(R.drawable.vs_gesture_active_r16)
             tile.tileRoot.elevation = resources.displayMetrics.density * 6f
-            tile.tileIconBox.setBackgroundResource(R.drawable.ds_tile_white20_r12)
+            tile.tileIconBox.setBackgroundResource(R.drawable.vs_tile_white20_r12)
             ImageViewCompat.setImageTintList(tile.tileIcon, ContextCompat.getColorStateList(this, R.color.white))
             tile.tileTitle.setTextColor(ContextCompat.getColor(this, R.color.white))
             tile.tileBody.setTextColor(ContextCompat.getColor(this, R.color.ds_white90))

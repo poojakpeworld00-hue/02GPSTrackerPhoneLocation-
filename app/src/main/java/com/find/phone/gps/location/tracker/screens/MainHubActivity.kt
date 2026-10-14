@@ -13,7 +13,7 @@ import androidx.core.view.WindowCompat
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.monetize.render.StoreUpdateKeeper
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
-import com.find.phone.gps.location.tracker.databinding.ViewMainBinding
+import com.find.phone.gps.location.tracker.databinding.PageMainBinding
 import com.find.phone.gps.location.tracker.homeshell.HomeModeToggle
 import com.find.phone.gps.location.tracker.screens.dashboard.DashboardMainFragment
 import com.find.phone.gps.location.tracker.screens.dashboard.DashboardSideMenu
@@ -30,9 +30,9 @@ import io.homedeck.grid.screens.HomeDeskPane as LauncherHomeActivity
  * The Activity-bound flows (RC permission sheet, in-app update) live in [DashboardShellDriver],
  * exactly as in the reference.
  */
-class MainHubActivity : FoundationActivity<ViewMainBinding>(), DashboardShellOwner, DashboardMainFragment.MenuHost {
+class MainHubActivity : FoundationActivity<PageMainBinding>(), DashboardShellOwner, DashboardMainFragment.MenuHost {
 
-    override val layoutId: Int = R.layout.view_main
+    override val layoutId: Int = R.layout.page_main
 
     override val hostActivity: AppCompatActivity get() = this
 

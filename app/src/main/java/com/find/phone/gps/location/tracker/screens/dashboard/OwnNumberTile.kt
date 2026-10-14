@@ -18,8 +18,8 @@ import com.find.phone.gps.location.tracker.monetize.engine.logPermissionResult
 import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import com.find.phone.gps.location.tracker.repo.simcard.OwnSimLines
-import com.find.phone.gps.location.tracker.databinding.PieceMyNumberCardBinding
-import com.find.phone.gps.location.tracker.databinding.TileMyNumberSimBinding
+import com.find.phone.gps.location.tracker.databinding.PartMyNumberCardBinding
+import com.find.phone.gps.location.tracker.databinding.CardMyNumberSimBinding
 import com.find.phone.gps.location.tracker.screens.simcard.OwnNumberActivity
 import com.find.phone.gps.location.tracker.helpers.SimLineJournal
 
@@ -36,7 +36,7 @@ import com.find.phone.gps.location.tracker.helpers.SimLineJournal
  */
 class OwnNumberTile(
     private val activity: AppCompatActivity,
-    private val views: PieceMyNumberCardBinding,
+    private val views: PartMyNumberCardBinding,
     private val prefs: SecurePrefsKeeper,
     private val requestPermissions: (Array<String>) -> Unit,
 ) {
@@ -115,12 +115,12 @@ class OwnNumberTile(
     }
 
     private fun bindRow(inflater: LayoutInflater, context: Context, line: OwnSimLines.SimSlotLine) =
-        TileMyNumberSimBinding.inflate(inflater, views.simRows, false).apply {
+        CardMyNumberSimBinding.inflate(inflater, views.simRows, false).apply {
             // Badge "SIM1" / "SIM2": slot 1 filled primary, the rest a light tint.
             val primarySlot = line.slot <= 1
             tvSimBadge.text = context.getString(R.string.my_number_sim_badge, line.slot)
             tvSimBadge.setBackgroundResource(
-                if (primarySlot) R.drawable.ds_sim_badge_primary else R.drawable.ds_sim_badge_tint
+                if (primarySlot) R.drawable.vs_sim_badge_primary else R.drawable.vs_sim_badge_tint
             )
             tvSimBadge.setTextColor(
                 ContextCompat.getColor(context, if (primarySlot) R.color.white else R.color.ds_splash_blue)

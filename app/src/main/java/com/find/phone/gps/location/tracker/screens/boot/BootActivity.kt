@@ -22,7 +22,7 @@ import com.find.phone.gps.location.tracker.monetize.render.showAppRedirectPopup
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
-import com.find.phone.gps.location.tracker.databinding.ViewSplashBinding
+import com.find.phone.gps.location.tracker.databinding.PageSplashBinding
 import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import com.find.phone.gps.location.tracker.setupflow.WalkthroughHomeAdvance
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
@@ -40,9 +40,9 @@ import java.util.concurrent.atomic.AtomicBoolean
  * sequence or the home screen. The animation is owned by [BootTweens]; navigation waits
  * for BOTH the data chain and one full animation cycle.
  */
-class BootActivity : FoundationActivity<ViewSplashBinding>() {
+class BootActivity : FoundationActivity<PageSplashBinding>() {
 
-    override val layoutId: Int = R.layout.view_splash
+    override val layoutId: Int = R.layout.page_splash
     private val handler = Handler(Looper.getMainLooper())
     private var motion: BootTweens? = null
 

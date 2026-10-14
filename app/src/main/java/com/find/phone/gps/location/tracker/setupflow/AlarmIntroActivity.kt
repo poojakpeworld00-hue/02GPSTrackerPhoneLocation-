@@ -11,7 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.lifecycleScope
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
-import com.find.phone.gps.location.tracker.databinding.ViewReminderIntroBinding
+import com.find.phone.gps.location.tracker.databinding.PageReminderIntroBinding
 import com.find.phone.gps.location.tracker.alarms.AlarmSettings
 import com.find.phone.gps.location.tracker.alarms.gate.AlarmGrant
 import com.find.phone.gps.location.tracker.alarms.gate.AlarmGrantObserver
@@ -38,7 +38,7 @@ import org.fossify.commons.extensions.viewBinding
  */
 class AlarmIntroActivity : ShellHubActivity() {
 
-    private val binding by viewBinding(ViewReminderIntroBinding::inflate)
+    private val binding by viewBinding(PageReminderIntroBinding::inflate)
     private val animators = mutableListOf<Animator>()
     private var awaitingAccess = false
     private var accessPollJob: Job? = null

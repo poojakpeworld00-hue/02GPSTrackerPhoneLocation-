@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.find.phone.gps.location.tracker.databinding.TileContactFavBinding
+import com.find.phone.gps.location.tracker.databinding.CardContactFavBinding
 
 /** The Favorites row (design 8a): 56dp gradient avatars with a locate badge and the first name. */
 class StarredListAdapter(
@@ -13,11 +13,11 @@ class StarredListAdapter(
 ) : ListAdapter<PersonPhone, StarredListAdapter.VH>(Diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-        VH(TileContactFavBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        VH(CardContactFavBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) = holder.bind(getItem(position))
 
-    inner class VH(private val binding: TileContactFavBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class VH(private val binding: CardContactFavBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(contact: PersonPhone) {
             binding.tvInitials.text = contact.initials
             binding.tvInitials.setBackgroundResource(PeopleListAdapter.AVATARS[contact.avatar])

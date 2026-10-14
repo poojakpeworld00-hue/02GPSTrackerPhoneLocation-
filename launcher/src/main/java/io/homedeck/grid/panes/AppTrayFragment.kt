@@ -15,7 +15,7 @@ import android.os.Process
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import io.homedeck.grid.databinding.LnchItemSearchShortcutBinding
+import io.homedeck.grid.databinding.HdkRowSearchShortcutBinding
 import io.homedeck.grid.ext.appUsageDB
 import io.homedeck.grid.support.AppRecommender
 import org.fossify.commons.extensions.beVisible
@@ -39,7 +39,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.viewpager2.widget.ViewPager2
 import kotlin.math.abs
-import io.homedeck.grid.databinding.LnchAllAppsFragmentBinding
+import io.homedeck.grid.databinding.HdkAllAppsFragmentBinding
 import io.homedeck.grid.ext.applyDrawerSkin
 import io.homedeck.grid.ext.launcherConfig
 import io.homedeck.grid.ext.launchApp
@@ -56,7 +56,7 @@ import io.homedeck.grid.entities.appLauncherComparator
 class AppTrayFragment(
     context: Context,
     attributeSet: AttributeSet
-) : HomeDeskFragment<LnchAllAppsFragmentBinding>(context, attributeSet), InstalledAppsCallback {
+) : HomeDeskFragment<HdkAllAppsFragmentBinding>(context, attributeSet), InstalledAppsCallback {
 
     companion object {
         /** The search cards are four across whatever the drawer's own column count (One UI's Finder is too). */
@@ -130,7 +130,7 @@ class AppTrayFragment(
     @SuppressLint("ClickableViewAccessibility")
     override fun setupFragment(activity: HomeDeskPane) {
         this.activity = activity
-        this.binding = LnchAllAppsFragmentBinding.bind(this)
+        this.binding = HdkAllAppsFragmentBinding.bind(this)
 
         // the slot's row spans the whole width; every other position is a single app icon. Which
         // position that is comes from the launcherConfig, so it is asked of the adapter rather than fixed
@@ -778,7 +778,7 @@ class AppTrayFragment(
         val inflater = LayoutInflater.from(context)
         val density = resources.displayMetrics.densityDpi
         shortcuts.forEach { shortcut ->
-            val row = LnchItemSearchShortcutBinding.inflate(inflater, list, false)
+            val row = HdkRowSearchShortcutBinding.inflate(inflater, list, false)
             row.searchShortcutLabelUi.text = shortcut.shortLabel ?: shortcut.longLabel ?: ""
             row.searchShortcutIconUi.setImageDrawable(runCatching { launcherApps.getShortcutIconDrawable(shortcut, density) }.getOrNull())
             row.root.setOnClickListener {

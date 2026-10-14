@@ -11,7 +11,7 @@ import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.interfaces.RefreshRecyclerViewListener
 import org.fossify.commons.views.MyGridLayoutManager
 import io.homedeck.grid.lists.ConcealedAppsAdapter
-import io.homedeck.grid.databinding.LnchActivityHiddenIconsBinding
+import io.homedeck.grid.databinding.HdkScreenHiddenIconsBinding
 import io.homedeck.grid.ext.launcherConfig
 import io.homedeck.grid.support.GlyphMasker
 import io.homedeck.grid.ext.getDrawableForPackageName
@@ -19,7 +19,7 @@ import io.homedeck.grid.ext.hiddenIconsDB
 import io.homedeck.grid.entities.ConcealedApp
 
 class ConcealedAppsPane : HomeFoundationPane(), RefreshRecyclerViewListener {
-    private val binding by viewBinding(LnchActivityHiddenIconsBinding::inflate)
+    private val binding by viewBinding(HdkScreenHiddenIconsBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -26,7 +26,7 @@ import io.homedeck.grid.R
 import io.homedeck.grid.sponsor.PaidAppTiles
 import com.bumptech.glide.Glide
 import io.homedeck.grid.screens.HomeFoundationPane
-import io.homedeck.grid.databinding.LnchItemLauncherLabelBinding
+import io.homedeck.grid.databinding.HdkRowLauncherLabelBinding
 import io.homedeck.grid.ext.animateScale
 import io.homedeck.grid.ext.launcherConfig
 import io.homedeck.grid.support.GlyphFetcher
@@ -122,7 +122,7 @@ class LaunchablesAdapter(
             return AdViewHolder(host)
         }
 
-        val binding = LnchItemLauncherLabelBinding.inflate(
+        val binding = HdkRowLauncherLabelBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return ViewHolder(binding.root)
@@ -290,7 +290,7 @@ class LaunchablesAdapter(
 
         @SuppressLint("ClickableViewAccessibility")
         fun bindView(launcher: LaunchableApp): View {
-            val binding = LnchItemLauncherLabelBinding.bind(itemView)
+            val binding = HdkRowLauncherLabelBinding.bind(itemView)
             fitToCell()
             itemView.apply {
                 val sponsored = PaidAppTiles.isSponsored(launcher)
@@ -322,8 +322,8 @@ class LaunchablesAdapter(
                         .load(PaidAppTiles.logo(launcher))
                         .override(logoPx)
                         .transform(logoShape)
-                        .placeholder(R.drawable.lnch_placeholder_drawable)
-                        .error(R.drawable.lnch_placeholder_drawable)
+                        .placeholder(R.drawable.hdk_placeholder_drawable)
+                        .error(R.drawable.hdk_placeholder_drawable)
                         .into(icon)
                 } else if (ready != null) {
                     // Already decoded and in memory: set it in this frame. Going through Glide put
@@ -340,7 +340,7 @@ class LaunchablesAdapter(
                     icon.tag = wanted
                     icon.setImageDrawable(
                         activity.resources.getColoredDrawableWithColor(
-                            drawableId = R.drawable.lnch_placeholder_drawable,
+                            drawableId = R.drawable.hdk_placeholder_drawable,
                             color = launcher.thumbnailColor
                         )
                     )

@@ -4,14 +4,14 @@ import android.app.Activity
 import android.app.AlertDialog
 import org.fossify.commons.extensions.*
 import org.fossify.commons.helpers.ensureBackgroundThread
-import io.homedeck.grid.databinding.LnchDialogRenameItemBinding
+import io.homedeck.grid.databinding.HdkDialogRenameItemBinding
 import io.homedeck.grid.ext.homeScreenGridItemsDB
 import io.homedeck.grid.entities.DeskGridEntry
 
 class RelabelEntrySheet(val activity: Activity, val item: DeskGridEntry, val callback: () -> Unit) {
 
     init {
-        val binding = LnchDialogRenameItemBinding.inflate(activity.layoutInflater)
+        val binding = HdkDialogRenameItemBinding.inflate(activity.layoutInflater)
         val view = binding.root
         binding.renameItemEdittextUi.setText(item.title)
 

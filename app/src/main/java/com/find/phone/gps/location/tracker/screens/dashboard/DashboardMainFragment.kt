@@ -46,7 +46,7 @@ import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
 import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
 import com.find.phone.gps.location.tracker.repo.billing.ProSettings
 import com.find.phone.gps.location.tracker.repo.billing.LookupAllowance
-import com.find.phone.gps.location.tracker.databinding.FragmentHomeCoreBinding
+import com.find.phone.gps.location.tracker.databinding.PaneHomeCoreBinding
 import com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity
 import com.find.phone.gps.location.tracker.repo.peoplesync.PeopleUploader
 import com.find.phone.gps.location.tracker.screens.people.PeopleSelectActivity
@@ -72,7 +72,7 @@ class DashboardMainFragment : Fragment() {
         fun openHomeMenu()
     }
 
-    private var _binding: FragmentHomeCoreBinding? = null
+    private var _binding: PaneHomeCoreBinding? = null
     private val binding get() = _binding!!
 
     private val store by lazy { PastLookupStore(requireContext()) }
@@ -230,7 +230,7 @@ class DashboardMainFragment : Fragment() {
         // Inflated under the app theme in both hosts: the launcher Activity carries the module's
         // own theme, whose default font and text style would otherwise restyle this content.
         val themed = inflater.cloneInContext(ContextThemeWrapper(inflater.context, R.style.Theme_GpsTracker))
-        return FragmentHomeCoreBinding.inflate(themed, container, false).also { _binding = it }.root
+        return PaneHomeCoreBinding.inflate(themed, container, false).also { _binding = it }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -456,7 +456,7 @@ class DashboardMainFragment : Fragment() {
 
     /** 3a ↔ 3b: focus turns the field white with the primary ring and halo, hero 300 → 230dp. */
     private fun setTypingState(typing: Boolean) {
-        binding.phoneField.setBackgroundResource(if (typing) R.drawable.ds_field_focus_r16 else R.drawable.ds_field_rest_r16)
+        binding.phoneField.setBackgroundResource(if (typing) R.drawable.vs_field_focus_r16 else R.drawable.vs_field_rest_r16)
         binding.fieldHalo.isInvisible = !typing
         binding.pillGps.isVisible = !typing
         binding.tvHeadline.textSize = if (typing) 24f else 26f

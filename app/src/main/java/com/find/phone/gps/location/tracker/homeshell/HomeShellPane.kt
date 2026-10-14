@@ -11,7 +11,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.databinding.LauncherShellPanelBinding
+import com.find.phone.gps.location.tracker.databinding.HomeshellShellPanelBinding
 import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import com.find.phone.gps.location.tracker.screens.dashboard.DashboardMainFragment
 import com.find.phone.gps.location.tracker.screens.dashboard.DashboardSideMenu
@@ -28,7 +28,7 @@ import io.homedeck.grid.bridge.HomeDeskContent
  */
 class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHost {
 
-    private var _binding: LauncherShellPanelBinding? = null
+    private var _binding: HomeshellShellPanelBinding? = null
 
     private var drawerMenu: DashboardSideMenu? = null
 
@@ -47,7 +47,7 @@ class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHos
         // Under the app theme: the launcher Activity carries the module's own theme, whose fonts
         // and text styles would otherwise restyle the drawer.
         val themed = inflater.cloneInContext(ContextThemeWrapper(inflater.context, R.style.Theme_GpsTracker))
-        return LauncherShellPanelBinding.inflate(themed, container, false).also { _binding = it }.root
+        return HomeshellShellPanelBinding.inflate(themed, container, false).also { _binding = it }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -21,7 +21,7 @@ import androidx.viewbinding.ViewBinding
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnAction
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.databinding.ModalAppRedirectBinding
+import com.find.phone.gps.location.tracker.databinding.OverlayAppRedirectBinding
 import kotlin.apply
 import kotlin.let
 import kotlin.text.isNullOrEmpty
@@ -97,7 +97,7 @@ fun Activity.showAppRedirectPopup(onDismiss: (() -> Unit)? = null) {
     val appUrl = AdPrefsStore(this).getString("In_App_Update_Link")
     if (appUrl.isNullOrEmpty()) return
 
-    val dialogBinding = ModalAppRedirectBinding.inflate(layoutInflater)
+    val dialogBinding = OverlayAppRedirectBinding.inflate(layoutInflater)
 
     val dialog = showDialog(
         activity = this,

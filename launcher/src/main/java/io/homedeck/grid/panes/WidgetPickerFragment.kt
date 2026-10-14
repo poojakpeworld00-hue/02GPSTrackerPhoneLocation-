@@ -26,7 +26,7 @@ import org.fossify.commons.helpers.ensureBackgroundThread
 import io.homedeck.grid.R
 import io.homedeck.grid.screens.HomeDeskPane
 import io.homedeck.grid.lists.WidgetPickerAdapter
-import io.homedeck.grid.databinding.LnchWidgetsFragmentBinding
+import io.homedeck.grid.databinding.HdkWidgetsFragmentBinding
 import io.homedeck.grid.ext.launcherConfig
 import io.homedeck.grid.ext.getInitialCellSize
 import io.homedeck.grid.ext.setupDrawerBackground
@@ -43,7 +43,7 @@ import io.homedeck.grid.entities.WidgetPickerEntries
 import io.homedeck.grid.entities.WidgetPickerGroup
 
 class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
-    HomeDeskFragment<LnchWidgetsFragmentBinding>(context, attributeSet), WidgetPickerCallback {
+    HomeDeskFragment<HdkWidgetsFragmentBinding>(context, attributeSet), WidgetPickerCallback {
     private var lastTouchCoords = Pair(0f, 0f)
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     var touchDownY = -1
@@ -53,7 +53,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
     @SuppressLint("ClickableViewAccessibility")
     override fun setupFragment(activity: HomeDeskPane) {
         this.activity = activity
-        this.binding = LnchWidgetsFragmentBinding.bind(this)
+        this.binding = HdkWidgetsFragmentBinding.bind(this)
         getAppWidgets()
 
         binding.widgetsListUi.setOnTouchListener { v, event ->

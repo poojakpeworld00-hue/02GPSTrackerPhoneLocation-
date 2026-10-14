@@ -14,7 +14,7 @@ import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.finder.NumberSummary
-import com.find.phone.gps.location.tracker.databinding.ViewMapFullBinding
+import com.find.phone.gps.location.tracker.databinding.PageMapFullBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import kotlin.math.roundToInt
 
@@ -23,9 +23,9 @@ import kotlin.math.roundToInt
  * a tap on the header map, or the Map action). The same OpenStreetMap and pulsing area as the
  * header, but interactive, with zoom, recenter and Directions (hands the place to a maps app).
  */
-class MapExpandedActivity : FoundationActivity<ViewMapFullBinding>() {
+class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
 
-    override val layoutId: Int = R.layout.view_map_full
+    override val layoutId: Int = R.layout.page_map_full
 
     private lateinit var report: NumberSummary
     private var overlay: ZoneRippleOverlay? = null

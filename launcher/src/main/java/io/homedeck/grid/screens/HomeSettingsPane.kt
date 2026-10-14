@@ -16,7 +16,7 @@ import org.fossify.commons.helpers.isTiramisuPlus
 import org.fossify.commons.models.RadioItem
 import io.homedeck.grid.R
 import io.homedeck.grid.support.HelpIntentFilter
-import io.homedeck.grid.databinding.LnchActivitySettingsBinding
+import io.homedeck.grid.databinding.HdkScreenSettingsBinding
 import io.homedeck.grid.oemprofile.TrayLayoutMode
 import io.homedeck.grid.ext.launcherConfig
 import io.homedeck.grid.support.MAX_COLUMN_COUNT
@@ -32,7 +32,7 @@ private const val DRAWER_STYLE_PAGED = 1
 
 class HomeSettingsPane : HomeFoundationPane() {
 
-    private val binding by viewBinding(LnchActivitySettingsBinding::inflate)
+    private val binding by viewBinding(HdkScreenSettingsBinding::inflate)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

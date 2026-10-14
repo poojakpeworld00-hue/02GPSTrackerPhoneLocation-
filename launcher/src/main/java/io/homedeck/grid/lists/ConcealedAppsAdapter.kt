@@ -15,7 +15,7 @@ import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.interfaces.RefreshRecyclerViewListener
 import org.fossify.commons.views.MyRecyclerView
 import io.homedeck.grid.R
-import io.homedeck.grid.databinding.LnchItemHiddenIconBinding
+import io.homedeck.grid.databinding.HdkRowHiddenIconBinding
 import io.homedeck.grid.ext.hiddenIconsDB
 import io.homedeck.grid.entities.ConcealedApp
 
@@ -34,7 +34,7 @@ class ConcealedAppsAdapter(
         setupDragListener(true)
     }
 
-    override fun getActionMenuId() = R.menu.lnch_cab_hidden_icons
+    override fun getActionMenuId() = R.menu.hdk_cab_hidden_icons
 
     override fun prepareActionMode(menu: Menu) {}
 
@@ -57,7 +57,7 @@ class ConcealedAppsAdapter(
     override fun onActionModeDestroyed() {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return createViewHolder(LnchItemHiddenIconBinding.inflate(layoutInflater, parent, false).root)
+        return createViewHolder(HdkRowHiddenIconBinding.inflate(layoutInflater, parent, false).root)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -103,7 +103,7 @@ class ConcealedAppsAdapter(
     }
 
     private fun setupView(view: View, icon: ConcealedApp) {
-        LnchItemHiddenIconBinding.bind(view).apply {
+        HdkRowHiddenIconBinding.bind(view).apply {
             hiddenIconHolderUi.isSelected = selectedKeys.contains(icon.hashCode())
             hiddenIconLabelUi.text = icon.title
             hiddenIconLabelUi.setTextColor(textColor)

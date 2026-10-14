@@ -26,9 +26,9 @@ import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsor
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
-import com.find.phone.gps.location.tracker.databinding.DialogReminderDeleteBinding
-import com.find.phone.gps.location.tracker.databinding.TileReminderBinding
-import com.find.phone.gps.location.tracker.databinding.ViewReminderListBinding
+import com.find.phone.gps.location.tracker.databinding.PopupReminderDeleteBinding
+import com.find.phone.gps.location.tracker.databinding.CardReminderBinding
+import com.find.phone.gps.location.tracker.databinding.PageReminderListBinding
 import com.find.phone.gps.location.tracker.alarms.AskGatekeeper
 import com.find.phone.gps.location.tracker.alarms.AlarmEntry
 import com.find.phone.gps.location.tracker.alarms.AlarmPlanner
@@ -50,9 +50,9 @@ import kotlinx.coroutines.launch
  * the drawer. Also the host of the "Turn on reminders" prompt, which appears after the user saves
  * their first reminder (design 4), so the ask always comes with a reason.
  */
-class AlarmListActivity : FoundationActivity<ViewReminderListBinding>() {
+class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
 
-    override val layoutId: Int = R.layout.view_reminder_list
+    override val layoutId: Int = R.layout.page_reminder_list
 
     private var accessPollJob: Job? = null
     private var pendingNumber: ((String) -> Unit)? = null
@@ -134,7 +134,7 @@ class AlarmListActivity : FoundationActivity<ViewReminderListBinding>() {
             .apply { setMargins(dp(4), dp(10), 0, dp(8)) }
     }
 
-    private fun card(item: AlarmEntry) = TileReminderBinding.inflate(LayoutInflater.from(this), binding.rvReminders, false).apply {
+    private fun card(item: AlarmEntry) = CardReminderBinding.inflate(LayoutInflater.from(this), binding.rvReminders, false).apply {
         tvTitle.text = item.title
         tvWhen.text = AlarmFormatter.dayAndTime(this@AlarmListActivity, item.dateTime)
         tvNumber.text = item.number
@@ -143,8 +143,8 @@ class AlarmListActivity : FoundationActivity<ViewReminderListBinding>() {
 
         // A number makes it a call-back (phone, purple); otherwise a plain reminder (bell, blue).
         val call = item.number.isNotBlank()
-        iconTile.setBackgroundResource(if (call) R.drawable.ds_tile_purple_r12 else R.drawable.ds_tile_tint_r12)
-        icon.setImageResource(if (call) R.drawable.ds_ic_call else R.drawable.ps_ic_bell)
+        iconTile.setBackgroundResource(if (call) R.drawable.vs_tile_purple_r12 else R.drawable.vs_tile_tint_r12)
+        icon.setImageResource(if (call) R.drawable.vs_ic_call else R.drawable.gp_ic_bell)
         ImageViewCompat.setImageTintList(
             icon, ContextCompat.getColorStateList(this@AlarmListActivity, if (call) R.color.ds_purple else R.color.ds_primary),
         )
@@ -245,7 +245,7 @@ class AlarmListActivity : FoundationActivity<ViewReminderListBinding>() {
     private fun confirmDelete(item: AlarmEntry) {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        val view = DialogReminderDeleteBinding.inflate(layoutInflater)
+        val view = PopupReminderDeleteBinding.inflate(layoutInflater)
         dialog.setContentView(view.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.88f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)

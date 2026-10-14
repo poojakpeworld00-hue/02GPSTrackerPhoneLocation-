@@ -20,7 +20,7 @@ import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.LanguageKeeper
 import com.find.phone.gps.location.tracker.repo.TerritoryFinder
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
-import com.find.phone.gps.location.tracker.databinding.ViewLanguageBinding
+import com.find.phone.gps.location.tracker.databinding.PageLanguageBinding
 import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import com.find.phone.gps.location.tracker.setupflow.AlarmIntroActivity
 import com.find.phone.gps.location.tracker.grants.GrantOrchestrator
@@ -36,9 +36,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
 /** Language picker (design 4c): Done confirms, the big native ad is pinned below. */
-class LocalePickActivity : FoundationActivity<ViewLanguageBinding>() {
+class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
 
-    override val layoutId: Int = R.layout.view_language
+    override val layoutId: Int = R.layout.page_language
 
     private val viewModel: LanguageViewModel by viewModels()
     private val prefs by lazy { SecurePrefsKeeper(this) }
@@ -167,7 +167,7 @@ class LocalePickActivity : FoundationActivity<ViewLanguageBinding>() {
     }
 
     private fun showInfoDialog() {
-        val view = layoutInflater.inflate(R.layout.modal_language_info, binding.languageRoot, false)
+        val view = layoutInflater.inflate(R.layout.overlay_language_info, binding.languageRoot, false)
         val dialog = MaterialAlertDialogBuilder(this).setView(view).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         view.findViewById<View>(R.id.btnGotIt).setOnClickListener { dialog.dismiss() }

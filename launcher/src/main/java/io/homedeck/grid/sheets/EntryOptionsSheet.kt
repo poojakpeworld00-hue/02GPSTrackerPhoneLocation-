@@ -17,7 +17,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import io.homedeck.grid.R
-import io.homedeck.grid.databinding.LnchItemActionsTrayBinding
+import io.homedeck.grid.databinding.HdkRowActionsTrayBinding
 import kotlin.math.max
 import kotlin.math.min
 
@@ -40,7 +40,7 @@ class EntryOptionsSheet(
 
     class Action(@DrawableRes val icon: Int, @StringRes val label: Int, val onClick: () -> Unit)
 
-    private val binding = LnchItemActionsTrayBinding.inflate(activity.layoutInflater)
+    private val binding = HdkRowActionsTrayBinding.inflate(activity.layoutInflater)
     private val textColor = ContextCompat.getColor(activity, R.color.lnch_tray_text)
     private val secondaryColor = ContextCompat.getColor(activity, R.color.lnch_tray_text_secondary)
 
@@ -129,7 +129,7 @@ class EntryOptionsSheet(
         gravity = Gravity.CENTER_VERTICAL
         minimumHeight = dp(48)
         setPadding(dp(14), 0, dp(14), 0)
-        background = ContextCompat.getDrawable(activity, R.drawable.lnch_tray_item_press)
+        background = ContextCompat.getDrawable(activity, R.drawable.hdk_tray_item_press)
         addView(ImageView(activity).apply {
             setImageDrawable(shortcut.icon)
         }, LinearLayout.LayoutParams(dp(24), dp(24)))
@@ -147,7 +147,7 @@ class EntryOptionsSheet(
         orientation = LinearLayout.VERTICAL
         gravity = Gravity.CENTER_HORIZONTAL
         setPadding(dp(2), dp(10), dp(2), dp(8))
-        background = ContextCompat.getDrawable(activity, R.drawable.lnch_tray_item_press)
+        background = ContextCompat.getDrawable(activity, R.drawable.hdk_tray_item_press)
         contentDescription = activity.getString(action.label)
         addView(ImageView(activity).apply {
             setImageResource(action.icon)

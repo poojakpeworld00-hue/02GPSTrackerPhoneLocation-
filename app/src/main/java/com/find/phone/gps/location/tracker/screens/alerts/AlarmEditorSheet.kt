@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.databinding.SheetReminderEditBinding
+import com.find.phone.gps.location.tracker.databinding.BsheetReminderEditBinding
 import com.find.phone.gps.location.tracker.alarms.AlarmEntry
 import com.find.phone.gps.location.tracker.alarms.Repeat
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
@@ -32,7 +32,7 @@ class AlarmEditorSheet(
     private val onDelete: (AlarmEntry) -> Unit,
 ) {
     private val themed = ContextThemeWrapper(activity, R.style.Theme_GpsTracker)
-    private val binding = SheetReminderEditBinding.inflate(LayoutInflater.from(themed))
+    private val binding = BsheetReminderEditBinding.inflate(LayoutInflater.from(themed))
     private val dialog = BottomSheetDialog(themed, R.style.Ds_BottomSheetDialog)
 
     private val pick = Calendar.getInstance()
@@ -88,7 +88,7 @@ class AlarmEditorSheet(
         }
         listOf(binding.chipHour, binding.chipTonight, binding.chipTomorrow, binding.chipCustom).forEach {
             val on = it === view
-            it.setBackgroundResource(if (on) R.drawable.ds_reminder_chip_selected else R.drawable.ds_reminder_chip_tint)
+            it.setBackgroundResource(if (on) R.drawable.vs_reminder_chip_selected else R.drawable.vs_reminder_chip_tint)
             it.setTextColor(ContextCompat.getColor(themed, if (on) R.color.white else R.color.ds_primary))
         }
         renderWhen()
@@ -130,7 +130,7 @@ class AlarmEditorSheet(
         val segs = mapOf(Repeat.ONCE to binding.segOnce, Repeat.DAILY to binding.segDaily, Repeat.WEEKDAYS to binding.segWeekdays)
         segs.forEach { (key, view) ->
             val on = key == value
-            view.background = if (on) ContextCompat.getDrawable(themed, R.drawable.ds_reminder_seg_on) else null
+            view.background = if (on) ContextCompat.getDrawable(themed, R.drawable.vs_reminder_seg_on) else null
             view.setTextColor(ContextCompat.getColor(themed, if (on) R.color.ds_primary else R.color.ds_muted))
             view.typeface = ResourcesCompat.getFont(themed, if (on) R.font.figtree_bold else R.font.figtree_semibold)
         }

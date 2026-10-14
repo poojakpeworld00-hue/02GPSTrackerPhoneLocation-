@@ -35,8 +35,8 @@ import com.find.phone.gps.location.tracker.repo.finder.MapMarkerPoint
 import com.find.phone.gps.location.tracker.repo.finder.NumberFinder
 import com.find.phone.gps.location.tracker.repo.finder.NumberSummary
 import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
-import com.find.phone.gps.location.tracker.databinding.TileResultCellBinding
-import com.find.phone.gps.location.tracker.databinding.ViewLocatingBinding
+import com.find.phone.gps.location.tracker.databinding.CardResultCellBinding
+import com.find.phone.gps.location.tracker.databinding.PageLocatingBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.screens.dashboard.PastLookup
 import com.find.phone.gps.location.tracker.screens.dashboard.PastLookupStore
@@ -65,9 +65,9 @@ import kotlin.math.roundToInt
  * With [EXTRA_REPORT] set (a locked recent search reopened) it opens at the result, no lookup.
  * The result intent carries [EXTRA_FOUND] once the lookup has answered, so Home can clear the box.
  */
-class PinpointingActivity : FoundationActivity<ViewLocatingBinding>() {
+class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
 
-    override val layoutId: Int = R.layout.view_locating
+    override val layoutId: Int = R.layout.page_locating
 
     private lateinit var search: PastLookup
     private var saved: NumberSummary? = null
@@ -157,23 +157,23 @@ class PinpointingActivity : FoundationActivity<ViewLocatingBinding>() {
             when {
                 index < current.ordinal -> {
                     step.text = getString(R.string.ds_step_done, name)
-                    step.setBackgroundResource(R.drawable.ds_tile_success12_r10)
+                    step.setBackgroundResource(R.drawable.vs_tile_success12_r10)
                     step.setTextColor(ContextCompat.getColor(this, R.color.ds_success))
-                    chip.setBackgroundResource(R.drawable.ds_tile_primary_r10)
+                    chip.setBackgroundResource(R.drawable.vs_tile_primary_r10)
                     chip.setTextColor(ContextCompat.getColor(this, R.color.white))
                 }
                 index == current.ordinal -> {
                     step.text = getString(R.string.ds_step_active, name)
-                    step.setBackgroundResource(R.drawable.ds_tile_tint_r10)
+                    step.setBackgroundResource(R.drawable.vs_tile_tint_r10)
                     step.setTextColor(ContextCompat.getColor(this, R.color.ds_primary))
-                    chip.setBackgroundResource(R.drawable.ds_tile_white_r10)
+                    chip.setBackgroundResource(R.drawable.vs_tile_white_r10)
                     chip.setTextColor(ContextCompat.getColor(this, R.color.ds_primary))
                 }
                 else -> {
                     step.text = name
-                    step.setBackgroundResource(R.drawable.ds_tile_gray_r10)
+                    step.setBackgroundResource(R.drawable.vs_tile_gray_r10)
                     step.setTextColor(ContextCompat.getColor(this, R.color.ds_placeholder))
-                    chip.setBackgroundResource(R.drawable.ds_tile_white70_r10)
+                    chip.setBackgroundResource(R.drawable.vs_tile_white70_r10)
                     chip.setTextColor(ContextCompat.getColor(this, R.color.ds_placeholder))
                 }
             }
@@ -351,11 +351,11 @@ class PinpointingActivity : FoundationActivity<ViewLocatingBinding>() {
         binding.tvRegion.text = listOfNotNull(result.state, result.countryName).distinct().joinToString(", ")
         if (result.valid) {
             binding.tvValidity.setText(R.string.ds_result_valid_short)
-            binding.tvValidity.setBackgroundResource(R.drawable.ds_pill_success_soft)
+            binding.tvValidity.setBackgroundResource(R.drawable.vs_pill_success_soft)
             binding.tvValidity.setTextColor(ContextCompat.getColor(this, R.color.ds_success))
         } else {
             binding.tvValidity.setText(R.string.ds_verdict_unverified)
-            binding.tvValidity.setBackgroundResource(R.drawable.ds_pill_warn)
+            binding.tvValidity.setBackgroundResource(R.drawable.vs_pill_warn)
             binding.tvValidity.setTextColor(ContextCompat.getColor(this, R.color.ds_warn))
         }
 
@@ -389,7 +389,7 @@ class PinpointingActivity : FoundationActivity<ViewLocatingBinding>() {
     }
 
     /** A fact cell; a locked one blurs its value, a missing value just says so (no lock). */
-    private fun cell(cell: TileResultCellBinding, @StringRes label: Int, value: String?, locked: Boolean) {
+    private fun cell(cell: CardResultCellBinding, @StringRes label: Int, value: String?, locked: Boolean) {
         cell.tvLabel.setText(label)
         val known = !value.isNullOrBlank()
         cell.tvValue.text = if (known) value else getString(R.string.ds_not_available)

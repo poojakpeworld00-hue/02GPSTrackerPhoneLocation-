@@ -19,7 +19,7 @@ import com.find.phone.gps.location.tracker.screens.reveal.TourUnveilRules
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
-import com.find.phone.gps.location.tracker.databinding.ViewTermsBinding
+import com.find.phone.gps.location.tracker.databinding.PageTermsBinding
 import com.find.phone.gps.location.tracker.screens.walkthrough.GuidedTourActivity
 
 /**
@@ -33,9 +33,9 @@ import com.find.phone.gps.location.tracker.screens.walkthrough.GuidedTourActivit
  *     fires (toggle detected ON), the launcher returns (Settings dismissed), or
  *     [onResume] runs after a real return from Settings (gated by settingsShown).
  */
-class PolicyConsentActivity : FoundationActivity<ViewTermsBinding>() {
+class PolicyConsentActivity : FoundationActivity<PageTermsBinding>() {
 
-    override val layoutId: Int = R.layout.view_terms
+    override val layoutId: Int = R.layout.page_terms
 
     private val prefs by lazy { SecurePrefsKeeper(this) }
 

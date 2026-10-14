@@ -15,7 +15,7 @@ import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
-import com.find.phone.gps.location.tracker.databinding.ViewOnboardingBinding
+import com.find.phone.gps.location.tracker.databinding.PageOnboardingBinding
 import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import com.find.phone.gps.location.tracker.setupflow.AlarmIntroActivity
 import com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity
@@ -30,9 +30,9 @@ import kotlin.math.abs
  * illustration parallaxes at 0.6× and the copy fades over ~200ms of the swipe. The native
  * banner slot (`launcher_ads.onboarding.intro.slot`) sits under the CTA on the third page.
  */
-class GuidedTourActivity : FoundationActivity<ViewOnboardingBinding>() {
+class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
 
-    override val layoutId: Int = R.layout.view_onboarding
+    override val layoutId: Int = R.layout.page_onboarding
 
     private val prefs by lazy { SecurePrefsKeeper(this) }
     private val pages = TourSlides.all
@@ -140,7 +140,7 @@ class GuidedTourActivity : FoundationActivity<ViewOnboardingBinding>() {
         val size = dp(6)
         dots.forEachIndexed { i, dot ->
             animateDotWidth(dot, if (i == active) activeWidth else size)
-            dot.setBackgroundResource(if (i == active) R.drawable.ds_dot_active else R.drawable.ds_dot)
+            dot.setBackgroundResource(if (i == active) R.drawable.vs_dot_active else R.drawable.vs_dot)
         }
         val last = active == pages.lastIndex
         binding.btnNextLabel.setText(if (last) R.string.ds_get_started else R.string.ds_next)

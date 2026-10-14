@@ -33,62 +33,14 @@
                     android:layout_height="300dp"
                     android:clipChildren="true">
 
-                    <com.find.phone.gps.location.tracker.screens.visual.HaloBackdropView
+                    <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:haloCenterX="50%"
-                        app:haloCenterY="50%"
-                        app:haloInnerColor="@color/pw_hero_inner"
-                        app:haloOuterColor="@color/pw_hero_outer"
-                        app:haloOuterStop="0.75"
-                        app:haloRadiusX="85%"
-                        app:haloRadiusY="60%" />
-
-                    <FrameLayout
-                        android:layout_width="240dp"
-                        android:layout_height="240dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="6dp"
-                        android:clipChildren="false"
-                        android:clipToPadding="false">
-
-                        <com.find.phone.gps.location.tracker.screens.visual.RingStrokeView
-                            android:layout_width="216dp"
-                            android:layout_height="216dp"
-                            android:layout_gravity="center"
-                            app:ringColor="@color/pw_ring_dashed"
-                            app:ringDash="4.5dp"
-                            app:ringGap="4.5dp"
-                            app:ringWidth="1.5dp" />
-
-                        <com.find.phone.gps.location.tracker.screens.visual.RingStrokeView
-                            android:layout_width="172dp"
-                            android:layout_height="172dp"
-                            android:layout_gravity="center"
-                            app:ringColor="@color/pw_ring_solid"
-                            app:ringWidth="1.5dp" />
-
-                        <com.find.phone.gps.location.tracker.screens.visual.CssShadowFrame
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:layout_gravity="center"
-                            app:frameCorner="32dp"
-                            app:frameRingColor="@color/so_icon_ring"
-                            app:frameRingWidth="4dp"
-                            app:frameShadowBlur="40dp"
-                            app:frameShadowColor="@color/so_icon_shadow"
-                            app:frameShadowDy="22dp"
-                            app:frameShadowSpread="-16dp">
-
-                            <com.find.phone.gps.location.tracker.screens.visual.RoundedArtView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:contentDescription="@string/app_name"
-                                app:artCorner="32dp"
-                                app:artSrc="@mipmap/ic_launcher"
-                                app:artZoom="1.08" />
-                        </com.find.phone.gps.location.tracker.screens.visual.CssShadowFrame>
-                    </FrameLayout>
+                        android:contentDescription="@null"
+                        android:scaleType="centerCrop"
+                        android:scaleX="1.12"
+                        android:scaleY="1.12"
+                        android:src="@mipmap/ic_launcher" />
 
                     <View
                         android:layout_width="match_parent"

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "000000000000",
-    "project_id": "replace-with-your-firebase-project",
-    "storage_bucket": "replace-with-your-firebase-project.firebasestorage.app"
+    "project_number": "1034768878900",
+    "project_id": "gpstrackerphonelocation",
+    "storage_bucket": "gpstrackerphonelocation.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "mobilesdk_app_id": "1:1034768878900:android:f51fbae4c49f30dfc9a961",
         "android_client_info": {
           "package_name": "com.find.phone.gps.location.tracker"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyREPLACE_WITH_YOUR_FIREBASE_API_KEY00"
+          "current_key": "AIzaSyAalgEhTWF8gR2pRhfgrrGYG-L-5C_4z_I"
         }
       ],
       "services": {

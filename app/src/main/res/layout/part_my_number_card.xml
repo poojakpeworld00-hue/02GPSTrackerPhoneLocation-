@@ -39,7 +39,7 @@
             android:paddingHorizontal="4dp"
             android:paddingVertical="4dp"
             android:text="@string/my_number_manage"
-            android:textColor="#0EA281"
+            android:textColor="#2F60DB"
             android:textSize="11sp"
             android:visibility="gone"
             tools:visibility="visible" />

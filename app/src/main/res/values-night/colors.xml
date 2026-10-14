@@ -12,9 +12,9 @@
     <color name="spam_on">#F09A9A</color>
     <color name="spam_avatar_bg">#47232A</color>
 
-    <color name="splash_grad_start">#05422F</color>
-    <color name="splash_grad_center">#073F2D</color>
-    <color name="splash_grad_end">#135A43</color>
+    <color name="splash_grad_start">#0E2242</color>
+    <color name="splash_grad_center">#132D55</color>
+    <color name="splash_grad_end">#254373</color>
     <color name="splash_card_bg">#11181B</color>
     <color name="splash_card_name">#EFF2F4</color>
     <color name="splash_card_sub">#80919B</color>

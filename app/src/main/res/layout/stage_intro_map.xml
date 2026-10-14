@@ -189,7 +189,7 @@
             android:paddingHorizontal="9dp"
             android:paddingVertical="5dp"
             android:text="AT&amp;T"
-            android:textColor="#066F58"
+            android:textColor="#1C3F99"
             android:textSize="11sp" />
     </LinearLayout>
 

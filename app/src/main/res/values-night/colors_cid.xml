@@ -3,12 +3,12 @@
 <resources>
     <color name="cid_g_900">#FFD1EEFF</color>
     <color name="cid_g_800">#FFA4DDFF</color>
-    <color name="cid_g_700">#FF5DC4A4</color>
-    <color name="cid_g_600">#FF4AB391</color>
-    <color name="cid_g_500">#FF3A9578</color>
+    <color name="cid_g_700">#FF7DA4E4</color>
+    <color name="cid_g_600">#FF6993D4</color>
+    <color name="cid_g_500">#FF5478B3</color>
     <color name="cid_g_200">#FF293B45</color>
     <color name="cid_g_100">#FF1C292F</color>
-    <color name="cid_g_050">#FF081914</color>
+    <color name="cid_g_050">#FF0A1019</color>
 
     <color name="cid_clay">#FFEB9A7A</color>
     <color name="cid_clay_100">#FF432519</color>
@@ -19,7 +19,7 @@
     <color name="cid_amber">#FFE9BC74</color>
     <color name="cid_amber_100">#FF3D2D15</color>
     <color name="cid_amber_ink">#FFF7D197</color>
-    <color name="cid_on_accent">#FF081914</color>
+    <color name="cid_on_accent">#FF0A1019</color>
 
     <color name="cid_bg">#FF0F171B</color>
     <color name="cid_text">#FFE3EAED</color>
@@ -34,18 +34,18 @@
     <color name="cid_onb_ink">#FFD1EEFF</color>
     <color name="cid_onb_muted">#FF97A3A9</color>
 
-    <color name="cid_onb_cta">#FF4AB391</color>
-    <color name="cid_onb_on_cta">#FF081914</color>
+    <color name="cid_onb_cta">#FF6993D4</color>
+    <color name="cid_onb_on_cta">#FF0A1019</color>
 
-    <color name="cid_onb_accent">#FF4AB391</color>
+    <color name="cid_onb_accent">#FF6993D4</color>
     <color name="cid_onb_on_accent">#FFFFFFFF</color>
     <color name="cid_onb_badge_disc">#FFE5EDF2</color>
 
-    <color name="cid_onb_mark">#FF089D8A</color>
+    <color name="cid_onb_mark">#FF274BD9</color>
     <color name="cid_onb_on_mark">#FFFFFFFF</color>
 
-    <color name="cid_onb_blob">#FF142922</color>
-    <color name="cid_onb_card">#FF13211C</color>
+    <color name="cid_onb_blob">#FF171E29</color>
+    <color name="cid_onb_card">#FF151A21</color>
     <color name="cid_onb_card_stroke">#FF22313A</color>
-    <color name="cid_onb_tile">#FF1A3029</color>
+    <color name="cid_onb_tile">#FF1D2430</color>
 </resources>

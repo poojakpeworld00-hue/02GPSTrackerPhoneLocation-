@@ -29,8 +29,8 @@ class MarkerOutlineView @JvmOverloads constructor(
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.MarkerOutlineView)
-        startColor = a.getColor(R.styleable.MarkerOutlineView_pinStartColor, 0xFF4CC1B1.toInt())
-        endColor = a.getColor(R.styleable.MarkerOutlineView_pinEndColor, 0xFF089D8A.toInt())
+        startColor = a.getColor(R.styleable.MarkerOutlineView_pinStartColor, 0xFF6E87E7.toInt())
+        endColor = a.getColor(R.styleable.MarkerOutlineView_pinEndColor, 0xFF274BD9.toInt())
         dot.color = a.getColor(R.styleable.MarkerOutlineView_pinDotColor, 0xFFFFFFFF.toInt())
         dotSize = a.getDimension(R.styleable.MarkerOutlineView_pinDotSize, 0f)
         shadowColor = a.getColor(R.styleable.MarkerOutlineView_pinShadowColor, 0)

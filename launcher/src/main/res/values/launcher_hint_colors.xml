@@ -11,7 +11,7 @@
     <color name="hint_mock_row_ring">#9AA1AF</color>
     <color name="hint_mock_app_bg">#FFFFFF</color>
     <color name="hint_mock_app_text">#1E2433</color>
-    <color name="hint_mock_app_shadow">#5527AA8F</color>
-    <color name="hint_accent">#27AA8F</color>
+    <color name="hint_mock_app_shadow">#554971D9</color>
+    <color name="hint_accent">#4971D9</color>
     <color name="hint_switch_off">#5E9AA1AF</color>
 </resources>

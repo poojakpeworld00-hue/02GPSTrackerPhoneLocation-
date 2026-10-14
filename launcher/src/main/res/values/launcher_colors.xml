@@ -20,45 +20,45 @@
 
     <color name="launcher_onboarding_bg">#ffffff</color>
     <color name="launcher_onboarding_bg_elevated">#ffffff</color>
-    <color name="launcher_onboarding_accent">#148A6C</color>
-    <color name="launcher_onboarding_accent_dark">#098467</color>
+    <color name="launcher_onboarding_accent">#305BB6</color>
+    <color name="launcher_onboarding_accent_dark">#2350B5</color>
     <color name="launcher_onboarding_text">#141414</color>
     <color name="launcher_onboarding_text_muted">#6d7277</color>
     <color name="launcher_onboarding_text_faint">#9a9fa5</color>
     
     <color name="launcher_onboarding_on_accent">#ffffff</color>
 
-    <color name="launcher_onboarding_cta_start">#2BA886</color>
-    <color name="launcher_onboarding_cta_end">#098467</color>
-    <color name="launcher_onboarding_subtitle">#1E9D80</color>
+    <color name="launcher_onboarding_cta_start">#4C7AD4</color>
+    <color name="launcher_onboarding_cta_end">#2350B5</color>
+    <color name="launcher_onboarding_subtitle">#3D67CB</color>
     <color name="launcher_onboarding_caption">#7c8186</color>
     <color name="launcher_onboarding_dot_inactive">#c4cfdb</color>
-    <color name="launcher_onboarding_ring">#30A585</color>
-    <color name="launcher_onboarding_ring_stroke">#5930A585</color>
-    <color name="launcher_onboarding_glow">#4FBFA0</color>
+    <color name="launcher_onboarding_ring">#4F79CD</color>
+    <color name="launcher_onboarding_ring_stroke">#594F79CD</color>
+    <color name="launcher_onboarding_glow">#7199E4</color>
     <color name="launcher_intro_dot_purple">#997f75b8</color>
     <color name="launcher_intro_dot_amber">#b2c66000</color>
 
     <color name="launcher_splash_bg_top">#ddedff</color>
     <color name="launcher_splash_bg_mid">#edf7fe</color>
     <color name="launcher_splash_bg_bottom">#fdfaf4</color>
-    <color name="launcher_splash_prop_start">#29AF8B</color>
-    <color name="launcher_splash_prop_end">#067E62</color>
-    <color name="launcher_splash_tagline">#219374</color>
+    <color name="launcher_splash_prop_start">#4C7DDF</color>
+    <color name="launcher_splash_prop_end">#1F4BAE</color>
+    <color name="launcher_splash_tagline">#3E69BC</color>
     <color name="launcher_splash_wordmark">#161616</color>
-    <color name="launcher_splash_qualities">#248D71</color>
-    <color name="launcher_splash_quality_dot">#993DA489</color>
-    <color name="launcher_splash_rule">#43A38A</color>
-    <color name="launcher_splash_sparkle">#139671</color>
-    <color name="launcher_splash_dot_blue">#078B64</color>
+    <color name="launcher_splash_qualities">#3F66B2</color>
+    <color name="launcher_splash_quality_dot">#995A7EC6</color>
+    <color name="launcher_splash_rule">#5F80C2</color>
+    <color name="launcher_splash_sparkle">#3166C8</color>
+    <color name="launcher_splash_dot_blue">#225BC0</color>
     <color name="launcher_splash_dot_grey">#80718391</color>
-    <color name="launcher_splash_radial_start">#3FB694</color>
-    <color name="launcher_splash_radial_end">#098467</color>
+    <color name="launcher_splash_radial_start">#618DDD</color>
+    <color name="launcher_splash_radial_end">#2350B5</color>
     <color name="launcher_splash_smiley_start">#ffd166</color>
     <color name="launcher_splash_smiley_end">#f9a825</color>
     <color name="launcher_splash_badge">#e53935</color>
-    <color name="launcher_splash_prop_shadow">#66157A60</color>
-    <color name="launcher_splash_icon_glow">#8031AE8A</color>
+    <color name="launcher_splash_prop_shadow">#662D519F</color>
+    <color name="launcher_splash_icon_glow">#805283DA</color>
 
     <color name="launcher_welcome_tile_blue">#cbe1f8</color>
     <color name="launcher_welcome_tile_purple">#e3d7fb</color>
@@ -71,22 +71,22 @@
     <color name="launcher_language_bg_top">#dff1ff</color>
     <color name="launcher_language_bg_bottom">#e6f4fe</color>
     <color name="launcher_language_done_bg">#c6e1ff</color>
-    <color name="launcher_language_done_text">#067E62</color>
+    <color name="launcher_language_done_text">#1F4BAE</color>
     <color name="launcher_language_flag_ring">#d9dfe5</color>
-    <color name="launcher_language_radio_on">#067E62</color>
+    <color name="launcher_language_radio_on">#1F4BAE</color>
     <color name="launcher_language_radio_off">#c9ced4</color>
-    <color name="launcher_language_card_shadow">#1a2C5047</color>
-    <color name="launcher_welcome_card_shadow">#262C5047</color>
-    <color name="launcher_welcome_cta_shadow">#59228A71</color>
+    <color name="launcher_language_card_shadow">#1a37435B</color>
+    <color name="launcher_welcome_card_shadow">#2637435B</color>
+    <color name="launcher_welcome_cta_shadow">#593D61AF</color>
 
     <color name="lnch_host_panel_bg">#FFFFFFFF</color>
     
     <color name="launcher_drawer_fade_mid">#40000000</color>
     <color name="launcher_drawer_fade_end">@color/launcher_all_app_bg</color>
-    <color name="primary_gradient_start">#FF1FA490</color>
-    <color name="primary_gradient_end">#FF177C6D</color>
+    <color name="primary_gradient_start">#FF3F60D5</color>
+    <color name="primary_gradient_end">#FF3048A1</color>
     
-    <color name="lnch_search_highlight">#3FBBA2</color>
+    <color name="lnch_search_highlight">#6285E5</color>
     
     <color name="launcher_google_bar_bg">#F2FFFFFF</color>
     <color name="launcher_google_bar_hint">#5F6368</color>

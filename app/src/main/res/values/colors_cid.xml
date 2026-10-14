@@ -2,11 +2,11 @@
 
 <resources>
     
-    <color name="cid_g_900">#FF0A392A</color>
-    <color name="cid_g_800">#FF093C2C</color>
-    <color name="cid_g_700">#FF089D8A</color>
-    <color name="cid_g_600">#FF0B7452</color>
-    <color name="cid_g_500">#FF0E8F66</color>
+    <color name="cid_g_900">#FF112139</color>
+    <color name="cid_g_800">#FF152C50</color>
+    <color name="cid_g_700">#FF274BD9</color>
+    <color name="cid_g_600">#FF22529D</color>
+    <color name="cid_g_500">#FF2B64C1</color>
     <color name="cid_g_200">#FFADE2FF</color>
     <color name="cid_g_100">#FFD8EFFF</color>
     <color name="cid_g_050">#FFEEF8FF</color>
@@ -23,17 +23,17 @@
     <color name="cid_on_accent">#FFFFFFFF</color>
 
     <color name="cid_onb_paper">#FFF1F2F3</color>
-    <color name="cid_onb_ink">#FF0A392A</color>
+    <color name="cid_onb_ink">#FF112139</color>
     <color name="cid_onb_muted">#FF5C6C76</color>
 
-    <color name="cid_onb_cta">#FF089D8A</color>
+    <color name="cid_onb_cta">#FF274BD9</color>
     <color name="cid_onb_on_cta">#FFFFFFFF</color>
 
-    <color name="cid_onb_accent">#FF089D8A</color>
+    <color name="cid_onb_accent">#FF274BD9</color>
     <color name="cid_onb_on_accent">#FFFFFFFF</color>
     <color name="cid_onb_badge_disc">#FFFFFFFF</color>
 
-    <color name="cid_onb_mark">#FF089D8A</color>
+    <color name="cid_onb_mark">#FF274BD9</color>
     <color name="cid_onb_on_mark">#FFFFFFFF</color>
 
     <color name="cid_onb_blob">#FFD8EFFF</color>
@@ -41,10 +41,10 @@
     <color name="cid_onb_card_stroke">#FFC9E5F9</color>
     <color name="cid_onb_tile">#FFD2EDFF</color>
 
-    <color name="cid_onb_mock">#FF0A392A</color>
+    <color name="cid_onb_mock">#FF112139</color>
     <color name="cid_onb_on_mock">#FFFFFFFF</color>
     <color name="cid_onb_mock_avatar">#FF687379</color>
-    <color name="cid_onb_mock_chip">#FF093C2C</color>
+    <color name="cid_onb_mock_chip">#FF152C50</color>
     <color name="cid_onb_decline">#FFC0522D</color>
 
     <color name="cid_bg">#FFF3F2F2</color>

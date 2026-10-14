@@ -46,11 +46,11 @@
     <color name="online_green">#22C55E</color>
     <color name="whatsapp_green">#25D366</color>
 
-    <color name="splash_grad_start">#1CAA96</color>
-    <color name="splash_grad_center">#32B5A3</color>
-    <color name="splash_grad_end">#3FBBAA</color>
-    <color name="splash_accent">#067E57</color>
-    <color name="splash_accent_2">#3FBBAA</color>
+    <color name="splash_grad_start">#3E5FDF</color>
+    <color name="splash_grad_center">#5572E3</color>
+    <color name="splash_grad_end">#627DE5</color>
+    <color name="splash_accent">#1F57AE</color>
+    <color name="splash_accent_2">#627DE5</color>
     <color name="splash_ring">#47FFFFFF</color>
     <color name="splash_field_bg">#EDF4F7</color>
     <color name="splash_field_text">#0D1718</color>
@@ -89,7 +89,7 @@
 
     <color name="fsi_bg_center">#DFF3F3</color>          
     <color name="fsi_bg_edge">#F3F7F7</color>            
-    <color name="fsi_blue">#067E57</color>              
+    <color name="fsi_blue">#1F57AE</color>              
     <color name="fsi_blue_2">#13AEE0</color>            
     <color name="fsi_title">#0D1718</color>
     <color name="fsi_subtitle">#425D5D</color>

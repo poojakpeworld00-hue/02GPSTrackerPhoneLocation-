@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="ps_primary">#0EA281</color>
+    <color name="ps_primary">#2F60DB</color>
     <color name="ps_violet">#6B4DFF</color>
     <color name="ps_accent_ink">#5B4DFF</color>
     <color name="ps_surface">#FFFFFF</color>
-    <color name="ps_ink">#0D2B23</color>
+    <color name="ps_ink">#11192B</color>
     <color name="ps_muted">#5B6971</color>
     <color name="ps_tonal">#F1F3FA</color>
     <color name="ps_grabber">#CBD3E1</color>
@@ -35,8 +35,8 @@
     <color name="ps_map_bg">#E6F0F6</color>
     <color name="ps_map_road">#E6FFFFFF</color>
     <color name="ps_map_block">#D8E9DF</color>
-    <color name="ps_area_fill">#240EA281</color>
-    <color name="ps_area_stroke">#8C0EA281</color>
+    <color name="ps_area_fill">#242F60DB</color>
+    <color name="ps_area_stroke">#8C2F60DB</color>
     <color name="ps_area_ping">#406B4DFF</color>
     <color name="ps_white22">#38FFFFFF</color>
     <color name="ps_white25">#40FFFFFF</color>

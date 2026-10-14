@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="ds_primary">#0F9D8A</color>
-    <color name="ds_pressed">#067C6C</color>
-    <color name="ds_signal">#3FBBAA</color>
+    <color name="ds_primary">#284CDA</color>
+    <color name="ds_pressed">#1F3BAB</color>
+    <color name="ds_signal">#627DE5</color>
     <color name="ds_tint">#E6EAFF</color>
-    <color name="ds_ink">#0D2B23</color>
+    <color name="ds_ink">#11192B</color>
     <color name="ds_ink2">#33434F</color>
     <color name="ds_muted">#5B6971</color>
     <color name="ds_canvas">#F4F8FB</color>
-    <color name="ds_night">#092A22</color>
+    <color name="ds_night">#0D172A</color>
     <color name="ds_success">#1E8E5A</color>
     <color name="ds_warn">#E5920A</color>
     <color name="ds_danger">#D93B3B</color>
     <color name="ds_ad_cta">#12B76A</color>
-    <color name="ds_blue2">#1CAA96</color>
-    <color name="ds_cyan">#32B5A3</color>
-    <color name="ds_cyan2">#4CC1B1</color>
-    <color name="ds_cyan3">#69CDBF</color>
+    <color name="ds_blue2">#3E5FDF</color>
+    <color name="ds_cyan">#5572E3</color>
+    <color name="ds_cyan2">#6E87E7</color>
+    <color name="ds_cyan3">#899DEC</color>
     <color name="ds_border">#E3EAF0</color>
     <color name="ds_border2">#E1EAF0</color>
     <color name="ds_track">#DCE7EE</color>
@@ -32,7 +32,7 @@
     <color name="ds_ad_tag_bg">#FEF3E2</color>
     <color name="ds_ad_tag_fg">#8A4B00</color>
     <color name="ds_ad_tag_border">#F5DDB0</color>
-    <color name="ds_phone_frame">#0C201C</color>
+    <color name="ds_phone_frame">#0F1420</color>
     <color name="ds_dashed_ring">#9CC4DC</color>
     <color name="ds_road">#E1ECF3</color>
     <color name="ds_road2">#E7F0F5</color>
@@ -51,9 +51,9 @@
     <color name="ds_radial_in">#E0F5F7</color>
     <color name="ds_radial_out">#F4FAFD</color>
     <color name="ds_page_bg">#E8EEF3</color>
-    <color name="ds_scrim50">#8007211B</color>
+    <color name="ds_scrim50">#800B1221</color>
     <color name="ds_scrim70">#B3000000</color>
-    <color name="ds_scrim45">#7307211B</color>
+    <color name="ds_scrim45">#730B1221</color>
     <color name="ds_hairline12">#1F000000</color>
     <color name="ds_white14">#24FFFFFF</color>
     <color name="ds_white16">#29FFFFFF</color>
@@ -69,23 +69,23 @@
     <color name="ds_white92">#EBFFFFFF</color>
     <color name="ds_white07">#12FFFFFF</color>
     <color name="ds_white10">#1AFFFFFF</color>
-    <color name="ds_primary06">#0F089D8A</color>
-    <color name="ds_primary07">#12089D8A</color>
-    <color name="ds_primary10">#1A089D8A</color>
-    <color name="ds_primary12">#1F089D8A</color>
-    <color name="ds_primary14">#24089D8A</color>
-    <color name="ds_primary15">#26089D8A</color>
-    <color name="ds_primary16">#29089D8A</color>
-    <color name="ds_primary18">#2E089D8A</color>
-    <color name="ds_primary20">#33089D8A</color>
-    <color name="ds_primary30">#4D089D8A</color>
-    <color name="ds_primary40">#66089D8A</color>
-    <color name="ds_cyan14">#2432B5A3</color>
-    <color name="ds_cyan25">#4032B5A3</color>
-    <color name="ds_cyan40">#6632B5A3</color>
-    <color name="ds_cyan45">#7332B5A3</color>
-    <color name="ds_cyan50">#8032B5A3</color>
-    <color name="ds_cyan2_45">#734CC1B1</color>
+    <color name="ds_primary06">#0F274BD9</color>
+    <color name="ds_primary07">#12274BD9</color>
+    <color name="ds_primary10">#1A274BD9</color>
+    <color name="ds_primary12">#1F274BD9</color>
+    <color name="ds_primary14">#24274BD9</color>
+    <color name="ds_primary15">#26274BD9</color>
+    <color name="ds_primary16">#29274BD9</color>
+    <color name="ds_primary18">#2E274BD9</color>
+    <color name="ds_primary20">#33274BD9</color>
+    <color name="ds_primary30">#4D274BD9</color>
+    <color name="ds_primary40">#66274BD9</color>
+    <color name="ds_cyan14">#245572E3</color>
+    <color name="ds_cyan25">#405572E3</color>
+    <color name="ds_cyan40">#665572E3</color>
+    <color name="ds_cyan45">#735572E3</color>
+    <color name="ds_cyan50">#805572E3</color>
+    <color name="ds_cyan2_45">#736E87E7</color>
     <color name="ds_success12">#1F1E8E5A</color>
     
     <color name="ds_danger12">#1FD93B3B</color>
@@ -111,14 +111,14 @@
     <color name="ds_pin_red">#E5303A</color>
     <color name="ds_pin_red_shadow">#73961E1E</color>
     <color name="ds_ping_red_fill">#38E5303A</color>
-    <color name="ds_splash_blue">#0EA281</color>
+    <color name="ds_splash_blue">#2F60DB</color>
     <color name="ds_splash_cyan">#00B8D0</color>
-    <color name="ds_globe_glow">#7342BC9C</color>
+    <color name="ds_globe_glow">#73648FE6</color>
     
-    <color name="ds_ink_fixed">#0D2B23</color>
+    <color name="ds_ink_fixed">#11192B</color>
     <color name="ds_muted_fixed">#5B6971</color>
     
-    <color name="ds_snackbar_bg">#0D2B23</color>
+    <color name="ds_snackbar_bg">#11192B</color>
     
     <color name="ds_amber_soft">#FEF3E2</color>
     <color name="ds_white85">#D9FFFFFF</color>
@@ -129,7 +129,7 @@
     
     <color name="ds_amber_ink">#B77400</color>
     
-    <color name="ds_step_pill_text">#067C6C</color>
+    <color name="ds_step_pill_text">#1F3BAB</color>
     <color name="ds_step_pill_bg">#E6EAFF</color>
     <color name="ds_step_track">#DCE7EE</color>
 </resources>

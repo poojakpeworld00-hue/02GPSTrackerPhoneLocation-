@@ -414,4 +414,8 @@
     <string name="ds_locating_country">Đang dò trong %1$s…</string>
     <string name="ds_locating_state">Đang khoanh vùng về %1$s…</string>
     <string name="ds_locating_found">Đã dò ra vùng: %1$s</string>
+    <string name="so_tagline">Định vị. Theo dõi. Luôn kết nối.</string>
+    <string name="so_msg_sync">Đang đồng bộ vị trí…</string>
+    <string name="so_msg_fetch">Đang tải dữ liệu từ máy chủ…</string>
+    <string name="so_msg_map">Đang chuẩn bị bản đồ…</string>
 </resources>

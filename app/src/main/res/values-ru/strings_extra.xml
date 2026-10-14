@@ -420,4 +420,8 @@
     <string name="ds_locating_country">Ищем: %1$s…</string>
     <string name="ds_locating_state">Уточняем: %1$s…</string>
     <string name="ds_locating_found">Район определён: %1$s</string>
+    <string name="so_tagline">Найти. Отследить. Оставаться на связи.</string>
+    <string name="so_msg_sync">Синхронизация местоположения…</string>
+    <string name="so_msg_fetch">Получение данных с серверов…</string>
+    <string name="so_msg_map">Подготовка карты…</string>
 </resources>

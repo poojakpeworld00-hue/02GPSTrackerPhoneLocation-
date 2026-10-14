@@ -287,4 +287,8 @@
     <string name="ds_step_done">✓ %1$s</string>
     <string name="ds_step_active">● %1$s</string>
     <string name="ds_result_approx_area_long">ESTIMATED AREA</string>
+    <string name="so_tagline">Locate. Track. Stay connected.</string>
+    <string name="so_msg_sync">Syncing location…</string>
+    <string name="so_msg_fetch">Fetching data from servers…</string>
+    <string name="so_msg_map">Preparing your map…</string>
 </resources>

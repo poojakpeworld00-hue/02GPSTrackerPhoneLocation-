@@ -426,4 +426,8 @@
     <string name="ds_locating_country">يجري التنقيب في %1$s…</string>
     <string name="ds_locating_state">يجري الحصر ضمن %1$s…</string>
     <string name="ds_locating_found">وُجدت المنطقة في %1$s</string>
+    <string name="so_tagline">حدّد. تتبّع. ابقَ على اتصال.</string>
+    <string name="so_msg_sync">جارٍ مزامنة الموقع…</string>
+    <string name="so_msg_fetch">جارٍ جلب البيانات من الخوادم…</string>
+    <string name="so_msg_map">جارٍ تجهيز خريطتك…</string>
 </resources>

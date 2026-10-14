@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="240dp"
+    android:layout_height="240dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <com.find.phone.gps.location.tracker.screens.visual.RingStrokeView
+        android:id="@+id/ringDashedVw"
+        android:layout_width="196dp"
+        android:layout_height="196dp"
+        android:layout_gravity="center"
+        android:alpha="0"
+        app:ringColor="@color/so_ring_dashed"
+        app:ringDash="4.5dp"
+        app:ringGap="4.5dp"
+        app:ringInset="true"
+        app:ringWidth="1.5dp" />
+
+    <com.find.phone.gps.location.tracker.screens.visual.SweepArcRingView
+        android:id="@+id/sweepRingVw"
+        android:layout_width="168dp"
+        android:layout_height="168dp"
+        android:layout_gravity="center"
+        android:alpha="0"
+        app:arcColor="@color/so_sweep"
+        app:arcEndAt="0.4"
+        app:arcPeakAlpha="0.55"
+        app:arcPeakAt="0.2"
+        app:arcThickness="7%" />
+
+    <com.find.phone.gps.location.tracker.screens.visual.RingStrokeView
+        android:id="@+id/ringSolidVw"
+        android:layout_width="168dp"
+        android:layout_height="168dp"
+        android:layout_gravity="center"
+        android:alpha="0"
+        android:translationX="1.5dp"
+        android:translationY="1.5dp"
+        app:ringColor="@color/so_ring_solid"
+        app:ringInset="false"
+        app:ringWidth="1.5dp" />
+
+    <FrameLayout
+        android:id="@+id/orbitSpinVw"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <include
+            android:id="@+id/pillPhoneVw"
+            layout="@layout/part_orbit_pill"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_gravity="center" />
+
+        <include
+            android:id="@+id/pillPinVw"
+            layout="@layout/part_orbit_pill"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_gravity="center" />
+
+        <include
+            android:id="@+id/pillHashVw"
+            layout="@layout/part_orbit_pill"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <com.find.phone.gps.location.tracker.screens.visual.CssShadowFrame
+        android:id="@+id/iconTileVw"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:layout_gravity="center"
+        android:alpha="0"
+        app:frameCorner="30dp"
+        app:frameRingColor="@color/so_icon_ring"
+        app:frameRingWidth="4dp"
+        app:frameShadowBlur="40dp"
+        app:frameShadowColor="@color/so_icon_shadow"
+        app:frameShadowDy="22dp"
+        app:frameShadowSpread="-16dp">
+
+        <com.find.phone.gps.location.tracker.screens.visual.RoundedArtView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/app_name"
+            app:artCorner="30dp"
+            app:artSrc="@mipmap/ic_launcher"
+            app:artZoom="1.08" />
+    </com.find.phone.gps.location.tracker.screens.visual.CssShadowFrame>
+</FrameLayout>

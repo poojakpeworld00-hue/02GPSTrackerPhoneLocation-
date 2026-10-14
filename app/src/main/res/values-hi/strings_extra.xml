@@ -414,4 +414,8 @@
     <string name="ds_locating_country">%1$s में तलाश हो रही है…</string>
     <string name="ds_locating_state">दायरा घटाकर %1$s किया जा रहा है…</string>
     <string name="ds_locating_found">इलाक़ा मिला: %1$s</string>
+    <string name="so_tagline">खोजें। ट्रैक करें। जुड़े रहें।</string>
+    <string name="so_msg_sync">लोकेशन सिंक हो रही है…</string>
+    <string name="so_msg_fetch">सर्वर से डेटा लाया जा रहा है…</string>
+    <string name="so_msg_map">आपका मैप तैयार हो रहा है…</string>
 </resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="so_bg_inner">#FFE3EBFF</color>
+    <color name="so_bg_outer">#FFF4F7FB</color>
+    <color name="so_ring_dashed">#FFB6C6FF</color>
+    <color name="so_ring_solid">#FFD5E0FF</color>
+    <color name="so_sweep">#FF315BFF</color>
+    <color name="so_icon_shadow">#8C172B4D</color>
+    <color name="so_icon_ring">#E6FFFFFF</color>
+    <color name="so_pill_fill">#FFFFFFFF</color>
+    <color name="so_pill_ring">#FFE6ECF3</color>
+    <color name="so_pill_shadow">#66172B4D</color>
+    <color name="so_phone">#FF315BFF</color>
+    <color name="so_phone_bg">#FFEAF0FF</color>
+    <color name="so_pin">#FFE5303A</color>
+    <color name="so_pin_bg">#FFFFE9EA</color>
+    <color name="so_hash">#FF5647DB</color>
+    <color name="so_hash_bg">#FFEEEBFD</color>
+    <color name="so_title">#FF172B4D</color>
+    <color name="so_subtitle">#FF315BFF</color>
+    <color name="so_tagline">#FF64748B</color>
+    <color name="so_bar_track">#FFDFE6F2</color>
+    <color name="so_bar_start">#FF315BFF</color>
+    <color name="so_bar_end">#FF7B5CFF</color>
+    <color name="so_message">#FF3A4B66</color>
+</resources>

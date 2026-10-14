@@ -414,4 +414,8 @@
     <string name="ds_locating_country">Explorando en %1$s…</string>
     <string name="ds_locating_state">Afinando hasta %1$s…</string>
     <string name="ds_locating_found">Se halló la zona en %1$s</string>
+    <string name="so_tagline">Localiza. Rastrea. Mantente conectado.</string>
+    <string name="so_msg_sync">Sincronizando ubicación…</string>
+    <string name="so_msg_fetch">Obteniendo datos de los servidores…</string>
+    <string name="so_msg_map">Preparando tu mapa…</string>
 </resources>

@@ -1,229 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/splashRootVw"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/ds_canvas"
-        tools:context=".ui.splash.BootActivity">
+        android:clipChildren="false"
+        tools:context=".screens.boot.BootActivity">
 
-        <com.find.phone.gps.location.tracker.screens.visual.MeshBackdropView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:gridColor="@color/ds_primary06"
-            app:gridSize="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <com.find.phone.gps.location.tracker.screens.visual.HaloBackdropView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:haloCenterX="50%"
+            app:haloCenterY="40%"
+            app:haloInnerColor="@color/so_bg_inner"
+            app:haloOuterColor="@color/so_bg_outer"
+            app:haloOuterStop="0.7"
+            app:haloRadiusX="90%"
+            app:haloRadiusY="55%" />
 
-        <com.find.phone.gps.location.tracker.screens.visual.StreetLinesView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:roadsVariant="splash" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideStageTopVw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.2308" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideStatusTopVw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.7026" />
-
-        <FrameLayout
-            android:id="@+id/stageBoxVw"
-            android:layout_width="0dp"
-            android:layout_height="320dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/splashRootVw"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:clipChildren="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideStageTopVw">
+            android:clipToPadding="false">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideOrbitVw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.4103" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideTextVw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.6641" />
+
+            <include
+                android:id="@+id/orbitStageVw"
+                layout="@layout/part_splash_orbit"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                app:layout_constraintBottom_toBottomOf="@id/guideOrbitVw"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideOrbitVw" />
+
+            <include
+                android:id="@+id/brandBlockVw"
+                layout="@layout/part_splash_brand"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideTextVw" />
 
             <FrameLayout
-                android:id="@+id/stageSignalVw"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:id="@+id/barTrackVw"
+                android:layout_width="0dp"
+                android:layout_height="6dp"
+                android:layout_marginHorizontal="80dp"
+                android:layout_marginBottom="96dp"
                 android:alpha="0"
-                android:clipChildren="false">
-
-                <FrameLayout
-                    android:layout_width="260dp"
-                    android:layout_height="260dp"
-                    android:layout_gravity="center"
-                    android:clipChildren="false">
-
-                    <View
-                        android:layout_width="236dp"
-                        android:layout_height="236dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/vs_globe_glow" />
-
-                    <com.find.phone.gps.location.tracker.screens.visual.PlanetSphereView
-                        android:layout_width="196dp"
-                        android:layout_height="196dp"
-                        android:layout_gravity="center" />
-
-                    <com.find.phone.gps.location.tracker.screens.visual.OrbiterPathView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/stagePinVw"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0"
-                android:clipChildren="false">
+                android:background="@drawable/so_bar_track"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <View
-                    android:layout_width="120dp"
-                    android:layout_height="44dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="196dp"
-                    android:background="@drawable/vs_pin_ground_shadow_dark" />
-
-                <com.find.phone.gps.location.tracker.screens.visual.PulseHaloView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="150dp"
-                    app:pingColor="@color/ds_white90"
-                    app:pingDuration="1800"
-                    app:pingFillColor="@color/ds_ping_red_fill"
-                    app:pingStrokeWidth="2dp" />
-
-                <com.find.phone.gps.location.tracker.screens.visual.MarkerOutlineView
-                    android:id="@+id/splashPinVw"
-                    android:layout_width="78dp"
-                    android:layout_height="78dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp"
-                    app:pinBorderColor="@color/white"
-                    app:pinBorderWidth="3dp"
-                    app:pinDotColor="@color/white"
-                    app:pinDotSize="22dp"
-                    app:pinEndColor="@color/ds_pin_red"
-                    app:pinShadowColor="@color/ds_pin_red_shadow"
-                    app:pinStartColor="@color/ds_pin_red_light" />
+                    android:id="@+id/barFillVw"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/so_bar_fill"
+                    android:scaleX="0" />
             </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/stageLogoVw"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/splashLogoVw"
-                    android:layout_width="136dp"
-                    android:layout_height="136dp"
-                    android:contentDescription="@null"
-                    android:elevation="16dp"
-                    android:outlineAmbientShadowColor="@color/ds_splash_blue"
-                    android:outlineSpotShadowColor="@color/ds_splash_blue"
-                    android:scaleType="fitCenter"
-                    android:src="@mipmap/ic_launcher"
-                    tools:targetApi="p" />
-
-                <TextView
-                    android:id="@+id/lblAppName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="22dp"
-                    android:fontFamily="@font/nunito_extrabold"
-                    android:letterSpacing="-0.02"
-                    android:text="@string/ds_splash_title"
-                    android:textColor="@color/ds_ink"
-                    android:textSize="32sp" />
-
-                <TextView
-                    android:id="@+id/lblTagline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/figtree_bold"
-                    android:letterSpacing="0.28"
-                    android:text="@string/ds_splash_subtitle"
-                    android:textAllCaps="true"
-                    android:textColor="@color/ds_splash_blue"
-                    android:textSize="13sp" />
-            </LinearLayout>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/statusBoxVw"
-            android:layout_width="0dp"
-            android:layout_height="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideStatusTopVw">
-
-            <TextView
-                android:id="@+id/statusSignalVw"
-                style="@style/Ds.SplashStatus"
-                android:text="@string/ds_splash_stage_signal" />
-
-            <TextView
-                android:id="@+id/statusPinVw"
-                style="@style/Ds.SplashStatus"
-                android:text="@string/ds_splash_stage_pin" />
-
-            <TextView
-                android:id="@+id/statusLogoVw"
-                style="@style/Ds.SplashStatus"
-                android:text="@string/ds_splash_stage_logo"
-                android:textColor="@color/ds_ink" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/progTrack"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:layout_marginHorizontal="72dp"
-            android:layout_marginBottom="80dp"
-            android:background="@drawable/vs_bar_track_r3"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <View
-                android:id="@+id/progFill"
+            <include
+                android:id="@+id/messageBoxVw"
+                layout="@layout/part_splash_messages"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/vs_splash_bar_fill_r3" />
-        </FrameLayout>
+                android:layout_height="18dp"
+                android:layout_marginBottom="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/footerVw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
-            android:fontFamily="@font/figtree_medium"
-            android:text="@string/ds_splash_footer"
-            android:textColor="@color/ds_muted"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>

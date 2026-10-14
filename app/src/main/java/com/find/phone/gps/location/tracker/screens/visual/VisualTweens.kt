@@ -53,6 +53,15 @@ object VisualTweens {
             start()
         }
 
+    fun once(view: View, durationMs: Long, delayMs: Long, vararg holders: PropertyValuesHolder): ObjectAnimator =
+        ObjectAnimator.ofPropertyValuesHolder(view, *holders).apply {
+            duration = durationMs
+            startDelay = delayMs
+            interpolator = LINEAR
+            setCurrentPlayTime(0L)
+            start()
+        }
+
     fun floaty(view: View, delayMs: Long = 0L, amplitudeDp: Float = 8f, durationMs: Long = 4000L): Animator {
         val amp = view.context.dp(amplitudeDp)
         return loop(

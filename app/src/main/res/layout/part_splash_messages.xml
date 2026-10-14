@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="18dp"
+    android:alpha="0"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <TextView
+        android:id="@+id/msgSyncVw"
+        style="@style/So.SplashMessage"
+        android:text="@string/so_msg_sync" />
+
+    <TextView
+        android:id="@+id/msgFetchVw"
+        style="@style/So.SplashMessage"
+        android:text="@string/so_msg_fetch" />
+
+    <TextView
+        android:id="@+id/msgMapVw"
+        style="@style/So.SplashMessage"
+        android:text="@string/so_msg_map" />
+</FrameLayout>

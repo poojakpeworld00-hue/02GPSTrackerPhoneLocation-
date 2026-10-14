@@ -42,4 +42,48 @@
         <attr name="typingText" format="string" />
         <attr name="typingDuration" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="HaloBackdropView">
+        <attr name="haloCenterX" format="fraction" />
+        <attr name="haloCenterY" format="fraction" />
+        <attr name="haloRadiusX" format="fraction" />
+        <attr name="haloRadiusY" format="fraction" />
+        <attr name="haloInnerColor" format="color" />
+        <attr name="haloOuterColor" format="color" />
+        <attr name="haloOuterStop" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="RingStrokeView">
+        <attr name="ringColor" format="color" />
+        <attr name="ringWidth" format="dimension" />
+        <attr name="ringDash" format="dimension" />
+        <attr name="ringGap" format="dimension" />
+        <attr name="ringInset" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SweepArcRingView">
+        <attr name="arcColor" format="color" />
+        <attr name="arcPeakAlpha" format="float" />
+        <attr name="arcPeakAt" format="float" />
+        <attr name="arcEndAt" format="float" />
+        <attr name="arcThickness" format="fraction" />
+    </declare-styleable>
+
+    <declare-styleable name="CssShadowFrame">
+        <attr name="frameCorner" format="dimension" />
+        <attr name="frameOval" format="boolean" />
+        <attr name="frameFill" format="color" />
+        <attr name="frameClipContent" format="boolean" />
+        <attr name="frameShadowColor" format="color" />
+        <attr name="frameShadowDy" format="dimension" />
+        <attr name="frameShadowBlur" format="dimension" />
+        <attr name="frameShadowSpread" format="dimension" />
+        <attr name="frameRingColor" format="color" />
+        <attr name="frameRingWidth" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="RoundedArtView">
+        <attr name="artSrc" format="reference" />
+        <attr name="artCorner" format="dimension" />
+        <attr name="artZoom" format="float" />
+    </declare-styleable>
 </resources>

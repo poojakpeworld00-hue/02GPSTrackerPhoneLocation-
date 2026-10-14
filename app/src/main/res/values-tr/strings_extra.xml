@@ -414,4 +414,8 @@
     <string name="ds_locating_country">%1$s içinde taranıyor…</string>
     <string name="ds_locating_state">%1$s bölgesi daraltılıyor…</string>
     <string name="ds_locating_found">Bölge saptandı: %1$s</string>
+    <string name="so_tagline">Bul. Takip et. Bağlantıda kal.</string>
+    <string name="so_msg_sync">Konum eşitleniyor…</string>
+    <string name="so_msg_fetch">Sunuculardan veri alınıyor…</string>
+    <string name="so_msg_map">Haritanız hazırlanıyor…</string>
 </resources>

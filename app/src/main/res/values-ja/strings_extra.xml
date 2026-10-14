@@ -414,4 +414,8 @@
     <string name="ds_locating_country">%1$sで検索しています…</string>
     <string name="ds_locating_state">%1$sに絞り込んでいます…</string>
     <string name="ds_locating_found">%1$sでエリアが見つかりました</string>
+    <string name="so_tagline">探す。追跡する。つながる。</string>
+    <string name="so_msg_sync">位置情報を同期中…</string>
+    <string name="so_msg_fetch">サーバーからデータを取得中…</string>
+    <string name="so_msg_map">マップを準備中…</string>
 </resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.GpsTracker.Boot" parent="Theme.GpsTracker">
+        <item name="android:windowBackground">@color/so_bg_outer</item>
+        <item name="android:windowSplashScreenBackground">@color/so_bg_outer</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/so_blank_icon</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/so_bg_outer</item>
+    </style>
+</resources>

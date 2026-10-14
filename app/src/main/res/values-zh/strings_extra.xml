@@ -414,4 +414,8 @@
     <string name="ds_locating_country">正在 %1$s 范围内查找…</string>
     <string name="ds_locating_state">正在锁定到 %1$s…</string>
     <string name="ds_locating_found">已确定区域：%1$s</string>
+    <string name="so_tagline">定位。追踪。保持联系。</string>
+    <string name="so_msg_sync">正在同步位置…</string>
+    <string name="so_msg_fetch">正在从服务器获取数据…</string>
+    <string name="so_msg_map">正在准备地图…</string>
 </resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/brandTitleVw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:fontFamily="@font/nunito_extrabold"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:letterSpacing="-0.02"
+        android:lineSpacingMultiplier="1.1"
+        android:text="@string/ds_splash_title"
+        android:textColor="@color/so_title"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/brandSubtitleVw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:alpha="0"
+        android:fontFamily="@font/figtree_bold"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:letterSpacing="0.28"
+        android:text="@string/ds_splash_subtitle"
+        android:textAllCaps="true"
+        android:textColor="@color/so_subtitle"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/brandTaglineVw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:alpha="0"
+        android:fontFamily="@font/figtree_medium"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:lineSpacingMultiplier="1.4"
+        android:text="@string/so_tagline"
+        android:textColor="@color/so_tagline"
+        android:textSize="15sp" />
+</LinearLayout>

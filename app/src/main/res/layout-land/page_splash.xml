@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        tools:context=".screens.boot.BootActivity">
+
+        <com.find.phone.gps.location.tracker.screens.visual.HaloBackdropView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:haloCenterX="50%"
+            app:haloCenterY="40%"
+            app:haloInnerColor="@color/so_bg_inner"
+            app:haloOuterColor="@color/so_bg_outer"
+            app:haloOuterStop="0.7"
+            app:haloRadiusX="90%"
+            app:haloRadiusY="55%" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/splashRootVw"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideOrbitVw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.32" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideTextVw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.56" />
+
+            <include
+                android:id="@+id/orbitStageVw"
+                layout="@layout/part_splash_orbit"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/guideOrbitVw"
+                app:layout_constraintStart_toStartOf="@id/guideOrbitVw"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/brandBlockVw"
+                layout="@layout/part_splash_brand"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                app:layout_constraintBottom_toTopOf="@id/barTrackVw"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/guideTextVw"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.45" />
+
+            <FrameLayout
+                android:id="@+id/barTrackVw"
+                android:layout_width="0dp"
+                android:layout_height="6dp"
+                android:layout_marginHorizontal="56dp"
+                android:layout_marginBottom="64dp"
+                android:alpha="0"
+                android:background="@drawable/so_bar_track"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/guideTextVw">
+
+                <View
+                    android:id="@+id/barFillVw"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/so_bar_fill"
+                    android:scaleX="0" />
+            </FrameLayout>
+
+            <include
+                android:id="@+id/messageBoxVw"
+                layout="@layout/part_splash_messages"
+                android:layout_width="0dp"
+                android:layout_height="18dp"
+                android:layout_marginBottom="28dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/guideTextVw" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>

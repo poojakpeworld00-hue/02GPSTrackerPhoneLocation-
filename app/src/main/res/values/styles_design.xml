@@ -348,4 +348,16 @@
         <item name="android:textColor">@color/ds_muted</item>
         <item name="android:textSize">13sp</item>
     </style>
+    <style name="So.SplashMessage" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">top</item>
+        <item name="android:alpha">0</item>
+        <item name="android:fontFamily">@font/figtree_semibold</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/so_message</item>
+        <item name="android:textSize">13sp</item>
+    </style>
 </resources>

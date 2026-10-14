@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="34dp"
+    android:layout_height="34dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <com.find.phone.gps.location.tracker.screens.visual.CssShadowFrame
+        android:id="@+id/pillBodyVw"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleX="0"
+        android:scaleY="0"
+        app:frameFill="@color/so_pill_fill"
+        app:frameOval="true"
+        app:frameRingColor="@color/so_pill_ring"
+        app:frameRingWidth="1dp"
+        app:frameShadowBlur="22dp"
+        app:frameShadowColor="@color/so_pill_shadow"
+        app:frameShadowDy="10dp"
+        app:frameShadowSpread="-12dp">
+
+        <View
+            android:id="@+id/pillDotVw"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center" />
+
+        <ImageView
+            android:id="@+id/pillGlyphVw"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null" />
+    </com.find.phone.gps.location.tracker.screens.visual.CssShadowFrame>
+</FrameLayout>

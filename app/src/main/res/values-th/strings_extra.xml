@@ -414,4 +414,8 @@
     <string name="ds_locating_country">กำลังหาใน %1$s…</string>
     <string name="ds_locating_state">กำลังค่อย ๆ ระบุให้แคบลงที่ %1$s…</string>
     <string name="ds_locating_found">เจอพื้นที่ใน %1$s</string>
+    <string name="so_tagline">ค้นหา ติดตาม เชื่อมต่อเสมอ</string>
+    <string name="so_msg_sync">กำลังซิงค์ตำแหน่ง…</string>
+    <string name="so_msg_fetch">กำลังดึงข้อมูลจากเซิร์ฟเวอร์…</string>
+    <string name="so_msg_map">กำลังเตรียมแผนที่ของคุณ…</string>
 </resources>

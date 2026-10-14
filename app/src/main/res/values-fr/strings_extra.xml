@@ -414,4 +414,8 @@
     <string name="ds_locating_country">Recherche en cours : %1$s…</string>
     <string name="ds_locating_state">Resserrement sur %1$s…</string>
     <string name="ds_locating_found">Zone repérée : %1$s</string>
+    <string name="so_tagline">Localisez. Suivez. Restez connecté.</string>
+    <string name="so_msg_sync">Synchronisation de la position…</string>
+    <string name="so_msg_fetch">Récupération des données…</string>
+    <string name="so_msg_map">Préparation de votre carte…</string>
 </resources>

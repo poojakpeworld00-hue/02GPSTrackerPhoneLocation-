@@ -15,6 +15,6 @@
         android:width="1dp"
         android:color="#33FFFFFF" />
 
-    <corners android:radius="20dp" />
+    <corners android:radius="26dp" />
 
 </shape>

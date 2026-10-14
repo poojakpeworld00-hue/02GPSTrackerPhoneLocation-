@@ -211,7 +211,7 @@
         android:textColor="@android:color/white"
         android:textSize="16sp"
         app:backgroundTint="@color/ds_primary"
-        app:cornerRadius="18dp" />
+        app:cornerRadius="23dp" />
 
     <!-- Bottom mid native ad (shimmer placeholder until it loads). -->
     <View

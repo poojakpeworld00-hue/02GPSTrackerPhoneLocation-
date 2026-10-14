@@ -47,7 +47,7 @@
             android:textAllCaps="false"
             android:textColor="@color/ds_ink"
             app:backgroundTint="@color/ds_gray_tile"
-            app:cornerRadius="14dp" />
+            app:cornerRadius="18dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/padRetry"
@@ -63,6 +63,6 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:backgroundTint="@color/ds_primary"
-            app:cornerRadius="14dp" />
+            app:cornerRadius="18dp" />
     </LinearLayout>
 </LinearLayout>

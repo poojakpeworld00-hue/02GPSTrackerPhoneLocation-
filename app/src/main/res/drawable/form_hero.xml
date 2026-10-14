@@ -11,8 +11,8 @@
                 android:startColor="#26A69A"
                 android:endColor="#00695C" />
             <corners
-                android:bottomLeftRadius="@dimen/_28sdp"
-                android:bottomRightRadius="@dimen/_28sdp" />
+                android:bottomLeftRadius="@dimen/_36sdp"
+                android:bottomRightRadius="@dimen/_36sdp" />
         </shape>
     </item>
 
@@ -27,8 +27,8 @@
                 android:startColor="#40FFFFFF"
                 android:endColor="#00FFFFFF" />
             <corners
-                android:bottomLeftRadius="@dimen/_28sdp"
-                android:bottomRightRadius="@dimen/_28sdp" />
+                android:bottomLeftRadius="@dimen/_36sdp"
+                android:bottomRightRadius="@dimen/_36sdp" />
         </shape>
     </item>
 </layer-list>

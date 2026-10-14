@@ -6,5 +6,5 @@
         android:startColor="@color/ps_primary"
         android:endColor="@color/ps_violet"
         android:type="linear" />
-    <corners android:radius="20dp" />
+    <corners android:radius="26dp" />
 </shape>

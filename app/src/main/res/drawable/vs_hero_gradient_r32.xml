@@ -3,6 +3,6 @@
      The exact design angle lives in drawable-v29/. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <corners
-        android:radius="32dp" />
+        android:radius="42dp" />
     <gradient android:angle="270" android:startColor="@color/ds_primary" android:centerColor="@color/ds_cyan" android:endColor="@color/ds_cyan3" />
 </shape>

@@ -5,5 +5,5 @@
     <stroke
         android:width="2dp"
         android:color="@color/hint_accent" />
-    <corners android:radius="16dp" />
+    <corners android:radius="21dp" />
 </shape>

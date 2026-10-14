@@ -93,7 +93,7 @@
             android:layout_height="150dp"
             android:layout_marginTop="10dp"
             app:cardBackgroundColor="@color/ad_sk"
-            app:cardCornerRadius="13dp"
+            app:cardCornerRadius="17dp"
             app:cardElevation="0dp">
 
             <com.google.android.gms.ads.nativead.MediaView

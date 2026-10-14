@@ -4,8 +4,8 @@
     android:shape="rectangle">
     <solid android:color="@color/fsi_blue" />
     <corners
-        android:topLeftRadius="@dimen/_24sdp"
-        android:topRightRadius="@dimen/_24sdp"
+        android:topLeftRadius="@dimen/_31sdp"
+        android:topRightRadius="@dimen/_31sdp"
         android:bottomLeftRadius="0dp"
         android:bottomRightRadius="0dp" />
 </shape>

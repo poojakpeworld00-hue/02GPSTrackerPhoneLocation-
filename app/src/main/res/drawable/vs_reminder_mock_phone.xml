@@ -2,5 +2,5 @@
 <!-- Reminders intro hero: the sleeping phone (always dark). -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <solid android:color="#0D302A" />
-    <corners android:radius="30dp" />
+    <corners android:radius="39dp" />
 </shape>

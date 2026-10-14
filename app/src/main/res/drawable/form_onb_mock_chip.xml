@@ -5,6 +5,6 @@
 
     <solid android:color="@color/cid_onb_mock_chip" />
 
-    <corners android:radius="10dp" />
+    <corners android:radius="13dp" />
 
 </shape>

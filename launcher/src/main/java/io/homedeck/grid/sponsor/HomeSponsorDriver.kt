@@ -89,7 +89,7 @@ object HomeSponsorDriver {
         val url = if (HomeAdsSettings.isAppLaunch(gesture)) "" else HomeAdsSettings.promoUrl(gesture)
         if (url.isNotEmpty()) {
             Log.d(TAG, "$gesture: opening promo link")
-            openLink(activity, url)
+            unfoldLink(activity, url)
             once()
             return
         }
@@ -112,7 +112,7 @@ object HomeSponsorDriver {
         }
     }
 
-    private fun openLink(activity: Activity, url: String) {
+    private fun unfoldLink(activity: Activity, url: String) {
         runCatching {
             activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }.onFailure {

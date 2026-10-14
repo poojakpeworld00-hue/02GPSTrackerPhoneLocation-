@@ -12,5 +12,5 @@ interface ConcealedAppDao {
     fun insert(hiddenIconUi: ConcealedApp): Long
 
     @Delete
-    fun removeHiddenIcons(icons: List<ConcealedApp>)
+    fun dropHiddenIcons(icons: List<ConcealedApp>)
 }

@@ -39,29 +39,29 @@ class HomeSettingsPane : HomeFoundationPane() {
 
         setupEdgeToEdge(padBottomSystem = listOf(binding.settingsNestedScrollviewView))
         setupMaterialScrollListener(binding.settingsNestedScrollviewView, binding.settingsAppbarView)
-        setupOptionsMenu()
+        prepareOptionsMenu()
     }
 
     override fun onResume() {
         super.onResume()
         setupTopAppBar(binding.settingsAppbarView, NavigationIcon.Arrow)
-        refreshMenuItems()
+        renewMenuItems()
 
-        setupCustomizeColors()
-        setupUseEnglish()
-        setupDoubleTapToLock()
-        setupAppDrawerEnabled()
-        setupDrawerStyle()
-        setupCloseAppDrawerOnOtherAppOpen()
-        setupOpenKeyboardOnAppDrawer()
-        setupDrawerColumnCount()
-        setupDrawerSearchBar()
-        setupShowDrawerAppLabels()
-        setupHomeRowCount()
-        setupHomeColumnCount()
-        setupShowHomeAppLabels()
-        setupLanguage()
-        setupManageHiddenIcons()
+        prepareCustomizeColors()
+        prepareUseEnglish()
+        prepareDoubleTapToLock()
+        prepareAppDrawerEnabled()
+        prepareDrawerStyle()
+        prepareCloseAppDrawerOnOtherAppOpen()
+        prepareOpenKeyboardOnAppDrawer()
+        prepareDrawerColumnCount()
+        prepareDrawerSearchBar()
+        prepareShowDrawerAppLabels()
+        prepareHomeRowCount()
+        prepareHomeColumnCount()
+        prepareShowHomeAppLabels()
+        prepareLanguage()
+        prepareManageHiddenIcons()
         updateTextColors(binding.settingsHolderView)
 
         arrayOf(
@@ -74,10 +74,10 @@ class HomeSettingsPane : HomeFoundationPane() {
         }
     }
 
-    private fun setupOptionsMenu() {
+    private fun prepareOptionsMenu() {
         binding.settingsToolbarView.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.aboutView -> launchAbout()
+                R.id.aboutView -> fireAbout()
                 R.id.more_apps_from_usView -> launchMoreAppsFromUsIntent()
                 else -> return@setOnMenuItemClickListener false
             }
@@ -85,14 +85,14 @@ class HomeSettingsPane : HomeFoundationPane() {
         }
     }
 
-    private fun refreshMenuItems() {
+    private fun renewMenuItems() {
         binding.settingsToolbarView.menu.apply {
             findItem(R.id.more_apps_from_usView).isVisible =
                 !resources.getBoolean(org.fossify.commons.R.bool.hide_google_relations)
         }
     }
 
-    private fun setupCustomizeColors() {
+    private fun prepareCustomizeColors() {
         binding.settingsColorCustomizationHolderView.setOnClickListener {
             // see HomeFoundationPane.withFossifyPackageNameSpoofed — startCustomizationActivity()
             // carries its own copy of the anti-rebrand check, separate from the one in onCreate()
@@ -100,7 +100,7 @@ class HomeSettingsPane : HomeFoundationPane() {
         }
     }
 
-    private fun setupUseEnglish() {
+    private fun prepareUseEnglish() {
         binding.settingsUseEnglishHolderView.beVisibleIf(
             beVisible = (launcherConfig.wasUseEnglishToggled || Locale.getDefault().language != "en")
                     && !isTiramisuPlus()
@@ -114,7 +114,7 @@ class HomeSettingsPane : HomeFoundationPane() {
         }
     }
 
-    private fun setupDoubleTapToLock() {
+    private fun prepareDoubleTapToLock() {
         val devicePolicyManager = getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
         binding.settingsDoubleTapToLockView.isChecked = devicePolicyManager.isAdminActive(
             ComponentName(this, ScreenLockAdminReceiver::class.java)
@@ -149,7 +149,7 @@ class HomeSettingsPane : HomeFoundationPane() {
      * hidden here because nothing reads them. Icons already on the pages are left where they are
      * when the drawer is turned back on.
      */
-    private fun setupAppDrawerEnabled() {
+    private fun prepareAppDrawerEnabled() {
         fun refresh() {
             val enabled = launcherConfig.isDrawerEnabled
             binding.settingsAppDrawerEnabledView.isChecked = enabled
@@ -171,11 +171,11 @@ class HomeSettingsPane : HomeFoundationPane() {
                 launcherConfig.drawerMode = launcherConfig.drawerStyleWhenOn
             }
             refresh()
-            setupDrawerStyle()
+            prepareDrawerStyle()
         }
     }
 
-    private fun setupDrawerStyle() {
+    private fun prepareDrawerStyle() {
         val paged = launcherConfig.drawerMode == TrayLayoutMode.PAGED
         binding.settingsDrawerStyleView.text = getString(if (paged) R.string.launcher_drawer_style_paged else R.string.launcher_drawer_style_vertical)
         binding.settingsDrawerStyleHolderView.setOnClickListener {
@@ -186,12 +186,12 @@ class HomeSettingsPane : HomeFoundationPane() {
             val current = if (launcherConfig.drawerMode == TrayLayoutMode.PAGED) DRAWER_STYLE_PAGED else DRAWER_STYLE_VERTICAL
             RadioGroupDialog(this, items, current) {
                 launcherConfig.drawerMode = if (it as Int == DRAWER_STYLE_PAGED) TrayLayoutMode.PAGED else TrayLayoutMode.VERTICAL
-                setupDrawerStyle()
+                prepareDrawerStyle()
             }
         }
     }
 
-    private fun setupOpenKeyboardOnAppDrawer() {
+    private fun prepareOpenKeyboardOnAppDrawer() {
         binding.settingsOpenKeyboardOnAppDrawerHolderView.beVisibleIf(launcherConfig.showSearchBar && launcherConfig.isDrawerEnabled)
         binding.settingsOpenKeyboardOnAppDrawerView.isChecked = launcherConfig.autoShowKeyboardInAppDrawer
         binding.settingsOpenKeyboardOnAppDrawerHolderView.setOnClickListener {
@@ -200,15 +200,15 @@ class HomeSettingsPane : HomeFoundationPane() {
         }
     }
 
-    private fun setupCloseAppDrawerOnOtherAppOpen() {
-        binding.settingsCloseAppDrawerOnOtherAppView.isChecked = launcherConfig.closeAppDrawer
+    private fun prepareCloseAppDrawerOnOtherAppOpen() {
+        binding.settingsCloseAppDrawerOnOtherAppView.isChecked = launcherConfig.shutAppDrawer
         binding.settingsCloseAppDrawerOnOtherAppHolderView.setOnClickListener {
             binding.settingsCloseAppDrawerOnOtherAppView.toggle()
-            launcherConfig.closeAppDrawer = binding.settingsCloseAppDrawerOnOtherAppView.isChecked
+            launcherConfig.shutAppDrawer = binding.settingsCloseAppDrawerOnOtherAppView.isChecked
         }
     }
 
-    private fun setupDrawerColumnCount() {
+    private fun prepareDrawerColumnCount() {
         val currentColumnCount = launcherConfig.drawerColumnCount
         binding.settingsDrawerColumnCountView.text = currentColumnCount.toString()
         binding.settingsDrawerColumnCountHolderView.setOnClickListener {
@@ -228,13 +228,13 @@ class HomeSettingsPane : HomeFoundationPane() {
                 val newColumnCount = it as Int
                 if (currentColumnCount != newColumnCount) {
                     launcherConfig.drawerColumnCount = newColumnCount
-                    setupDrawerColumnCount()
+                    prepareDrawerColumnCount()
                 }
             }
         }
     }
 
-    private fun setupDrawerSearchBar() {
+    private fun prepareDrawerSearchBar() {
         val showSearchBar = launcherConfig.showSearchBar
         binding.settingsShowSearchBarView.isChecked = showSearchBar
         binding.settingsDrawerSearchHolderView.setOnClickListener {
@@ -244,7 +244,7 @@ class HomeSettingsPane : HomeFoundationPane() {
         }
     }
 
-    private fun setupShowDrawerAppLabels() {
+    private fun prepareShowDrawerAppLabels() {
         binding.settingsShowDrawerAppLabelsView.isChecked = launcherConfig.showDrawerAppLabels
         binding.settingsShowDrawerAppLabelsHolderView.setOnClickListener {
             binding.settingsShowDrawerAppLabelsView.toggle()
@@ -252,7 +252,7 @@ class HomeSettingsPane : HomeFoundationPane() {
         }
     }
 
-    private fun setupHomeRowCount() {
+    private fun prepareHomeRowCount() {
         val currentRowCount = launcherConfig.homeRowCount
         binding.settingsHomeScreenRowCountView.text = currentRowCount.toString()
         binding.settingsHomeScreenRowCountHolderView.setOnClickListener {
@@ -272,13 +272,13 @@ class HomeSettingsPane : HomeFoundationPane() {
                 val newRowCount = it as Int
                 if (currentRowCount != newRowCount) {
                     launcherConfig.homeRowCount = newRowCount
-                    setupHomeRowCount()
+                    prepareHomeRowCount()
                 }
             }
         }
     }
 
-    private fun setupHomeColumnCount() {
+    private fun prepareHomeColumnCount() {
         val currentColumnCount = launcherConfig.homeColumnCount
         binding.settingsHomeScreenColumnCountView.text = currentColumnCount.toString()
         binding.settingsHomeScreenColumnCountHolderView.setOnClickListener {
@@ -298,13 +298,13 @@ class HomeSettingsPane : HomeFoundationPane() {
                 val newColumnCount = it as Int
                 if (currentColumnCount != newColumnCount) {
                     launcherConfig.homeColumnCount = newColumnCount
-                    setupHomeColumnCount()
+                    prepareHomeColumnCount()
                 }
             }
         }
     }
 
-    private fun setupShowHomeAppLabels() {
+    private fun prepareShowHomeAppLabels() {
         binding.settingsShowHomeAppLabelsView.isChecked = launcherConfig.showHomeAppLabels
         binding.settingsShowHomeAppLabelsHolderView.setOnClickListener {
             binding.settingsShowHomeAppLabelsView.toggle()
@@ -313,7 +313,7 @@ class HomeSettingsPane : HomeFoundationPane() {
     }
 
     @SuppressLint("NewApi")
-    private fun setupLanguage() {
+    private fun prepareLanguage() {
         binding.settingsLanguageView.text = Locale.getDefault().displayLanguage
         binding.settingsLanguageHolderView.beVisibleIf(isTiramisuPlus())
         binding.settingsLanguageHolderView.setOnClickListener {
@@ -321,13 +321,13 @@ class HomeSettingsPane : HomeFoundationPane() {
         }
     }
 
-    private fun setupManageHiddenIcons() {
+    private fun prepareManageHiddenIcons() {
         binding.settingsManageHiddenIconsHolderView.setOnClickListener {
             startActivity(Intent(this, ConcealedAppsPane::class.java))
         }
     }
 
-    private fun launchAbout() {
+    private fun fireAbout() {
         val licenses = 0L
         val faqItems = HelpIntentFilter.launcherFaqItems(this)
 

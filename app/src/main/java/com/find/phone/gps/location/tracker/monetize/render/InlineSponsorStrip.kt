@@ -17,7 +17,7 @@ import com.find.phone.gps.location.tracker.monetize.engine.EarningsTracker
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
 import com.find.phone.gps.location.tracker.monetize.engine.TAG_EVENT
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.databinding.AdMNativeStripBinding
 import com.find.phone.gps.location.tracker.databinding.AdGNativeStripBinding
@@ -41,7 +41,7 @@ class InlineSponsorStrip {
         fun hasPreloadedNativeBanner(): Boolean = nativeAdBanner != null
     }
 
-    fun loadNativeBannerAds(activity: Activity) {
+    fun fetchNativeBannerAds(activity: Activity) {
         val adsPref = AdPrefsStore.getInstance(activity)
         if (!adsPref.getBoolean("IsAdsON")) return
         // Firebase "NativeBanner" master switch — disable native banner loading
@@ -56,7 +56,7 @@ class InlineSponsorStrip {
                     nativeAdBanner?.destroy()
                     nativeAdBanner = ad
                     try {
-                        activity.logKeyEvent("NativeBanner_Load")
+                        activity.trackEvent("NativeBanner_Load")
                     } catch (e: Exception) {
                     }
 
@@ -68,7 +68,7 @@ class InlineSponsorStrip {
                         // No retry logic
 
                         try {
-                            activity.logKeyEvent("NativeBanner_fail")
+                            activity.trackEvent("NativeBanner_fail")
                         } catch (e: Exception) {
                         }
                     }
@@ -93,7 +93,7 @@ class InlineSponsorStrip {
 
     }
 
-    fun showNativeBannerNative(
+    fun presentNativeBannerNative(
         context: Activity, layout: FrameLayout, shimmer: ShimmerFrameLayout? = null
     ) {
         Log.e("NativeAds", "Google Show: nativeAd")
@@ -139,7 +139,7 @@ class InlineSponsorStrip {
                         if (context.isFinishing || context.isDestroyed) return@post
                         if (nativeAdBanner != null) {
                             val binding = AdGNativeStripBinding.inflate(context.layoutInflater)
-                            bindGoogleNativeAd(nativeAdBanner!!, binding, context)
+                            wireGoogleNativeAd(nativeAdBanner!!, binding, context)
 
                             layout.removeAllViews()
                             shimmer?.stopShimmer()
@@ -147,26 +147,26 @@ class InlineSponsorStrip {
 
                             layout.addView(binding.root)
                             nativeAdBanner = null
-                            loadNativeBannerAds(context)
+                            fetchNativeBannerAds(context)
                             return@post
                         } else {
                             // Google failed → FB fallback or Custom
                             if (adsPref.getBoolean("IsFail_FB")) {
                                 // With the shimmer: this branch renders the ad itself, so
                                 // without it nothing ever takes the placeholder down.
-                                showFBNativeBannerFallback(context, layout, shimmer)
+                                presentFBNativeBannerFallback(context, layout, shimmer)
                             } else {
                                 layout.removeAllViews()
                                 shimmer?.stopShimmer()
                                 shimmer?.isVisible = false
-                                OwnAdsKeeper().loadCustomAd(
+                                OwnAdsKeeper().fetchCustomAd(
                                     context, layout, OwnAdsKeeper.OwnAdFormat.BANNER
                                 )
                             }
                         }
                     } catch (e: Exception) {
                         Log.e("InlineSponsorStrip", "Google NativeBanner failed: ${e.message}")
-                        // Same reason as InlineSponsor.clearToEmpty: the ad view is built
+                        // Same reason as InlineSponsor.wipeToEmpty: the ad view is built
                         // before the shimmer comes down, so a throw here would otherwise
                         // leave the placeholder running over an empty frame.
                         runCatching {
@@ -179,30 +179,30 @@ class InlineSponsorStrip {
             }
 
             AdFormatKind.FACEBOOK -> {
-                showFBNativeBannerFallback(context, layout, shimmer)
+                presentFBNativeBannerFallback(context, layout, shimmer)
             }
 
             AdFormatKind.UNKNOWN, AdFormatKind.CUSTOM -> {
                 layout.removeAllViews()
                 shimmer?.stopShimmer()
                 shimmer?.isVisible = false
-                OwnAdsKeeper().loadCustomAd(
+                OwnAdsKeeper().fetchCustomAd(
                     context, layout, OwnAdsKeeper.OwnAdFormat.BANNER
                 )
             }
         }
     }
 
-    private fun bindGoogleNativeAd(
+    private fun wireGoogleNativeAd(
         nativeAd: NativeAd, binding: AdGNativeStripBinding, context: Activity
     ) {
         // Log load
-        context.logKeyEvent("NativeBanner_Show_Google")
+        context.trackEvent("NativeBanner_Show_Google")
 
         if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(context)
 
         nativeAd.setOnPaidEventListener {
-            EarningsTracker.logPaidEvent(context, it)
+            EarningsTracker.trackPaidEvent(context, it)
         }
 
         binding.apply {
@@ -255,7 +255,7 @@ class InlineSponsorStrip {
     }
 
 
-    private fun showFBNativeBannerFallback(
+    private fun presentFBNativeBannerFallback(
         context: Activity, layout: FrameLayout, shimmer: ShimmerFrameLayout? = null
     ) {
         val adsPref = AdPrefsStore.getInstance(context)
@@ -264,7 +264,7 @@ class InlineSponsorStrip {
         if (fbId.isNullOrEmpty()) {
             shimmer?.stopShimmer()
             shimmer?.isVisible = false
-            OwnAdsKeeper().loadCustomAd(
+            OwnAdsKeeper().fetchCustomAd(
                 context, layout, OwnAdsKeeper.OwnAdFormat.BANNER
             )
             return
@@ -277,15 +277,15 @@ class InlineSponsorStrip {
                     shimmer?.stopShimmer()
                     shimmer?.isVisible = false
                     layout.removeAllViews()
-                    inflateFbNativeBAnnerAd(fbNative, layout, context)
-                    context.logKeyEvent("NativeBAnner_FB")
+                    expandFbNativeBAnnerAd(fbNative, layout, context)
+                    context.trackEvent("NativeBAnner_FB")
                 }
 
                 override fun onError(ad: Ad?, adError: AdError?) {
                     shimmer?.stopShimmer()
                     shimmer?.isVisible = false
                     Log.e("NativeAds", "FB MidNative failed: ${adError?.errorMessage}")
-                    OwnAdsKeeper().loadCustomAd(
+                    OwnAdsKeeper().fetchCustomAd(
                         context, layout, OwnAdsKeeper.OwnAdFormat.BANNER
                     )
                 }
@@ -301,7 +301,7 @@ class InlineSponsorStrip {
         )
     }
 
-    fun inflateFbNativeBAnnerAd(
+    fun expandFbNativeBAnnerAd(
         nativeAd: com.facebook.ads.NativeAd,
         viewGroup: ViewGroup,
         activity: Activity,

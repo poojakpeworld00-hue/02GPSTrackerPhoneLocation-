@@ -53,7 +53,7 @@ object LanguageKeeper {
      * would not reach the launcher (or the caller panel's tabs inside it) until the Activity
      * was recreated for some other reason.
      */
-    fun applySaved(context: Context) {
+    fun imprintSaved(context: Context) {
         val savedLang = AppPrefsStore.selectedLanguage(context)
         if (savedLang.isEmpty()) return
 

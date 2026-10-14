@@ -51,14 +51,14 @@ class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>(
         }
         binding.padBack.setOnClickListener { goBack() }
         subs = activeSubs()
-        buildSelector()
-        renderDefaults()
-        renderSelected()
+        composeSelector()
+        paintDefaults()
+        paintSelected()
     }
 
     override fun onStart() {
         super.onStart()
-        if (subs.isNotEmpty()) registerSignal(subs[selectedIndex])
+        if (subs.isNotEmpty()) enrollSignal(subs[selectedIndex])
     }
 
     override fun onStop() {
@@ -74,7 +74,7 @@ class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>(
             .sortedBy { it.simSlotIndex }
     }
 
-    private fun buildSelector() {
+    private fun composeSelector() {
         binding.simSelectorVw.removeAllViews()
         if (subs.size < 2) {
             binding.simSelectorVw.visibility = View.GONE
@@ -113,12 +113,12 @@ class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>(
         selectedIndex = i
         styleSelector()
         stopSignal()
-        renderSelected()
-        registerSignal(subs[i])
+        paintSelected()
+        enrollSignal(subs[i])
     }
 
     @SuppressLint("MissingPermission")
-    private fun renderSelected() {
+    private fun paintSelected() {
         val info = subs.getOrNull(selectedIndex)
         if (info == null) {
             binding.lblLevel.setText(R.string.dashboard_na)
@@ -137,7 +137,7 @@ class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>(
     }
 
     @SuppressLint("MissingPermission")
-    private fun renderDefaults() {
+    private fun paintDefaults() {
         binding.lblDefCalls.text = subLabel(SubscriptionManager.getDefaultVoiceSubscriptionId())
         binding.lblDefData.text = subLabel(SubscriptionManager.getDefaultDataSubscriptionId())
         binding.lblDefSms.text = subLabel(SubscriptionManager.getDefaultSmsSubscriptionId())
@@ -152,7 +152,7 @@ class TwinSimOverviewActivity : FoundationActivity<PageDualSimDashboardBinding>(
 
     @SuppressLint("MissingPermission")
     @Suppress("DEPRECATION")
-    private fun registerSignal(info: SubscriptionInfo) {
+    private fun enrollSignal(info: SubscriptionInfo) {
         if (!OwnSimLines.isGranted(this)) return
         val tm = telephonyFor(info)
         val l = object : PhoneStateListener() {

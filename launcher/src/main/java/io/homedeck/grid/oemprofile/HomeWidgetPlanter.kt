@@ -143,16 +143,16 @@ object HomeWidgetPlanter {
 
         if (config.timeWidgetShown != setup.showTimeWidget) {
             config.timeWidgetShown = setup.showTimeWidget
-            if (setup.showTimeWidget) seedTimeWidget(context) else removed = removeWidgets(context) { it.className == PSEUDO_WIDGET_TIME }
+            if (setup.showTimeWidget) seedTimeWidget(context) else removed = dropWidgets(context) { it.className == PSEUDO_WIDGET_TIME }
             Timber.i("HomeWidgetPlanter: time widget ${if (setup.showTimeWidget) "on" else "off"}")
         }
 
         if (config.searchWidgetShown != setup.showSearchWidget) {
             config.searchWidgetShown = setup.showSearchWidget
-            if (setup.showSearchWidget) seedSearchRow(context) else removed = removeWidgets(context) { isSeededSearchRow(it) } || removed
+            if (setup.showSearchWidget) seedSearchRow(context) else removed = dropWidgets(context) { isSeededSearchRow(it) } || removed
             Timber.i("HomeWidgetPlanter: search widget ${if (setup.showSearchWidget) "on" else "off"}")
         } else if (setup.showSearchWidget && config.searchWidget != setup.searchWidget) {
-            removeWidgets(context) { isSeededSearchRow(it) }
+            dropWidgets(context) { isSeededSearchRow(it) }
             // Written even when the row cannot go back (its cells taken), so this is not retried forever.
             config.searchWidget = setup.searchWidget
             seedSearchRow(context)
@@ -184,7 +184,7 @@ object HomeWidgetPlanter {
     }
 
     /** Deletes every grid widget [match] picks, releasing its bound id. Returns true when any went. */
-    private fun removeWidgets(context: Context, match: (DeskGridEntry) -> Boolean): Boolean {
+    private fun dropWidgets(context: Context, match: (DeskGridEntry) -> Boolean): Boolean {
         val db = context.homeScreenGridItemsDB
         val gone = db.getAllItems().filter { it.type == ITEM_TYPE_WIDGET && match(it) }
         gone.forEach { item ->

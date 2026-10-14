@@ -62,7 +62,7 @@ class LookupCapSheet(
         dialog.behavior.skipCollapsed = true
         dialog.setOnDismissListener { shine?.cancel() }
         dialog.show()
-        startShine()
+        kickShine()
     }
 
     private fun watch() {
@@ -88,7 +88,7 @@ class LookupCapSheet(
     }
 
     /** The light streak sweeping across the gold button (design `shine`). */
-    private fun startShine() {
+    private fun kickShine() {
         if (VisualTweens.animationsDisabled(themed)) {
             binding.shineVw.isVisible = false
             return

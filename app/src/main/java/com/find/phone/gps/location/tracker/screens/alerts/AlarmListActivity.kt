@@ -23,7 +23,7 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.lifecycleScope
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsor
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.databinding.PopupReminderDeleteBinding
@@ -81,11 +81,11 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         }
         binding.padBack.setOnClickListener { goBack() }
         VisualTweens.pressScale(binding.padNewReminder)
-        binding.padNewReminder.setOnClickListener { openSheet(null) }
-        logKeyEvent("Reminders_Open")
+        binding.padNewReminder.setOnClickListener { unfoldSheet(null) }
+        trackEvent("Reminders_Open")
 
         // Bottom mid native (ScreenAds["AlarmListActivity"].show turns it off).
-        InlineSponsor().showMidNative(this, binding.adNativeFrameVw, binding.adShimmerVw)
+        InlineSponsor().presentMidNative(this, binding.adNativeFrameVw, binding.adShimmerVw)
         binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)
     }
 
@@ -99,7 +99,7 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
 
     override fun onDestroy() {
         accessPollJob?.cancel()
-        AlarmAskDialog.dismissIfShowing()
+        AlarmAskDialog.retireIfShowing()
         super.onDestroy()
     }
 
@@ -157,7 +157,7 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         swEnabledVw.isChecked = item.isActive
         swEnabledVw.setOnCheckedChangeListener { _, checked -> onToggle(item, checked) }
 
-        itemReminderVw.setOnClickListener { openSheet(item) }
+        itemReminderVw.setOnClickListener { unfoldSheet(item) }
         itemReminderVw.setOnLongClickListener { confirmDelete(item); true }
     }.root
 
@@ -165,17 +165,17 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         // Turning a finished one-off back on needs a new time: open it instead.
         if (on && item.repeatOrOnce == Repeat.ONCE && item.dateTime <= System.currentTimeMillis()) {
             render()
-            openSheet(item)
+            unfoldSheet(item)
             return
         }
         AlarmPlanner.save(this, item.copy(enabled = on, done = false))
-        logKeyEvent(if (on) "Reminder_Enable" else "Reminder_Disable")
+        trackEvent(if (on) "Reminder_Enable" else "Reminder_Disable")
         render()
     }
 
     // ───────────────────────────── edit / delete ─────────────────────────────
 
-    private fun openSheet(item: AlarmEntry?) {
+    private fun unfoldSheet(item: AlarmEntry?) {
         AlarmEditorSheet(
             activity = this,
             existing = item,
@@ -193,10 +193,10 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         render()
         val stored = AlarmRepository.get(this, item.id) ?: item
         Toast.makeText(this, getString(R.string.rem_saved, AlarmFormatter.dayAndTime(this, stored.dateTime)), Toast.LENGTH_SHORT).show()
-        logKeyEvent(if (isNew) "Reminder_Create" else "Reminder_Edit")
+        trackEvent(if (isNew) "Reminder_Create" else "Reminder_Edit")
         if (isNew) {
             AskGatekeeper.onReminderCreated(this)
-            askAfterSave(stored)
+            promptAfterSave(stored)
         }
     }
 
@@ -206,15 +206,15 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
      * prompt does not show but notifications are off, ask for those anyway: nothing can be shown
      * without them.
      */
-    private fun askAfterSave(item: AlarmEntry) {
+    private fun promptAfterSave(item: AlarmEntry) {
         AlarmGrant.prime(
             activity = this,
             returnTo = AlarmListActivity::class.java,
             reminderTitle = item.title,
             reminderTime = AlarmFormatter.time(this, item.dateTime),
-            onReady = { if (needsNotificationPermission()) askNotifications {} },
-            onSettingsOpened = { startAccessPoll() },
-            onManage = { proceed -> if (needsNotificationPermission()) askNotifications(proceed) else proceed() },
+            onReady = { if (needsNotificationPermission()) promptNotifications {} },
+            onSettingsOpened = { kickAccessPoll() },
+            onManage = { proceed -> if (needsNotificationPermission()) promptNotifications(proceed) else proceed() },
         )
     }
 
@@ -222,14 +222,14 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !NotificationManagerCompat.from(this).areNotificationsEnabled()
 
-    private fun askNotifications(then: () -> Unit) {
+    private fun promptNotifications(then: () -> Unit) {
         afterNotificationAsk = then
         runCatching { notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS) }
             .onFailure { afterNotificationAsk = null; then() }
     }
 
     /** The primary return path: Settings sits in this task, so this Activity may bring itself back. */
-    private fun startAccessPoll() {
+    private fun kickAccessPoll() {
         accessPollJob?.cancel()
         accessPollJob = lifecycleScope.launch {
             while (isActive) {
@@ -254,7 +254,7 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         view.padConfirmDelete.setOnClickListener {
             dialog.dismiss()
             AlarmPlanner.delete(this, item.id)
-            logKeyEvent("Reminder_Delete")
+            trackEvent("Reminder_Delete")
             render()
         }
         dialog.show()

@@ -75,7 +75,7 @@ class ConcealedAppsPane : HomeFoundationPane(), RefreshRecyclerViewListener {
 
             val iconsToRemove = hiddenIcons.filter { it.drawable == null }
             if (iconsToRemove.isNotEmpty()) {
-                hiddenIconsDB.removeHiddenIcons(iconsToRemove)
+                hiddenIconsDB.dropHiddenIcons(iconsToRemove)
                 hiddenIcons.removeAll(iconsToRemove)
             }
 

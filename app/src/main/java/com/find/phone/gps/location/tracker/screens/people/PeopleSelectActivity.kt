@@ -56,7 +56,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     private var descending = false
 
     private val permission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) onGranted() else showPermissionState()
+        if (granted) onGranted() else presentPermissionState()
     }
 
     override fun initView() {
@@ -73,16 +73,16 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
 
         binding.searchInputVw.doAfterTextChanged {
             binding.padClearSearch.isVisible = !it.isNullOrEmpty()
-            applyFilter()
+            imprintFilter()
         }
         binding.padClearSearch.setOnClickListener { binding.searchInputVw.setText("") }
-        binding.accountChipVw.setOnClickListener { showAccountMenu() }
-        binding.padTools.setOnClickListener { showToolsMenu() }
-        binding.padAllow.setOnClickListener { askPermission() }
+        binding.accountChipVw.setOnClickListener { presentAccountMenu() }
+        binding.padTools.setOnClickListener { presentToolsMenu() }
+        binding.padAllow.setOnClickListener { promptPermission() }
         listOf(binding.accountChipVw, binding.padTools, binding.padAllow).forEach { VisualTweens.pressScale(it) }
-        setupRail()
+        prepareRail()
 
-        if (hasPermission()) onGranted() else showPermissionState()
+        if (hasPermission()) onGranted() else presentPermissionState()
     }
 
     // ===== permission (8b) =====
@@ -91,7 +91,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
 
     /** First ask through the system dialog; once it stops showing (denied twice), app settings. */
-    private fun askPermission() {
+    private fun promptPermission() {
         val perm = Manifest.permission.READ_CONTACTS
         when {
             !prefs.hasRequestedPermission(perm) -> {
@@ -111,7 +111,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         if (binding.permissionStateVw.isVisible && hasPermission()) onGranted()
     }
 
-    private fun showPermissionState() {
+    private fun presentPermissionState() {
         binding.permissionStateVw.isVisible = true
         binding.listGroupVw.isVisible = false
         binding.railBoxVw.isVisible = false
@@ -120,7 +120,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     private fun onGranted() {
         binding.permissionStateVw.isVisible = false
         binding.listGroupVw.isVisible = true
-        renderAd()
+        paintAd()
         load()
     }
 
@@ -133,12 +133,12 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
             all = withContext(Dispatchers.IO) { runCatching { HandsetPeople.load(this@PeopleSelectActivity) }.getOrDefault(emptyList()) }
             binding.pbLoadingVw.isVisible = false
             if (account != null && all.none { it.account == account }) account = null
-            bindAccountChip()
-            applyFilter()
+            wireAccountChip()
+            imprintFilter()
         }
     }
 
-    private fun bindAccountChip() {
+    private fun wireAccountChip() {
         val scope = all.filter { account == null || it.account == account }
         binding.lblAccount.text = account ?: getString(R.string.ds_contacts_all_accounts)
         binding.lblAccountCount.text = scope.distinctBy { it.contactId }.size.toString()
@@ -146,7 +146,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     }
 
     /** Account scope, then name contains the text or — when it has digits — the number does. */
-    private fun applyFilter() {
+    private fun imprintFilter() {
         if (binding.pbLoadingVw.isVisible) return
         val query = binding.searchInputVw.text?.toString()?.trim().orEmpty()
         val needle = query.lowercase(Locale.getDefault())
@@ -159,7 +159,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         if (descending) shown = shown.sortedWith(compareBy<PersonPhone> { it.letter == "#" }.thenByDescending { it.name.lowercase(Locale.getDefault()) })
         adapter.submitContacts(shown) {
             binding.rollContacts.scrollToPosition(0)
-            buildRail()
+            composeRail()
         }
 
         // Favorites: the starred contacts of the scope, hidden while searching (design 8a).
@@ -169,14 +169,14 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
         binding.lblFavoritesCount.text = favs.size.toString()
 
         when {
-            all.isEmpty() -> showEmpty(R.string.ds_contacts_empty, R.string.ds_contacts_empty_body)
-            shown.isEmpty() -> showEmpty(R.string.ds_contacts_no_match, R.string.ds_contacts_no_match_body)
+            all.isEmpty() -> presentEmpty(R.string.ds_contacts_empty, R.string.ds_contacts_empty_body)
+            shown.isEmpty() -> presentEmpty(R.string.ds_contacts_no_match, R.string.ds_contacts_no_match_body)
             else -> binding.emptyStateVw.isVisible = false
         }
         binding.railBoxVw.isVisible = shown.isNotEmpty()
     }
 
-    private fun showEmpty(title: Int, body: Int) {
+    private fun presentEmpty(title: Int, body: Int) {
         binding.lblEmpty.setText(title)
         binding.lblEmptyBody.setText(body)
         binding.emptyStateVw.isVisible = true
@@ -185,7 +185,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     // ===== menus =====
 
     /** "All accounts" plus every account the phone book has, each with its contact count. */
-    private fun showAccountMenu() {
+    private fun presentAccountMenu() {
         val people = all.distinctBy { it.contactId }
         val counts = people.groupingBy { it.account }.eachCount()
         val popup = VisualPopup(this)
@@ -212,17 +212,17 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
 
     private fun selectAccount(name: String?) {
         account = name
-        bindAccountChip()
-        applyFilter()
+        wireAccountChip()
+        imprintFilter()
     }
 
     /** The tools button: sort direction and a refresh. */
-    private fun showToolsMenu() {
+    private fun presentToolsMenu() {
         VisualPopup(this)
             .add(
                 label = getString(if (descending) R.string.ds_contacts_sort_az else R.string.ds_contacts_sort_za),
                 icon = R.drawable.vs_ic_grid,
-            ) { descending = !descending; applyFilter() }
+            ) { descending = !descending; imprintFilter() }
             .add(label = getString(R.string.ds_contacts_refresh), icon = R.drawable.vs_ic_history) { load() }
             .show(binding.padTools, Gravity.END)
     }
@@ -242,15 +242,15 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
     // ===== small native ad =====
 
     /** The small native card under the search field (`ScreenAds.PeopleSelectActivity`). */
-    private fun renderAd() {
+    private fun paintAd() {
         val show = AdPrefsStore.getInstance(this).getBoolean("IsAdsON") && PageSponsorSettings.resolve(this, javaClass.simpleName).show
         binding.adCardVw.isVisible = show
-        if (show) InlineSponsorStrip().showNativeBannerNative(this, binding.adNativeFrameVw, binding.adShimmerVw)
+        if (show) InlineSponsorStrip().presentNativeBannerNative(this, binding.adNativeFrameVw, binding.adShimmerVw)
     }
 
     // ===== letter rail =====
 
-    private fun buildRail() {
+    private fun composeRail() {
         binding.railVw.removeAllViews()
         val font = ResourcesCompat.getFont(this, R.font.figtree_bold)
         adapter.letterPositions.keys.forEach { letter ->
@@ -268,7 +268,7 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
 
     /** Touch or drag along the rail scrolls the list to that letter. */
     @SuppressLint("ClickableViewAccessibility")
-    private fun setupRail() {
+    private fun prepareRail() {
         binding.railVw.setOnTouchListener { v, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {

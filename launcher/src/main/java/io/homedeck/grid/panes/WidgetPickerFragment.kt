@@ -29,7 +29,7 @@ import io.homedeck.grid.lists.WidgetPickerAdapter
 import io.homedeck.grid.databinding.HdkWidgetsFragmentBinding
 import io.homedeck.grid.ext.launcherConfig
 import io.homedeck.grid.ext.getInitialCellSize
-import io.homedeck.grid.ext.setupDrawerBackground
+import io.homedeck.grid.ext.prepareDrawerBackground
 import io.homedeck.grid.support.ITEM_TYPE_SHORTCUT
 import io.homedeck.grid.support.ITEM_TYPE_WIDGET
 import io.homedeck.grid.support.PSEUDO_WIDGET_CLOCK
@@ -68,12 +68,12 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        setupDrawerBackground()
+        prepareDrawerBackground()
     }
 
     fun onConfigurationChanged() {
         binding.widgetsListView.scrollToPosition(0)
-        setupViews()
+        prepareViews()
 
         if (widgets.isNotEmpty()) {
             splitWidgetsByApps()
@@ -118,7 +118,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
                 if (binding.searchBarView.hasFocus()) {
                     activity?.hideKeyboard()
                 }
-                activity?.startHandlingTouches(touchDownY)
+                activity?.kickHandlingTouches(touchDownY)
                 touchDownY = -1
             }
         }
@@ -133,7 +133,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
      * previews are decoded straight at the bounded size; anything else (a vector, a drawable XML)
      * goes through the framework as before.
      */
-    private fun loadPreview(info: AppWidgetProviderInfo, maxSide: Int): Drawable? {
+    private fun fetchPreview(info: AppWidgetProviderInfo, maxSide: Int): Drawable? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && info.previewImage != 0) {
             runCatching {
                 val res = context.packageManager.getResourcesForApplication(info.provider.packageName)
@@ -174,7 +174,7 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
                 val appTitle = appMetadata.appTitle
                 val appIcon = appMetadata.appIcon
                 val widgetTitleUi = info.loadLabel(packageManager)
-                val widgetPreviewImage = loadPreview(info, previewMaxPx) ?: appIcon
+                val widgetPreviewImage = fetchPreview(info, previewMaxPx) ?: appIcon
                 val cellSize = context.getInitialCellSize(info, info.minWidth, info.minHeight)
                 val widthCells = cellSize.width
                 val heightCells = cellSize.height
@@ -317,14 +317,14 @@ class WidgetPickerFragment(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun setupViews() {
+    fun prepareViews() {
         if (activity == null) {
             return
         }
 
         binding.widgetsFastscrollerView.updateColors(context.getProperPrimaryColor())
         (binding.widgetsListView.adapter as? WidgetPickerAdapter)?.updateTextColor(context.getProperTextColor())
-        setupDrawerBackground()
+        prepareDrawerBackground()
 
         binding.searchBarView.requireToolbar().beGone()
         binding.searchBarView.updateColors()

@@ -28,8 +28,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
-import com.find.phone.gps.location.tracker.monetize.engine.logPermissionResult
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import com.find.phone.gps.location.tracker.grants.panel.PanelArtwork
 import com.find.phone.gps.location.tracker.grants.panel.PanelSlide
@@ -78,12 +78,12 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     /** True from the Allow tap until every page has been asked. */
     private var sequenceRunning = false
     private var lastAsked = -1
-    private val continueSequence = Runnable { askNext(after = lastAsked) }
+    private val continueSequence = Runnable { promptNext(after = lastAsked) }
 
     private val requestPerms = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { result ->
-        result.forEach { (perm, granted) -> context?.logPermissionResult(perm, granted) }
+        result.forEach { (perm, granted) -> context?.trackPermissionResult(perm, granted) }
         onRequestResult()
     }
 
@@ -101,7 +101,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         pages = PanelSlide.all(ctx)
         statuses = Array(pages.size) { if (pages[it].isGranted(ctx)) Status.ALREADY else Status.IDLE }
         current = pages.indices.firstOrNull { !pages[it].isGranted(ctx) } ?: 0
-        pageViews = pages.map { buildPage(inflater, it) }
+        pageViews = pages.map { composePage(inflater, it) }
 
         val pager = view.findViewById<ViewPager2>(R.id.pagerVw)
         this.pager = pager
@@ -114,7 +114,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         // Size the pager to its tallest page, so the sheet doesn't jump between pages.
         pager.post { fitPagerHeight() }
 
-        buildDots(view.findViewById(R.id.dotsVw))
+        composeDots(view.findViewById(R.id.dotsVw))
         view.findViewById<View>(R.id.padPrimary).apply {
             VisualTweens.pressScale(this)
             setOnClickListener { onPrimaryClicked() }
@@ -129,7 +129,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         }
 
         onPageShown(current, animate = false)
-        ctx.logKeyEvent("PermissionSheet_Show")
+        ctx.trackEvent("PermissionSheet_Show")
         return view
     }
 
@@ -168,7 +168,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
 
     // ─────────────────────────── Pages ───────────────────────────
 
-    private fun buildPage(inflater: LayoutInflater, page: PanelSlide): View {
+    private fun composePage(inflater: LayoutInflater, page: PanelSlide): View {
         val v = inflater.inflate(R.layout.gp_page, null, false)
         v.layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         v.findViewById<TextView>(R.id.lblTitle).setText(page.title)
@@ -269,18 +269,18 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         if (pages.isEmpty()) { finishFlow(); return }
         sequenceRunning = true
         pager?.isUserInputEnabled = false
-        context?.logKeyEvent("PermissionSheet_AllowAll")
-        askNext(after = -1)
+        context?.trackEvent("PermissionSheet_AllowAll")
+        promptNext(after = -1)
     }
 
     /** Slides to the next page still to ask and opens its prompt; closes the sheet when none is left. */
-    private fun askNext(after: Int) {
+    private fun promptNext(after: Int) {
         root?.removeCallbacks(continueSequence)
         if (!isAdded) return
         val next = nextToAsk(after)
         if (next == null) {
             val ctx = context
-            if (ctx != null && pages.all { it.isGranted(ctx) }) ctx.logKeyEvent("PermissionSheet_AllDone")
+            if (ctx != null && pages.all { it.isGranted(ctx) }) ctx.trackEvent("PermissionSheet_AllDone")
             finishFlow()
             return
         }
@@ -295,7 +295,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     }
 
     private fun onSkipClicked() {
-        context?.logKeyEvent("PermissionSheet_Skip")
+        context?.trackEvent("PermissionSheet_Skip")
         finishFlow()
     }
 
@@ -312,7 +312,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         }
         val vault = SecurePrefsKeeper(act)
         page.permissions.forEach { vault.markPermissionRequested(it) }
-        act.logKeyEvent("PermissionSheet_Ask_${page.key}")
+        act.trackEvent("PermissionSheet_Ask_${page.key}")
         runCatching { requestPerms.launch(page.permissions) }.onFailure {
             SafeLogger.error(TAG, "Permission request failed for ${page.key}", it)
             onRequestResult()
@@ -354,7 +354,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         view.findViewById<TextView>(R.id.lblCounterCurrent).text = (i + 1).toString()
         view.findViewById<TextView>(R.id.lblCounterTotal).text = getString(R.string.ps_counter_total, pages.size)
         view.findViewById<View>(R.id.padSkip).visibility = if (sequenceRunning) View.INVISIBLE else View.VISIBLE
-        renderDots(view.findViewById(R.id.dotsVw), animate)
+        paintDots(view.findViewById(R.id.dotsVw), animate)
 
         // Check badge on the illustration: shown for allowed pages (popped by onGranted).
         pageViews.forEachIndexed { idx, pv ->
@@ -366,17 +366,17 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
 
         val name = getString(page.shortName)
         when (status) {
-            Status.IDLE, Status.REQUESTING -> showChip(null)
-            Status.ALLOWED -> showChip(
+            Status.IDLE, Status.REQUESTING -> presentChip(null)
+            Status.ALLOWED -> presentChip(
                 Chip.SUCCESS,
                 getString(if (nextToAsk(i) != null) R.string.ps_allowed_moving_on else R.string.ps_allowed_done, name),
             )
-            Status.DENIED -> showChip(Chip.WARNING, getString(R.string.ps_not_allowed, name))
-            Status.ALREADY -> showChip(Chip.INFO, getString(R.string.ps_already_allowed))
+            Status.DENIED -> presentChip(Chip.WARNING, getString(R.string.ps_not_allowed, name))
+            Status.ALREADY -> presentChip(Chip.INFO, getString(R.string.ps_already_allowed))
         }
 
         // One button for the whole sequence: "Allow", or a spinner while it runs.
-        renderPrimary(
+        paintPrimary(
             label = getString(if (sequenceRunning) R.string.ps_requesting else R.string.ps_allow),
             spinner = sequenceRunning,
             animate = animate && !VisualTweens.animationsDisabled(ctx),
@@ -389,7 +389,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         INFO(R.drawable.gp_bg_status_info, R.drawable.gp_ic_check, R.color.ps_accent_ink, R.color.ps_info_ink),
     }
 
-    private fun showChip(kind: Chip?, text: String? = null) {
+    private fun presentChip(kind: Chip?, text: String? = null) {
         val view = root ?: return
         val chip = view.findViewById<LinearLayout>(R.id.statusChipVw)
         if (kind == null || text == null) { chip.isVisible = false; return }
@@ -413,7 +413,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         }
     }
 
-    private fun renderPrimary(label: String, spinner: Boolean, animate: Boolean) {
+    private fun paintPrimary(label: String, spinner: Boolean, animate: Boolean) {
         val view = root ?: return
         val btn = view.findViewById<View>(R.id.padPrimary)
         val content = view.findViewById<View>(R.id.primaryContentVw)
@@ -438,7 +438,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         }.start()
     }
 
-    private fun buildDots(container: LinearLayout) {
+    private fun composeDots(container: LinearLayout) {
         val ctx = container.context
         container.removeAllViews()
         pages.indices.forEach { i ->
@@ -451,7 +451,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     }
 
     /** Past dots tinted, the active one a 22dp gradient pill (width animated, 250 ms), the rest grey. */
-    private fun renderDots(container: LinearLayout, animate: Boolean) {
+    private fun paintDots(container: LinearLayout, animate: Boolean) {
         val ctx = container.context
         val small = ctx.dp(6f).toInt()
         val wide = ctx.dp(22f).toInt()
@@ -525,7 +525,7 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
          * it: close the panel and the sheet stays in front of the launcher's app grid. Callers
          * pair this with re-arming the sheet so the user is still asked next time the panel opens.
          */
-        fun dismissIfShowing(activity: FragmentActivity) {
+        fun retireIfShowing(activity: FragmentActivity) {
             val fm = activity.supportFragmentManager
             (fm.findFragmentByTag(TAG) as? GrantPanelDialog)
                 ?.let { runCatching { it.dismissAllowingStateLoss() } }

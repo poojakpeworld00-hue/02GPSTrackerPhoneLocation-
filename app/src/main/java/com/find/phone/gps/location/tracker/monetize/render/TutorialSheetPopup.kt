@@ -55,10 +55,10 @@ object TutorialSheetPopup {
             main.postDelayed({ show(app, mode) }, delayMs)
             return true
         }
-        return showNow(context, mode)
+        return presentNow(context, mode)
     }
 
-    private fun showNow(context: Context, mode: String): Boolean {
+    private fun presentNow(context: Context, mode: String): Boolean {
         val app = context.applicationContext
         if (!Settings.canDrawOverlays(app)) {
             // The one thing that decides whether the card can sit on the system page.

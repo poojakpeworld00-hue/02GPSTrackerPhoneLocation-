@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper
 import com.find.phone.gps.location.tracker.alarms.AskGatekeeper
 import com.find.phone.gps.location.tracker.alarms.AlarmSettings
@@ -61,7 +61,7 @@ object AlarmGrant {
     fun isAllowed(c: Context): Boolean = !shouldOfferManage(c)
 
     /** The one place the project asks for the full-screen presentation. */
-    fun attachAlertIntent(builder: NotificationCompat.Builder, target: PendingIntent) {
+    fun linkAlertIntent(builder: NotificationCompat.Builder, target: PendingIntent) {
         builder.setFullScreenIntent(target, true)
     }
 
@@ -72,9 +72,9 @@ object AlarmGrant {
      * launch. NO_HISTORY finishes the page as soon as we come back over it, so it never lingers.
      * The return must not trigger an App Open ad.
      */
-    fun openSettings(c: Context) {
+    fun unfoldSettings(c: Context) {
         ResumeAdKeeper.skipNextAppOpenAd = true
-        c.logKeyEvent("Reminder_Access_Settings")
+        c.trackEvent("Reminder_Access_Settings")
         val flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or
             (if (c is Activity) 0 else Intent.FLAG_ACTIVITY_NEW_TASK)
         runCatching { c.startActivity(manageIntent(c).addFlags(flags)) }
@@ -123,14 +123,14 @@ object AlarmGrant {
         val button = cfg.featureAction.ifBlank { activity.getString(R.string.rem_prompt_action) }
 
         AskGatekeeper.markShown(activity)
-        activity.logKeyEvent("Reminder_Prompt_Show")
+        activity.trackEvent("Reminder_Prompt_Show")
         AlarmAskDialog.show(
             activity, title, desc, button,
             onDismiss = { onClosed?.invoke() },
             onButton = {
-                activity.logKeyEvent("Reminder_Prompt_Allow")
+                activity.trackEvent("Reminder_Prompt_Allow")
                 val open: () -> Unit = {
-                    openSettings(activity)
+                    unfoldSettings(activity)
                     AlarmGrantObserver.start(activity, returnTo)
                     armed = true
                     onSettingsOpened?.invoke()
@@ -153,6 +153,6 @@ object AlarmGrant {
         if (!armed) return
         armed = false
         AlarmGrantObserver.stop(activity)
-        AlarmAskDialog.dismissIfShowing()
+        AlarmAskDialog.retireIfShowing()
     }
 }

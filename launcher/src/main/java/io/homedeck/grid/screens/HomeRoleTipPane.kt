@@ -129,8 +129,8 @@ class HomeRoleTipPane : AppCompatActivity() {
 
         findViewById<View>(R.id.rowMainUi)?.setOnClickListener { finish() }
         when (kind.control) {
-            Control.SWITCH -> startSwitchAnimation()
-            Control.RADIO -> startRadioAnimation()
+            Control.SWITCH -> kickSwitchAnimation()
+            Control.RADIO -> kickRadioAnimation()
             Control.NONE -> Unit
         }
 
@@ -194,7 +194,7 @@ class HomeRoleTipPane : AppCompatActivity() {
      * Runs the switch from off to on and back, forever: the thumb slides while the track fades
      * between the two colours, both on the same clock so they read as one movement.
      */
-    private fun startSwitchAnimation() {
+    private fun kickSwitchAnimation() {
         val track = findViewById<FrameLayout>(R.id.guideSwitchTrackView) ?: return
         val thumb = findViewById<View>(R.id.guideSwitchThumbView) ?: return
         val row = findViewById<View>(R.id.guideMockOverlayRowView)
@@ -251,7 +251,7 @@ class HomeRoleTipPane : AppCompatActivity() {
      * nothing while the ring and the dot fade between the two colours, all on the same clock so they
      * read as one movement.
      */
-    private fun startRadioAnimation() {
+    private fun kickRadioAnimation() {
         val ring = findViewById<View>(R.id.guideRadioRingView) ?: return
         val dot = findViewById<View>(R.id.guideRadioDotView) ?: return
         val row = findViewById<View>(R.id.guideMockAppRowView)
@@ -312,16 +312,16 @@ class HomeRoleTipPane : AppCompatActivity() {
         private const val EXTRA_KIND = "hint_kind"
 
         /** Over the system "display over other apps" page. */
-        fun showForOverlay(activity: Activity) = show(activity, Kind.OVERLAY)
+        fun presentForOverlay(activity: Activity) = show(activity, Kind.OVERLAY)
 
         /** Over the system "Default home app" list. */
-        fun showForDefaultHome(activity: Activity) = show(activity, Kind.DEFAULT_HOME)
+        fun presentForDefaultHome(activity: Activity) = show(activity, Kind.DEFAULT_HOME)
 
         /** The launcher only uses the default-home coach-mark. */
         fun show(activity: Activity) = show(activity, Kind.DEFAULT_HOME)
 
         /** Over the system default-SMS chooser. */
-        fun showForDefaultSms(activity: Activity) = show(activity, Kind.DEFAULT_SMS)
+        fun presentForDefaultSms(activity: Activity) = show(activity, Kind.DEFAULT_SMS)
 
         /**
          * Puts the card up over the system screen [activity] has just opened. Call it immediately

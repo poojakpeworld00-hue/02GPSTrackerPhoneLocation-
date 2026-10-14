@@ -27,7 +27,7 @@ import io.homedeck.grid.sponsor.PaidAppTiles
 import com.bumptech.glide.Glide
 import io.homedeck.grid.screens.HomeFoundationPane
 import io.homedeck.grid.databinding.HdkRowLauncherLabelBinding
-import io.homedeck.grid.ext.animateScale
+import io.homedeck.grid.ext.tweenScale
 import io.homedeck.grid.ext.launcherConfig
 import io.homedeck.grid.support.GlyphFetcher
 import io.homedeck.grid.support.BadgeOutline
@@ -89,7 +89,7 @@ class LaunchablesAdapter(
 
     init {
         setHasStableIds(true)
-        calculateIconWidth()
+        deriveIconWidth()
     }
 
     override fun getItemId(position: Int): Long {
@@ -103,7 +103,7 @@ class LaunchablesAdapter(
     fun isAdSlotPosition(position: Int) =
         position in 0 until itemCount && isAdSlot(getItem(position))
 
-    fun launchFirstApp(): Boolean {
+    fun fireFirstApp(): Boolean {
         val launcher = currentList.firstOrNull { !isAdSlot(it) } ?: return false
         itemClick(launcher)
         return true
@@ -158,7 +158,7 @@ class LaunchablesAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is AdViewHolder -> holder.bindSlot()
+            is AdViewHolder -> holder.wireSlot()
             is ViewHolder -> holder.bindView(getItem(position))
         }
     }
@@ -170,7 +170,7 @@ class LaunchablesAdapter(
      * place, with nothing inserted or removed under the user.
      */
     inner class AdViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bindSlot() {
+        fun wireSlot() {
             val slot = adSlot ?: return
             val host = itemView as FrameLayout
             if (slot.parent !== host) {
@@ -187,11 +187,11 @@ class LaunchablesAdapter(
     }
 
     override fun submitList(list: MutableList<LaunchableApp>?) {
-        calculateIconWidth()
+        deriveIconWidth()
         super.submitList(list)
     }
 
-    private fun calculateIconWidth() {
+    private fun deriveIconWidth() {
         labelTextSp = activity.launcherConfig.labelTextSp
         val currentColumnCount = activity.launcherConfig.drawerColumnCount
         val iconWidth = activity.realScreenSize.x / currentColumnCount
@@ -371,7 +371,7 @@ class LaunchablesAdapter(
                     when (event.action) {
                         MotionEvent.ACTION_DOWN -> {
                             binding.launcherIconView.drawable?.alpha = LAUNCHER_ALPHA_PRESSED
-                            animateScale(
+                            tweenScale(
                                 from = LAUNCHER_SCALE_NORMAL,
                                 to = LAUNCHER_SCALE_PRESSED,
                                 duration = LAUNCHER_SCALE_UP_DURATION
@@ -381,7 +381,7 @@ class LaunchablesAdapter(
                         MotionEvent.ACTION_UP,
                         MotionEvent.ACTION_CANCEL -> {
                             binding.launcherIconView.drawable?.alpha = LAUNCHER_ALPHA_NORMAL
-                            animateScale(
+                            tweenScale(
                                 from = LAUNCHER_SCALE_PRESSED,
                                 to = LAUNCHER_SCALE_NORMAL,
                                 duration = LAUNCHER_SCALE_DOWN_DURATION

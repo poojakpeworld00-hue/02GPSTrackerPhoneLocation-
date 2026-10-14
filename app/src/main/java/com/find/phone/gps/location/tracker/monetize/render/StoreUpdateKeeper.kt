@@ -43,7 +43,7 @@ object StoreUpdateKeeper {
      * Call this in onCreate() BEFORE the activity is STARTED.
      * Registers the ActivityResultLauncher.
      */
-    fun registerLauncher(activity: ComponentActivity) {
+    fun enrollLauncher(activity: ComponentActivity) {
         // Held weakly: this launcher lives in a static field, so capturing the
         // activity in the result lambda would pin it for the process lifetime.
         activityRef = WeakReference(activity)
@@ -95,7 +95,7 @@ object StoreUpdateKeeper {
             updateManager?.registerListener(installStateUpdatedListener)
         }
 
-        checkForUpdates()
+        verifyForUpdates()
     }
 
     /**
@@ -126,7 +126,7 @@ object StoreUpdateKeeper {
     }
 
     /** Checks for updates and starts the flow if available. */
-    private fun checkForUpdates() {
+    private fun verifyForUpdates() {
         val manager = updateManager ?: return
         manager.appUpdateInfo
             .addOnSuccessListener { info ->
@@ -160,7 +160,7 @@ object StoreUpdateKeeper {
                             AppUpdateOptions.newBuilder(updateType).build()
                         )
                     } else {
-                        // Fallback — deprecated but works if registerLauncher wasn't called
+                        // Fallback — deprecated but works if enrollLauncher wasn't called
                         activityRef?.get()?.let { activity ->
                             @Suppress("DEPRECATION")
                             manager.startUpdateFlowForResult(
@@ -218,7 +218,7 @@ object StoreUpdateKeeper {
     /** Re-runs the Play check. Used by the force-update retry when the check failed. */
     fun retryCheck() {
         Log.d(TAG, "retryCheck()")
-        checkForUpdates()
+        verifyForUpdates()
     }
 
     /** Hands a ready-to-install download to the host; without a listener it waits for next launch. */

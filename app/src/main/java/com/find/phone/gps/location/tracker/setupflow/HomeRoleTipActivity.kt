@@ -58,9 +58,9 @@ class HomeRoleTipActivity : AppCompatActivity() {
                 packageManager.getApplicationLabel(applicationInfo).toString().trim()
         }
 
-        bindDismissOnTouch(root)
+        wireDismissOnTouch(root)
         enter(findViewById(R.id.overlayCardNode))
-        startTapLoop()
+        kickTapLoop()
 
         visible = this
         root.postDelayed(autoFinish, AUTO_FINISH_MS)
@@ -88,7 +88,7 @@ class HomeRoleTipActivity : AppCompatActivity() {
     }
 
     /** The 2.4 s loop: `tap`, `ripple`, `rring`, `rdot` and `glowrow`, all in phase. */
-    private fun startTapLoop() {
+    private fun kickTapLoop() {
         if (VisualTweens.animationsDisabled(this)) {
             // Final frame: the hand resting on a selected radio.
             findViewById<View>(R.id.tipRadioRingOn)?.alpha = 1f
@@ -137,7 +137,7 @@ class HomeRoleTipActivity : AppCompatActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun bindDismissOnTouch(root: View) {
+    private fun wireDismissOnTouch(root: View) {
         root.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN && !isFinishing) finish()
             true

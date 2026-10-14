@@ -71,7 +71,7 @@ object GrantOrigin {
      * call once at startup; failures fall back silently to cached/activated
      * values so the flow is never blocked.
      */
-    fun refreshFromRemote(onReady: (() -> Unit)? = null) {
+    fun renewFromRemote(onReady: (() -> Unit)? = null) {
         try {
             val rc = FirebaseRemoteConfig.getInstance()
             // See RemoteValuesRules.withSettings — a fetch started before the settings land
@@ -84,7 +84,7 @@ object GrantOrigin {
                 }
             }
         } catch (e: Exception) {
-            SafeLogger.error(TAG, "refreshFromRemote failed; using cached config", e)
+            SafeLogger.error(TAG, "renewFromRemote failed; using cached config", e)
             reload()
             onReady?.invoke()
         }

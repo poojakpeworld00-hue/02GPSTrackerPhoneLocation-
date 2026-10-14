@@ -18,7 +18,7 @@ import io.lighthouse.push.extended.LightHouseRichPush
 import com.find.phone.gps.location.tracker.monetize.model.OnPayloadReady
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper
-import com.find.phone.gps.location.tracker.monetize.render.showAppRedirectPopup
+import com.find.phone.gps.location.tracker.monetize.render.presentAppRedirectPopup
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
@@ -30,7 +30,7 @@ import com.find.phone.gps.location.tracker.screens.reveal.TourUnveilRules
 import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
 import com.find.phone.gps.location.tracker.screens.walkthrough.GuidedTourActivity
 import com.find.phone.gps.location.tracker.screens.consent.PolicyConsentActivity
-import com.find.phone.gps.location.tracker.helpers.openActivity
+import com.find.phone.gps.location.tracker.helpers.unfoldActivity
 import java.security.MessageDigest
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -99,9 +99,9 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
         motion = BootTweens(binding).also { it.start() }
         val animMin = if (VisualTweens.animationsDisabled(this)) ANIM_MIN_REDUCED_MS else ANIM_MIN_MS
         handler.postDelayed({
-            Log.d(SPLASH_FLOW_TAG, "animation min elapsed (${animMin}ms) → maybeProceed")
+            Log.d(SPLASH_FLOW_TAG, "animation min elapsed (${animMin}ms) → perhapsProceed")
             animMinElapsed.set(true)
-            maybeProceed()
+            perhapsProceed()
         }, animMin)
 
         printHashKey(this)
@@ -113,19 +113,19 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
                 Log.d(SPLASH_FLOW_TAG, "getData onSuccess → dataReady")
                 ResumeAdKeeper.loadAd(this@BootActivity)
                 dataReady.set(true)
-                maybeProceed()
+                perhapsProceed()
             }
 
             override fun onError() {
                 Log.d(SPLASH_FLOW_TAG, "getData onError → dataReady")
                 dataReady.set(true)
-                maybeProceed()
+                perhapsProceed()
             }
         })
     }
 
     /** Navigate only once BOTH gates are met: data ready AND the intro has played. */
-    private fun maybeProceed() {
+    private fun perhapsProceed() {
         if (dataReady.get() && animMinElapsed.get()) {
             Log.d(SPLASH_FLOW_TAG, "both gates met (data + animation) → proceedNow")
             proceedNow()
@@ -144,20 +144,20 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
         }
         val redirectLink = AdPrefsStore.getInstance(this).getString("In_App_Update_Link")
         if (!redirectLink.isNullOrEmpty()) {
-            Log.d(SPLASH_FLOW_TAG, "proceedNow → showAppRedirectPopup")
-            showAppRedirectPopup { launchNext() }
+            Log.d(SPLASH_FLOW_TAG, "proceedNow → presentAppRedirectPopup")
+            presentAppRedirectPopup { fireNext() }
         } else {
-            Log.d(SPLASH_FLOW_TAG, "proceedNow → launchNext")
-            launchNext()
+            Log.d(SPLASH_FLOW_TAG, "proceedNow → fireNext")
+            fireNext()
         }
     }
 
-    private fun launchNext() {
+    private fun fireNext() {
         if (isFinishing || isDestroyed) {
-            Log.d(SPLASH_FLOW_TAG, "launchNext skipped (finishing/destroyed)")
+            Log.d(SPLASH_FLOW_TAG, "fireNext skipped (finishing/destroyed)")
             return
         }
-        Log.d(SPLASH_FLOW_TAG, "launchNext → ensureDataDisclosure")
+        Log.d(SPLASH_FLOW_TAG, "fireNext → ensureDataDisclosure")
         // The LightHouse data-disclosure screen briefly sends the app background→foreground.
         // That foreground event would pop the returning-app App Open ad right after the
         // disclosure, in the middle of the first-launch flow. Suppress it for this one trip.
@@ -179,7 +179,7 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
                 else -> Intent(this, next)
             }
             // Splash → onboarding/main: no interstitial on the very first launch.
-            openActivity(intent, isShowAd = false)
+            unfoldActivity(intent, isShowAd = false)
             finish()
         }
     }

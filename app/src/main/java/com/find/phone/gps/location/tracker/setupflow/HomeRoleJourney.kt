@@ -14,7 +14,7 @@ import androidx.activity.OnBackPressedCallback
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings.OnboardScreen
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.TrackerPhoneApp
 import com.find.phone.gps.location.tracker.R
@@ -211,7 +211,7 @@ object HomeRoleJourney {
      * something to do. [homeActivity] when every screen is switched off, so Splash always has
      * somewhere to send the user.
      */
-    fun firstScreen(context: Context): Class<*> = resolveFrom(context, 0)
+    fun firstScreen(context: Context): Class<*> = settleFrom(context, 0)
 
     /** The step the first run is on (the screen on display, or the one last shown). */
     fun currentStep(context: Context): Int = context.getSharedPrefs().getInt(ONBOARDING_STEP, 0)
@@ -221,7 +221,7 @@ object HomeRoleJourney {
      * something to do, committing the step as it goes — [homeActivity] when there is none. The
      * splash uses it to come back to the screen the user left with Home ([WalkthroughHomeAdvance]).
      */
-    fun resumeScreen(context: Context, step: Int): Class<*> = resolveFrom(context, step)
+    fun resumeScreen(context: Context, step: Int): Class<*> = settleFrom(context, step)
 
     /**
      * Moves off the screen at the current step and finishes [activity]. Lands on the home
@@ -254,7 +254,7 @@ object HomeRoleJourney {
      * Only call this when the caller is definitely navigating: the step moves either way.
      */
     fun nextActivity(context: Context): Class<*> =
-        resolveFrom(context, context.getSharedPrefs().getInt(ONBOARDING_STEP, 0) + 1)
+        settleFrom(context, context.getSharedPrefs().getInt(ONBOARDING_STEP, 0) + 1)
 
     /**
      * Puts an interrupted first run back on screen, and says whether it did.
@@ -294,7 +294,7 @@ object HomeRoleJourney {
             return true
         }
 
-        val next = resolveFrom(activity, step)
+        val next = settleFrom(activity, step)
         if (next == homeActivity()) {
             return false
         }
@@ -308,7 +308,7 @@ object HomeRoleJourney {
      * The first screen at or after [from] that still has something to do, committing the step
      * as it goes. [homeActivity] when there is none, having marked onboarding completed.
      */
-    private fun resolveFrom(context: Context, from: Int): Class<*> {
+    private fun settleFrom(context: Context, from: Int): Class<*> {
         val order = HomeAdsSettings.onboardingOrder(context)
         var index = from
 
@@ -328,7 +328,7 @@ object HomeRoleJourney {
                 break
             }
 
-            if (screen == OnboardScreen.SET_DEFAULT) logAlreadyDefault(context)
+            if (screen == OnboardScreen.SET_DEFAULT) noteAlreadyDefault(context)
             log("skipping [$index] ${screen.key}")
             index++
         }
@@ -339,12 +339,12 @@ object HomeRoleJourney {
     }
 
     /** `default_home_already`, once per install: the set-default step met a role already held. */
-    private fun logAlreadyDefault(context: Context) {
+    private fun noteAlreadyDefault(context: Context) {
         if (!context.isDefaultLauncher()) return
         val prefs = context.getSharedPrefs()
         if (prefs.getBoolean(ALREADY_DEFAULT_LOGGED, false)) return
         prefs.edit().putBoolean(ALREADY_DEFAULT_LOGGED, true).apply()
-        context.logKeyEvent("default_home_already")
+        context.trackEvent("default_home_already")
     }
 
     /**

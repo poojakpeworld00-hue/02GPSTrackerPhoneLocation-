@@ -30,7 +30,7 @@ class ConcealedAppsAdapter(
     private var iconPadding = 0
 
     init {
-        calculateIconWidth()
+        deriveIconWidth()
         setupDragListener(true)
     }
 
@@ -63,7 +63,7 @@ class ConcealedAppsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val folder = hiddenIcons[position]
         holder.bindView(folder, true, true) { itemView, adapterPosition ->
-            setupView(itemView, folder)
+            prepareView(itemView, folder)
         }
         bindViewHolder(holder)
     }
@@ -77,7 +77,7 @@ class ConcealedAppsAdapter(
 
         ensureBackgroundThread {
             val selectedItems = getSelectedItems()
-            activity.hiddenIconsDB.removeHiddenIcons(selectedItems)
+            activity.hiddenIconsDB.dropHiddenIcons(selectedItems)
             hiddenIcons.removeAll(selectedItems)
 
             activity.runOnUiThread {
@@ -89,7 +89,7 @@ class ConcealedAppsAdapter(
         }
     }
 
-    private fun calculateIconWidth() {
+    private fun deriveIconWidth() {
         val currentColumnCount = activity.resources.getInteger(
             if (activity.portrait) {
                 R.integer.launcher_portrait_column_count
@@ -102,7 +102,7 @@ class ConcealedAppsAdapter(
         iconPadding = (iconWidth * 0.1f).toInt()
     }
 
-    private fun setupView(view: View, icon: ConcealedApp) {
+    private fun prepareView(view: View, icon: ConcealedApp) {
         HdkRowHiddenIconBinding.bind(view).apply {
             hiddenIconHolderView.isSelected = selectedKeys.contains(icon.hashCode())
             hiddenIconLabelView.text = icon.title

@@ -42,8 +42,8 @@ class WidgetPickerAdapter(
         val widgetListItem = widgetListItems[position]
         holder.bindView(widgetListItems[position]) { itemView, layoutPosition ->
             when (widgetListItem) {
-                is WidgetPickerGroup -> setupListSection(itemView, widgetListItem)
-                is WidgetPickerEntries -> setupListItemsHolder(itemView, widgetListItem)
+                is WidgetPickerGroup -> prepareListSection(itemView, widgetListItem)
+                is WidgetPickerEntries -> prepareListItemsHolder(itemView, widgetListItem)
             }
         }
     }
@@ -55,7 +55,7 @@ class WidgetPickerAdapter(
         else -> WIDGET_LIST_ITEMS_HOLDER
     }
 
-    private fun setupListSection(view: View, section: WidgetPickerGroup) {
+    private fun prepareListSection(view: View, section: WidgetPickerGroup) {
         HdkRowWidgetListSectionBinding.bind(view).apply {
             widgetAppTitleView.text = section.appTitle
             widgetAppTitleView.setTextColor(textColor)
@@ -63,7 +63,7 @@ class WidgetPickerAdapter(
         }
     }
 
-    private fun setupListItemsHolder(view: View, listItem: WidgetPickerEntries) {
+    private fun prepareListItemsHolder(view: View, listItem: WidgetPickerEntries) {
         val binding = HdkRowWidgetListItemsHolderBinding.bind(view)
         binding.widgetListItemsHolderView.removeAllViews()
         binding.widgetListItemsScrollViewView.scrollX = 0

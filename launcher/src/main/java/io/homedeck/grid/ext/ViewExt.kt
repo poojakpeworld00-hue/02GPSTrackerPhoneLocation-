@@ -19,7 +19,7 @@ import org.fossify.commons.extensions.getProperBackgroundColor
 import org.fossify.commons.helpers.isSPlus
 import org.fossify.commons.views.MySearchMenu
 
-fun View.animateScale(
+fun View.tweenScale(
     from: Float,
     to: Float,
     duration: Long,
@@ -33,7 +33,7 @@ fun View.animateScale(
         scaleY = from
     }
 
-fun View.setupDrawerBackground(
+fun View.prepareDrawerBackground(
     backgroundColor: Int = context.getProperBackgroundColor(),
 ) {
     background = backgroundColor.toDrawable()
@@ -63,7 +63,7 @@ fun MySearchMenu.applyDrawerSkin() {
     setBackgroundColor(Color.TRANSPARENT)
     // A quiet One UI-style pill: flat translucent white, fully rounded, no shadow. At the bottom of
     // a One UI-styled sheet (launcher_config.os_style) it is compact and centred the way One UI's
-    // Finder bar is; everywhere else - our own setup, or at the top - it spans the sheet. setupViews runs from a global-layout hook, so every size
+    // Finder bar is; everywhere else - our own setup, or at the top - it spans the sheet. prepareViews runs from a global-layout hook, so every size
     // below is written only when it differs.
     val pillHeight = (46 * dp).toInt()
     binding.searchBarContainer.apply {

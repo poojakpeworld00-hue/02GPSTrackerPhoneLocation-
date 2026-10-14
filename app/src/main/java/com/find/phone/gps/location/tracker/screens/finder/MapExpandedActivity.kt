@@ -71,7 +71,7 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
         binding.padZoomIn.setOnClickListener { binding.mapViewVw.controller.zoomIn() }
         binding.padZoomOut.setOnClickListener { binding.mapViewVw.controller.zoomOut() }
         binding.padRecenter.setOnClickListener { recenter() }
-        binding.padDirections.setOnClickListener { openInMaps() }
+        binding.padDirections.setOnClickListener { unfoldInMaps() }
         listOf(binding.padZoomIn, binding.padZoomOut, binding.padRecenter, binding.padDirections)
             .forEach { VisualTweens.pressScale(it) }
 
@@ -105,7 +105,7 @@ class MapExpandedActivity : FoundationActivity<PageMapFullBinding>() {
         }
     }
 
-    private fun openInMaps() {
+    private fun unfoldInMaps() {
         val pin = report.pin
         val label = Uri.encode(report.placeLabel.ifEmpty { report.countryName })
         val uri = if (pin != null) Uri.parse("geo:${pin.lat},${pin.lng}?q=${pin.lat},${pin.lng}($label)")

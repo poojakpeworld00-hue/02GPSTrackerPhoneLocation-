@@ -17,7 +17,7 @@ import io.homedeck.grid.R
 import io.homedeck.grid.screens.HomeDeskPane
 import io.homedeck.grid.lists.PaneAppsAdapter
 import io.homedeck.grid.databinding.HdkLeftPanelFragmentBinding
-import io.homedeck.grid.ext.launchApp
+import io.homedeck.grid.ext.fireApp
 import io.homedeck.grid.entities.LaunchableApp
 import io.homedeck.grid.sponsor.HomeAdsSettings
 import io.homedeck.grid.bridge.HomeServiceLocator
@@ -49,7 +49,7 @@ class AppTrayPane(
             velocityY: Float,
         ): Boolean {
             if (velocityX > 0 && abs(velocityX) > abs(velocityY)) {
-                activity?.hideLeftPanel()
+                activity?.concealLeftPanel()
                 return true
             }
 
@@ -61,9 +61,9 @@ class AppTrayPane(
         this.activity = activity
         this.binding = HdkLeftPanelFragmentBinding.bind(this)
 
-        suggestedAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_grid_app, ::launchLauncher)
-        recentAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_grid_app, ::launchLauncher)
-        resultsAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_result, ::launchLauncher)
+        suggestedAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_grid_app, ::fireLauncher)
+        recentAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_grid_app, ::fireLauncher)
+        resultsAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_result, ::fireLauncher)
         searchInAdapter = PaneAppsAdapter(R.layout.hdk_row_panel_search_in, ::searchInApp)
 
         binding.panelSuggestedGridView.adapter = suggestedAdapter
@@ -94,7 +94,7 @@ class AppTrayPane(
      * Requests both panel slots afresh — the middle one sits between Suggested and Recent, the
      * bottom one is pinned to the panel's foot, outside the scrolling column.
      *
-     * Driven by `HomeDeskPane.showLeftPanel` on every open rather than once from [setupFragment]:
+     * Driven by `HomeDeskPane.presentLeftPanel` on every open rather than once from [setupFragment]:
      * the panel is built at boot and then only parked off screen, so a request made there would
      * leave the same creative on the panel for as long as the launcher process lives — which, on a
      * launcher, is until the device restarts. Asking here also means a user who never swipes the
@@ -134,12 +134,12 @@ class AppTrayPane(
         )
     }
 
-    fun refreshAds() {
+    fun renewAds() {
         val activity = activity ?: return
-        HomeServiceLocator.ads.bindNativeOnOpen(
+        HomeServiceLocator.ads.wireNativeOnOpen(
             activity, HomeAdsSettings.KEY_PANEL_MIDDLE, binding.panelMidNativeFrameView
         )
-        HomeServiceLocator.ads.bindNativeOnOpen(
+        HomeServiceLocator.ads.wireNativeOnOpen(
             activity, HomeAdsSettings.KEY_PANEL_BOTTOM, binding.panelNativeFrameView
         )
     }
@@ -207,14 +207,14 @@ class AppTrayPane(
         }
     }
 
-    private fun launchLauncher(launcher: LaunchableApp) {
+    private fun fireLauncher(launcher: LaunchableApp) {
         if (launcher.packageName == context.applicationContext.packageName) {
-            // Our own app: openHostApp closes this panel itself.
-            activity?.openHostApp(launcher.activityName)
+            // Our own app: unfoldHostApp closes this panel itself.
+            activity?.unfoldHostApp(launcher.activityName)
             return
         }
-        activity?.launchApp(launcher.packageName, launcher.activityName)
-        activity?.hideLeftPanel()
+        activity?.fireApp(launcher.packageName, launcher.activityName)
+        activity?.concealLeftPanel()
     }
 
     private fun searchInApp(launcher: LaunchableApp) {
@@ -231,10 +231,10 @@ class AppTrayPane(
 
         try {
             activity?.startActivity(intent)
-            activity?.hideLeftPanel()
+            activity?.concealLeftPanel()
         } catch (_: ActivityNotFoundException) {
             // the app is installed but cannot handle it, let the system pick a handler
-            launchLauncher(launcher)
+            fireLauncher(launcher)
         }
     }
 

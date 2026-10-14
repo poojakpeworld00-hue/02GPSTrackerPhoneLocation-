@@ -26,8 +26,8 @@ import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
 import com.find.phone.gps.location.tracker.screens.locale.Locales
 import com.find.phone.gps.location.tracker.helpers.AppPrefsStore
-import com.find.phone.gps.location.tracker.helpers.openPolicyLink
-import com.find.phone.gps.location.tracker.helpers.openTermLink
+import com.find.phone.gps.location.tracker.helpers.unfoldPolicyLink
+import com.find.phone.gps.location.tracker.helpers.unfoldTermLink
 import com.find.phone.gps.location.tracker.helpers.rateApp
 import com.find.phone.gps.location.tracker.helpers.shareApp
 import java.util.Locale
@@ -72,8 +72,8 @@ class DashboardSideMenu(
         }
         binding.rowRateVw.setOnClickListener { onNavigate(); activity.rateApp() }
         binding.rowShareVw.setOnClickListener { onNavigate(); activity.shareApp() }
-        binding.rowPrivacyVw.setOnClickListener { onNavigate(); activity.openPolicyLink() }
-        binding.rowTermsVw.setOnClickListener { onNavigate(); activity.openTermLink() }
+        binding.rowPrivacyVw.setOnClickListener { onNavigate(); activity.unfoldPolicyLink() }
+        binding.rowTermsVw.setOnClickListener { onNavigate(); activity.unfoldTermLink() }
         binding.rowDeleteContactsVw.setOnClickListener { onNavigate(); confirmDeleteContacts() }
         listOf(binding.rowLanguageVw, binding.rowRemindersVw, binding.rowRateVw, binding.rowShareVw, binding.rowPrivacyVw, binding.rowTermsVw, binding.rowDeleteContactsVw)
             .forEach { VisualTweens.pressScale(it) }

@@ -12,7 +12,7 @@ import com.find.phone.gps.location.tracker.monetize.model.AdFormatKind
 import com.find.phone.gps.location.tracker.monetize.engine.AdTallyKeeper.interBackCounter
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.HomeSlotAds
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.render.isNetworkConnected
 
 class FullscreenOnExit {
@@ -30,7 +30,7 @@ class FullscreenOnExit {
     // ----------------------------------------------------------------------
     // LOAD GOOGLE INTERSTITIAL (Back Ads)
     // ----------------------------------------------------------------------
-    fun loadBackInterAds(activity: Activity) {
+    fun fetchBackInterAds(activity: Activity) {
         val pref = AdPrefsStore.getInstance(activity)
 
         if (!pref.getBoolean("IsAdsON")) {
@@ -75,14 +75,14 @@ class FullscreenOnExit {
     // ----------------------------------------------------------------------
     // PUBLIC: SHOW BACK INTER AD
     // ----------------------------------------------------------------------
-    fun showBackAds(activity: Activity?, adsClose: () -> Unit) {
-        showBackInternal(activity, adsClose)
+    fun presentBackAds(activity: Activity?, adsClose: () -> Unit) {
+        presentBackInternal(activity, adsClose)
     }
 
     // ----------------------------------------------------------------------
     // INTERNAL SHOW LOGIC (BACK ADS ONLY)
     // ----------------------------------------------------------------------
-    private fun showBackInternal(activity: Activity?, adsClose: () -> Unit) {
+    private fun presentBackInternal(activity: Activity?, adsClose: () -> Unit) {
         val act = activity ?: return adsClose()
         val pref = AdPrefsStore.getInstance(act)
         var closedOnce = false
@@ -131,18 +131,18 @@ class FullscreenOnExit {
             AdFormatKind.GOOGLE -> {
                 // `Inter_Loader_Ms`: a short loader before a back interstitial that is already loaded.
                 if (googleInterBack != null) {
-                    BlockingLoaderDialog.beforeShow(act) { showGoogleBackInter(act, pref, ::safeClose) }
+                    BlockingLoaderDialog.beforeShow(act) { presentGoogleBackInter(act, pref, ::safeClose) }
                 } else {
-                    showGoogleBackInter(act, pref, ::safeClose)
+                    presentGoogleBackInter(act, pref, ::safeClose)
                 }
             }
 
             AdFormatKind.FACEBOOK -> {
-                showFacebookBackInter(
+                presentFacebookBackInter(
                     act,
                     onDismiss = { safeClose("fb_back_dismiss") },
                     onFail = {
-                        showCustomAfterFBFail(act, pref) {
+                        presentCustomAfterFBFail(act, pref) {
                             safeClose("fb_back_fail")
                         }
                     }
@@ -151,7 +151,7 @@ class FullscreenOnExit {
 
             AdFormatKind.CUSTOM, AdFormatKind.UNKNOWN -> {
                 if (pref.getBoolean("IsCustomADS"))
-                    FullscreenOnAction.openDirectLink(act) { safeClose("custom_open") }
+                    FullscreenOnAction.unfoldDirectLink(act) { safeClose("custom_open") }
                 else safeClose("custom_disabled")
             }
 
@@ -163,14 +163,14 @@ class FullscreenOnExit {
     // GOOGLE BACK INTERSTITIAL
     // ----------------------------------------------------------------------
 
-    private fun showGoogleBackInter(
+    private fun presentGoogleBackInter(
         activity: Activity,
         pref: AdPrefsStore,
         safeClose: (String) -> Unit
     ) {
         val ad = googleInterBack
         if (ad == null) {
-            return handleGoogleFail(activity, pref, safeClose)
+            return processGoogleFail(activity, pref, safeClose)
         }
         activity.safeLog("google_back_inter_show_attempt")
 
@@ -184,13 +184,13 @@ class FullscreenOnExit {
                 googleInterBack = null
                 isInterBAckShow = false
                 safeClose("Google_Dismiss")
-                loadBackInterAds(activity)
+                fetchBackInterAds(activity)
             }
 
             override fun onAdFailedToShowFullScreenContent(error: AdError) {
                 googleInterBack = null
-                handleGoogleFail(activity, pref, safeClose)
-                loadBackInterAds(activity)
+                processGoogleFail(activity, pref, safeClose)
+                fetchBackInterAds(activity)
             }
         }
 
@@ -198,29 +198,29 @@ class FullscreenOnExit {
             ad.show(activity)
         } catch (e: Exception) {
             googleInterBack = null
-            handleGoogleFail(activity, pref, safeClose)
-            loadBackInterAds(activity)
+            processGoogleFail(activity, pref, safeClose)
+            fetchBackInterAds(activity)
         }
     }
 
     // ----------------------------------------------------------------------
     // GOOGLE FAIL → FB or CUSTOM
     // ----------------------------------------------------------------------
-    private fun handleGoogleFail(
+    private fun processGoogleFail(
         activity: Activity,
         pref: AdPrefsStore,
         safeClose: (String) -> Unit
     ) {
         if (pref.getBoolean("IsFail_FB")) {
-            showFacebookBackInter(
+            presentFacebookBackInter(
                 activity,
                 onDismiss = { safeClose("fb_dismiss") },
-                onFail = { showCustomAfterFBFail(activity, pref, safeClose) }
+                onFail = { presentCustomAfterFBFail(activity, pref, safeClose) }
             )
 
         } else {
             if (pref.getBoolean("IsCustomADS")) {
-                FullscreenOnAction.openDirectLink(activity) { safeClose("google_fail_custom") }
+                FullscreenOnAction.unfoldDirectLink(activity) { safeClose("google_fail_custom") }
             } else safeClose("google_fail_no_fb_no_custom")
         }
     }
@@ -228,7 +228,7 @@ class FullscreenOnExit {
     // ----------------------------------------------------------------------
     // FACEBOOK — BACK ADS
     // ----------------------------------------------------------------------
-    private fun showFacebookBackInter(
+    private fun presentFacebookBackInter(
         context: Context,
         onDismiss: () -> Unit,
         onFail: () -> Unit
@@ -276,13 +276,13 @@ class FullscreenOnExit {
         )
     }
 
-    private fun showCustomAfterFBFail(
+    private fun presentCustomAfterFBFail(
         context: Activity,
         pref: AdPrefsStore,
         safeClose: (String) -> Unit
     ) {
         if (pref.getBoolean("IsCustomADS"))
-            FullscreenOnAction.openDirectLink(context) { safeClose("fb_fail_custom") }
+            FullscreenOnAction.unfoldDirectLink(context) { safeClose("fb_fail_custom") }
         else safeClose("fb_fail_no_custom")
     }
 
@@ -295,7 +295,7 @@ class FullscreenOnExit {
 //    // ----------------------------------------------------------------------
 //    // OPEN CUSTOM DIRECT LINK
 //    // ----------------------------------------------------------------------
-//    private fun openDirectLink(context: Activity, onClosed: () -> Unit) {
+//    private fun unfoldDirectLink(context: Activity, onClosed: () -> Unit) {
 //        val url = AdPrefsStore.getInstance(context).getString("DirectLink")
 //
 //        if (url.isNullOrEmpty()) {
@@ -317,7 +317,7 @@ class FullscreenOnExit {
 //            try {
 //                customTab.launchUrl(context, uri)
 //            } catch (e: Exception) {
-//                openInBrowser(context, uri, onClosed)
+//                unfoldInBrowser(context, uri, onClosed)
 //            }
 //        }
 //    }
@@ -357,7 +357,7 @@ class FullscreenOnExit {
 //        )
 //    }
 //
-//    private fun openInBrowser(
+//    private fun unfoldInBrowser(
 //        context: Activity,
 //        uri: Uri,
 //        onClosed: () -> Unit
@@ -412,7 +412,7 @@ class FullscreenOnExit {
 */
     private fun Context.safeLog(event: String) {
         try {
-            this.logKeyEvent(event)
+            this.trackEvent(event)
         } catch (_: Exception) {
         }
     }

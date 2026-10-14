@@ -22,15 +22,15 @@ import androidx.databinding.ViewDataBinding
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
-import com.find.phone.gps.location.tracker.monetize.engine.logPermissionResult
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import com.find.phone.gps.location.tracker.monetize.render.MonetizeGateActivity
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnExit
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnAction
 import com.find.phone.gps.location.tracker.repo.LanguageKeeper
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import com.find.phone.gps.location.tracker.helpers.AppPrefsStore
-import com.find.phone.gps.location.tracker.helpers.applyNativeAdTheme
+import com.find.phone.gps.location.tracker.helpers.imprintNativeAdTheme
 import com.find.phone.gps.location.tracker.helpers.followAdContainer
 import com.find.phone.gps.location.tracker.helpers.AppPrefsStore.THEME_DARK
 import com.find.phone.gps.location.tracker.helpers.AppPrefsStore.THEME_LIGHT
@@ -62,17 +62,17 @@ abstract class FoundationActivity<DB : ViewDataBinding> : MonetizeGateActivity()
     protected abstract val layoutId: Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        applyLocale()
-        applyTheme(AppPrefsStore.effectiveTheme(this))
+        imprintLocale()
+        imprintTheme(AppPrefsStore.effectiveTheme(this))
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, layoutId)
 
-        logKeyEvent("screen_${this::class.java.simpleName.lowercase(Locale.ROOT)}")
+        trackEvent("screen_${this::class.java.simpleName.lowercase(Locale.ROOT)}")
         binding.lifecycleOwner = this
 
         // Keep native-ad colors in sync with the active light/dark mode. Shared with the
         // launcher home, which needs it too but does not extend this class.
-        applyNativeAdTheme()
+        imprintNativeAdTheme()
 
         // Whole-app back-press → back interstitial, then finish. Registered here
         // (before initView) so any custom OnBackPressedCallback a subclass adds
@@ -100,7 +100,7 @@ abstract class FoundationActivity<DB : ViewDataBinding> : MonetizeGateActivity()
      * `finish()` to also surface a back ad.
      */
     protected fun goBack() {
-        FullscreenOnExit().showBackAds(this) { performBack() }
+        FullscreenOnExit().presentBackAds(this) { performBack() }
     }
 
     /** What "back" does after the ad — defaults to finishing. Override for custom nav. */
@@ -142,7 +142,7 @@ abstract class FoundationActivity<DB : ViewDataBinding> : MonetizeGateActivity()
      * (permanently denied — the system no longer shows its dialog), opens the app's
      * settings page so they can enable it manually.
      */
-    protected fun requestPermissionManaged(
+    protected fun seekPermissionManaged(
         permission: String,
         launcher: ActivityResultLauncher<String>
     ) {
@@ -154,12 +154,12 @@ abstract class FoundationActivity<DB : ViewDataBinding> : MonetizeGateActivity()
             }
             ActivityCompat.shouldShowRequestPermissionRationale(this, permission) ->
                 launcher.launch(permission)
-            else -> openAppSettings()
+            else -> unfoldAppSettings()
         }
     }
 
     /** Opens this app's system settings (App info) screen. */
-    protected fun openAppSettings() {
+    protected fun unfoldAppSettings() {
         runCatching {
             startActivity(
                 Intent(
@@ -177,10 +177,10 @@ abstract class FoundationActivity<DB : ViewDataBinding> : MonetizeGateActivity()
     private val callPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        logPermissionResult(Manifest.permission.CALL_PHONE, granted)
+        trackPermissionResult(Manifest.permission.CALL_PHONE, granted)
         val number = pendingCallNumber
         pendingCallNumber = null
-        if (number != null) if (granted) startCall(number) else openDialer(number)
+        if (number != null) if (granted) kickCall(number) else unfoldDialer(number)
     }
 
     /** Places the call directly (CALL_PHONE), requesting the permission if needed. */
@@ -189,28 +189,28 @@ abstract class FoundationActivity<DB : ViewDataBinding> : MonetizeGateActivity()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
             == PackageManager.PERMISSION_GRANTED
         ) {
-            startCall(number)
+            kickCall(number)
         } else {
             pendingCallNumber = number
-            requestPermissionManaged(Manifest.permission.CALL_PHONE, callPermissionLauncher)
+            seekPermissionManaged(Manifest.permission.CALL_PHONE, callPermissionLauncher)
         }
     }
 
-    private fun startCall(number: String) {
+    private fun kickCall(number: String) {
         val placed = runCatching {
             startActivity(Intent(Intent.ACTION_CALL, Uri.parse("tel:$number"))); true
         }.getOrDefault(false)
-        if (!placed) openDialer(number)
+        if (!placed) unfoldDialer(number)
     }
 
-    private fun openDialer(number: String) {
+    private fun unfoldDialer(number: String) {
         runCatching { startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$number"))) }
     }
 
     override fun onResume() {
         super.onResume()
-        applyLocale()
-        FullscreenOnAction.handleTabReturn(this)
+        imprintLocale()
+        FullscreenOnAction.processTabReturn(this)
         // NOTE: no LightHouse.syncPermissionsAsync() here — the SDK syncs
         // permissions internally (≥0.6.4), so an explicit call is redundant.
     }
@@ -222,10 +222,10 @@ abstract class FoundationActivity<DB : ViewDataBinding> : MonetizeGateActivity()
      * an escape here takes the whole activity down. Shared with the launcher home, which needs
      * it too but does not extend this class.
      */
-    protected fun applyLocale() = LanguageKeeper.applySaved(this)
+    protected fun imprintLocale() = LanguageKeeper.imprintSaved(this)
 
     /** Applies the saved night-mode ([SecurePrefsKeeper.themeMode]) app-wide. */
-    protected open fun applyTheme(theme: String) {
+    protected open fun imprintTheme(theme: String) {
         when (theme) {
             THEME_LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             THEME_DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)

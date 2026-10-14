@@ -25,7 +25,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsor
 import com.find.phone.gps.location.tracker.databinding.PageReminderAlertBinding
 import com.find.phone.gps.location.tracker.alarms.AlarmSettings
@@ -71,7 +71,7 @@ class AlarmPopupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        showOverLockScreen()
+        presentOverLockScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = PageReminderAlertBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -99,7 +99,7 @@ class AlarmPopupActivity : AppCompatActivity() {
         bind(intent)
     }
 
-    private fun showOverLockScreen() {
+    private fun presentOverLockScreen() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
@@ -115,7 +115,7 @@ class AlarmPopupActivity : AppCompatActivity() {
         val reminder = AlarmRepository.get(this, intent.getLongExtra(EXTRA_ID, -1L))
         if (reminder == null) { finishAndRemoveTask(); return }
         item = reminder
-        logKeyEvent("Reminder_Alert_Show")
+        trackEvent("Reminder_Alert_Show")
 
         binding.alertTitle.text = reminder.title
         binding.alertNoteVw.text = reminder.note
@@ -128,16 +128,16 @@ class AlarmPopupActivity : AppCompatActivity() {
         binding.padPrimary.setIconResource(if (call) R.drawable.vs_ic_call else 0)
         binding.padPrimary.backgroundTintList =
             ContextCompat.getColorStateList(this, if (call) R.color.ds_success else R.color.ds_primary)
-        binding.padPrimary.setOnClickListener { if (call) callBack(reminder) else openList() }
-        binding.padSecondary.setOnClickListener { showSnooze() }
+        binding.padPrimary.setOnClickListener { if (call) callBack(reminder) else unfoldList() }
+        binding.padSecondary.setOnClickListener { presentSnooze() }
         binding.padDone.setOnClickListener {
-            logKeyEvent("Reminder_Alert_Done")
+            trackEvent("Reminder_Alert_Done")
             finishAndRemoveTask()
         }
         listOf(binding.padPrimary, binding.padSecondary, binding.padDone).forEach { VisualTweens.pressScale(it) }
         binding.snoozeOverlayVw.isVisible = false
         riseSheet()
-        startMotion()
+        kickMotion()
     }
 
     override fun onResume() {
@@ -152,8 +152,8 @@ class AlarmPopupActivity : AppCompatActivity() {
         if (km.isKeyguardLocked) return
         adRequested = true
         binding.alertAdFrameVw.isVisible = true
-        InlineSponsor().showMidNative(this, binding.alertAdFrameVw)
-        logKeyEvent("Reminder_Alert_Ad")
+        InlineSponsor().presentMidNative(this, binding.alertAdFrameVw)
+        trackEvent("Reminder_Alert_Ad")
     }
 
     /** The sheet rises from below (300 ms, decelerate) while the dim fades in. */
@@ -176,15 +176,15 @@ class AlarmPopupActivity : AppCompatActivity() {
     // ───────────────────────────── actions ─────────────────────────────
 
     private fun callBack(reminder: AlarmEntry) {
-        logKeyEvent("Reminder_Alert_Call")
+        trackEvent("Reminder_Alert_Call")
         afterUnlock {
             runCatching { startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(reminder.number)))) }
             finishAndRemoveTask()
         }
     }
 
-    private fun openList() {
-        logKeyEvent("Reminder_Alert_Open")
+    private fun unfoldList() {
+        trackEvent("Reminder_Alert_Open")
         afterUnlock {
             startActivity(AlarmListActivity.intent(this).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             finishAndRemoveTask()
@@ -201,7 +201,7 @@ class AlarmPopupActivity : AppCompatActivity() {
     }
 
     /** Snooze choices from `action_delay_options`, two per row; the second is preselected. */
-    private fun showSnooze() {
+    private fun presentSnooze() {
         val options = AlarmSettings.get(this).actionDelayOptions.split(',')
             .mapNotNull { it.trim().toIntOrNull() }.filter { it in 1..24 * 60 }.distinct()
             .ifEmpty { listOf(5, 10, 30, 60) }
@@ -243,7 +243,7 @@ class AlarmPopupActivity : AppCompatActivity() {
     private fun snooze() {
         val reminder = item ?: return finishAndRemoveTask()
         AlarmPlanner.snooze(this, reminder.id, snoozeMinutes)
-        logKeyEvent("Reminder_Alert_Snooze_$snoozeMinutes")
+        trackEvent("Reminder_Alert_Snooze_$snoozeMinutes")
         val until = AlarmFormatter.time(this, System.currentTimeMillis() + snoozeMinutes * 60_000L)
         Toast.makeText(this, getString(R.string.rem_snoozed, until), Toast.LENGTH_SHORT).show()
         finishAndRemoveTask()
@@ -256,7 +256,7 @@ class AlarmPopupActivity : AppCompatActivity() {
     // ───────────────────────────── motion ─────────────────────────────
 
     /** Ring pulse (2.4s) and a bell swing every 3s, as on the prompt. */
-    private fun startMotion() {
+    private fun kickMotion() {
         VisualTweens.cancelAll(animators)
         if (VisualTweens.animationsDisabled(this)) return
         val e = VisualTweens.EASE_OUT

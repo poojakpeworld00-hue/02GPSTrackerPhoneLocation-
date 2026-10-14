@@ -6,7 +6,7 @@ import com.find.phone.gps.location.tracker.monetize.render.OwnAdsKeeper
 import com.find.phone.gps.location.tracker.monetize.render.DeepLinkRouter
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.homeshell.HomeModeToggle
-import com.find.phone.gps.location.tracker.helpers.applyNativeAdTheme
+import com.find.phone.gps.location.tracker.helpers.imprintNativeAdTheme
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.json.JSONObject
 
@@ -148,13 +148,13 @@ object MonetizeConfigReader {
             // when absent, so dropping the key from Remote Config restores the default (on).
             putString(HomeModeToggle.KEY, if (root.has(HomeModeToggle.KEY)) root.optString(HomeModeToggle.KEY, "") else "")
 
-            applyNativeTheme(context, root) // DEFAULT theme
+            imprintNativeTheme(context, root) // DEFAULT theme
 
             // --- Custom Ads ---
             val customAdsArray = root.optJSONArray("custom_ads")
             if (customAdsArray != null) {
                 putString("CUSTOM_ADS", customAdsArray.toString())
-                OwnAdsKeeper.clearCache()
+                OwnAdsKeeper.wipeCache()
             }
         }
 
@@ -203,12 +203,12 @@ object MonetizeConfigReader {
      * `NativeTheme` of the audience block this user got (marketing or organic):
      * `{ "NativeLight": {…}, "NativeDark": {…} }`. The block itself already is the audience
      * choice, so there is nothing to pick here — it is stored as is and applied for the current
-     * light / dark mode by [applyNativeAdTheme], which every screen runs as it opens.
+     * light / dark mode by [imprintNativeAdTheme], which every screen runs as it opens.
      *
      * Configs still carrying the old nested `{ "marketing": {…}, "default": {…} }` shape keep
      * working: marketing users read `marketing` (else `default`), everyone else `default`.
      */
-    fun applyNativeTheme(context: Context, response: JSONObject) {
+    fun imprintNativeTheme(context: Context, response: JSONObject) {
         val adsPreference = AdPrefsStore.getInstance(context)
         val root = response.optJSONObject("NativeTheme") ?: return
         val palette = if (root.has("NativeLight") || root.has("NativeDark")) {
@@ -219,7 +219,7 @@ object MonetizeConfigReader {
             if (adsPreference.getBoolean("OnMaketing")) marketing ?: default else default
         } ?: return
         adsPreference.putString(NATIVE_THEME_ACTIVE, palette.toString())
-        context.applyNativeAdTheme()
+        context.imprintNativeAdTheme()
     }
 
     /** The audience's native palette (NativeLight / NativeDark), as ingested. */

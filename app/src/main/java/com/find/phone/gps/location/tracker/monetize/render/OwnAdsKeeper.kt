@@ -23,7 +23,7 @@ class OwnAdsKeeper {
     companion object {
         private var cachedAds: List<InHouseOffer>? = null
         
-        fun clearCache() {
+        fun wipeCache() {
             cachedAds = null
         }
     }
@@ -35,7 +35,7 @@ class OwnAdsKeeper {
         FULLSCREEN_NATIVE
     }
 
-    fun loadCustomAd(
+    fun fetchCustomAd(
         context: Context,
         container: FrameLayout,
         type: OwnAdFormat,
@@ -94,8 +94,8 @@ class OwnAdsKeeper {
             return
         }
 
-        applyTheme(context, view, pref)
-        bindData( view, ad)
+        imprintTheme(context, view, pref)
+        wireData( view, ad)
         setClickListeners(view)
 
         // Final UI setup (defer to next frame to avoid NestedScrollView layout issues)
@@ -118,7 +118,7 @@ class OwnAdsKeeper {
     // --------------------------------------------------------
     // THEME APPLY
     // --------------------------------------------------------
-    private fun applyTheme(context: Context, view: View, pref: AdPrefsStore) {
+    private fun imprintTheme(context: Context, view: View, pref: AdPrefsStore) {
         try {
 
             val bgColor = color(pref.getString("NativeBgColor"), "#FFFFFF")
@@ -151,7 +151,7 @@ class OwnAdsKeeper {
     // --------------------------------------------------------
     // DATA BINDING
     // --------------------------------------------------------
-    private fun bindData(view: View, ad: InHouseOffer) {
+    private fun wireData(view: View, ad: InHouseOffer) {
         // Big / Mid Native
         view.findViewById<TextView?>(R.id.titileTextVw)?.text = ad.title
         view.findViewById<TextView?>(R.id.TexttextVw)?.text = ad.description
@@ -163,12 +163,12 @@ class OwnAdsKeeper {
         view.findViewById<TextView?>(R.id.only_banner_buttonVw)?.text = ad.buttonText
 
         // Images
-        view.findViewById<ImageView?>(R.id.gif_imageVw)?.let { bindGlideSafe(it, ad.icon) }
-        view.findViewById<ImageView?>(R.id.only_banner_logoVw)?.let { bindGlideSafe(it, ad.icon) }
-        view.findViewById<ImageView?>(R.id.custom_nativeVw)?.let { bindGlideSafe(it, ad.bannerImage) }
+        view.findViewById<ImageView?>(R.id.gif_imageVw)?.let { wireGlideSafe(it, ad.icon) }
+        view.findViewById<ImageView?>(R.id.only_banner_logoVw)?.let { wireGlideSafe(it, ad.icon) }
+        view.findViewById<ImageView?>(R.id.custom_nativeVw)?.let { wireGlideSafe(it, ad.bannerImage) }
     }
 
-    private fun Context.findHostActivity(): Activity? {
+    private fun Context.locateHostActivity(): Activity? {
         var ctx: Context = this
         while (ctx is ContextWrapper) {
             if (ctx is Activity) return ctx
@@ -178,12 +178,12 @@ class OwnAdsKeeper {
     }
 
     private fun Context.isHostActivityDead(): Boolean {
-        val act = this as? Activity ?: findHostActivity() ?: return false
+        val act = this as? Activity ?: locateHostActivity() ?: return false
         if (act.isFinishing) return true
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && act.isDestroyed
     }
 
-    private fun bindGlideSafe(imageView: ImageView, url: String?) {
+    private fun wireGlideSafe(imageView: ImageView, url: String?) {
         if (url.isNullOrEmpty()) return
         if (imageView.context.isHostActivityDead()) return
         try {

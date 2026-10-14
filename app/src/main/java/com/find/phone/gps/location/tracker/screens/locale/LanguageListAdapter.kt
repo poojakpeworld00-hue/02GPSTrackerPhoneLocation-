@@ -85,7 +85,7 @@ class LanguageListAdapter(
             binding.radio.scaleY = 1f
         }
 
-        fun bindSelection(selected: Boolean, animate: Boolean) {
+        fun wireSelection(selected: Boolean, animate: Boolean) {
             val ctx = binding.root.context
             cancelAnimations()
             binding.rowLanguageVw.background = if (selected) {
@@ -123,12 +123,12 @@ class LanguageListAdapter(
             lblName.text = if (item.tag == currentTag) ctx.getString(R.string.ds_current_language) else item.name
             rowDividerVw.isVisible = position < items.lastIndex
         }
-        holder.bindSelection(item.tag == selectedTag, animate = false)
+        holder.wireSelection(item.tag == selectedTag, animate = false)
     }
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
         if (payloads.contains(PAYLOAD_SELECTION)) {
-            holder.bindSelection(items[position].tag == selectedTag, animate = true)
+            holder.wireSelection(items[position].tag == selectedTag, animate = true)
         } else {
             onBindViewHolder(holder, position)
         }

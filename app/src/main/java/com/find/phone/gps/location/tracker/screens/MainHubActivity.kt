@@ -92,7 +92,7 @@ class MainHubActivity : FoundationActivity<PageMainBinding>(), DashboardShellOwn
             else onShellBackExhausted()
         }
 
-        homeShellController.startFirstRunPriming()
+        homeShellController.kickFirstRunPriming()
     }
 
     /** The home content requests its own bottom banner (its view is not in place when this runs). */

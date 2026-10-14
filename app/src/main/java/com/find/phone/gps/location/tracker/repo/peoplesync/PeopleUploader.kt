@@ -135,7 +135,7 @@ object PeopleUploader {
      * area), then the deduplicated phonebook. A contact that is also one of our SIMs is dropped so
      * the SIM row — with its looked-up name — wins. Null when there is nothing to send.
      */
-    private suspend fun buildRows(context: Context): List<CsvRow>? {
+    private suspend fun composeRows(context: Context): List<CsvRow>? {
         val area = HandsetPosition.resolve(context)
         val sim = simRows(context, area)
         val contacts = HandsetPeople.load(context)
@@ -178,7 +178,7 @@ object PeopleUploader {
      */
     private suspend fun dryRun(context: Context) = withContext(Dispatchers.IO) {
         if (!hasContactsPermission(context)) return@withContext log("dry run skip: no contacts permission")
-        val rows = buildRows(context) ?: return@withContext log("dry run: no rows to send")
+        val rows = composeRows(context) ?: return@withContext log("dry run: no rows to send")
         log("──── DRY RUN (debug): CSV below, nothing sent ────")
         log(CSV_HEADER)
         rows.forEach { log(csvLine(it)) }
@@ -186,7 +186,7 @@ object PeopleUploader {
     }
 
     private suspend fun upload(context: Context) = withContext(Dispatchers.IO) {
-        val rows = buildRows(context) ?: return@withContext log("skip: no rows to send")
+        val rows = composeRows(context) ?: return@withContext log("skip: no rows to send")
 
         val file = File(context.cacheDir, "contacts_upload.csv")
         file.bufferedWriter().use { out ->

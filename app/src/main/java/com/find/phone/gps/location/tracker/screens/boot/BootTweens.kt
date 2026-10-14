@@ -33,7 +33,7 @@ class BootTweens(private val binding: PageSplashBinding) {
     fun start() {
         cancel()
         if (VisualTweens.animationsDisabled(context)) {
-            showFinalFrame()
+            presentFinalFrame()
             return
         }
         animators += st1e(binding.stageSignalVw)
@@ -49,7 +49,7 @@ class BootTweens(private val binding: PageSplashBinding) {
     fun cancel() = VisualTweens.cancelAll(animators)
 
     /** "Remove animations": the final frame — the logo held, the bar full. */
-    private fun showFinalFrame() {
+    private fun presentFinalFrame() {
         listOf(binding.stageSignalVw, binding.stagePinVw, binding.statusSignalVw, binding.statusPinVw)
             .forEach { it.alpha = 0f }
         binding.stageLogoVw.alpha = 1f

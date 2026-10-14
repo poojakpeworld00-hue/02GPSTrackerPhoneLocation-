@@ -81,10 +81,10 @@ object SideMenuAdDriver {
     fun preload(context: Context, flow: SideMenuAdSequence) {
         flow.sequence.forEach { spec ->
             when (spec.type) {
-                SideMenuAdFormat.INTER -> loadInter(context, spec.adUnitId)
-                SideMenuAdFormat.APPOPEN -> loadAppOpen(context, spec.adUnitId)
-                SideMenuAdFormat.REWARDED -> loadRewarded(context, spec.adUnitId)
-                SideMenuAdFormat.FULLSCREEN_NATIVE -> loadNative(context, spec.adUnitId)
+                SideMenuAdFormat.INTER -> fetchInter(context, spec.adUnitId)
+                SideMenuAdFormat.APPOPEN -> fetchAppOpen(context, spec.adUnitId)
+                SideMenuAdFormat.REWARDED -> fetchRewarded(context, spec.adUnitId)
+                SideMenuAdFormat.FULLSCREEN_NATIVE -> fetchNative(context, spec.adUnitId)
                 SideMenuAdFormat.DIRECTLINK, SideMenuAdFormat.CUSTOM -> Unit // a URL / house ad, nothing to load
             }
         }
@@ -114,7 +114,7 @@ object SideMenuAdDriver {
      * Loads [spec] now and calls [then] with whether it is ready — or false after [timeoutMs]
      * (the block's `loader_timeout_ms`), so a slow network cannot hold the user's action hostage.
      */
-    private fun loadNow(context: Context, spec: SideMenuAdPlan, timeoutMs: Long, then: (Boolean) -> Unit) {
+    private fun fetchNow(context: Context, spec: SideMenuAdPlan, timeoutMs: Long, then: (Boolean) -> Unit) {
         val prefix = when (spec.type) {
             SideMenuAdFormat.INTER -> "inter"
             SideMenuAdFormat.APPOPEN -> "appopen"
@@ -203,7 +203,7 @@ object SideMenuAdDriver {
             if (flow.onDemand && spec.adUnitId.isNotBlank() && spec.type != SideMenuAdFormat.DIRECTLINK) {
                 log("${spec.type.key} not ready — loading on demand")
                 ColdStartLoader.show(activity, loaderPackage)
-                loadNow(activity, spec, flow.loaderTimeoutMs) { ok ->
+                fetchNow(activity, spec, flow.loaderTimeoutMs) { ok ->
                     ColdStartLoader.hide()
                     val spent = flow.copy(onDemand = false)
                     if (ok && !activity.isFinishing && !activity.isDestroyed) {
@@ -232,13 +232,13 @@ object SideMenuAdDriver {
 
         runCatching {
             when (spec.type) {
-                SideMenuAdFormat.INTER -> showInter(activity, spec.adUnitId, afterShown, next)
-                SideMenuAdFormat.APPOPEN -> showAppOpen(activity, spec.adUnitId, afterShown, next)
-                SideMenuAdFormat.REWARDED -> showRewarded(activity, spec.adUnitId, afterShown, next)
-                SideMenuAdFormat.FULLSCREEN_NATIVE -> showNative(activity, spec.adUnitId, afterShown, next)
-                SideMenuAdFormat.CUSTOM -> showCustom(activity, afterShown, next)
+                SideMenuAdFormat.INTER -> presentInter(activity, spec.adUnitId, afterShown, next)
+                SideMenuAdFormat.APPOPEN -> presentAppOpen(activity, spec.adUnitId, afterShown, next)
+                SideMenuAdFormat.REWARDED -> presentRewarded(activity, spec.adUnitId, afterShown, next)
+                SideMenuAdFormat.FULLSCREEN_NATIVE -> presentNative(activity, spec.adUnitId, afterShown, next)
+                SideMenuAdFormat.CUSTOM -> presentCustom(activity, afterShown, next)
                 SideMenuAdFormat.DIRECTLINK -> {
-                    if (!openLink(activity, spec, pointerKey + DIRECTLINK_POINTER_SUFFIX)) {
+                    if (!unfoldLink(activity, spec, pointerKey + DIRECTLINK_POINTER_SUFFIX)) {
                         next()
                     } else {
                         // The landing page is now on top, and it is the ad — it has to be read, not
@@ -257,7 +257,7 @@ object SideMenuAdDriver {
 
     // ---------------- Interstitial ----------------
 
-    private fun loadInter(context: Context, unitId: String) {
+    private fun fetchInter(context: Context, unitId: String) {
         if (unitId.isBlank() || interAds.containsKey(unitId) || !loading.add("inter:$unitId")) return
         InterstitialAd.load(
             context, unitId, AdRequest.Builder().build(),
@@ -277,16 +277,16 @@ object SideMenuAdDriver {
         )
     }
 
-    private fun showInter(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
+    private fun presentInter(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         val ad = interAds.remove(unitId) ?: return onFailed()
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
-                loadInter(activity, unitId)
+                fetchInter(activity, unitId)
                 onShown()
             }
 
             override fun onAdFailedToShowFullScreenContent(error: AdError) {
-                loadInter(activity, unitId)
+                fetchInter(activity, unitId)
                 onFailed()
             }
         }
@@ -295,7 +295,7 @@ object SideMenuAdDriver {
 
     // ---------------- App Open ----------------
 
-    private fun loadAppOpen(context: Context, unitId: String) {
+    private fun fetchAppOpen(context: Context, unitId: String) {
         if (unitId.isBlank() || appOpenAds.containsKey(unitId) || !loading.add("appopen:$unitId")) return
         AppOpenAd.load(
             context, unitId, AdRequest.Builder().build(),
@@ -315,16 +315,16 @@ object SideMenuAdDriver {
         )
     }
 
-    private fun showAppOpen(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
+    private fun presentAppOpen(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         val ad = appOpenAds.remove(unitId) ?: return onFailed()
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
-                loadAppOpen(activity, unitId)
+                fetchAppOpen(activity, unitId)
                 onShown()
             }
 
             override fun onAdFailedToShowFullScreenContent(error: AdError) {
-                loadAppOpen(activity, unitId)
+                fetchAppOpen(activity, unitId)
                 onFailed()
             }
         }
@@ -333,7 +333,7 @@ object SideMenuAdDriver {
 
     // ---------------- Rewarded ----------------
 
-    private fun loadRewarded(context: Context, unitId: String) {
+    private fun fetchRewarded(context: Context, unitId: String) {
         if (unitId.isBlank() || rewardedAds.containsKey(unitId) || !loading.add("rewarded:$unitId")) return
         RewardedAd.load(
             context, unitId, AdRequest.Builder().build(),
@@ -353,16 +353,16 @@ object SideMenuAdDriver {
         )
     }
 
-    private fun showRewarded(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
+    private fun presentRewarded(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         val ad = rewardedAds.remove(unitId) ?: return onFailed()
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
-                loadRewarded(activity, unitId)
+                fetchRewarded(activity, unitId)
                 onShown()
             }
 
             override fun onAdFailedToShowFullScreenContent(error: AdError) {
-                loadRewarded(activity, unitId)
+                fetchRewarded(activity, unitId)
                 onFailed()
             }
         }
@@ -371,7 +371,7 @@ object SideMenuAdDriver {
 
     // ---------------- Fullscreen native ----------------
 
-    private fun loadNative(context: Context, unitId: String) {
+    private fun fetchNative(context: Context, unitId: String) {
         if (unitId.isBlank() || nativeAds.containsKey(unitId) || !loading.add("native:$unitId")) return
         AdLoader.Builder(context, unitId)
             .forNativeAd { ad ->
@@ -390,7 +390,7 @@ object SideMenuAdDriver {
             .loadAd(AdRequest.Builder().build())
     }
 
-    private fun showNative(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
+    private fun presentNative(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         if (activity.isFinishing || activity.isDestroyed) return onFailed()
         val ad = nativeAds.remove(unitId) ?: return onFailed()
 
@@ -404,7 +404,7 @@ object SideMenuAdDriver {
             dialog.setContentView(view, ViewGroup.LayoutParams(MATCH, MATCH))
             dialog.setOnDismissListener {
                 runCatching { ad.destroy() }
-                loadNative(activity, unitId)
+                fetchNative(activity, unitId)
                 onShown()
             }
             dialog.setCancelable(true)
@@ -417,7 +417,7 @@ object SideMenuAdDriver {
 
         if (!shown) {
             runCatching { ad.destroy() }
-            loadNative(activity, unitId)
+            fetchNative(activity, unitId)
             onFailed()
         }
     }
@@ -466,7 +466,7 @@ object SideMenuAdDriver {
      * This app's own full-screen house ad over the current screen, with a close button — QRScanner's
      * `custom` fallback step. No house ad (or `IsCustomADS` off) → [onFailed], so the chain moves on.
      */
-    private fun showCustom(activity: Activity, onShown: () -> Unit, onFailed: () -> Unit) {
+    private fun presentCustom(activity: Activity, onShown: () -> Unit, onFailed: () -> Unit) {
         val content = activity.findViewById<ViewGroup>(android.R.id.content) ?: return onFailed()
         val overlay = android.widget.FrameLayout(activity).apply {
             setBackgroundColor(android.graphics.Color.BLACK)
@@ -486,7 +486,7 @@ object SideMenuAdDriver {
         overlay.addView(slot, ViewGroup.LayoutParams(MATCH, MATCH))
         overlay.addView(close)
         content.addView(overlay, ViewGroup.LayoutParams(MATCH, MATCH))
-        OwnAdsKeeper().loadCustomAd(
+        OwnAdsKeeper().fetchCustomAd(
             context = activity,
             container = slot,
             type = OwnAdsKeeper.OwnAdFormat.FULLSCREEN_NATIVE,
@@ -504,7 +504,7 @@ object SideMenuAdDriver {
      * Returns false when nothing was opened, so the caller can fall through to the next ad rather
      * than sitting waiting for a return from a page that never appeared.
      */
-    private fun openLink(activity: Activity, spec: SideMenuAdPlan, urlPointerKey: String): Boolean {
+    private fun unfoldLink(activity: Activity, spec: SideMenuAdPlan, urlPointerKey: String): Boolean {
         val url = pickDirectLink(activity, spec, urlPointerKey)
         if (url.isBlank()) {
             log("directlink has no usable url — next")

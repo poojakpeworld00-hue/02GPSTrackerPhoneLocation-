@@ -194,7 +194,7 @@ object PageSponsorSettings {
 
         // disableInternalFallback=true → StripSponsor reports a single onAdFailed()
         // so the native-banner fallback owns the failure path (no double-load).
-        StripSponsor().showBanner(
+        StripSponsor().presentBanner(
             activity = activity,
             container = container,
             type = StripVariant.AUTO,
@@ -208,7 +208,7 @@ object PageSponsorSettings {
                     if (BuildConfig.DEBUG) {
                         Log.d(TAG, "showAd($screenName) -> banner failed, fallback to native banner")
                     }
-                    InlineSponsorStrip().showNativeBannerNative(activity, container, shimmer)
+                    InlineSponsorStrip().presentNativeBannerNative(activity, container, shimmer)
                 }
             }
         )

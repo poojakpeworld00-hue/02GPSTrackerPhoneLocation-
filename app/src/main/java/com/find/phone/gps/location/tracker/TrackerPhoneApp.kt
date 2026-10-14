@@ -181,12 +181,12 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
         ProcessLifecycleOwner.get().lifecycle.addObserver(
             object : DefaultLifecycleObserver {
                 override fun onStart(owner: LifecycleOwner) {
-                    handleAppForeground()
+                    processAppForeground()
                     // Remote Config follows the PROCESS: live for as long as the app is
                     // foreground, gone with it.
                     RemoteValuesObserver.start(this@TrackerPhoneApp)
                     // Backstop for the push channel, throttled by `Config_Sync_Hrs`.
-                    RemoteValuesObserver.refreshIfStale(this@TrackerPhoneApp)
+                    RemoteValuesObserver.renewIfStale(this@TrackerPhoneApp)
                 }
 
                 override fun onStop(owner: LifecycleOwner) {
@@ -204,8 +204,8 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
     // --------------------------------------------------
     // APP FOREGROUND HANDLER (APP OPEN AD)
     // --------------------------------------------------
-    private fun handleAppForeground() {
-        SafeLogger.log("AppOpen", "handleAppForeground() called")
+    private fun processAppForeground() {
+        SafeLogger.log("AppOpen", "processAppForeground() called")
 
         val activity = currentActivity
         if (activity == null) {
@@ -280,7 +280,7 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
             activity.runWhenWindowFocused {
                 if (activity.isFinishing || activity.isDestroyed) return@runWhenWindowFocused
                 SafeLogger.log("AppOpen", "🚀 Showing App Open Ad")
-                ResumeAdKeeper.showAdIfAvailable(
+                ResumeAdKeeper.presentAdIfAvailable(
                     activity,
                     object : ResumeAdKeeper.OnAdDoneCallback {
                         override fun onShowAdComplete() {

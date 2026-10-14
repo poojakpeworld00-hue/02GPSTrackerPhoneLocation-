@@ -20,7 +20,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.databinding.PageShareNumberBinding
@@ -71,7 +71,7 @@ class SendNumberActivity : FoundationActivity<PageShareNumberBinding>() {
         binding.segContactVw.setOnClickListener { pick(SendAs.CONTACT) }
         binding.segQrVw.setOnClickListener { pick(SendAs.QR) }
         binding.padCopy.setOnClickListener { copy() }
-        binding.padSaveQr.setOnClickListener { saveQr() }
+        binding.padSaveQr.setOnClickListener { persistQr() }
         binding.padShare.setOnClickListener { share() }
         pick(SendAs.TEXT)
     }
@@ -95,11 +95,11 @@ class SendNumberActivity : FoundationActivity<PageShareNumberBinding>() {
         val clipboard = getSystemService(ClipboardManager::class.java) ?: return
         clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.my_number_title), display))
         Toast.makeText(this, R.string.my_number_copied, Toast.LENGTH_SHORT).show()
-        logKeyEvent("ShareNumber_Copy")
+        trackEvent("ShareNumber_Copy")
     }
 
     private fun share() {
-        logKeyEvent("ShareNumber_Share_${selected.name.lowercase()}")
+        trackEvent("ShareNumber_Share_${selected.name.lowercase()}")
         ResumeAdKeeper.skipNextAppOpenAd = true
         val intent = when (selected) {
             SendAs.TEXT -> Intent(Intent.ACTION_SEND).setType("text/plain")
@@ -140,19 +140,19 @@ class SendNumberActivity : FoundationActivity<PageShareNumberBinding>() {
         }
     }.getOrNull()
 
-    private fun saveQr() {
+    private fun persistQr() {
         val bmp = qr
         if (bmp == null) {
             Toast.makeText(this, R.string.share_number_save_failed, Toast.LENGTH_SHORT).show()
             return
         }
-        logKeyEvent("ShareNumber_SaveQr")
-        val ok = runCatching { saveBitmapToGallery(bmp) }.getOrDefault(false)
+        trackEvent("ShareNumber_SaveQr")
+        val ok = runCatching { persistBitmapToGallery(bmp) }.getOrDefault(false)
         Toast.makeText(this, if (ok) R.string.share_number_saved else R.string.share_number_save_failed, Toast.LENGTH_SHORT).show()
     }
 
     /** MediaStore on API 29+ (no permission); app external Pictures dir on older. */
-    private fun saveBitmapToGallery(bmp: Bitmap): Boolean {
+    private fun persistBitmapToGallery(bmp: Bitmap): Boolean {
         val fileName = "GPS_MyNumber_QR_${System.currentTimeMillis()}.png"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val values = ContentValues().apply {

@@ -23,7 +23,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsor
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsorStrip
@@ -114,7 +114,7 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         binding.padWatchAd.setOnClickListener { reveal() }
         binding.padSkipPro.setOnClickListener {
             if (report == null) return@setOnClickListener
-            logKeyEvent("result_skip_pro")
+            trackEvent("result_skip_pro")
             premiumPage.launch(ProUpgradeActivity.intent(this))
         }
         binding.mapCardVw.clipToOutline = true
@@ -123,14 +123,14 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         val premium = ProStoreBilling.isPremium(this)
         if (!premium) {
             BonusAdSponsor.preload(this)
-            showNative()
+            presentNative()
         }
 
         val given = saved
         if (given != null) {
             binding.mapCardVw.updateLayoutParams { height = dp(MAP_RESULT_DP) }
             lifecycleScope.launch { placeArea(given, animate = false) }
-            showResult(given)
+            presentResult(given)
         } else {
             binding.flagCountry.text = RegionZones.byIso(search.iso2)?.name ?: search.iso2
             binding.flagState.setText(R.string.ds_step_state)
@@ -146,7 +146,7 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
      * stages before it are done (✓, green / filled primary), it is active (●, tint / white),
      * the rest wait (gray / white 70).
      */
-    private fun bindSteps(current: Step) {
+    private fun wireSteps(current: Step) {
         val steps = listOf(
             Triple(binding.stepCountryVw, binding.flagCountry, R.string.ds_step_country),
             Triple(binding.stepStateVw, binding.flagState, R.string.ds_step_state),
@@ -199,35 +199,35 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
      * emptied by every screen that shows one, so when the pool is empty here the page loads
      * its own and shows it once it lands — otherwise the slot would sit blank for the whole search.
      */
-    private fun showNative() {
+    private fun presentNative() {
         binding.adFrameVw.isVisible = true
-        if (nativeReady()) return renderNative()
+        if (nativeReady()) return paintNative()
         if (compactNative) {
-            InlineSponsorStrip().loadNativeBannerAds(this)
+            InlineSponsorStrip().fetchNativeBannerAds(this)
         } else {
-            InlineSponsor().loadNativeADs(this, object : InlineSponsor.InlineAdCallback {
-                override fun onNativeAdLoaded() = runOnUiThread { fillNativeIfEmpty() }
+            InlineSponsor().fetchNativeADs(this, object : InlineSponsor.InlineAdCallback {
+                override fun onNativeAdLoaded() = runOnUiThread { populateNativeIfEmpty() }
                 override fun onNativeAdFailed() = Unit
             })
         }
         // A load already in flight elsewhere doesn't call back here: look again once it may have landed.
-        NATIVE_RECHECK_MS.forEach { binding.adFrameVw.postDelayed({ fillNativeIfEmpty() }, it) }
+        NATIVE_RECHECK_MS.forEach { binding.adFrameVw.postDelayed({ populateNativeIfEmpty() }, it) }
     }
 
     private fun nativeReady(): Boolean =
         if (compactNative) InlineSponsorStrip.hasPreloadedNativeBanner() else InlineSponsor.hasPreloadedNative()
 
-    private fun fillNativeIfEmpty() {
+    private fun populateNativeIfEmpty() {
         if (isFinishing || isDestroyed || binding.adFrameVw.childCount > 0) return
-        if (nativeReady()) renderNative()
+        if (nativeReady()) paintNative()
     }
 
-    private fun renderNative() {
+    private fun paintNative() {
         when {
-            compactNative -> InlineSponsorStrip().showNativeBannerNative(this, binding.adFrameVw)
-            nativeType == "big" -> InlineSponsor().showBigNative(this, binding.adFrameVw)
-            nativeType == "mid" -> InlineSponsor().showMidNative(this, binding.adFrameVw)
-            else -> InlineSponsor().showMidNative2(this, binding.adFrameVw)
+            compactNative -> InlineSponsorStrip().presentNativeBannerNative(this, binding.adFrameVw)
+            nativeType == "big" -> InlineSponsor().presentBigNative(this, binding.adFrameVw)
+            nativeType == "mid" -> InlineSponsor().presentMidNative(this, binding.adFrameVw)
+            else -> InlineSponsor().presentMidNative2(this, binding.adFrameVw)
         }
     }
 
@@ -273,13 +273,13 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         placeArea(result, animate = true, knownState = statePin)
         delay(at(minMs))
 
-        showResult(result)
+        presentResult(result)
     }
 
     /** The stage line, the step chips at [step], and the progress bar running on to [toPercent] over [overMs]. */
     private fun stage(text: String, toPercent: Int, overMs: Long, step: Step) {
         binding.lblStage.text = text
-        bindSteps(step)
+        wireSteps(step)
         progressAnim?.cancel()
         progressAnim = ObjectAnimator.ofInt(binding.prog, "progress", binding.prog.progress, toPercent * 10).apply {
             duration = overMs.coerceAtLeast(300L)
@@ -327,7 +327,7 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
     // ── Found ─────────────────────────────────────────────────────────────
 
     /** The result (design 13b); Premium users and numbers unlocked before go straight through. */
-    private fun showResult(result: NumberSummary) {
+    private fun presentResult(result: NumberSummary) {
         report = result
         if (alreadyUnlocked || ProStoreBilling.isPremium(this)) return unlock(result)
 

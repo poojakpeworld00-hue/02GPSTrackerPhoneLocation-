@@ -63,7 +63,7 @@ class AlarmJob(context: Context, params: WorkerParameters) : Worker(context, par
             SafeLogger.log(TAG, "notifications are off → reminder ${item.id} cannot be shown")
             return
         }
-        ensureChannel(ctx)
+        guaranteeChannel(ctx)
 
         // `is_enhanced_mode` off (or the country is excluded): a plain notification into the list.
         val fullScreen = AlarmSettings.get(ctx).isEnhancedMode && AlarmSettings.isCountryAllowed(ctx)
@@ -86,7 +86,7 @@ class AlarmJob(context: Context, params: WorkerParameters) : Worker(context, par
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(pending)
             .setAutoCancel(true)
-        if (fullScreen) AlarmGrant.attachAlertIntent(builder, pending)
+        if (fullScreen) AlarmGrant.linkAlertIntent(builder, pending)
 
         runCatching { nmc.notify(notifId, builder.build()) }
             .onSuccess {
@@ -95,7 +95,7 @@ class AlarmJob(context: Context, params: WorkerParameters) : Worker(context, par
             .onFailure { SafeLogger.error(TAG, "notify failed", it) }
     }
 
-    private fun ensureChannel(ctx: Context) {
+    private fun guaranteeChannel(ctx: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.createNotificationChannel(

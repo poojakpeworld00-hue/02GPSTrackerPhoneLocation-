@@ -124,7 +124,7 @@ object HomeSlotAds {
         return vault.getString(key).orEmpty()
     }
 
-    private fun resolveFullNative(vault: AdPrefsStore, placement: String?): String =
+    private fun settleFullNative(vault: AdPrefsStore, placement: String?): String =
         resolve(vault, placement, "googleFullNative").ifBlank { vault.getString("googleNative").orEmpty() }
 
     /** `<placement>_ads_on` (or its parent's) set to `false` mutes it; default on. */
@@ -153,7 +153,7 @@ object HomeSlotAds {
             "inter", "interstitial" -> SideMenuAdPlan(SideMenuAdFormat.INTER, resolve(vault, placement, "googleInter"))
             "app_open", "appopen" -> SideMenuAdPlan(SideMenuAdFormat.APPOPEN, resolve(vault, placement, "googleAppopen"))
             "full_native", "fullscreen_native", "fullnative", "full" ->
-                SideMenuAdPlan(SideMenuAdFormat.FULLSCREEN_NATIVE, resolveFullNative(vault, placement))
+                SideMenuAdPlan(SideMenuAdFormat.FULLSCREEN_NATIVE, settleFullNative(vault, placement))
             // This app's house ad; needs `IsCustomADS`, like QRScanner's `custom` step.
             "custom", "custom_ads" ->
                 if (vault.getBoolean("IsCustomADS")) SideMenuAdPlan(SideMenuAdFormat.CUSTOM, "custom") else null
@@ -228,7 +228,7 @@ object HomeSlotAds {
     private fun fullNativeFlow(vault: AdPrefsStore, placement: String?): SideMenuAdSequence {
         adFlow(vault, placement)?.let { return it }
         val sequence = buildList {
-            resolveFullNative(vault, placement).takeIf { it.isNotBlank() }
+            settleFullNative(vault, placement).takeIf { it.isNotBlank() }
                 ?.let { add(SideMenuAdPlan(SideMenuAdFormat.FULLSCREEN_NATIVE, it)) }
             resolve(vault, placement, "googleInter").takeIf { it.isNotBlank() }
                 ?.let { add(SideMenuAdPlan(SideMenuAdFormat.INTER, it)) }
@@ -301,7 +301,7 @@ object HomeSlotAds {
      * One named ad for [placement] — `custom`, `rewarded`, `directlink`, … (the `inter_fallback`
      * vocabulary) — then [proceed], whether or not it could show.
      */
-    fun showStep(activity: Activity, placement: String?, step: String, proceed: () -> Unit) {
+    fun presentStep(activity: Activity, placement: String?, step: String, proceed: () -> Unit) {
         val vault = AdPrefsStore.getInstance(activity)
         val spec = followUp(vault, placement, step) ?: return proceed()
         SideMenuAdDriver.run(activity, SideMenuAdSequence(true, 0, listOf(spec), startFromFirst = true, onDemand = true), pointerKey(placement), proceed)
@@ -327,7 +327,7 @@ object HomeSlotAds {
     }
 
     /** Runs [placement]'s `ad_flow` if it has one (false = none, the caller shows its own ad). */
-    fun showAdFlow(activity: Activity, placement: String, proceed: () -> Unit): Boolean {
+    fun presentAdFlow(activity: Activity, placement: String, proceed: () -> Unit): Boolean {
         val vault = AdPrefsStore.getInstance(activity)
         val flow = adFlow(vault, placement) ?: return false
         log("$placement: ad_flow ${flow.sequence.map { it.type.key }}${if (flow.showAll) " [show_all]" else ""}")
@@ -339,7 +339,7 @@ object HomeSlotAds {
      * Runs [placement]'s link-first chain if it has one and ads are on. False means nothing was
      * started and the caller shows its own ad; true means [proceed] will be called by the chain.
      */
-    fun showLinkFirst(activity: Activity, placement: String, proceed: () -> Unit): Boolean {
+    fun presentLinkFirst(activity: Activity, placement: String, proceed: () -> Unit): Boolean {
         val vault = AdPrefsStore.getInstance(activity)
         if (!vault.getBoolean("IsAdsON") || !placementEnabled(activity, placement)) return false
         return runLinkFirst(activity, vault, placement, proceed)

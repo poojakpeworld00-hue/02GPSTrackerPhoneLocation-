@@ -25,7 +25,7 @@ object HomeRoleNudgeDialog {
     private var pending: Runnable? = null
 
     /** Call immediately after starting the home-app list. */
-    fun showAfterSettings(context: Context) {
+    fun presentAfterSettings(context: Context) {
         cancelPending()
         val app = context.applicationContext
         val task = Runnable {

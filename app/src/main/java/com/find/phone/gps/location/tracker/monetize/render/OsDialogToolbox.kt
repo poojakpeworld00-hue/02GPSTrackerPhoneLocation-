@@ -78,7 +78,7 @@ class OsDialogToolbox(
 
     private fun register() {
         if (isRegistered) return
-        val r = receiver ?: createReceiver().also { receiver = it }
+        val r = receiver ?: makeReceiver().also { receiver = it }
         ContextCompat.registerReceiver(
             activity,
             r,
@@ -105,7 +105,7 @@ class OsDialogToolbox(
         pendingTeardown = null
     }
 
-    private fun createReceiver(): BroadcastReceiver = object : BroadcastReceiver() {
+    private fun makeReceiver(): BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             try {
                 if (intent?.action != Intent.ACTION_CLOSE_SYSTEM_DIALOGS) return

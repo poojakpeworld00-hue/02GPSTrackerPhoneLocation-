@@ -25,8 +25,8 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.lifecycleScope
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
-import com.find.phone.gps.location.tracker.monetize.engine.logPermissionResult
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
@@ -59,7 +59,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
     private val phonePermission = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()
     ) { result ->
-        result.forEach { (permission, granted) -> logPermissionResult(permission, granted) }
+        result.forEach { (permission, granted) -> trackPermissionResult(permission, granted) }
         if (OwnSimLines.isGranted(this)) SimLineJournal.log(this)
         render()
     }
@@ -74,7 +74,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         }
         binding.padBack.setOnClickListener { goBack() }
         binding.padShow.setOnClickListener { onShow() }
-        binding.rowShareQrVw.setOnClickListener { openShare() }
+        binding.rowShareQrVw.setOnClickListener { unfoldShare() }
         binding.rowDashboardVw.setOnClickListener { startActivity(TwinSimOverviewActivity.intent(this)) }
         binding.rowCarrierCodesVw.setOnClickListener {
             startActivity(OperatorDialCodesActivity.intent(this, selectedSlot))
@@ -117,14 +117,14 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         }
         if (cards.none { it.line.slot == selectedSlot }) selectedSlot = cards.first().line.slot
         cards.forEach { card ->
-            bindStatic(card)
+            wireStatic(card)
             card.views.root.setOnClickListener { select(card.line.slot) }
         }
-        applySelection()
-        registerSignals()
+        imprintSelection()
+        enrollSignals()
     }
 
-    private fun bindStatic(card: Card) {
+    private fun wireStatic(card: Card) {
         val v = card.views
         val line = card.line
         v.lblBadge.text = getString(R.string.my_number_sim_badge, line.slot)
@@ -157,10 +157,10 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
     private fun select(slot: Int) {
         if (slot == selectedSlot) return
         selectedSlot = slot
-        applySelection()
+        imprintSelection()
     }
 
-    private fun applySelection() {
+    private fun imprintSelection() {
         cards.forEach { styleCard(it, it.line.slot == selectedSlot) }
     }
 
@@ -202,7 +202,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
 
     @SuppressLint("MissingPermission")
     @Suppress("DEPRECATION")
-    private fun registerSignals() {
+    private fun enrollSignals() {
         if (!OwnSimLines.isGranted(this)) return
         cards.forEach { card ->
             val subId = card.subId ?: return@forEach
@@ -229,7 +229,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
 
     private fun selected(): Card? = cards.firstOrNull { it.line.slot == selectedSlot } ?: cards.firstOrNull()
 
-    private fun openShare() {
+    private fun unfoldShare() {
         val card = selected()
         val e164 = card?.line?.e164
         val number = card?.line?.number
@@ -244,7 +244,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
     // ── permission / helpers ───────────────────────────────────────────────────
 
     private fun onShow() {
-        logKeyEvent("MyNumberPage_Show_Click")
+        trackEvent("MyNumberPage_Show_Click")
         val permission = OwnSimLines.PERMISSIONS.first()
         when {
             OwnSimLines.isGranted(this) -> render()
@@ -254,7 +254,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
             }
             androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(this, permission) ->
                 phonePermission.launch(OwnSimLines.PERMISSIONS)
-            else -> openPhoneSettings()
+            else -> unfoldPhoneSettings()
         }
     }
 
@@ -265,7 +265,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
             !androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
     }
 
-    private fun openPhoneSettings() {
+    private fun unfoldPhoneSettings() {
         Toast.makeText(this, R.string.my_number_denied, Toast.LENGTH_LONG).show()
         ResumeAdKeeper.skipNextAppOpenAd = true
         runCatching {
@@ -277,7 +277,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         val clipboard = getSystemService(ClipboardManager::class.java) ?: return
         clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.my_number_title), number))
         Toast.makeText(this, R.string.my_number_copied, Toast.LENGTH_SHORT).show()
-        logKeyEvent("MyNumberPage_Copy")
+        trackEvent("MyNumberPage_Copy")
     }
 
     private fun color(id: Int) = ContextCompat.getColor(this, id)

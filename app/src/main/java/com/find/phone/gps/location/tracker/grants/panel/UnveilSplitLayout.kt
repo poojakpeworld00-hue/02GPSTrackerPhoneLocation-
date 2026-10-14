@@ -28,7 +28,7 @@ class UnveilSplitLayout @JvmOverloads constructor(
     var fraction = 0f
         set(value) {
             field = value.coerceIn(0f, 1f)
-            applyFraction()
+            imprintFraction()
             onFractionChanged?.invoke(field)
         }
 
@@ -42,7 +42,7 @@ class UnveilSplitLayout @JvmOverloads constructor(
     private var dragging = false
     private var running = false
     private val grabSlop = context.dp(28f)
-    private val resumeLoop = Runnable { if (running && !dragging) startLoop() }
+    private val resumeLoop = Runnable { if (running && !dragging) kickLoop() }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -53,12 +53,12 @@ class UnveilSplitLayout @JvmOverloads constructor(
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        applyFraction()
+        imprintFraction()
     }
 
     private fun isRtl() = layoutDirection == LAYOUT_DIRECTION_RTL
 
-    private fun applyFraction() {
+    private fun imprintFraction() {
         if (!::cardTop.isInitialized || width == 0) return
         val w = cardTop.width
         val revealed = (w * fraction).toInt()
@@ -76,7 +76,7 @@ class UnveilSplitLayout @JvmOverloads constructor(
             fraction = 0.55f
             return
         }
-        startLoop()
+        kickLoop()
     }
 
     fun stop() {
@@ -86,7 +86,7 @@ class UnveilSplitLayout @JvmOverloads constructor(
         loop = null
     }
 
-    private fun startLoop() {
+    private fun kickLoop() {
         loop?.cancel()
         val e = VisualTweens.EASE_IN_OUT
         // rev / hd: 0–8% hidden, 42–62% revealed, 94–100% hidden again, ease-in-out.
@@ -108,10 +108,10 @@ class UnveilSplitLayout @JvmOverloads constructor(
         }
     }
 
-    private fun handleX(): Float = handle.translationX + handle.width / 2f
+    private fun processX(): Float = handle.translationX + handle.width / 2f
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.actionMasked == MotionEvent.ACTION_DOWN && kotlin.math.abs(ev.x - handleX()) <= grabSlop) {
+        if (ev.actionMasked == MotionEvent.ACTION_DOWN && kotlin.math.abs(ev.x - processX()) <= grabSlop) {
             beginDrag()
             return true
         }
@@ -121,7 +121,7 @@ class UnveilSplitLayout @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                if (kotlin.math.abs(event.x - handleX()) > grabSlop) return false
+                if (kotlin.math.abs(event.x - processX()) > grabSlop) return false
                 beginDrag()
             }
             MotionEvent.ACTION_MOVE -> if (dragging) dragTo(event.x)

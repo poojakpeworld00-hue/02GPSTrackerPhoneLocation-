@@ -63,14 +63,14 @@ class PastLookupsActivity : FoundationActivity<PageHistoryBinding>() {
             section.lblSection.setText(bucket.label)
             rows.forEachIndexed { i, recent ->
                 val row = CardRecentSearchBinding.inflate(inflater, section.rowsVw, false)
-                bindRow(row, recent, i, i < rows.lastIndex)
+                wireRow(row, recent, i, i < rows.lastIndex)
                 section.rowsVw.addView(row.root)
             }
             binding.sectionsVw.addView(section.root)
         }
     }
 
-    private fun bindRow(row: CardRecentSearchBinding, recent: PastLookup, index: Int, divider: Boolean) {
+    private fun wireRow(row: CardRecentSearchBinding, recent: PastLookup, index: Int, divider: Boolean) {
         val (tile, tint) = TILE_PALETTE[index % TILE_PALETTE.size]
         row.iconTileVw.setBackgroundResource(tile)
         row.icon.imageTintList = ContextCompat.getColorStateList(this, tint)

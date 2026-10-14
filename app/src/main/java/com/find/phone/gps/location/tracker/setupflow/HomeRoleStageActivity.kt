@@ -12,12 +12,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnAction
 import com.find.phone.gps.location.tracker.databinding.PageOnboardingDefaultLauncherBinding
 import com.find.phone.gps.location.tracker.grants.GrantOrchestrator
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
-import com.find.phone.gps.location.tracker.helpers.hideWhileAdVisible
+import com.find.phone.gps.location.tracker.helpers.concealWhileAdVisible
 import io.homedeck.grid.ext.isDefaultLauncher
 import io.homedeck.grid.ext.roleManager
 import org.fossify.commons.extensions.viewBinding
@@ -86,14 +86,14 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
             return
         }
 
-        if (savedInstanceState == null) logKeyEvent("default_home_view")
+        if (savedInstanceState == null) trackEvent("default_home_view")
 
         VisualTweens.pressScale(binding.onboardingSetDefaultVw)
         binding.onboardingSetDefaultVw.setOnClickListener {
-            if (isDefaultLauncher()) goHome() else openHomeSettings()
+            if (isDefaultLauncher()) goHome() else unfoldHomeSettings()
         }
         binding.onboardingSkipVw.setOnClickListener {
-            logKeyEvent("default_home_skip")
+            trackEvent("default_home_skip")
             goToNextStep()
         }
 
@@ -111,7 +111,7 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
 
         // Native big ad card, `launcher_ads.onboarding.set_default.slot`; the frame is hidden
         // outright when the slot is off.
-        HomeAdsSettings.showSlot(
+        HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.SET_DEFAULT),
             container = binding.adNativeFrameVw,
@@ -119,7 +119,7 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         )
 
         // Small phones: the hero card gives way to the ad while one is on screen.
-        binding.imageHeroVw.hideWhileAdVisible(binding.adNativeFrameVw, binding.heroCompactVw)
+        binding.imageHeroVw.concealWhileAdVisible(binding.adNativeFrameVw, binding.heroCompactVw)
 
         HomeRoleJourney.bindStepHeader(this, HomeAdsSettings.OnboardScreen.SET_DEFAULT, binding.root)
 
@@ -142,17 +142,17 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
     // ===== the two-stage request =====
 
     /** Stage 1 — the settings page listing the installed home apps. */
-    private fun openHomeSettings() {
+    private fun unfoldHomeSettings() {
         if (leaving || requestInFlight) return
-        launchHomeSettings()
+        fireHomeSettings()
         // The coach-mark follows the list rather than racing it — see HomeRoleNudgeDialog.
-        HomeRoleNudgeDialog.showAfterSettings(this)
+        HomeRoleNudgeDialog.presentAfterSettings(this)
     }
 
-    private fun launchHomeSettings() {
+    private fun fireHomeSettings() {
         if (leaving) return
-        val opened = launchForResult(Intent(Settings.ACTION_HOME_SETTINGS), REQ_HOME_SETTINGS) ||
-            launchForResult(Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS), REQ_HOME_SETTINGS)
+        val opened = fireForResult(Intent(Settings.ACTION_HOME_SETTINGS), REQ_HOME_SETTINGS) ||
+            fireForResult(Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS), REQ_HOME_SETTINGS)
         // A ROM with neither page would otherwise dead-end the CTA, so skip to stage 2.
         if (!opened) promptForRole()
     }
@@ -164,13 +164,13 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
             goToNextStep()
             return
         }
-        if (!launchForResult(roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME), REQ_ROLE_HOME)) {
+        if (!fireForResult(roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME), REQ_ROLE_HOME)) {
             goToNextStep()
         }
     }
 
     @Suppress("DEPRECATION")
-    private fun launchForResult(intent: Intent, requestCode: Int): Boolean = try {
+    private fun fireForResult(intent: Intent, requestCode: Int): Boolean = try {
         startActivityForResult(intent, requestCode)
         requestInFlight = true
         lastRequest = requestCode
@@ -190,14 +190,14 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
             REQ_HOME_SETTINGS -> promptForRole()
             REQ_ROLE_HOME -> {
                 // Still not the default home after the role popup: it was declined.
-                logKeyEvent("default_home_declined")
-                if (resultCode == RESULT_OK || !skipEnabled) goToNextStep() else askOnDecline()
+                trackEvent("default_home_declined")
+                if (resultCode == RESULT_OK || !skipEnabled) goToNextStep() else promptOnDecline()
             }
         }
     }
 
     /** Declined the home role: a one-time `permission_engine` ask for this screen, if any. */
-    private fun askOnDecline() {
+    private fun promptOnDecline() {
         if (askedOnDecline) return
         askedOnDecline = true
         GrantOrchestrator.check(this)
@@ -216,21 +216,21 @@ class HomeRoleStageActivity : ShellHubActivity(), WalkthroughHomeAdvance.Step {
         super.onResume()
         HomeRoleNudgeDialog.dismiss()
         if (isDefaultLauncher()) {
-            logGrant()
+            noteGrant()
             if (finishingGrant) goHome() else advanceAfterGrant()
             return
         }
         if (autoOpenPending) {
             autoOpenPending = false
-            openHomeSettings()
+            unfoldHomeSettings()
         }
     }
 
     /** The role was just granted from this step: which surface did it, once per process. */
-    private fun logGrant() {
+    private fun noteGrant() {
         if (grantLogged || lastRequest == 0) return
         grantLogged = true
-        logKeyEvent(if (lastRequest == REQ_ROLE_HOME) "default_home_granted_dialog" else "default_home_granted_settings")
+        trackEvent(if (lastRequest == REQ_ROLE_HOME) "default_home_granted_dialog" else "default_home_granted_settings")
     }
 
     /** The role is held: `auto_next` (default on) moves on after `auto_next_delay_ms`. */

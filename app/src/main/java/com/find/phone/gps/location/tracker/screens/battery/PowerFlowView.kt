@@ -94,12 +94,12 @@ class PowerFlowView @JvmOverloads constructor(
         if (isAttachedToWindow) {
             rotationAnimator?.cancel()
             rotationAnimator = null
-            startRotation()
+            kickRotation()
         }
         invalidate()
     }
 
-    private fun startRotation() {
+    private fun kickRotation() {
         if (isInEditMode || rotationAnimator != null) return
         if (!ValueAnimator.areAnimatorsEnabled()) return
         rotationAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
@@ -116,7 +116,7 @@ class PowerFlowView @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        startRotation()
+        kickRotation()
     }
 
     override fun onDetachedFromWindow() {

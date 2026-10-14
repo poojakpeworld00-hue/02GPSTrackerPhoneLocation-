@@ -16,7 +16,7 @@ import timber.log.Timber
  * screen looks exactly like the app was removed.
  *
  * `launcherConfig.selfIconHidden` is one-way: once set, [isOurRow] rows are dropped wherever the
- * grid is loaded (DeskGrid.fetchGridItems) and HomeDeskPane's messaging slot resolves to
+ * grid is loaded (DeskGrid.grabGridItems) and HomeDeskPane's messaging slot resolves to
  * [systemMessagingPackage] rather than to us, so no seed, profile copy or SMS-role sync can put the
  * icon back. The drawer stops listing our package too (HomeRoleProbe filters it once hidden).
  *

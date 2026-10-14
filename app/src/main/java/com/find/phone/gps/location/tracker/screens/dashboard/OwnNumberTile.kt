@@ -13,8 +13,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
-import com.find.phone.gps.location.tracker.monetize.engine.logPermissionResult
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import com.find.phone.gps.location.tracker.repo.simcard.OwnSimLines
@@ -44,7 +44,7 @@ class OwnNumberTile(
     init {
         views.padMyNumber.setOnClickListener { onButton() }
         views.padManage.setOnClickListener {
-            activity.logKeyEvent("MyNumber_Manage_Click")
+            activity.trackEvent("MyNumber_Manage_Click")
             activity.startActivity(OwnNumberActivity.intent(activity))
         }
     }
@@ -71,19 +71,19 @@ class OwnNumberTile(
         views.simRowsVw.removeAllViews()
         views.simRowsVw.isVisible = showing
         val inflater = LayoutInflater.from(views.root.context)
-        lines.forEach { line -> views.simRowsVw.addView(bindRow(inflater, context, line)) }
+        lines.forEach { line -> views.simRowsVw.addView(wireRow(inflater, context, line)) }
     }
 
     fun onPermissionResult(result: Map<String, Boolean>) {
         val context: Context = activity
-        result.forEach { (permission, granted) -> context.logPermissionResult(permission, granted) }
+        result.forEach { (permission, granted) -> context.trackPermissionResult(permission, granted) }
         if (OwnSimLines.isGranted(context)) SimLineJournal.log(context)
         render()
     }
 
     private fun onButton() {
         val context: Context = activity
-        context.logKeyEvent("MyNumber_Show_Click")
+        context.trackEvent("MyNumber_Show_Click")
         val permission = OwnSimLines.PERMISSIONS.first()
         when {
             OwnSimLines.isGranted(context) -> render()
@@ -92,7 +92,7 @@ class OwnNumberTile(
                 requestPermissions(OwnSimLines.PERMISSIONS)
             }
             ActivityCompat.shouldShowRequestPermissionRationale(activity, permission) -> requestPermissions(OwnSimLines.PERMISSIONS)
-            else -> openAppSettings(context)
+            else -> unfoldAppSettings(context)
         }
     }
 
@@ -104,7 +104,7 @@ class OwnNumberTile(
             !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
     }
 
-    private fun openAppSettings(context: Context) {
+    private fun unfoldAppSettings(context: Context) {
         Toast.makeText(context, R.string.my_number_denied, Toast.LENGTH_LONG).show()
         ResumeAdKeeper.skipNextAppOpenAd = true
         runCatching {
@@ -114,7 +114,7 @@ class OwnNumberTile(
         }
     }
 
-    private fun bindRow(inflater: LayoutInflater, context: Context, line: OwnSimLines.SimSlotLine) =
+    private fun wireRow(inflater: LayoutInflater, context: Context, line: OwnSimLines.SimSlotLine) =
         CardMyNumberSimBinding.inflate(inflater, views.simRowsVw, false).apply {
             // Badge "SIM1" / "SIM2": slot 1 filled primary, the rest a light tint.
             val primarySlot = line.slot <= 1
@@ -147,6 +147,6 @@ class OwnNumberTile(
         val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return
         clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.my_number_title), number))
         Toast.makeText(context, R.string.my_number_copied, Toast.LENGTH_SHORT).show()
-        context.logKeyEvent("MyNumber_Copy")
+        context.trackEvent("MyNumber_Copy")
     }
 }

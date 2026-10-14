@@ -91,7 +91,7 @@ object RemoteValuesObserver {
      * Throttled by [SYNC_HOURS_KEY], so the dozens of daily foregrounds that land inside the
      * window cost nothing.
      */
-    fun refreshIfStale(context: Context, force: Boolean = false, onDone: (() -> Unit)? = null) {
+    fun renewIfStale(context: Context, force: Boolean = false, onDone: (() -> Unit)? = null) {
         val app = context.applicationContext
         val vault = AdPrefsStore.getInstance(app)
         val window = staleAfterMs(app)
@@ -135,7 +135,7 @@ object RemoteValuesObserver {
     /**
      * The freshness window in millis.
      *
-     * `> 0` is that many hours. **`0` means no window at all** — every [refreshIfStale] call
+     * `> 0` is that many hours. **`0` means no window at all** — every [renewIfStale] call
      * fetches, which is once per foreground, so it is a testing / force-fresh setting rather
      * than something to ship. Absent reads back as `-1` (see `AdPrefsStore.getInt`) and falls back
      * to [DEFAULT_STALE_HOURS], as does any other negative value, so a typo can never turn

@@ -17,7 +17,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.find.phone.gps.location.tracker.monetize.model.AdFormatKind
 import com.find.phone.gps.location.tracker.monetize.engine.EarningsTracker
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.facebook.ads.AdView as FbAdView
 
@@ -50,7 +50,7 @@ class StripSponsor {
     // -----------------------------
     // SHOW BANNER ENTRY POINT
     // -----------------------------
-    fun showBanner(
+    fun presentBanner(
         activity: Activity,
         container: FrameLayout,
         type: StripVariant = StripVariant.AUTO,
@@ -82,7 +82,7 @@ class StripSponsor {
         when (type) {
             StripVariant.AUTO -> {
                 when (AdFormatKind.fromString(pref.getString("IsAdType"))) {
-                    AdFormatKind.GOOGLE -> loadGoogleBanner(
+                    AdFormatKind.GOOGLE -> fetchGoogleBanner(
                         activity,
                         container,
                         size,
@@ -93,7 +93,7 @@ class StripSponsor {
                         disableInternalFallback
                     )
 
-                    AdFormatKind.FACEBOOK -> loadFacebookBanner(
+                    AdFormatKind.FACEBOOK -> fetchFacebookBanner(
                         activity, container, shimmer, observer, disableInternalFallback
                     )
 
@@ -101,7 +101,7 @@ class StripSponsor {
                         if (disableInternalFallback) {
                             observer?.onAdFailed()
                         } else {
-                            OwnAdsKeeper().loadCustomAd(
+                            OwnAdsKeeper().fetchCustomAd(
                                 activity,
                                 container,
                                 OwnAdsKeeper.OwnAdFormat.BANNER
@@ -111,7 +111,7 @@ class StripSponsor {
                 }
             }
 
-            StripVariant.GOOGLE -> loadGoogleBanner(
+            StripVariant.GOOGLE -> fetchGoogleBanner(
                 activity,
                 container,
                 size,
@@ -122,7 +122,7 @@ class StripSponsor {
                 disableInternalFallback
             )
 
-            StripVariant.FACEBOOK -> loadFacebookBanner(
+            StripVariant.FACEBOOK -> fetchFacebookBanner(
                 activity, container, shimmer, observer, disableInternalFallback
             )
 
@@ -130,7 +130,7 @@ class StripSponsor {
                 if (disableInternalFallback) {
                     observer?.onAdFailed()
                 } else {
-                    OwnAdsKeeper().loadCustomAd(
+                    OwnAdsKeeper().fetchCustomAd(
                         activity,
                         container,
                         OwnAdsKeeper.OwnAdFormat.BANNER
@@ -143,7 +143,7 @@ class StripSponsor {
     // -----------------------------
     // GOOGLE BANNER
     // -----------------------------
-    private fun loadGoogleBanner(
+    private fun fetchGoogleBanner(
         activity: Activity,
         container: FrameLayout,
         size: StripSizing,
@@ -188,12 +188,12 @@ class StripSponsor {
                     "Ad loaded. adView.isCollapsible() is ${googleBanner?.isCollapsible}.",
                 )
                 // Log load
-                activity.logKeyEvent("Banner_Load")
+                activity.trackEvent("Banner_Load")
 
                 if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
 
                 googleBanner!!.setOnPaidEventListener {
-                    EarningsTracker.logPaidEvent(activity, it)
+                    EarningsTracker.trackPaidEvent(activity, it)
                 }
 
 
@@ -211,7 +211,7 @@ class StripSponsor {
                 shimmer?.stopShimmer()
                 shimmer?.visibility = View.GONE
                 try {
-                    activity.logKeyEvent("Banner_fail_Load")
+                    activity.trackEvent("Banner_fail_Load")
                 } catch (_: Exception) {
                 }
                 Log.e("StripSponsor", "Google Banner Failed: ${error.message}")
@@ -222,7 +222,7 @@ class StripSponsor {
             }
 
             override fun onAdClicked() {
-                activity.logKeyEvent("google_banner")
+                activity.trackEvent("google_banner")
             }
         }
 
@@ -280,7 +280,7 @@ class StripSponsor {
     // -----------------------------
     // FACEBOOK BANNER
     // -----------------------------
-    private fun loadFacebookBanner(
+    private fun fetchFacebookBanner(
         activity: Activity,
         container: FrameLayout,
         shimmer: ShimmerFrameLayout? = null,
@@ -294,7 +294,7 @@ class StripSponsor {
             if (disableInternalFallback) {
                 observer?.onAdFailed()
             } else {
-                OwnAdsKeeper().loadCustomAd(
+                OwnAdsKeeper().fetchCustomAd(
                     activity,
                     container,
                     OwnAdsKeeper.OwnAdFormat.BANNER
@@ -325,7 +325,7 @@ class StripSponsor {
                         container.addView(facebookBanner)
                         container.visibility = View.VISIBLE
                         observer?.onAdLoaded()
-                        activity.logKeyEvent("facebook_banner_load")
+                        activity.trackEvent("facebook_banner_load")
                     }
 
                     override fun onError(
@@ -337,7 +337,7 @@ class StripSponsor {
                         observer?.onAdFailed()
                         Log.e("StripSponsor", "FB Banner Failed: ${error?.errorMessage}")
                         if (!disableInternalFallback) {
-                            OwnAdsKeeper().loadCustomAd(
+                            OwnAdsKeeper().fetchCustomAd(
                                 activity,
                                 container,
                                 OwnAdsKeeper.OwnAdFormat.BANNER
@@ -366,12 +366,12 @@ class StripSponsor {
         val pref = AdPrefsStore.getInstance(activity)
         if (pref.getBoolean("IsFail_FB")) {
             // Pass shimmer to Facebook banner loader
-            loadFacebookBanner(activity, container, shimmer, observer)
+            fetchFacebookBanner(activity, container, shimmer, observer)
         } else {
             // Optionally, you can show shimmer for custom ads if OwnAdsKeeper supports it
             shimmer?.startShimmer()
             shimmer?.visibility = View.VISIBLE
-            OwnAdsKeeper().loadCustomAd(
+            OwnAdsKeeper().fetchCustomAd(
                 activity,
                 container,
                 OwnAdsKeeper.OwnAdFormat.BANNER

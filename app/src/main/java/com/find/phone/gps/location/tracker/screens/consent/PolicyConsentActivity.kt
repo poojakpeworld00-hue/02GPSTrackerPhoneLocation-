@@ -125,11 +125,11 @@ class PolicyConsentActivity : FoundationActivity<PageTermsBinding>() {
             return
         }
         prefs.isTermsAccepted = true
-        openOverlayPermission()
+        unfoldOverlayPermission()
     }
 
     /** Requests the overlay permission, or skips ahead if it isn't needed. */
-    private fun openOverlayPermission() {
+    private fun unfoldOverlayPermission() {
         // Already granted, or a region where the permission is not offered at all
         // (CountryList_Counter_NShow / `all`) → straight on to the next screen.
         if (OverlayToolbox.isGranted(this) || !OverlayToolbox.isOfferable(this)) {
@@ -145,7 +145,7 @@ class PolicyConsentActivity : FoundationActivity<PageTermsBinding>() {
         // handled by OverlayMonitorService (polls while we're behind Settings) and
         // the genuine return is handled by onResume / the launcher result.
         val launched = runCatching {
-            overlayLauncher.launch(OverlayToolbox.buildOverlayIntent(packageName))
+            overlayLauncher.launch(OverlayToolbox.composeOverlayIntent(packageName))
         }.isSuccess
 
         if (!launched) {

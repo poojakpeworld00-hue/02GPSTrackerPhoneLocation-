@@ -66,7 +66,7 @@ class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHos
                 activity,
                 binding.drawerMenuVw,
                 requestPhonePermission = { phonePermission.launch(it) },
-            ) { closeMenu() }.also { it.bind() }
+            ) { shutMenu() }.also { it.bind() }
         }
     }
 
@@ -81,7 +81,7 @@ class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHos
         _binding?.panelDrawerVw?.openDrawer(GravityCompat.START)
     }
 
-    private fun closeMenu() {
+    private fun shutMenu() {
         _binding?.panelDrawerVw?.closeDrawer(GravityCompat.START)
     }
 
@@ -102,14 +102,14 @@ class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHos
         drawerMenu?.refresh()
         // First-run priming only once the user can see the panel, and never during onboarding.
         if (HomeRoleJourney.wasOnboardingCompleted(requireContext())) {
-            host?.homeShellController?.startFirstRunPriming()
+            host?.homeShellController?.kickFirstRunPriming()
         }
     }
 
     /** Back closes the drawer first; with it shut, the panel closes. */
     override fun handleBack(): Boolean {
         if (!isMenuOpen) return false
-        closeMenu()
+        shutMenu()
         return true
     }
 }

@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.lifecycleScope
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.databinding.PageReminderIntroBinding
 import com.find.phone.gps.location.tracker.alarms.AlarmSettings
 import com.find.phone.gps.location.tracker.alarms.gate.AlarmGrant
@@ -45,7 +45,7 @@ class AlarmIntroActivity : ShellHubActivity() {
 
     /** Whatever the answer, continue to the reminders setting (deferred past the resume). */
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        window.decorView.post { openAccessOrNext() }
+        window.decorView.post { unfoldAccessOrNext() }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +60,7 @@ class AlarmIntroActivity : ShellHubActivity() {
         VisualTweens.pressScale(binding.introAllowVw)
         binding.introAllowVw.setOnClickListener { onAllow() }
         binding.introSkipVw.setOnClickListener {
-            logKeyEvent("Reminder_Intro_Skip")
+            trackEvent("Reminder_Intro_Skip")
             goToNextStep()
         }
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -79,34 +79,34 @@ class AlarmIntroActivity : ShellHubActivity() {
         TourUnveilRules.markShown(this, TourUnveilSettings.REMINDERS_INTRO)
 
         // Bottom mid native, `launcher_ads.onboarding.reminders.slot` (off there → frame hidden).
-        HomeAdsSettings.showSlot(
+        HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.REMINDERS),
             container = binding.adNativeFrameVw,
             shimmer = binding.adShimmerVw,
         )
         binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)
-        logKeyEvent("Reminder_Intro_Show")
+        trackEvent("Reminder_Intro_Show")
         playMotion()
     }
 
     private fun onAllow() {
-        logKeyEvent("Reminder_Intro_Allow")
+        trackEvent("Reminder_Intro_Allow")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !NotificationManagerCompat.from(this).areNotificationsEnabled()
         ) {
             notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
-            openAccessOrNext()
+            unfoldAccessOrNext()
         }
     }
 
-    private fun openAccessOrNext() {
+    private fun unfoldAccessOrNext() {
         if (!AlarmGrant.shouldOfferManage(this)) { goToNextStep(); return }
         awaitingAccess = true
-        AlarmGrant.openSettings(this)
+        AlarmGrant.unfoldSettings(this)
         AlarmGrantObserver.start(this, AlarmIntroActivity::class.java)
-        startAccessPoll()
+        kickAccessPoll()
     }
 
     override fun onResume() {
@@ -121,7 +121,7 @@ class AlarmIntroActivity : ShellHubActivity() {
     }
 
     /** The primary return path: Settings sits in this task, so this Activity may bring itself back. */
-    private fun startAccessPoll() {
+    private fun kickAccessPoll() {
         accessPollJob?.cancel()
         accessPollJob = lifecycleScope.launch {
             while (isActive) {

@@ -65,10 +65,10 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         // Recents closes it: an install/uninstall screen is not something to come back to.
         lifecycle.addObserver(OsDialogAssist(this) { finishAndRemoveTask() })
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        applyInsets()
-        bindHeader()
+        imprintInsets()
+        wireHeader()
         wireButtons()
-        fillAd()
+        populateAd()
         playEntrance()
         runCheck()
     }
@@ -84,7 +84,7 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         super.onDestroy()
     }
 
-    private fun applyInsets() {
+    private fun imprintInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.pkgresContentNode) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             binding.pkgresHeroNode.updatePadding(top = bars.top)
@@ -98,7 +98,7 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         ViewCompat.requestApplyInsets(binding.pkgresContentNode)
     }
 
-    private fun bindHeader() = with(binding) {
+    private fun wireHeader() = with(binding) {
         pkgresHeroNode.setBackgroundResource(R.drawable.form_pkgres_hero_installed)
         pkgresBadgeNode.setBackgroundResource(R.drawable.form_pkgres_badge_installed)
         pkgresBadgeIconNode.setImageResource(if (installed) R.drawable.icn_shield_check else R.drawable.icn_check)
@@ -109,7 +109,7 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         }
         pkgresTitleNode.text = getString(
             if (installed) R.string.pkgres_privacy_title else R.string.pkgres_optimize_title,
-            resolveLabel(),
+            settleLabel(),
         )
         pkgresSubtitleNode.text = ""
 
@@ -125,7 +125,7 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         pkgresAppIconNode.setImageDrawable(icon)
     }
 
-    private fun resolveLabel(): String {
+    private fun settleLabel(): String {
         if (installed) {
             runCatching {
                 val info = packageManager.getApplicationInfo(affectedPackage, 0)
@@ -152,12 +152,12 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
                 binding.pkgresProgressBarNode.setProgressCompat((i + 1) * 100 / steps.size, true)
             }, STEP_MS * i)
         }
-        handler.postDelayed({ showResults() }, STEP_MS * steps.size)
+        handler.postDelayed({ presentResults() }, STEP_MS * steps.size)
     }
 
-    private fun showResults() {
+    private fun presentResults() {
         if (isFinishing || isDestroyed) return
-        if (installed) showPrivacyResults() else showOptimizeResults()
+        if (installed) presentPrivacyResults() else presentOptimizeResults()
         binding.pkgresProgressNode.visibility = View.GONE
         // An app asking for nothing sensitive has no rows: the subtitle says so, no empty card.
         if (binding.pkgresChecksNode.childCount > 0) binding.pkgresChecksNode.apply {
@@ -168,10 +168,10 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         binding.pkgresOpenNode.isEnabled = true
     }
 
-    private fun showPrivacyResults() {
+    private fun presentPrivacyResults() {
         val groups = sensitiveGroups()
         val allowed = groups.count { it.second }
-        binding.pkgresTitleNode.text = getString(R.string.pkgres_privacy_done_title, resolveLabel())
+        binding.pkgresTitleNode.text = getString(R.string.pkgres_privacy_done_title, settleLabel())
         binding.pkgresSubtitleNode.text = if (groups.isEmpty()) {
             getString(R.string.pkgres_privacy_summary_none)
         } else {
@@ -186,8 +186,8 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         }
     }
 
-    private fun showOptimizeResults() {
-        binding.pkgresTitleNode.text = getString(R.string.pkgres_optimize_done_title, resolveLabel())
+    private fun presentOptimizeResults() {
+        binding.pkgresTitleNode.text = getString(R.string.pkgres_optimize_done_title, settleLabel())
         binding.pkgresSubtitleNode.setText(R.string.pkgres_optimize_summary)
         addRow(getString(R.string.pkgres_optimize_row_removed), getString(R.string.pkgres_optimize_removed), R.color.pkgres_installed)
 
@@ -258,7 +258,7 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
             // Review permissions: the new app's own settings page, where each one can be changed.
             pkgresOpenNode.setText(R.string.pkgres_privacy_review)
             pkgresOpenNode.isEnabled = false // until the check has run
-            pkgresOpenNode.setOnClickListener { openNewAppSettings() }
+            pkgresOpenNode.setOnClickListener { unfoldNewAppSettings() }
         } else {
             // Nothing to review once it is removed — let Done fill the row.
             pkgresOpenNode.visibility = View.GONE
@@ -269,7 +269,7 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
         }
     }
 
-    private fun openNewAppSettings() {
+    private fun unfoldNewAppSettings() {
         runCatching {
             startActivity(
                 Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", affectedPackage, null))
@@ -302,10 +302,10 @@ class InstallOutcomeActivity : FoundationActivity<PagePackageResultBinding>() {
             }
     }
 
-    private fun fillAd() {
+    private fun populateAd() {
         if (!HomeAdsSettings.packageResultSettings(this).bodyNative) return
         binding.adNativeFrameVw.visibility = View.VISIBLE
-        InlineSponsor().showMidNative2(this, binding.adNativeFrameVw, binding.adShimmerVw)
+        InlineSponsor().presentMidNative2(this, binding.adNativeFrameVw, binding.adShimmerVw)
     }
 
     private fun close() {

@@ -42,11 +42,11 @@ import kotlin.math.abs
 import io.homedeck.grid.databinding.HdkAllAppsFragmentBinding
 import io.homedeck.grid.ext.applyDrawerSkin
 import io.homedeck.grid.ext.launcherConfig
-import io.homedeck.grid.ext.launchApp
+import io.homedeck.grid.ext.fireApp
 import io.homedeck.grid.sponsor.HomeAdsSettings
 import io.homedeck.grid.bridge.HomeServiceLocator
 import io.homedeck.grid.sponsor.PaidAppTiles
-import io.homedeck.grid.ext.setupDrawerBackground
+import io.homedeck.grid.ext.prepareDrawerBackground
 import io.homedeck.grid.support.ITEM_TYPE_ICON
 import io.homedeck.grid.contracts.InstalledAppsCallback
 import io.homedeck.grid.entities.LaunchableApp
@@ -94,7 +94,7 @@ class AppTrayFragment(
         }
 
     /**
-     * [setupViews] runs on every resume — HomeDeskPane.onResume re-runs it once the layout settles —
+     * [prepareViews] runs on every resume — HomeDeskPane.onResume re-runs it once the layout settles —
      * and everything in it is an assignment except the scroll listener, which appends. Left
      * unguarded the grid ends up with one listener per resume, each doing the `hasFocus` check on
      * every scrolled frame.
@@ -150,15 +150,15 @@ class AppTrayFragment(
         }
 
         binding.allAppsPagerView.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) = renderDots(selected = position)
+            override fun onPageSelected(position: Int) = paintDots(selected = position)
         })
     }
 
     /**
      * Requests the drawer's slot afresh.
      *
-     * Driven by `HomeDeskPane.showFragment` on every open rather than once from [setupFragment],
-     * for the same reason as `AppTrayPane.refreshAds`: the drawer is built at boot and then
+     * Driven by `HomeDeskPane.presentFragment` on every open rather than once from [setupFragment],
+     * for the same reason as `AppTrayPane.renewAds`: the drawer is built at boot and then
      * only parked below the screen, so a single request there would pin one creative for the life
      * of the process.
      *
@@ -170,13 +170,13 @@ class AppTrayFragment(
      * [HomeAdsSettings.reloadAdOnOpen]. The drawer is opened far more often than either panel, so
      * it is the placement most likely to want the flag off.
      */
-    fun refreshAds() {
-        HomeServiceLocator.ads.bindNativeOnOpen(activity, HomeAdsSettings.KEY_APP_DRAWER, adSlot)
+    fun renewAds() {
+        HomeServiceLocator.ads.wireNativeOnOpen(activity, HomeAdsSettings.KEY_APP_DRAWER, adSlot)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        setupDrawerBackground(context.getColor(R.color.launcher_all_app_bg))
+        prepareDrawerBackground(context.getColor(R.color.launcher_all_app_bg))
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -196,7 +196,7 @@ class AppTrayFragment(
     fun onConfigurationChanged() {
         binding.allAppsGridView.scrollToPosition(0)
         binding.allAppsPagerView.setCurrentItem(0, false)
-        setupViews()
+        prepareViews()
 
         val layoutManager = binding.allAppsGridView.layoutManager as MyGridLayoutManager
         layoutManager.spanCount = context.launcherConfig.drawerColumnCount
@@ -239,7 +239,7 @@ class AppTrayFragment(
                         if (binding.searchBarView.hasFocus()) {
                             activity?.hideKeyboard()
                         }
-                        activity?.startHandlingTouches(touchDownY)
+                        activity?.kickHandlingTouches(touchDownY)
                         touchDownY = -1
                     }
                 }
@@ -299,25 +299,25 @@ class AppTrayFragment(
     // RecyclerView.Adapter
     private fun getAdapter() = launchersAdapter
 
-    // Gated here rather than inside launchApp: the left panel launches apps through the same
+    // Gated here rather than inside fireApp: the left panel launches apps through the same
     // extension, and this placement is the *drawer's*. Shared by the scrolling grid and every page.
     private val onItemClick: (Any) -> Unit = {
         val launcher = it as LaunchableApp
-        // The app-launch promo is applied inside launchApp (DRAWER_LAUNCH), for every surface that
+        // The app-launch promo is applied inside fireApp (DRAWER_LAUNCH), for every surface that
         // opens an app; a sponsored tile opens its landing page through the host, no promo first.
         if (PaidAppTiles.isSponsored(launcher)) {
             activity?.let { a -> PaidAppTiles.open(a, launcher) }
         } else if (launcher.packageName == context.applicationContext.packageName) {
             // Our own app: the host panel (or the host's own screen), not our LAUNCHER entry.
-            activity?.openHostApp(launcher.activityName)
+            activity?.unfoldHostApp(launcher.activityName)
         } else {
-            activity?.launchApp(
+            activity?.fireApp(
                 launcher.packageName, launcher.activityName,
                 io.homedeck.grid.sponsor.HomeAdsSettings.DRAWER_LAUNCH,
             )
         }
-        if (activity?.launcherConfig?.closeAppDrawer == true) {
-            activity?.closeAppDrawer(delayed = true)
+        if (activity?.launcherConfig?.shutAppDrawer == true) {
+            activity?.shutAppDrawer(delayed = true)
         }
         ignoreTouches = false
         touchDownY = -1
@@ -383,7 +383,7 @@ class AppTrayFragment(
         return pages
     }
 
-    private fun renderDots(count: Int = pagesAdapter?.itemCount ?: 0, selected: Int = binding.allAppsPagerView.currentItem) {
+    private fun paintDots(count: Int = pagesAdapter?.itemCount ?: 0, selected: Int = binding.allAppsPagerView.currentItem) {
         val dots = binding.allAppsPageDotsView
         val size = resources.getDimensionPixelSize(R.dimen.launcher_drawer_page_dot)
         val gap = resources.getDimensionPixelSize(R.dimen.launcher_drawer_page_dot_gap)
@@ -424,7 +424,7 @@ class AppTrayFragment(
         }
     }
 
-    fun setupViews() {
+    fun prepareViews() {
         if (activity == null) {
             return
         }
@@ -441,10 +441,10 @@ class AppTrayFragment(
             })
         }
 
-        setupDrawerBackground(context.getColor(R.color.launcher_all_app_bg))
+        prepareDrawerBackground(context.getColor(R.color.launcher_all_app_bg))
 
         applySearchPosition()
-        applyBottomSearchClearance()
+        imprintBottomSearchClearance()
         binding.searchBarView.beVisibleIf(context.launcherConfig.showSearchBar)
         binding.searchBarView.requireToolbar().beGone()
         binding.searchBarView.updateColors()
@@ -454,15 +454,15 @@ class AppTrayFragment(
         binding.searchBarView.onSearchTextChangedListener = {
             submitList(launchers)
         }
-        binding.searchBarView.onSearchOpenListener = { showSearchPanel(true) }
-        binding.searchBarView.onSearchClosedListener = { showSearchPanel(false) }
+        binding.searchBarView.onSearchOpenListener = { presentSearchPanel(true) }
+        binding.searchBarView.onSearchClosedListener = { presentSearchPanel(false) }
 
         binding.searchBarView.binding.topToolbarSearch.setOnEditorActionListener { _, actionId, _ ->
             if (binding.searchBarView.getCurrentQuery().isEmpty()) return@setOnEditorActionListener false
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE,
                 EditorInfo.IME_ACTION_SEARCH,
-                EditorInfo.IME_ACTION_GO -> (if (isPaged) pagesAdapter?.firstPageAdapter else getAdapter())?.launchFirstApp() == true
+                EditorInfo.IME_ACTION_GO -> (if (isPaged) pagesAdapter?.firstPageAdapter else getAdapter())?.fireFirstApp() == true
                 else -> false
             }
         }
@@ -477,7 +477,7 @@ class AppTrayFragment(
 
     private fun applySearchPosition() {
         val bottom = context.launcherConfig.drawerSearchAtBottom
-        // setupViews runs from a global-layout hook; re-anchoring on every pass would request a
+        // prepareViews runs from a global-layout hook; re-anchoring on every pass would request a
         // layout from inside a layout and starve the UI thread. Only a real change touches the rules.
         if (appliedSearchAtBottom == bottom) return
         appliedSearchAtBottom = bottom
@@ -525,7 +525,7 @@ class AppTrayFragment(
      * re-checked on every layout and written only when it differs (as padding: the menu's own
      * layout does not honour a bottom margin).
      */
-    private fun applyBottomSearchClearance() {
+    private fun imprintBottomSearchClearance() {
         if (!clearanceWatchAdded) {
             clearanceWatchAdded = true
             viewTreeObserver.addOnGlobalLayoutListener { syncBottomSearchClearance() }
@@ -585,7 +585,7 @@ class AppTrayFragment(
         }
     }
 
-    private fun showNoResultsPlaceholderIfNeeded() {
+    private fun presentNoResultsPlaceholderIfNeeded() {
         val itemCount = if (isPaged) pagesAdapter?.itemCount else getAdapter()?.itemCount
         binding.noResultsPlaceholderView.beVisibleIf(itemCount != null && itemCount == 0)
     }
@@ -611,7 +611,7 @@ class AppTrayFragment(
             drawable = appLauncher.drawable
         )
 
-        activity?.showHomeIconMenu(x, y, gridItem, true)
+        activity?.presentHomeIconMenu(x, y, gridItem, true)
         ignoreTouches = true
 
         binding.searchBarView.closeSearch()
@@ -633,7 +633,7 @@ class AppTrayFragment(
     private fun submitList(items: List<LaunchableApp>) {
         val searchQuery = binding.searchBarView.getCurrentQuery()
         if (binding.searchBarView.isSearchOpen) {
-            renderSearchPanel(items, searchQuery)
+            paintSearchPanel(items, searchQuery)
             return
         }
         val filtered = if (searchQuery.isNotEmpty()) {
@@ -648,12 +648,12 @@ class AppTrayFragment(
         if (isPaged) {
             pagesAdapter?.submitPages(chunkPages(filtered), context.launcherConfig.drawerColumnCount, context.launcherConfig.drawerRowCount.coerceAtLeast(2))
             binding.allAppsPagerView.setCurrentItem(0, false)
-            renderDots(selected = 0)
-            showNoResultsPlaceholderIfNeeded()
+            paintDots(selected = 0)
+            presentNoResultsPlaceholderIfNeeded()
             return
         }
         getAdapter()?.submitList(withAdRow(filtered)) {
-            showNoResultsPlaceholderIfNeeded()
+            presentNoResultsPlaceholderIfNeeded()
         }
     }
 
@@ -668,7 +668,7 @@ class AppTrayFragment(
     private var suggestions: List<LaunchableApp>? = null
     private var suggestionsGeneration = 0
 
-    private fun showSearchPanel(open: Boolean) {
+    private fun presentSearchPanel(open: Boolean) {
         binding.searchPanelView.beVisibleIf(open)
         if (open) {
             binding.allAppsGridView.beGone()
@@ -676,8 +676,8 @@ class AppTrayFragment(
             binding.allAppsPageDotsView.beGone()
             binding.noResultsPlaceholderView.beGone()
             suggestions = null
-            loadSuggestions()
-            renderSearchPanel(launchers, binding.searchBarView.getCurrentQuery())
+            fetchSuggestions()
+            paintSearchPanel(launchers, binding.searchBarView.getCurrentQuery())
         } else {
             val paged = isPaged
             binding.allAppsGridView.beVisibleIf(!paged)
@@ -711,7 +711,7 @@ class AppTrayFragment(
     }
 
     /** The launcher's own launch log ranked, off the main thread; the card fills in when it lands. */
-    private fun loadSuggestions() {
+    private fun fetchSuggestions() {
         val generation = ++suggestionsGeneration
         val installed = launchers
         val pm = context.packageManager
@@ -730,13 +730,13 @@ class AppTrayFragment(
                 if (generation != suggestionsGeneration) return@runOnUiThread
                 suggestions = ranked
                 if (binding.searchBarView.isSearchOpen && binding.searchBarView.getCurrentQuery().isEmpty()) {
-                    renderSearchPanel(launchers, "")
+                    paintSearchPanel(launchers, "")
                 }
             }
         }
     }
 
-    private fun renderSearchPanel(items: List<LaunchableApp>, query: String) {
+    private fun paintSearchPanel(items: List<LaunchableApp>, query: String) {
         val adapter = searchGridAdapter()
         if (query.isEmpty()) {
             // Resolved against the list the drawer holds now: the icon cache may have refreshed
@@ -758,11 +758,11 @@ class AppTrayFragment(
         adapter.submitList(matches.take(SEARCH_MAX_RESULTS).toMutableList())
         binding.searchAppsCardView.beVisibleIf(matches.isNotEmpty())
         binding.noResultsPlaceholderView.beVisibleIf(matches.isEmpty())
-        renderShortcuts(matches.firstOrNull())
+        paintShortcuts(matches.firstOrNull())
     }
 
     /** The top match's app shortcuts (dynamic + manifest), as the Finder lists them under the app's name. */
-    private fun renderShortcuts(app: LaunchableApp?) {
+    private fun paintShortcuts(app: LaunchableApp?) {
         val card = binding.searchShortcutsCardView
         val list = binding.searchShortcutsListView
         list.removeAllViews()
@@ -785,7 +785,7 @@ class AppTrayFragment(
                 runCatching {
                     launcherApps.startShortcut(shortcut.`package`, shortcut.id, null, null, Process.myUserHandle())
                 }.onFailure { activity?.showErrorToast(it as? Exception ?: Exception(it)) }
-                if (activity?.launcherConfig?.closeAppDrawer == true) activity?.closeAppDrawer(delayed = true)
+                if (activity?.launcherConfig?.shutAppDrawer == true) activity?.shutAppDrawer(delayed = true)
             }
             list.addView(row.root)
         }

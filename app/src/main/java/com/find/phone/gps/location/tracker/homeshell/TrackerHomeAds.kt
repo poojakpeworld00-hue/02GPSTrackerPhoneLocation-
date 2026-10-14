@@ -57,7 +57,7 @@ class TrackerHomeAds : HomeAdsPort {
         // paint when it lands; the second pass has a cached ad and cannot come back here.
         val emptyFrame = container.childCount == 0
         if (slot.needsNativePreload && emptyFrame && !InlineSponsor.hasPreloadedNative()) {
-            InlineSponsor().loadNativeADs(activity, object : InlineSponsor.InlineAdCallback {
+            InlineSponsor().fetchNativeADs(activity, object : InlineSponsor.InlineAdCallback {
                 override fun onNativeAdLoaded() {
                     if (activity.isFinishing || activity.isDestroyed) return
                     paint(activity, slot, container, key)
@@ -72,9 +72,9 @@ class TrackerHomeAds : HomeAdsPort {
     }
 
     private fun paint(activity: Activity, slot: HomeAdsSettings.Slot, container: FrameLayout, key: String) {
-        // refreshSlot keeps an ad already on screen rather than swapping it for a blank when the
+        // renewSlot keeps an ad already on screen rather than swapping it for a blank when the
         // shared native cache is momentarily empty.
-        HomeAdsSettings.refreshSlot(activity, slot, container)
+        HomeAdsSettings.renewSlot(activity, slot, container)
         // A slot that was GONE at the last inset dispatch has no nav-bar padding yet.
         ViewCompat.requestApplyInsets(container)
         if (key == HomeAdsPort.SLOT_DRAWER_TOP) shapeAdIcon(container)
@@ -87,16 +87,16 @@ class TrackerHomeAds : HomeAdsPort {
      */
     private fun shapeAdIcon(container: FrameLayout) {
         val apply = {
-            (container.findNativeAdView()?.iconView as? ImageView)?.let(HomeGlyphPort::applyTo)
+            (container.locateNativeAdView()?.iconView as? ImageView)?.let(HomeGlyphPort::applyTo)
         }
         runCatching(apply)
         container.post { runCatching(apply) }
     }
 
-    private fun View.findNativeAdView(): NativeAdView? {
+    private fun View.locateNativeAdView(): NativeAdView? {
         if (this is NativeAdView) return this
         if (this !is ViewGroup) return null
-        for (i in 0 until childCount) getChildAt(i).findNativeAdView()?.let { return it }
+        for (i in 0 until childCount) getChildAt(i).locateNativeAdView()?.let { return it }
         return null
     }
 

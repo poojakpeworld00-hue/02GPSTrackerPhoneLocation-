@@ -148,7 +148,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         getPrevPageBound = { left + sideMargins.left + cellWidth / 2 },
         pageChangeStarted = {
             widgetViews.forEach { it.resetTouches() }
-            closeFolder()
+            shutFolder()
             accessibilityHelper.invalidateRoot()
         }
     )
@@ -196,7 +196,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
     /**
      * Rows whose bind is waiting on the system "Create widget?" dialog (or a configure screen).
      *
-     * [bindWidget] gives the row its widget id before asking, so while the dialog is up the row
+     * [wireWidget] gives the row its widget id before asking, so while the dialog is up the row
      * looks bound to [drawInto], which placed a view for it; the dialog's answer then placed a
      * second one. Only one of two views per row is ever moved by the paging, so the other froze
      * where it was - the first page's search bar, showing on every page. Only the dialog path did
@@ -299,7 +299,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
             insets
         }
 
-        fetchGridItems()
+        grabGridItems()
     }
 
     override fun dispatchHoverEvent(event: MotionEvent): Boolean {
@@ -312,7 +312,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         binding = HdkHomeScreenGridBinding.bind(this)
     }
 
-    fun fetchGridItems() {
+    fun grabGridItems() {
         ensureBackgroundThread {
             val started = android.os.SystemClock.elapsedRealtime()
             val providers = appWidgetManager.installedProviders
@@ -445,9 +445,9 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         folderBackgroundPaint.color = context.getProperBackgroundColor()
     }
 
-    fun removeAppIcon(item: DeskGridEntry) {
+    fun dropAppIcon(item: DeskGridEntry) {
         ensureBackgroundThread {
-            removeItemFromHomeScreen(item)
+            dropItemFromHomeScreen(item)
             post {
                 removeView(widgetViews.firstOrNull { it.tag == item.widgetId })
             }
@@ -474,7 +474,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
     /**
      * Takes off the grid every widget view whose row is no longer in [gridItems].
      *
-     * A row can be deleted without the grid being told - HomeDeskPane.refreshLaunchers drops every
+     * A row can be deleted without the grid being told - HomeDeskPane.renewLaunchers drops every
      * row of an app that left the app list, and a layout rebuild clears the seeded widgets. A
      * refetch then hands back the rows without it, but a widget view is a *child* of this layout and
      * stays. The per-frame positioning only walks [gridItems], so that view was never moved again:
@@ -494,7 +494,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         }
     }
 
-    fun removePlacedSearchBars() {
+    fun dropPlacedSearchBars() {
         post {
             gridItems
                 .filter { it.className == PSEUDO_WIDGET_SEARCH }
@@ -508,9 +508,9 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         }
     }
 
-    fun removeWidget(item: DeskGridEntry) {
+    fun dropWidget(item: DeskGridEntry) {
         ensureBackgroundThread {
-            removeItemFromHomeScreen(item)
+            dropItemFromHomeScreen(item)
             post {
                 removeView(widgetViews.firstOrNull { it.tag == item.widgetId })
                 widgetViews.removeIf { it.tag == item.widgetId }
@@ -519,7 +519,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         }
     }
 
-    private fun removeItemFromHomeScreen(item: DeskGridEntry) {
+    private fun dropItemFromHomeScreen(item: DeskGridEntry) {
         ensureBackgroundThread {
             if (item.id != null) {
                 context.homeScreenGridItemsDB.deleteById(item.id!!)
@@ -558,7 +558,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         draggedItem = draggedGridItem
 
         if (draggedGridItem.type == ITEM_TYPE_WIDGET) {
-            closeFolder()
+            shutFolder()
         }
 
         if (draggedItem!!.drawable == null) {
@@ -586,7 +586,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                     if (it == null) {
                         draggingLeftFolderAt = System.currentTimeMillis()
                     } else if (System.currentTimeMillis() - it > FOLDER_CLOSE_HOLD_THRESHOLD) {
-                        closeFolder()
+                        shutFolder()
                     }
                 }
             }
@@ -637,7 +637,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                                 performHapticFeedback()
                                 draggingEnteredNewFolderAt = null
                             } else {
-                                openFolder(coveredFolder)
+                                unfoldFolder(coveredFolder)
                             }
                         }
                     }
@@ -649,7 +649,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
             }
         }
 
-        pager.handleItemMovement(x, y)
+        pager.processItemMovement(x, y)
         redrawGrid()
     }
 
@@ -697,7 +697,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
             binding.resizeFrameView.beVisible()
             binding.resizeFrameView.z = 1f     // make sure the frame isnt behind the widget itself
             binding.resizeFrameView.onClickListener = {
-                hideResizeLines()
+                concealResizeLines()
             }
 
             binding.resizeFrameView.onResizeListener = { cellsRect ->
@@ -731,7 +731,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                                     if (
                                         gridItem.type == ITEM_TYPE_WIDGET && gridItem.outOfBounds()
                                     ) {
-                                        removeWidget(gridItem)
+                                        dropWidget(gridItem)
                                     }
                                 }
                             }
@@ -760,7 +760,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         }
     }
 
-    fun hideResizeLines() {
+    fun concealResizeLines() {
         if (resizedWidget == null) {
             return
         }
@@ -802,7 +802,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                             val isAnyCellOccupied = wantedCell == cell
                             if (isAnyCellOccupied) {
                                 if (item.type == ITEM_TYPE_WIDGET && item.outOfBounds()) {
-                                    removeWidget(item)
+                                    dropWidget(item)
                                 } else {
                                     isDroppingPositionValid = false
                                 }
@@ -909,7 +909,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                                         potentialParent = item
                                     } else {
                                         if (item.type == ITEM_TYPE_WIDGET && item.outOfBounds()) {
-                                            removeWidget(item)
+                                            dropWidget(item)
                                         } else {
                                             isDroppingPositionValid = false
                                         }
@@ -1152,7 +1152,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                     finalizeFolderOrder(newHomeScreenGridItem)
                 }
             } else if (newHomeScreenGridItem.type == ITEM_TYPE_SHORTCUT) {
-                (context as? HomeDeskPane)?.handleShorcutCreation(newHomeScreenGridItem.activityInfo!!) { shortcutId, label, icon ->
+                (context as? HomeDeskPane)?.processShorcutCreation(newHomeScreenGridItem.activityInfo!!) { shortcutId, label, icon ->
                     ensureBackgroundThread {
                         newHomeScreenGridItem.shortcutId = shortcutId
                         newHomeScreenGridItem.title = label
@@ -1203,7 +1203,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                             val isAnyCellOccupied = widgetTargetCells.contains(cell)
                             if (isAnyCellOccupied) {
                                 if (item.type == ITEM_TYPE_WIDGET && item.outOfBounds()) {
-                                    removeWidget(item)
+                                    dropWidget(item)
                                 } else {
                                     areAllCellsEmpty = false
                                     return@forEach
@@ -1230,7 +1230,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                         val itemId = context.homeScreenGridItemsDB.insert(widgetItem)
                         widgetItem.id = itemId
                         post {
-                            bindWidget(widgetItem)
+                            wireWidget(widgetItem)
                         }
                     } else {
                         context.homeScreenGridItemsDB.updateItemPosition(
@@ -1246,7 +1246,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                         val widgetView = widgetViews.firstOrNull { it.tag == widgetItem.widgetId }
                         if (widgetView != null && !widgetItem.outOfBounds()) {
                             post {
-                                val widgetPos = calculateWidgetPos(widgetItem.getTopLeft(rowCount))
+                                val widgetPos = deriveWidgetPos(widgetItem.getTopLeft(rowCount))
                                 widgetView.x = widgetPos.x.toFloat()
                                 widgetView.y = widgetPos.y.toFloat()
                                 widgetView.beVisible()
@@ -1294,7 +1294,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
     }
 
     /** The phone's clock app (its alarms screen, which every clock app answers); nothing when there is none. */
-    private fun openClock() {
+    private fun unfoldClock() {
         val intent = Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         runCatching { context.startActivity(intent) }.onFailure { timber.log.Timber.w(it, "DeskGrid: no clock app") }
     }
@@ -1303,7 +1303,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
      * Google search from our drawn bar: the Google app's search (or its voice search from the mic);
      * the phone's web search where the Google app is missing; our own apps search as a last resort.
      */
-    private fun openGoogleSearch(voice: Boolean) {
+    private fun unfoldGoogleSearch(voice: Boolean) {
         val google = "com.google.android.googlequicksearchbox"
         val attempts = listOf(
             Intent(if (voice) android.speech.RecognizerIntent.ACTION_WEB_SEARCH else "android.search.action.GLOBAL_SEARCH").setPackage(google),
@@ -1315,7 +1315,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         if (!opened) (context as? HomeDeskPane)?.onFlingLeft()
     }
 
-    private fun bindWidget(item: DeskGridEntry) {
+    private fun wireWidget(item: DeskGridEntry) {
         if (item.outOfBounds()) {
             return
         }
@@ -1342,7 +1342,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
             }
 
             item.id?.let { bindPending.add(it) }
-            activity.handleWidgetBinding(
+            activity.processWidgetBinding(
                 appWidgetManager = appWidgetManager,
                 appWidgetId = item.widgetId,
                 appWidgetInfo = appWidgetProviderInfo
@@ -1355,7 +1355,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                         !io.homedeck.grid.oemprofile.HomeWidgetPlanter.configurationOptional(appWidgetProviderInfo)
                     ) {
                         item.id?.let { bindPending.add(it) }
-                        activity.handleWidgetConfigureScreen(
+                        activity.processWidgetConfigureScreen(
                             appWidgetHost = appWidgetHost,
                             appWidgetId = item.widgetId
                         ) { success ->
@@ -1363,14 +1363,14 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                             if (success) {
                                 placeAppWidget(appWidgetProviderInfo, item)
                             } else {
-                                removeItemFromHomeScreen(item)
+                                dropItemFromHomeScreen(item)
                             }
                         }
                     } else {
                         placeAppWidget(appWidgetProviderInfo, item)
                     }
                 } else {
-                    removeItemFromHomeScreen(item)
+                    dropItemFromHomeScreen(item)
                 }
 
                 if (pager.isOutsideOfPageRange()) {
@@ -1400,10 +1400,10 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                 when (item.className) {
                     // The reference opened its AI chat here; we open the apps search panel instead.
                     PSEUDO_WIDGET_SEARCH -> setOnClickListener { (this@DeskGrid.context as HomeDeskPane).onFlingLeft() }
-                    PSEUDO_WIDGET_TIME -> setOnClickListener { openClock() }
+                    PSEUDO_WIDGET_TIME -> setOnClickListener { unfoldClock() }
                     PSEUDO_WIDGET_GOOGLE_SEARCH -> {
-                        setOnClickListener { openGoogleSearch(voice = false) }
-                        findViewById<View>(R.id.google_bar_micView)?.setOnClickListener { openGoogleSearch(voice = true) }
+                        setOnClickListener { unfoldGoogleSearch(voice = false) }
+                        findViewById<View>(R.id.google_bar_micView)?.setOnClickListener { unfoldGoogleSearch(voice = true) }
                     }
                 }
             }
@@ -1427,13 +1427,13 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         widgetView.longPressListener = { x, y ->
             val activity = context as? HomeDeskPane
             if (activity?.isAllAppsFragmentExpanded() == false) {
-                activity.showHomeIconMenu(x, widgetView.y, item, false)
+                activity.presentHomeIconMenu(x, widgetView.y, item, false)
                 performHapticFeedback()
             }
         }
 
         widgetView.onIgnoreInterceptedListener = {
-            hideResizeLines()
+            concealResizeLines()
         }
 
         val widgetSizeUi = updateWidgetPositionAndSize(widgetView, item)
@@ -1446,7 +1446,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         // Delete existing widget if it has already been loaded to the list
         gridItems.removeIf { it.id == item.id }
         gridItems.add(item)
-        (context as HomeDeskPane).clearWidgetsSearch()
+        (context as HomeDeskPane).wipeWidgetsSearch()
     }
 
     private fun updateWidgetPositionAndSize(
@@ -1454,7 +1454,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         item: DeskGridEntry,
     ): Size {
         val currentViewPosition = pager.getCurrentViewPositionInFullPageSpace() * width.toFloat()
-        val widgetPos = calculateWidgetPos(item.getTopLeft(rowCount))
+        val widgetPos = deriveWidgetPos(item.getTopLeft(rowCount))
         widgetView.x = widgetPos.x + width * item.page - currentViewPosition
         widgetView.y = widgetPos.y.toFloat()
         val widgetWidth = item.getWidthInCells() * cellWidth
@@ -1498,7 +1498,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         }
     }
 
-    private fun calculateWidgetPos(topLeft: Point): Point {
+    private fun deriveWidgetPos(topLeft: Point): Point {
         val cell = cells[topLeft]!!
         return Point(
             cell.left + sideMargins.left,
@@ -1548,13 +1548,13 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
 
     fun drawInto(canvas: Canvas) {
         if (cells.isEmpty()) {
-            fillCellSizes()
+            populateCellSizes()
         }
 
         val currentXFactor = pager.getXFactorForCurrentPage()
         val lastXFactor = pager.getXFactorForLastPage()
 
-        fun handleMainGridItemDrawing(item: DeskGridEntry, xFactor: Float) = guardItem(canvas, item) {
+        fun processMainGridItemDrawing(item: DeskGridEntry, xFactor: Float) = guardItem(canvas, item) {
             val offsetX = sideMargins.left + (this@DeskGrid.width * xFactor).toInt()
             val offsetY = sideMargins.top
             cells[item.getTopLeft(rowCount)]!!.withOffset(offsetX, offsetY) {
@@ -1575,7 +1575,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                     return@forEach
                 }
 
-                handleMainGridItemDrawing(item, currentXFactor)
+                processMainGridItemDrawing(item, currentXFactor)
             }
 
         gridItems
@@ -1585,7 +1585,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                     return@forEach
                 }
 
-                handleMainGridItemDrawing(item, 0f)
+                processMainGridItemDrawing(item, 0f)
             }
 
         if (pager.isAnimatingPageChange()) {
@@ -1599,7 +1599,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                         return@forEach
                     }
 
-                    handleMainGridItemDrawing(item, lastXFactor)
+                    processMainGridItemDrawing(item, lastXFactor)
                 }
         }
 
@@ -1615,7 +1615,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                         return@forEach
                     }
 
-                    handleMainGridItemDrawing(item, lastXFactor)
+                    processMainGridItemDrawing(item, lastXFactor)
                 }
         }
 
@@ -1654,7 +1654,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                 // Seeded widgets carry no id yet: they have to be bound before they can be drawn,
                 // and a bind the user refuses must not be retried on every frame.
                 if (item.widgetId < 0) {
-                    if (bindAttempted.add(item.id ?: return@forEach)) bindWidget(item)
+                    if (bindAttempted.add(item.id ?: return@forEach)) wireWidget(item)
                     return@forEach
                 }
                 // Has an id but is still waiting on the bind dialog: its answer places the view.
@@ -1668,7 +1668,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                 } else if (providerInfo != null) {
                     placeAppWidget(providerInfo, item)
                 } else {
-                    removeWidget(item)
+                    dropWidget(item)
                 }
             } }
         if (timeWidgetBottom != reportedTimeWidgetBottom) {
@@ -1846,7 +1846,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                     val gridCells = getClosestGridCells(center)
                     if (gridCells != null) {
                         val widgetRect = getWidgetOccupiedRect(gridCells)
-                        val widgetPos = calculateWidgetPos(Point(widgetRect.left, widgetRect.top))
+                        val widgetPos = deriveWidgetPos(Point(widgetRect.left, widgetRect.top))
                         val leftSide = widgetPos.x.toFloat()
                         val topSide = widgetPos.y.toFloat()
                         val rightSide = leftSide + draggedItem!!.getWidthInCells() * cellWidth
@@ -1886,7 +1886,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         isFirstDraw = false
     }
 
-    private fun fillCellSizes() {
+    private fun populateCellSizes() {
         labelLayouts.clear()
         cellWidth = getFakeWidth() / columnCount
         cellHeight = getFakeHeight() / rowCount
@@ -1982,7 +1982,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
         widgetViews.forEach {
             it.ignoreTouches = true
         }
-        closeFolder(true)
+        shutFolder(true)
     }
 
     fun fragmentCollapsed() {
@@ -1998,7 +1998,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
     // get the clickable area around the icon, it includes text too
     fun getClickableRect(item: DeskGridEntry): Rect {
         if (cells.isEmpty()) {
-            fillCellSizes()
+            populateCellSizes()
         }
 
         val folder = currentlyOpenFolder
@@ -2092,7 +2092,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
                     return gridItem
                 }
             } else if (gridItem.type == ITEM_TYPE_WIDGET) {
-                val widgetPos = calculateWidgetPos(gridItem.getTopLeft(rowCount))
+                val widgetPos = deriveWidgetPos(gridItem.getTopLeft(rowCount))
                 val left = widgetPos.x.toFloat()
                 val top = widgetPos.y.toFloat()
                 val right = left + gridItem.getWidthInCells() * cellWidth
@@ -2194,7 +2194,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
             val viewBounds = if (item == currentlyOpenFolder?.item) {
                 currentlyOpenFolder?.getDrawingRect()?.toRect()
             } else if (item.type == ITEM_TYPE_WIDGET) {
-                val widgetPos = calculateWidgetPos(item.getTopLeft(rowCount))
+                val widgetPos = deriveWidgetPos(item.getTopLeft(rowCount))
                 val left = widgetPos.x
                 val top = widgetPos.y
                 val right = left + item.getWidthInCells() * cellWidth
@@ -2224,7 +2224,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
             when (action) {
                 AccessibilityNodeInfoCompat.ACTION_CLICK -> itemClickListener?.apply {
                     if (item == currentlyOpenFolder?.item) {
-                        closeFolder(true)
+                        shutFolder(true)
                     } else {
                         invoke(item)
                     }
@@ -2291,18 +2291,18 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
     /** The last page, the only one the right-edge (apps) panel opens from. */
     fun isOnLastPage() = pager.getCurrentPage() >= getMaxPage() && !pager.isPaging()
 
-    fun openFolder(folder: DeskGridEntry) {
+    fun unfoldFolder(folder: DeskGridEntry) {
         if (currentlyOpenFolder == null) {
             currentlyOpenFolder = folder.toFolder(animateOpening = true)
             redrawGrid()
         } else if (currentlyOpenFolder?.item?.id != folder.id) {
-            closeFolder()
+            shutFolder()
         }
         accessibilityHelper.invalidateRoot()
     }
 
-    fun closeFolder(redraw: Boolean = false) {
-        currentlyOpenFolder?.animateClosing {
+    fun shutFolder(redraw: Boolean = false) {
+        currentlyOpenFolder?.tweenClosing {
             currentlyOpenFolder = null
             if (redraw) {
                 redrawGrid()
@@ -2649,7 +2649,7 @@ class DeskGrid(context: Context, attrs: AttributeSet, defStyle: Int) :
             )
         }
 
-        fun animateClosing(callback: () -> Unit) {
+        fun tweenClosing(callback: () -> Unit) {
             post {
                 if (closing) {
                     return@post
@@ -2916,7 +2916,7 @@ private class MovingTilePager(
         }
         lastPage = currentPage
         currentPage += if (towardsNext) 1 else -1
-        handlePageChange(true)
+        processPageChange(true)
         return true
     }
 
@@ -2932,7 +2932,7 @@ private class MovingTilePager(
             } else {
                 currentPage + 1
             }
-            handlePageChange(true)
+            processPageChange(true)
         } else {
             lastPage = if (pageChangeSwipedPercentage > 0f) {
                 currentPage - 1
@@ -2941,12 +2941,12 @@ private class MovingTilePager(
             }
             pageChangeSwipedPercentage =
                 sign(pageChangeSwipedPercentage) * (1 - abs(pageChangeSwipedPercentage))
-            handlePageChange(true)
+            processPageChange(true)
         }
     }
 
-    fun handleItemMovement(x: Int, y: Int) {
-        showIndicators()
+    fun processItemMovement(x: Int, y: Int) {
+        presentIndicators()
         if (x > getNextPageBound()) {
             doWithPageChangeDelay(PageChangeArea.RIGHT) {
                 nextOrAdditionalPage()
@@ -2956,19 +2956,19 @@ private class MovingTilePager(
                 prevPage()
             }
         } else {
-            clearPageChangeFlags()
+            wipePageChangeFlags()
         }
     }
 
     fun itemMovementStopped() {
-        scheduleIndicatorsFade()
+        planIndicatorsFade()
     }
 
     fun nextPage(redraw: Boolean = false): Boolean {
         if (currentPage < getMaxPage() && pageChangeEnabled) {
             lastPage = currentPage
             currentPage++
-            handlePageChange(redraw)
+            processPageChange(redraw)
             return true
         }
 
@@ -2979,7 +2979,7 @@ private class MovingTilePager(
         if (currentPage > 0 && pageChangeEnabled) {
             lastPage = currentPage
             currentPage--
-            handlePageChange(redraw)
+            processPageChange(redraw)
             return true
         }
 
@@ -2990,7 +2990,7 @@ private class MovingTilePager(
         if (currentPage != targetPage && targetPage < getMaxPage() + 1) {
             lastPage = currentPage
             currentPage = targetPage
-            handlePageChange()
+            processPageChange()
             return true
         }
 
@@ -3002,7 +3002,7 @@ private class MovingTilePager(
             when (pageChangeLastArea) {
                 PageChangeArea.RIGHT -> nextOrAdditionalPage(true)
                 PageChangeArea.LEFT -> prevPage(true)
-                else -> clearPageChangeFlags()
+                else -> wipePageChangeFlags()
             }
         }
     }
@@ -3019,24 +3019,24 @@ private class MovingTilePager(
             }
     }
 
-    private fun showIndicators() {
+    private fun presentIndicators() {
         markIndicatorsShown()
         pageChangeIndicatorsAlpha = 1f
         getHandler().removeCallbacks(startFadingIndicators)
     }
 
-    private fun clearPageChangeFlags() {
+    private fun wipePageChangeFlags() {
         pageChangeLastArea = PageChangeArea.MIDDLE
         pageChangeLastAreaEntryTime = 0
         getHandler().removeCallbacks(checkAndExecuteDelayedPageChange)
     }
 
-    private fun schedulePageChange() {
+    private fun planPageChange() {
         pageChangeLastAreaEntryTime = System.currentTimeMillis()
         getHandler().postDelayed(checkAndExecuteDelayedPageChange, PAGE_CHANGE_HOLD_THRESHOLD)
     }
 
-    private fun scheduleIndicatorsFade() {
+    private fun planIndicatorsFade() {
         pageChangeIndicatorsAlpha = 1f
         getHandler().postDelayed(startFadingIndicators, PAGE_INDICATORS_FADE_DELAY)
     }
@@ -3044,10 +3044,10 @@ private class MovingTilePager(
     private fun doWithPageChangeDelay(needed: PageChangeArea, pageChangeFunction: () -> Boolean) {
         if (pageChangeLastArea != needed) {
             pageChangeLastArea = needed
-            schedulePageChange()
+            planPageChange()
         } else if (System.currentTimeMillis() - pageChangeLastAreaEntryTime > PAGE_CHANGE_HOLD_THRESHOLD) {
             if (pageChangeFunction()) {
-                clearPageChangeFlags()
+                wipePageChangeFlags()
             }
         }
     }
@@ -3056,14 +3056,14 @@ private class MovingTilePager(
         if (currentPage < getMaxPage() + 1 && pageChangeEnabled) {
             lastPage = currentPage
             currentPage++
-            handlePageChange(redraw)
+            processPageChange(redraw)
             return true
         }
 
         return false
     }
 
-    private fun handlePageChange(redraw: Boolean = false) {
+    private fun processPageChange(redraw: Boolean = false) {
         markIndicatorsShown()
         pageChangeEnabled = false
         pageChangeIndicatorsAlpha = 0f
@@ -3099,18 +3099,18 @@ private class MovingTilePager(
                         pageChangeAnimLeftPercentage = 0f
                         pageChangeEnabled = true
                         lastPage = currentPage
-                        clearPageChangeFlags()
+                        wipePageChangeFlags()
                         // Swipes made while this page was settling, played one page at a time from
                         // rest; any that would run past the first or last page are dropped.
                         val step = pendingStep.sign
                         if (step > 0 && currentPage < getMaxPage() || step < 0 && currentPage > 0) {
                             pendingStep -= step
                             currentPage += step
-                            handlePageChange(true)
+                            processPageChange(true)
                             return
                         }
                         pendingStep = 0
-                        scheduleIndicatorsFade()
+                        planIndicatorsFade()
                         redrawGrid()
                     }
                 })

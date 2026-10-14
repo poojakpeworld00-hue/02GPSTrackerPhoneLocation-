@@ -15,7 +15,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.simcard.OwnSimLines
@@ -51,11 +51,11 @@ class OperatorDialCodesActivity : FoundationActivity<PageCarrierCodesBinding>() 
         val wantSlot = intent.getIntExtra(EXTRA_SLOT, -1)
         selected = tabs.indexOfFirst { it.slot == wantSlot }.coerceAtLeast(0)
 
-        buildTabs()
+        composeTabs()
         render()
     }
 
-    private fun buildTabs() {
+    private fun composeTabs() {
         binding.carrierTabsVw.removeAllViews()
         if (tabs.size < 2) {
             binding.carrierTabsVw.visibility = View.GONE
@@ -142,7 +142,7 @@ class OperatorDialCodesActivity : FoundationActivity<PageCarrierCodesBinding>() 
         }.root
 
     private fun dial(code: String) {
-        logKeyEvent("CarrierCodes_Dial")
+        trackEvent("CarrierCodes_Dial")
         ResumeAdKeeper.skipNextAppOpenAd = true
         runCatching {
             startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(code))))

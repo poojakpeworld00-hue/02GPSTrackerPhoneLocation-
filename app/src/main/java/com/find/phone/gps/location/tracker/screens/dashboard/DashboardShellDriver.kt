@@ -20,7 +20,7 @@ import com.find.phone.gps.location.tracker.screens.consent.OverlayToolbox
  * through [DashboardShellOwner].
  *
  * Two-phase on purpose: [onHostCreated] registers (pre-STARTED, cheap, invisible) and
- * [startFirstRunPriming] prompts (visible, deferred until the shell is actually on screen —
+ * [kickFirstRunPriming] prompts (visible, deferred until the shell is actually on screen —
  * in the launcher that is when the panel opens, not when it is committed off-screen).
  *
  * Trimmed from the reference: the caller-ID specific pieces (full-screen-intent priming, the
@@ -42,7 +42,7 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
     /** True once the first-run permission sheet has been dismissed by the user. */
     private var permissionSheetDismissed = false
 
-    /** Guards [startFirstRunPriming] so a re-opened panel doesn't prime twice per session. */
+    /** Guards [kickFirstRunPriming] so a re-opened panel doesn't prime twice per session. */
     private var primingStarted = false
 
     /** Whether [onHostCreated] ran (the launcher skips it while its first run is unfinished). */
@@ -64,22 +64,22 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
     /** Registration only — must run pre-STARTED, and must *not* show anything. */
     fun onHostCreated() {
         hostCreated = true
-        StoreUpdateKeeper.registerLauncher(activity)
-        maybeCheckForUpdate()
+        StoreUpdateKeeper.enrollLauncher(activity)
+        perhapsCheckForUpdate()
     }
 
     /**
      * The visible first-run prompts (the RC-gated permission sheet). Call this when the shell is
      * actually on screen: MainHubActivity from `initView`, the launcher once the panel slid in.
      */
-    fun startFirstRunPriming() {
+    fun kickFirstRunPriming() {
         shellOffScreen = false
         if (primingStarted) {
-            if (permissionSheetPending) maybeAutoShowPermissionSheet()
+            if (permissionSheetPending) perhapsAutoShowPermissionSheet()
             return
         }
         primingStarted = true
-        maybeAutoShowPermissionSheet()
+        perhapsAutoShowPermissionSheet()
     }
 
     /** Re-evaluate after returning from a permission/Settings round trip. */
@@ -87,7 +87,7 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
         // Resume an interrupted update (IMMEDIATE re-prompts; FLEXIBLE completes a download).
         StoreUpdateKeeper.resumeUpdate()
         // The launcher home may not be re-created for days; re-check on resume (throttled).
-        maybeCheckForUpdate()
+        perhapsCheckForUpdate()
     }
 
     fun onHostDestroy() {
@@ -105,7 +105,7 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
      *  - `In_App_Update_Show`       → master switch for offering an update.
      *  - `In_App_Update_Force_Show` → true = IMMEDIATE (mandatory), false = FLEXIBLE (optional).
      */
-    private fun maybeCheckForUpdate() {
+    private fun perhapsCheckForUpdate() {
         if (!hostCreated) return
         val pref = AdPrefsStore.getInstance(activity)
         if (!pref.getBoolean("In_App_Update_Show")) return
@@ -137,7 +137,7 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
     // ─────────────────────────── Permission sheet ───────────────────────────
 
     /** Shows the permission priming bottom sheet ([GrantPanelDialog]). */
-    fun showPermissionSheet() {
+    fun presentPermissionSheet() {
         GrantPanelDialog.show(activity) {
             // Only a dismissal the USER performed counts; when we closed the sheet because the
             // shell went away, the ask is deferred, not answered.
@@ -153,18 +153,18 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
         shellOffScreen = true
         if (!GrantPanelDialog.isShowing(activity)) return
         sheetTakenDownByUs = true
-        GrantPanelDialog.dismissIfShowing(activity)
+        GrantPanelDialog.retireIfShowing(activity)
         permissionSheetPending = true
     }
 
     /** Auto-shows the permission sheet when pending perms + the RC frequency gate allow. */
-    private fun maybeAutoShowPermissionSheet() {
+    private fun perhapsAutoShowPermissionSheet() {
         if (shellOffScreen || !host.isShellOnScreen) {
             permissionSheetPending = true
             return
         }
         permissionSheetPending = false
-        if (GrantPanelDialog.shouldAutoShow(activity)) showPermissionSheet()
+        if (GrantPanelDialog.shouldAutoShow(activity)) presentPermissionSheet()
     }
 
     /** True when the sheet was dismissed at least once and something is still missing. */
@@ -178,7 +178,7 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
      * in-activity grant poll to catch the toggle and auto-return. Only reachable when Remote
      * Config lists the overlay row in the permission sheet.
      */
-    fun startOverlayPermissionFlow() {
+    fun kickOverlayPermissionFlow() {
         if (!OverlayToolbox.isOfferable(activity) || OverlayToolbox.isGranted(activity)) return
 
         // We open system Settings ourselves — the programmatic return must NOT trigger an
@@ -186,12 +186,12 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
         ResumeAdKeeper.skipNextAppOpenAd = true
 
         val launched = runCatching {
-            overlayLauncher.launch(OverlayToolbox.buildOverlayIntent(activity.packageName))
+            overlayLauncher.launch(OverlayToolbox.composeOverlayIntent(activity.packageName))
         }.isSuccess
         if (!launched) return
 
-        OverlayToolbox.showGuide(activity)
-        startOverlayGrantPoll()
+        OverlayToolbox.presentGuide(activity)
+        kickOverlayGrantPoll()
     }
 
     private val overlayGrantPollHandler = Handler(Looper.getMainLooper())
@@ -208,7 +208,7 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
         }
     }
 
-    private fun startOverlayGrantPoll() {
+    private fun kickOverlayGrantPoll() {
         if (overlayGrantPolling) return
         overlayGrantPolling = true
         overlayGrantPollHandler.removeCallbacks(overlayGrantPoll)

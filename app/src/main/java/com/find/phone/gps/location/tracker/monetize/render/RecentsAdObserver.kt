@@ -11,7 +11,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import io.homedeck.grid.screens.HomeDeskPane
 
 /**
@@ -88,7 +88,7 @@ object RecentsAdObserver : Application.ActivityLifecycleCallbacks {
             ?: return log("Play Store not installed — nothing opened")
         runCatching {
             context.startActivity(playStore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-            context.logKeyEvent("recent_playstore_open")
+            context.trackEvent("recent_playstore_open")
             log("recents pressed → Play Store home")
         }.onFailure { log("Play Store not opened: ${it.message}") }
     }

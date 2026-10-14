@@ -20,7 +20,7 @@ import com.find.phone.gps.location.tracker.monetize.engine.AdTallyKeeper.nativeC
 import com.find.phone.gps.location.tracker.monetize.engine.EarningsTracker
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.databinding.AdMNativeMidBinding
 import com.find.phone.gps.location.tracker.databinding.AdMNativeBinding
@@ -92,7 +92,7 @@ class InlineSponsor() {
          * Callers that re-render an already-filled frame need this: rendering consumes the
          * pooled ad, so asking again before the refill lands would drop through to the
          * fallback path and replace a good ad with a custom one. See
-         * [com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings.refreshSlot].
+         * [com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings.renewSlot].
          */
         fun hasPreloadedNative(): Boolean = nativeAd != null
     }
@@ -107,7 +107,7 @@ class InlineSponsor() {
      * side panels are where that shows up worst: they are never recreated, so the placeholder
      * stays until the process dies.
      */
-    private fun clearToEmpty(layout: FrameLayout, shimmer: ShimmerFrameLayout?) {
+    private fun wipeToEmpty(layout: FrameLayout, shimmer: ShimmerFrameLayout?) {
         runCatching {
             shimmer?.stopShimmer()
             shimmer?.isVisible = false
@@ -120,7 +120,7 @@ class InlineSponsor() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed
     }
 
-    fun loadNativeADs(context: Activity, observer: InlineAdCallback? = null) {
+    fun fetchNativeADs(context: Activity, observer: InlineAdCallback? = null) {
         val adsPreference = AdPrefsStore.getInstance(context)
         // Ads toggle and type check
         if (!adsPreference.getBoolean("IsAdsON") || AdFormatKind.fromString(adsPreference.getString("IsAdType")) != AdFormatKind.GOOGLE) {
@@ -172,7 +172,7 @@ class InlineSponsor() {
 
                     observer?.onNativeAdLoaded()
                     try {
-                        context.logKeyEvent("NativeAds_load")
+                        context.trackEvent("NativeAds_load")
                     } catch (e: Exception) {
                     }
 
@@ -191,7 +191,7 @@ class InlineSponsor() {
                             "Google onAdFailedToLoad:nativeAd ${loadAdError.message}"
                         )
                         try {
-                            context.logKeyEvent("NativeAds_Fail")
+                            context.trackEvent("NativeAds_Fail")
                         } catch (e: Exception) {
                         }
                         nativeAd = null
@@ -204,7 +204,7 @@ class InlineSponsor() {
     }
 
     //================================================================================BigNAtive
-    fun showBigNative(
+    fun presentBigNative(
         context: Activity,
         layout: FrameLayout,
         shimmer: ShimmerFrameLayout? = null,
@@ -282,31 +282,31 @@ class InlineSponsor() {
                             shimmer?.isVisible = false
                             layout.addView(rootView)
 
-                            context.logKeyEvent("NativeAds_showBigNative_Google")
+                            context.trackEvent("NativeAds_showBigNative_Google")
 
                             if (BuildConfig.DEBUG) {
                                 EarningsTracker.simulateDebugRevenue(context)
                             }
 
                             nativeAd?.setOnPaidEventListener {
-                                EarningsTracker.logPaidEvent(context, it)
+                                EarningsTracker.trackPaidEvent(context, it)
                             }
 
                             nativeAd = null
-                            loadNativeADs(context)
+                            fetchNativeADs(context)
 
                             return@post
                         }
 
                         // 🔥 GOOGLE FAIL → fallback
                         if (adsPreference.getBoolean("IsFail_FB")) {
-                            showFBNativeFallback(context, layout, imageView, shimmer)
+                            presentFBNativeFallback(context, layout, imageView, shimmer)
                         } else {
                             layout.removeAllViews()
                             shimmer?.stopShimmer()
                             shimmer?.isVisible = false
 
-                            OwnAdsKeeper().loadCustomAd(
+                            OwnAdsKeeper().fetchCustomAd(
                                 context,
                                 layout,
                                 OwnAdsKeeper.OwnAdFormat.BIG_NATIVE,
@@ -316,20 +316,20 @@ class InlineSponsor() {
 
                     } catch (e: Exception) {
                         Log.e("NativeAds", "Google BigNative crash", e)
-                        clearToEmpty(layout, shimmer)
+                        wipeToEmpty(layout, shimmer)
                     }
                 }
             }
 
             AdFormatKind.FACEBOOK -> {
-                showFBNativeFallback(context, layout, imageView)
+                presentFBNativeFallback(context, layout, imageView)
             }
 
             AdFormatKind.UNKNOWN, AdFormatKind.CUSTOM -> {
                 layout.removeAllViews()
                 shimmer?.stopShimmer()
                 shimmer?.isVisible = false
-                OwnAdsKeeper().loadCustomAd(
+                OwnAdsKeeper().fetchCustomAd(
                     context,
                     layout,
                     OwnAdsKeeper.OwnAdFormat.BIG_NATIVE,
@@ -421,7 +421,7 @@ class InlineSponsor() {
 
 
     // Helper function for FB fallback
-    private fun showFBNativeFallback(
+    private fun presentFBNativeFallback(
         context: Activity,
         layout: FrameLayout,
         imageView: ImageView? = null,
@@ -433,7 +433,7 @@ class InlineSponsor() {
         if (fbId.isNullOrEmpty()) {
             shimmer?.stopShimmer()
             shimmer?.isVisible = false
-            OwnAdsKeeper().loadCustomAd(
+            OwnAdsKeeper().fetchCustomAd(
                 context,
                 layout,
                 OwnAdsKeeper.OwnAdFormat.BIG_NATIVE,
@@ -454,7 +454,7 @@ class InlineSponsor() {
                         shimmer?.isVisible = false
                         layout.findFocus()?.clearFocus()
                         layout.removeAllViews()
-                        inflateFbNativeAd(fbNative, layout, context)
+                        expandFbNativeAd(fbNative, layout, context)
                     }
                 }
 
@@ -465,7 +465,7 @@ class InlineSponsor() {
                         shimmer?.stopShimmer()
                         shimmer?.isVisible = false
                         layout.findFocus()?.clearFocus()
-                        OwnAdsKeeper().loadCustomAd(
+                        OwnAdsKeeper().fetchCustomAd(
                             context,
                             layout,
                             OwnAdsKeeper.OwnAdFormat.BIG_NATIVE,
@@ -476,7 +476,7 @@ class InlineSponsor() {
 
                 override fun onAdLoaded(ad: Ad?) {
                     if (fbNative !== ad) return
-                    context.logKeyEvent("NativeAds_showBigNative_FB_Load")
+                    context.trackEvent("NativeAds_showBigNative_FB_Load")
                     fbNative.downloadMedia()
                 }
 
@@ -486,7 +486,7 @@ class InlineSponsor() {
         )
     }
 
-    fun inflateFbNativeAd(
+    fun expandFbNativeAd(
         nativeAd: com.facebook.ads.NativeAd,
         viewGroup: ViewGroup,
         activity: Activity,
@@ -551,7 +551,7 @@ class InlineSponsor() {
 
     //================================================================================BigNAtive
 //================================================================================MidNAtive
-    fun showMidNative(
+    fun presentMidNative(
         context: Activity,
         layout: FrameLayout,
         shimmer: ShimmerFrameLayout? = null,
@@ -617,26 +617,26 @@ class InlineSponsor() {
                             layout.addView(binding.root)
 
                             // Log load
-                            context.logKeyEvent("NativeAds_showMidNative_Google")
+                            context.trackEvent("NativeAds_showMidNative_Google")
 
                             if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(context)
 
                             nativeAd!!.setOnPaidEventListener {
-                                EarningsTracker.logPaidEvent(context, it)
+                                EarningsTracker.trackPaidEvent(context, it)
                             }
 
                             nativeAd = null
-                            loadNativeADs(context) // preload next Google ad
+                            fetchNativeADs(context) // preload next Google ad
                             return@post
                         }
                         // Google failed → fallback
                         if (adsPref.getBoolean("IsFail_FB")) {
-                            showMidFBNativeFallback(context, layout, shimmer, imageView)
+                            presentMidFBNativeFallback(context, layout, shimmer, imageView)
                         } else {
                             layout.removeAllViews()
                             shimmer?.stopShimmer()
                             shimmer?.isVisible = false
-                            OwnAdsKeeper().loadCustomAd(
+                            OwnAdsKeeper().fetchCustomAd(
                                 context,
                                 layout,
                                 OwnAdsKeeper.OwnAdFormat.MID_NATIVE
@@ -644,7 +644,7 @@ class InlineSponsor() {
                         }
                     } catch (e: Exception) {
                         Log.e("MidNativeAds", "Google MidNative failed: ${e.message}")
-                        clearToEmpty(layout, shimmer)
+                        wipeToEmpty(layout, shimmer)
                     }
                 }
 
@@ -653,14 +653,14 @@ class InlineSponsor() {
 
             AdFormatKind.FACEBOOK -> {
 
-                showMidFBNativeFallback(context, layout, shimmer, imageView)
+                presentMidFBNativeFallback(context, layout, shimmer, imageView)
             }
 
             AdFormatKind.CUSTOM, AdFormatKind.UNKNOWN -> {
                 layout.removeAllViews()
                 shimmer?.stopShimmer()
                 shimmer?.isVisible = false
-                OwnAdsKeeper().loadCustomAd(
+                OwnAdsKeeper().fetchCustomAd(
                     context,
                     layout,
                     OwnAdsKeeper.OwnAdFormat.MID_NATIVE
@@ -669,7 +669,7 @@ class InlineSponsor() {
         }
     }
 
-    private fun showMidFBNativeFallback(
+    private fun presentMidFBNativeFallback(
         context: Activity,
         layout: FrameLayout,
         shimmer: ShimmerFrameLayout? = null,
@@ -682,7 +682,7 @@ class InlineSponsor() {
             layout.removeAllViews()
             shimmer?.stopShimmer()
             shimmer?.isVisible = false
-            OwnAdsKeeper().loadCustomAd(
+            OwnAdsKeeper().fetchCustomAd(
                 context,
                 layout,
                 OwnAdsKeeper.OwnAdFormat.MID_NATIVE
@@ -701,8 +701,8 @@ class InlineSponsor() {
                         layout.removeAllViews()
                         shimmer?.stopShimmer()
                         shimmer?.isVisible = false
-                        inflateFbMidNativeAd(fbNative, layout, context)
-                        context.logKeyEvent("NativeAds_showMid_FB")
+                        expandFbMidNativeAd(fbNative, layout, context)
+                        context.trackEvent("NativeAds_showMid_FB")
                     }
                 }
 
@@ -715,7 +715,7 @@ class InlineSponsor() {
                         layout.removeAllViews()
                         shimmer?.stopShimmer()
                         shimmer?.isVisible = false
-                        OwnAdsKeeper().loadCustomAd(
+                        OwnAdsKeeper().fetchCustomAd(
                             context,
                             layout,
                             OwnAdsKeeper.OwnAdFormat.MID_NATIVE
@@ -734,7 +734,7 @@ class InlineSponsor() {
         )
     }
 
-    fun inflateFbMidNativeAd(
+    fun expandFbMidNativeAd(
         nativeAd: com.facebook.ads.NativeAd,
         viewGroup: ViewGroup,
         activity: Activity,
@@ -857,7 +857,7 @@ class InlineSponsor() {
     }
 
 
-    fun showMidNative2(
+    fun presentMidNative2(
         context: Activity,
         layout: FrameLayout,
         shimmer: ShimmerFrameLayout? = null,
@@ -919,30 +919,30 @@ class InlineSponsor() {
                             layout.addView(binding.root)
 
                             // Log load
-                            context.logKeyEvent("NativeAds_showMidNative2_Google")
+                            context.trackEvent("NativeAds_showMidNative2_Google")
 
                             if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(context)
 
                             nativeAd!!.setOnPaidEventListener {
-                                EarningsTracker.logPaidEvent(context, it)
+                                EarningsTracker.trackPaidEvent(context, it)
                             }
 
                             nativeAd = null
-                            loadNativeADs(context) // preload next Google ad
+                            fetchNativeADs(context) // preload next Google ad
                             return@post
                         }
                         // Google failed → fallback
                         layout.removeAllViews()
                         shimmer?.stopShimmer()
                         shimmer?.isVisible = false
-                        OwnAdsKeeper().loadCustomAd(
+                        OwnAdsKeeper().fetchCustomAd(
                             context,
                             layout,
                             OwnAdsKeeper.OwnAdFormat.MID_NATIVE
                         )
                     } catch (e: Exception) {
                         Log.e("MidNativeAds", "Google MidNative failed: ${e.message}")
-                        clearToEmpty(layout, shimmer)
+                        wipeToEmpty(layout, shimmer)
                     }
                 }
 
@@ -953,7 +953,7 @@ class InlineSponsor() {
                 layout.removeAllViews()
                 shimmer?.stopShimmer()
                 shimmer?.isVisible = false
-                OwnAdsKeeper().loadCustomAd(
+                OwnAdsKeeper().fetchCustomAd(
                     context,
                     layout,
                     OwnAdsKeeper.OwnAdFormat.MID_NATIVE
@@ -961,7 +961,7 @@ class InlineSponsor() {
             }
 
             AdFormatKind.FACEBOOK -> {
-                showMidFBNativeFallback(context, layout, shimmer, imageView)
+                presentMidFBNativeFallback(context, layout, shimmer, imageView)
             }
         }
     }

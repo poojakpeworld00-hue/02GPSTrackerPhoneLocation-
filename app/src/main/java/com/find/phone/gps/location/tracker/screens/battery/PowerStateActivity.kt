@@ -28,7 +28,7 @@ import com.find.phone.gps.location.tracker.monetize.render.InlineSponsorStrip
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnAction
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.helpers.OsDialogAssist
-import com.find.phone.gps.location.tracker.helpers.applyNativeAdTheme
+import com.find.phone.gps.location.tracker.helpers.imprintNativeAdTheme
 
 /**
  * The charging / discharging screen (ported from QRScanner's `PowerStateActivity`).
@@ -55,10 +55,10 @@ class PowerStateActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        applyNativeAdTheme()
+        imprintNativeAdTheme()
         // Recents closes it: a charge/discharge screen is not something to come back to.
         lifecycle.addObserver(OsDialogAssist(this) { finishAndRemoveTask() })
-        showOverLockAndWake()
+        presentOverLockAndWake()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.page_charging_status)
 
@@ -74,7 +74,7 @@ class PowerStateActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.padCloseCharging).setOnClickListener { close() }
         onBackPressedDispatcher.addCallback(this) { close() }
         render(registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED)))
-        fillAd()
+        populateAd()
         // Loaded while the user reads the screen, so it is ready when they close it.
         if (closesWithFullNative) SideMenuAdDriver.preload(this, fullNativeFlow())
     }
@@ -177,15 +177,15 @@ class PowerStateActivity : AppCompatActivity() {
         else -> getString(R.string.charging_source_power)
     }
 
-    private fun fillAd() {
+    private fun populateAd() {
         if (!settings.showsBodyNative) return
         val slot = findViewById<FrameLayout>(R.id.chargingAdSlotVw)
         slot.visibility = View.VISIBLE
         when (settings.nativeType.trim().lowercase()) {
-            "big", "big_native", "bignative" -> InlineSponsor().showBigNative(this, slot)
-            "mid2", "mid_native2", "midnative2", "mediumnative2" -> InlineSponsor().showMidNative2(this, slot)
-            "native_banner", "nativebanner" -> InlineSponsorStrip().showNativeBannerNative(this, slot)
-            else -> InlineSponsor().showMidNative(this, slot)
+            "big", "big_native", "bignative" -> InlineSponsor().presentBigNative(this, slot)
+            "mid2", "mid_native2", "midnative2", "mediumnative2" -> InlineSponsor().presentMidNative2(this, slot)
+            "native_banner", "nativebanner" -> InlineSponsorStrip().presentNativeBannerNative(this, slot)
+            else -> InlineSponsor().presentMidNative(this, slot)
         }
     }
 
@@ -207,7 +207,7 @@ class PowerStateActivity : AppCompatActivity() {
                 // This screen has its own throttle (min_gap_sec); the app-wide InterCounter on top
                 // would skip the one ad it exists to show.
                 AdTallyKeeper.interCounter = AdPrefsStore.getInstance(this).getInt("InterCounter")
-                FullscreenOnAction().showInterAds(this) { finishSafely() }
+                FullscreenOnAction().presentInterAds(this) { finishSafely() }
             }
             // Shows only if it finished loading; either way the screen closes after.
             closesWithFullNative ->
@@ -224,7 +224,7 @@ class PowerStateActivity : AppCompatActivity() {
         if (!isFinishing) finish()
     }
 
-    private fun showOverLockAndWake() {
+    private fun presentOverLockAndWake() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)

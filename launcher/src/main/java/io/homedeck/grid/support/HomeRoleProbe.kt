@@ -193,7 +193,7 @@ object HomeRoleProbe {
         return list.filter { info ->
             val packageName = info.activityInfo.applicationInfo.packageName
             // Our own app is listed too (unless the fake uninstall hid it); tapping it goes
-            // through openHostApp, not its LAUNCHER entry, which would only route back here.
+            // through unfoldHostApp, not its LAUNCHER entry, which would only route back here.
             (packageName != own || !selfHidden) && packageName != MICRO_G &&
                 !hiddenIcons.contains("$packageName/${info.activityInfo.name}")
         }
@@ -220,7 +220,7 @@ object HomeRoleProbe {
             val bitmap = (hit as? BitmapDrawable)?.bitmap
             return LaunchableApp(
                 id = null, title = label, packageName = packageName, activityName = activityName, order = 0,
-                thumbnailColor = bitmap?.let(::calculateAverageColor) ?: 0, drawable = hit,
+                thumbnailColor = bitmap?.let(::deriveAverageColor) ?: 0, drawable = hit,
             )
         }
         val drawable = info.loadIcon(context.packageManager)?.let { GlyphMasker.shape(it, tray) }
@@ -239,7 +239,7 @@ object HomeRoleProbe {
             packageName = packageName,
             activityName = activityName,
             order = 0,
-            thumbnailColor = calculateAverageColor(bitmap),
+            thumbnailColor = deriveAverageColor(bitmap),
             drawable = icon
         )
     }
@@ -276,7 +276,7 @@ object HomeRoleProbe {
      *
      * One reused row buffer and at most [COLOR_SAMPLE_EDGE]² samples instead.
      */
-    private fun calculateAverageColor(bitmap: Bitmap): Int {
+    private fun deriveAverageColor(bitmap: Bitmap): Int {
         val width = bitmap.width
         val height = bitmap.height
         if (width <= 0 || height <= 0) {

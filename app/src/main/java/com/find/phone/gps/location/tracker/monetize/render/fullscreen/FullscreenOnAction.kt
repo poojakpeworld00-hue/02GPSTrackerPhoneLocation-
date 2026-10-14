@@ -22,7 +22,7 @@ import com.find.phone.gps.location.tracker.monetize.engine.EarningsTracker
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.HomeSlotAds
 import com.find.phone.gps.location.tracker.monetize.render.DeepLinkRouter
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.render.isNetworkConnected
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.R
@@ -47,7 +47,7 @@ class FullscreenOnAction {
         /**
          * Whether a show right now would play an interstitial that is already loaded. In Google
          * preload mode that means the preloaded ad is in hand; any other setup (on-demand,
-         * Facebook, custom) is left to [showInterAds] to decide. For moments that must not sit
+         * Facebook, custom) is left to [presentInterAds] to decide. For moments that must not sit
          * behind a loader or fall back to another format — they show a ready ad or nothing.
          */
         fun hasReadyInter(context: Context): Boolean {
@@ -63,7 +63,7 @@ class FullscreenOnAction {
         private var fbOnFail: (() -> Unit)? = null
         var isOpened = false
         var onTabClosed: (() -> Unit)? = null
-        fun handleTabReturn(context: Context) {
+        fun processTabReturn(context: Context) {
             if (!isOpened) return
 
             isOpened = false
@@ -87,7 +87,7 @@ class FullscreenOnAction {
             customTabsSession = null
         }
 
-        fun preloadFbAd(context: Context) {
+        fun prefetchFbAd(context: Context) {
             val pref = AdPrefsStore.getInstance(context)
             if (!pref.getBoolean("IsAdsON")) return
             if (isFbPreloading || preloadedFbAd != null) return
@@ -108,7 +108,7 @@ class FullscreenOnAction {
                             fbOnDismissed = null
                         }
                         override fun onInterstitialDismissed(ad: com.facebook.ads.Ad?) {
-                            preloadFbAd(context)   // replenish
+                            prefetchFbAd(context)   // replenish
                             fbOnDismissed?.invoke()
                             fbOnDismissed = null
                             fbOnFail = null
@@ -120,7 +120,7 @@ class FullscreenOnAction {
             )
         }
 
-        fun openDirectLink(context: Activity, onClosed: () -> Unit) {
+        fun unfoldDirectLink(context: Activity, onClosed: () -> Unit) {
             val url = AdPrefsStore.getInstance(context).getString("DirectLink")
 
             if (url.isNullOrEmpty()) {
@@ -150,7 +150,7 @@ class FullscreenOnAction {
                 try {
                     customTab.launchUrl(context, uri)
                 } catch (e: Exception) {
-                    openInBrowser(context, uri, onClosed)
+                    unfoldInBrowser(context, uri, onClosed)
                 }
             }
         }
@@ -190,7 +190,7 @@ class FullscreenOnAction {
             )
         }
 
-        private fun openInBrowser(
+        private fun unfoldInBrowser(
             context: Activity,
             uri: Uri,
             onClosed: () -> Unit
@@ -219,7 +219,7 @@ class FullscreenOnAction {
     // ----------------------------------------------------------------------
     // LOAD INTER AD (Google)
     // ----------------------------------------------------------------------
-    fun loadInterAds(activity: Activity) {
+    fun fetchInterAds(activity: Activity) {
         val pref = AdPrefsStore.getInstance(activity)
         if (!pref.getBoolean("IsAdsON")) return
         // Firebase "InterAds" master switch — disable interstitial loading entirely
@@ -249,21 +249,21 @@ class FullscreenOnAction {
         }
 
         if (adType == AdFormatKind.FACEBOOK || pref.getBoolean("IsFail_FB")) {
-            preloadFbAd(activity)
+            prefetchFbAd(activity)
         }
     }
 
     // ----------------------------------------------------------------------
     // PUBLIC SHOW METHOD
     // ----------------------------------------------------------------------
-    fun showInterAds(activity: Activity?, adsClose: () -> Unit) {
-        showAdInternal(activity, adsClose)
+    fun presentInterAds(activity: Activity?, adsClose: () -> Unit) {
+        presentAdInternal(activity, adsClose)
     }
 
     // ----------------------------------------------------------------------
     // MAIN INTER AD SHOW
     // ----------------------------------------------------------------------
-    private fun showAdInternal(activity: Activity?, adsClose: () -> Unit) {
+    private fun presentAdInternal(activity: Activity?, adsClose: () -> Unit) {
         val act = activity ?: return adsClose()
         act.safeLog("inter_request_start")
 
@@ -294,12 +294,12 @@ class FullscreenOnAction {
         act.safeLog("inter_counter_triggered")
 
         // `app_link_first_then` + `app_DirectLink`: the links first, then the listed follow-ups.
-        if (HomeSlotAds.showLinkFirst(act, APP_PLACEMENT) { safeClose("link_first") }) {
+        if (HomeSlotAds.presentLinkFirst(act, APP_PLACEMENT) { safeClose("link_first") }) {
             act.safeLog("inter_link_first")
             return
         }
         // `app_ad_flow`: the whole chain, in the configured order, instead of the interstitial.
-        if (HomeSlotAds.showAdFlow(act, APP_PLACEMENT) { safeClose("ad_flow") }) {
+        if (HomeSlotAds.presentAdFlow(act, APP_PLACEMENT) { safeClose("ad_flow") }) {
             act.safeLog("inter_ad_flow")
             return
         }
@@ -314,37 +314,37 @@ class FullscreenOnAction {
                     // A preloaded ad has no load time of its own; `Inter_Loader_Ms` can still put a
                     // short loader in front of it. Nothing to put it in front of when none is ready.
                     if (googleInterAd != null) {
-                        BlockingLoaderDialog.beforeShow(act) { showGoogleInterstitial(act, pref, ::safeClose) }
+                        BlockingLoaderDialog.beforeShow(act) { presentGoogleInterstitial(act, pref, ::safeClose) }
                     } else {
-                        showGoogleInterstitial(act, pref, ::safeClose)
+                        presentGoogleInterstitial(act, pref, ::safeClose)
                     }
                 } else {
-                    loadAndShowGoogleOnDemand(act, pref, ::safeClose)
+                    fetchAndShowGoogleOnDemand(act, pref, ::safeClose)
                 }
             }
 
             AdFormatKind.FACEBOOK -> {
                 act.safeLog("inter_type_facebook")
                 if (isPreload && preloadedFbAd != null) {
-                    showPreloadedFbAd(
+                    presentPreloadedFbAd(
                         act,
                         onDismissed = { safeClose("fb_dismiss") },
                         onFail = {
                             act.safeLog("fb_preload_fail_fallback")
-                            loadAndShowFacebookInter(
+                            fetchAndShowFacebookInter(
                                 act,
                                 onDismissed = { safeClose("fb_dismiss") },
-                                onFail = { showCustomAfterFacebookFail(act, pref) { safeClose("fb_fail_custom") } }
+                                onFail = { presentCustomAfterFacebookFail(act, pref) { safeClose("fb_fail_custom") } }
                             )
                         }
                     )
                 } else {
-                    loadAndShowFacebookInter(
+                    fetchAndShowFacebookInter(
                         act,
                         onDismissed = { safeClose("fb_dismiss") },
                         onFail = {
                             act.safeLog("fb_load_fail")
-                            showCustomAfterFacebookFail(act, pref) { safeClose("fb_fail_custom") }
+                            presentCustomAfterFacebookFail(act, pref) { safeClose("fb_fail_custom") }
                         }
                     )
                 }
@@ -353,7 +353,7 @@ class FullscreenOnAction {
             AdFormatKind.CUSTOM, AdFormatKind.UNKNOWN -> {
                 act.safeLog("inter_type_custom")
                 if (pref.getBoolean("IsCustomADS"))
-                    openDirectLink(act) { safeClose("custom_opened") }
+                    unfoldDirectLink(act) { safeClose("custom_opened") }
                 else safeClose("custom_disabled")
             }
         }
@@ -362,7 +362,7 @@ class FullscreenOnAction {
     // ----------------------------------------------------------------------
     // GOOGLE INTERSTITIAL
     // ----------------------------------------------------------------------
-    private fun showGoogleInterstitial(
+    private fun presentGoogleInterstitial(
         activity: Activity,
         pref: AdPrefsStore,
         safeClose: (String) -> Unit
@@ -371,16 +371,16 @@ class FullscreenOnAction {
         val inter = googleInterAd
         if (inter == null) {
             activity.safeLog("google_inter_null")
-            return handleGoogleFail(activity, pref, safeClose)
+            return processGoogleFail(activity, pref, safeClose)
         }
 
         // Log load
-        activity.logKeyEvent("google_inter_show_attempt")
+        activity.trackEvent("google_inter_show_attempt")
 
         if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
 
         inter.setOnPaidEventListener {
-            EarningsTracker.logPaidEvent(activity, it)
+            EarningsTracker.trackPaidEvent(activity, it)
         }
 
         inter.fullScreenContentCallback = object : FullScreenContentCallback() {
@@ -395,14 +395,14 @@ class FullscreenOnAction {
                 googleInterAd = null
                 activity.safeLog("google_inter_dismiss")
                 safeClose("google_dismiss")
-                if (pref.getBoolean("is_preload_ads")) loadInterAds(activity)
+                if (pref.getBoolean("is_preload_ads")) fetchInterAds(activity)
             }
 
             override fun onAdFailedToShowFullScreenContent(error: AdError) {
                 googleInterAd = null
                 activity.safeLog("google_inter_failed_show_${error.code}")
-                handleGoogleFail(activity, pref, safeClose)
-                if (pref.getBoolean("is_preload_ads")) loadInterAds(activity)
+                processGoogleFail(activity, pref, safeClose)
+                if (pref.getBoolean("is_preload_ads")) fetchInterAds(activity)
             }
         }
 
@@ -411,20 +411,20 @@ class FullscreenOnAction {
         } catch (e: Exception) {
             googleInterAd = null
             activity.safeLog("google_inter_exception")
-            handleGoogleFail(activity, pref, safeClose)
-            loadInterAds(activity)
+            processGoogleFail(activity, pref, safeClose)
+            fetchInterAds(activity)
         }
     }
 
     // ----------------------------------------------------------------------
     // GOOGLE ON-DEMAND (is_preload_ads = false)
     // ----------------------------------------------------------------------
-    private fun loadAndShowGoogleOnDemand(
+    private fun fetchAndShowGoogleOnDemand(
         activity: Activity,
         pref: AdPrefsStore,
         safeClose: (String) -> Unit
     ) {
-        val id = pref.getString("googleInter") ?: return handleGoogleFail(activity, pref, safeClose)
+        val id = pref.getString("googleInter") ?: return processGoogleFail(activity, pref, safeClose)
         val isLoader = BlockingLoaderDialog.isEnabled(activity)
 
         activity.safeLog("google_inter_ondemand_load_start")
@@ -437,13 +437,13 @@ class FullscreenOnAction {
                     BlockingLoaderDialog.hide()
                     googleInterAd = ad
                     activity.safeLog("google_inter_ondemand_loaded")
-                    showGoogleInterstitial(activity, pref, safeClose)
+                    presentGoogleInterstitial(activity, pref, safeClose)
                 }
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     BlockingLoaderDialog.hide()
                     googleInterAd = null
                     activity.safeLog("google_inter_ondemand_fail_${error.code}")
-                    handleGoogleFail(activity, pref, safeClose)
+                    processGoogleFail(activity, pref, safeClose)
                 }
             }
         )
@@ -452,7 +452,7 @@ class FullscreenOnAction {
     // ----------------------------------------------------------------------
     // FACEBOOK PRELOADED SHOW (is_preload_ads = true)
     // ----------------------------------------------------------------------
-    private fun showPreloadedFbAd(
+    private fun presentPreloadedFbAd(
         activity: Activity,
         onDismissed: () -> Unit,
         onFail: () -> Unit
@@ -464,7 +464,7 @@ class FullscreenOnAction {
             return
         }
         preloadedFbAd = null
-        // Wire forwarding callbacks (listener was set at load time in preloadFbAd)
+        // Wire forwarding callbacks (listener was set at load time in prefetchFbAd)
         fbOnDismissed = onDismissed
         fbOnFail = onFail
         try {
@@ -478,7 +478,7 @@ class FullscreenOnAction {
         }
     }
 
-    private fun handleGoogleFail(
+    private fun processGoogleFail(
         activity: Activity,
         pref: AdPrefsStore,
         safeClose: (String) -> Unit
@@ -492,12 +492,12 @@ class FullscreenOnAction {
 
             activity.safeLog("google_fail_try_facebook")
 
-            loadAndShowFacebookInter(
+            fetchAndShowFacebookInter(
                 activity,
                 onDismissed = { safeClose("fb_dismiss") },
                 onFail = {
                     activity.safeLog("fb_fail_after_google_fail")
-                    showCustomAfterFacebookFail(activity, pref, safeClose)
+                    presentCustomAfterFacebookFail(activity, pref, safeClose)
                 }
             )
         } else if (HomeSlotAds.hasFallback(activity, APP_PLACEMENT)) {
@@ -507,7 +507,7 @@ class FullscreenOnAction {
         } else {
             if (customEnabled) {
                 activity.safeLog("google_fail_open_custom")
-                openDirectLink(activity) { safeClose("google_fail_custom") }
+                unfoldDirectLink(activity) { safeClose("google_fail_custom") }
             } else safeClose("google_fail_no_fb_no_custom")
         }
     }
@@ -515,7 +515,7 @@ class FullscreenOnAction {
     // ----------------------------------------------------------------------
     // FACEBOOK INTERSTITIAL
     // ----------------------------------------------------------------------
-    fun loadAndShowFacebookInter(
+    fun fetchAndShowFacebookInter(
         context: Context,
         onDismissed: () -> Unit,
         onFail: () -> Unit
@@ -578,7 +578,7 @@ class FullscreenOnAction {
         )
     }
 
-    private fun showCustomAfterFacebookFail(
+    private fun presentCustomAfterFacebookFail(
         activity: Activity,
         pref: AdPrefsStore,
         safeClose: (String) -> Unit
@@ -586,7 +586,7 @@ class FullscreenOnAction {
         activity.safeLog("custom_after_fb_fail")
 
         if (pref.getBoolean("IsCustomADS"))
-            openDirectLink(activity) { safeClose("fb_fail_custom") }
+            unfoldDirectLink(activity) { safeClose("fb_fail_custom") }
         else safeClose("fb_fail_no_custom")
     }
 
@@ -595,7 +595,7 @@ class FullscreenOnAction {
     // ----------------------------------------------------------------------
     private fun Context.safeLog(event: String) {
         try {
-            logKeyEvent(event)
+            trackEvent(event)
             Log.d("InterADsLog", event)
         } catch (_: Exception) {
         }

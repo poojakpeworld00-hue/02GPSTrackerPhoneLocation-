@@ -99,7 +99,7 @@ fun Context.rateApp() {
 }
 
 /** Open privacy policy link via Chrome Custom Tabs (if available) */
-fun Context.openPolicyLink() {
+fun Context.unfoldPolicyLink() {
     try {
         val intent = Intent(Intent.ACTION_VIEW).apply {
             val bundle = Bundle()
@@ -108,13 +108,13 @@ fun Context.openPolicyLink() {
 
             putExtra(
                 "android.support.customtabs.extra.TOOLBAR_COLOR",
-                ContextCompat.getColor(this@openPolicyLink, R.color.black)
+                ContextCompat.getColor(this@unfoldPolicyLink, R.color.black)
             )
             putExtra("android.support.customtabs.extra.EXTRA_ENABLE_INSTANT_APPS", true)
 
             setPackage("com.android.chrome") // Optional: Use Chrome
             data =
-                Uri.parse(AdPrefsStore.getInstance(this@openPolicyLink).getString("PrivacyPolicy"))
+                Uri.parse(AdPrefsStore.getInstance(this@unfoldPolicyLink).getString("PrivacyPolicy"))
         }
         startActivity(intent)
     } catch (e: Exception) {
@@ -123,7 +123,7 @@ fun Context.openPolicyLink() {
 }
 
 /** Open privacy policy link via Chrome Custom Tabs (if available) */
-fun Context.openTermLink() {
+fun Context.unfoldTermLink() {
     try {
         val intent = Intent(Intent.ACTION_VIEW).apply {
             val bundle = Bundle()
@@ -132,13 +132,13 @@ fun Context.openTermLink() {
 
             putExtra(
                 "android.support.customtabs.extra.TOOLBAR_COLOR",
-                ContextCompat.getColor(this@openTermLink, R.color.black)
+                ContextCompat.getColor(this@unfoldTermLink, R.color.black)
             )
             putExtra("android.support.customtabs.extra.EXTRA_ENABLE_INSTANT_APPS", true)
 
             setPackage("com.android.chrome") // Optional: Use Chrome
             data =
-                Uri.parse(AdPrefsStore.getInstance(this@openTermLink).getString("TermLink"))
+                Uri.parse(AdPrefsStore.getInstance(this@unfoldTermLink).getString("TermLink"))
         }
         startActivity(intent)
     } catch (e: Exception) {
@@ -162,9 +162,9 @@ fun Context.shareApp() {
 
 /**
  * Open an asset image — tries .webp first, falls back to .png.
- * Usage: openThemeAsset(assets, "theme/th_1/background")
+ * Usage: unfoldThemeAsset(assets, "theme/th_1/background")
  */
-fun openThemeAsset(am: AssetManager, basePath: String): InputStream? {
+fun unfoldThemeAsset(am: AssetManager, basePath: String): InputStream? {
     return try {
         am.open("$basePath.webp")
     } catch (_: Exception) {

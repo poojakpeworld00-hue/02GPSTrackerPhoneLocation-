@@ -14,8 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
-import com.find.phone.gps.location.tracker.monetize.engine.logPermissionResult
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import java.util.Locale
 
@@ -28,7 +28,7 @@ import java.util.Locale
  * Usage:
  * ```
  * class OverviewFragment : FoundationFragment<PanelHomeBinding>() {
- *     override fun inflateBinding(inflater, container) =
+ *     override fun expandBinding(inflater, container) =
  *         PanelHomeBinding.inflate(inflater, container, false)
  * }
  * ```
@@ -39,14 +39,14 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
     protected val binding: VB get() = _binding!!
 
     /** Inflate the concrete ViewBinding for this fragment. */
-    protected abstract fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): VB
+    protected abstract fun expandBinding(inflater: LayoutInflater, container: ViewGroup?): VB
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = inflateBinding(inflater, container)
+        _binding = expandBinding(inflater, container)
         return binding.root
     }
 
@@ -74,16 +74,16 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!isHidden) logScreenView()
+        if (!isHidden) noteScreenView()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (!hidden) logScreenView()
+        if (!hidden) noteScreenView()
     }
 
-    private fun logScreenView() {
-        context?.logKeyEvent("screen_${this::class.java.simpleName.lowercase(Locale.ROOT)}")
+    private fun noteScreenView() {
+        context?.trackEvent("screen_${this::class.java.simpleName.lowercase(Locale.ROOT)}")
     }
 
     // --- Shared runtime-permission handling ---
@@ -93,7 +93,7 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
      * it twice (permanently denied — the system will no longer show its dialog), opens
      * the app's settings page instead so they can enable it manually.
      */
-    protected fun requestPermissionManaged(
+    protected fun seekPermissionManaged(
         permission: String,
         launcher: ActivityResultLauncher<String>
     ) {
@@ -107,7 +107,7 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
             // Denied before but the system will still show the dialog → ask again.
             shouldShowRequestPermissionRationale(permission) -> launcher.launch(permission)
             // Permanently denied → the dialog won't appear, so send them to Settings.
-            else -> openAppSettings()
+            else -> unfoldAppSettings()
         }
     }
 
@@ -120,7 +120,7 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
     private val chainLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        lastChainPermission?.let { context?.logPermissionResult(it, granted) }
+        lastChainPermission?.let { context?.trackPermissionResult(it, granted) }
         advancePermissionChain()
     }
 
@@ -130,7 +130,7 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
      * overlay-permission step. A permanently-denied permission diverts to the app's
      * Settings page and pauses the chain; calling this again restarts it.
      */
-    protected fun requestPermissionChain(
+    protected fun seekPermissionChain(
         permissions: List<String>,
         onComplete: () -> Unit
     ) {
@@ -162,7 +162,7 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
                     chainLauncher.launch(permission)
                 }
                 // Permanently denied → divert to Settings and pause here.
-                else -> openAppSettings()
+                else -> unfoldAppSettings()
             }
             return
         }
@@ -173,7 +173,7 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
     }
 
     /** Opens this app's system settings (App info) screen. */
-    protected fun openAppSettings() {
+    protected fun unfoldAppSettings() {
         runCatching {
             startActivity(
                 Intent(
@@ -191,10 +191,10 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
     private val callPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        context?.logPermissionResult(Manifest.permission.CALL_PHONE, granted)
+        context?.trackPermissionResult(Manifest.permission.CALL_PHONE, granted)
         val number = pendingCallNumber
         pendingCallNumber = null
-        if (number != null) if (granted) startCall(number) else openDialer(number)
+        if (number != null) if (granted) kickCall(number) else unfoldDialer(number)
     }
 
     /** Places the call directly (CALL_PHONE), requesting the permission if needed. */
@@ -203,21 +203,21 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CALL_PHONE)
             == PackageManager.PERMISSION_GRANTED
         ) {
-            startCall(number)
+            kickCall(number)
         } else {
             pendingCallNumber = number
-            requestPermissionManaged(Manifest.permission.CALL_PHONE, callPermissionLauncher)
+            seekPermissionManaged(Manifest.permission.CALL_PHONE, callPermissionLauncher)
         }
     }
 
-    private fun startCall(number: String) {
+    private fun kickCall(number: String) {
         val placed = runCatching {
             startActivity(Intent(Intent.ACTION_CALL, Uri.parse("tel:$number"))); true
         }.getOrDefault(false)
-        if (!placed) openDialer(number)
+        if (!placed) unfoldDialer(number)
     }
 
-    private fun openDialer(number: String) {
+    private fun unfoldDialer(number: String) {
         runCatching { startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$number"))) }
     }
 }

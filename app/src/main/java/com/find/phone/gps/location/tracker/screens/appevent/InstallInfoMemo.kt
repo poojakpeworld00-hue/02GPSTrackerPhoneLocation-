@@ -43,7 +43,7 @@ object InstallInfoMemo {
                 putString(KEY_LABEL + pkg, pm.getApplicationLabel(appInfo).toString())
                 putString(KEY_VERSION + pkg, info.versionName.orEmpty())
             }
-            saveIcon(app, pkg, pm.getApplicationIcon(appInfo))
+            persistIcon(app, pkg, pm.getApplicationIcon(appInfo))
         }
     }
 
@@ -103,7 +103,7 @@ object InstallInfoMemo {
         stale.forEach { iconFile(context, it).delete() }
     }
 
-    private fun saveIcon(context: Context, pkg: String, drawable: Drawable) {
+    private fun persistIcon(context: Context, pkg: String, drawable: Drawable) {
         val size = (48 * context.resources.displayMetrics.density).toInt().coerceIn(96, 192)
         val bitmap = drawable.toBitmap(size, size)
         val file = iconFile(context, pkg)

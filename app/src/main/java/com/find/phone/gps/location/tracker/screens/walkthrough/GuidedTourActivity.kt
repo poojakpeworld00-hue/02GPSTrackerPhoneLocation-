@@ -12,7 +12,7 @@ import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import com.find.phone.gps.location.tracker.databinding.PageOnboardingBinding
@@ -55,7 +55,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
         }
 
         // The slot loads once; its container is only revealed on the page that carries it.
-        HomeAdsSettings.showSlot(
+        HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.INTRO),
             container = binding.adNativeFrameVw,
@@ -64,7 +64,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
 
         binding.vuPager.adapter = TourPagerAdapter(pages)
         binding.vuPager.offscreenPageLimit = 1
-        buildDots()
+        composeDots()
         updateDots(0)
 
         // Swipe: the illustration moves at 0.6× the page (parallax), the copy fades out over
@@ -122,7 +122,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
 
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
-    private fun buildDots() {
+    private fun composeDots() {
         val size = dp(6)
         val gap = dp(6)
         pages.indices.forEach { i ->
@@ -139,7 +139,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
         val activeWidth = dp(24)
         val size = dp(6)
         dots.forEachIndexed { i, dot ->
-            animateDotWidth(dot, if (i == active) activeWidth else size)
+            tweenDotWidth(dot, if (i == active) activeWidth else size)
             dot.setBackgroundResource(if (i == active) R.drawable.vs_dot_active else R.drawable.vs_dot)
         }
         val last = active == pages.lastIndex
@@ -152,7 +152,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
     }
 
     /** Springs a dot's width to [target] (the pill-stretch effect). */
-    private fun animateDotWidth(dot: View, target: Int) {
+    private fun tweenDotWidth(dot: View, target: Int) {
         val lp = dot.layoutParams as LinearLayout.LayoutParams
         if (lp.width == target) return
         (dot.getTag(R.id.tag_dot_anim) as? ValueAnimator)?.cancel()
@@ -182,7 +182,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
 
     private fun finishOnboarding() {
         prefs.isOnboardingDone = true
-        logKeyEvent("onboarding_completed")
+        trackEvent("onboarding_completed")
         GrantOrchestrator.check(this) {
             // Permission done → this screen's interstitial (`onboarding.intro.inter_enabled`,
             // the callback fires immediately when there is nothing to show) → THEN navigate.

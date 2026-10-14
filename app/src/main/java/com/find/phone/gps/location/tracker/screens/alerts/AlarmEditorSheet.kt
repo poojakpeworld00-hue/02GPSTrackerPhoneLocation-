@@ -69,7 +69,7 @@ class AlarmEditorSheet(
         padSave.setOnClickListener { save() }
 
         setRepeat(repeat)
-        renderWhen()
+        paintWhen()
 
         dialog.setContentView(root)
         dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -91,7 +91,7 @@ class AlarmEditorSheet(
             it.setBackgroundResource(if (on) R.drawable.vs_reminder_chip_selected else R.drawable.vs_reminder_chip_tint)
             it.setTextColor(ContextCompat.getColor(themed, if (on) R.color.white else R.color.ds_primary))
         }
-        renderWhen()
+        paintWhen()
     }
 
     private fun Calendar.atHour(from: Calendar, hour: Int, plusDays: Int) {
@@ -110,7 +110,7 @@ class AlarmEditorSheet(
     private fun pickDate(thenTime: Boolean) {
         DatePickerDialog(themed, { _, y, m, d ->
             pick.set(y, m, d)
-            renderWhen()
+            paintWhen()
             if (thenTime) pickTime()
         }, pick.get(Calendar.YEAR), pick.get(Calendar.MONTH), pick.get(Calendar.DAY_OF_MONTH)).apply {
             datePicker.minDate = System.currentTimeMillis() - 1000
@@ -121,7 +121,7 @@ class AlarmEditorSheet(
         TimePickerDialog(themed, { _, h, min ->
             pick.set(Calendar.HOUR_OF_DAY, h); pick.set(Calendar.MINUTE, min)
             pick.set(Calendar.SECOND, 0); pick.set(Calendar.MILLISECOND, 0)
-            renderWhen()
+            paintWhen()
         }, pick.get(Calendar.HOUR_OF_DAY), pick.get(Calendar.MINUTE), DateFormat.is24HourFormat(themed)).show()
     }
 
@@ -136,7 +136,7 @@ class AlarmEditorSheet(
         }
     }
 
-    private fun renderWhen() {
+    private fun paintWhen() {
         binding.lblDate.text = AlarmFormatter.day(themed, pick.timeInMillis)
         binding.lblTime.text = AlarmFormatter.time(themed, pick.timeInMillis)
         binding.lblError.isVisible = false
@@ -144,10 +144,10 @@ class AlarmEditorSheet(
 
     private fun save() {
         val title = binding.inpTitle.text?.toString()?.trim().orEmpty()
-        if (title.isEmpty()) return showError(R.string.rem_err_title)
+        if (title.isEmpty()) return presentError(R.string.rem_err_title)
         val at = pick.timeInMillis
         // A one-off must be in the future; a repeating one just starts at its next time.
-        if (repeat == Repeat.ONCE && at <= System.currentTimeMillis() + 30_000L) return showError(R.string.rem_err_past)
+        if (repeat == Repeat.ONCE && at <= System.currentTimeMillis() + 30_000L) return presentError(R.string.rem_err_past)
 
         val item = (existing ?: AlarmEntry(title = title, dateTime = at)).copy(
             title = title,
@@ -163,7 +163,7 @@ class AlarmEditorSheet(
         onSave(item, existing == null)
     }
 
-    private fun showError(res: Int) {
+    private fun presentError(res: Int) {
         binding.lblError.setText(res)
         binding.lblError.isVisible = true
         binding.lblError.announceForAccessibility(binding.lblError.text)

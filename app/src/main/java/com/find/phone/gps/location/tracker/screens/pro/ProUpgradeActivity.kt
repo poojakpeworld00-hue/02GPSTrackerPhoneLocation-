@@ -23,7 +23,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
 import com.find.phone.gps.location.tracker.repo.billing.ProSettings
@@ -32,8 +32,8 @@ import com.find.phone.gps.location.tracker.databinding.CardPremiumPlanBinding
 import com.find.phone.gps.location.tracker.databinding.PagePremiumBinding
 import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
-import com.find.phone.gps.location.tracker.helpers.openPolicyLink
-import com.find.phone.gps.location.tracker.helpers.openTermLink
+import com.find.phone.gps.location.tracker.helpers.unfoldPolicyLink
+import com.find.phone.gps.location.tracker.helpers.unfoldTermLink
 import kotlin.math.roundToInt
 
 /**
@@ -64,7 +64,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         config = ProSettings.read(this)
         plans = config.plans.take(3)
         selected = plans.indexOfFirst { it.preselected }.coerceAtLeast(0)
-        logKeyEvent(if (afterIntro) "premium_view_after_intro" else "premium_view")
+        trackEvent(if (afterIntro) "premium_view_after_intro" else "premium_view")
 
         // The light map runs under the status bar (edge to edge on every API level): dark icons,
         // and the close sits below the bar.
@@ -87,20 +87,20 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
             row.root.isVisible = i < plans.size
             row.planCardVw.setOnClickListener { select(i) }
         }
-        bindPlans()
+        wirePlans()
 
         VisualTweens.pressScale(binding.padContinue)
         binding.padContinue.clipToOutline = true
         binding.padContinue.setOnClickListener { buy() }
         binding.padRestore.setOnClickListener { restore() }
-        binding.padTerms.setOnClickListener { openTermLink() }
-        binding.padPrivacy.setOnClickListener { openPolicyLink() }
+        binding.padTerms.setOnClickListener { unfoldTermLink() }
+        binding.padPrivacy.setOnClickListener { unfoldPolicyLink() }
         binding.padClose.setOnClickListener { if (binding.padClose.closable) leave() }
         binding.padClose.start(config.closeDelaySec, config.closeButtonOpacity) {}
         binding.padContinueFree.paintFlags = binding.padContinueFree.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         // Shown and usable from the start: close_delay_sec paces only the X.
         binding.padContinueFree.setOnClickListener {
-            logKeyEvent("premium_continue_free")
+            trackEvent("premium_continue_free")
             leave()
         }
 
@@ -112,8 +112,8 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         })
 
         ProStoreBilling.onPurchaseResult = { onPurchase(it) }
-        loadPrices()
-        startShine()
+        fetchPrices()
+        kickShine()
     }
 
     private val afterIntro: Boolean get() = intent.getBooleanExtra(EXTRA_AFTER_INTRO, false)
@@ -125,10 +125,10 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
     private fun select(index: Int) {
         if (index == selected) return
         selected = index
-        bindPlans()
+        wirePlans()
     }
 
-    private fun bindPlans() {
+    private fun wirePlans() {
         plans.forEachIndexed { i, plan ->
             val row = rows[i]
             val on = i == selected
@@ -155,7 +155,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         }
         val plan = plans.getOrNull(selected) ?: return
         val trial = trialOf(plan)
-        bindConsent(
+        wireConsent(
             when {
                 trial > 0 -> R.string.ds_premium_consent_trial
                 plan.isSubscription -> R.string.ds_premium_consent_subs
@@ -197,23 +197,23 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
      * Asks Play for the plans' localized prices (usually already in memory from app start).
      * Retries twice on its own; after that the CTA offers Retry.
      */
-    private fun loadPrices() {
+    private fun fetchPrices() {
         priceState = PriceState.LOADING
-        bindPlans()
-        ProStoreBilling.loadDetails(this, plans) {
+        wirePlans()
+        ProStoreBilling.fetchDetails(this, plans) {
             runOnUiThread {
                 if (isFinishing || isDestroyed) return@runOnUiThread
                 priceAttempts++
                 priceState = when {
                     plans.all { ProStoreBilling.price(it) != null } -> PriceState.READY
                     priceAttempts < PRICE_AUTO_ATTEMPTS -> {
-                        binding.root.postDelayed({ if (!isFinishing && !isDestroyed) loadPrices() }, PRICE_RETRY_MS * priceAttempts)
+                        binding.root.postDelayed({ if (!isFinishing && !isDestroyed) fetchPrices() }, PRICE_RETRY_MS * priceAttempts)
                         PriceState.LOADING
                     }
                     else -> PriceState.FAILED
                 }
-                if (priceState == PriceState.FAILED) logKeyEvent("premium_price_unavailable")
-                bindPlans()
+                if (priceState == PriceState.FAILED) trackEvent("premium_price_unavailable")
+                wirePlans()
             }
         }
     }
@@ -225,7 +225,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
     private fun trialOf(plan: ProTier): Int = ProStoreBilling.trialDays(plan) ?: plan.fallbackTrialDays
 
     /** "By continuing you agree to our Terms & Privacy. <tail>" with both words as links. */
-    private fun bindConsent(tail: Int) {
+    private fun wireConsent(tail: Int) {
         val terms = getString(R.string.ds_premium_terms)
         val privacy = getString(R.string.ds_premium_privacy)
         val text = getString(R.string.ds_premium_consent, terms, privacy) + " " + getString(tail)
@@ -237,8 +237,8 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
                 override fun onClick(widget: View) = open()
             }, start, start + word.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        link(terms) { openTermLink() }
-        link(privacy) { openPolicyLink() }
+        link(terms) { unfoldTermLink() }
+        link(privacy) { unfoldPolicyLink() }
         binding.lblNote.text = spannable
         binding.lblNote.movementMethod = LinkMovementMethod.getInstance()
     }
@@ -264,11 +264,11 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
             // Never sell without Play's price on screen: still loading → wait, failed → ask again.
             if (priceState == PriceState.FAILED) {
                 priceAttempts = 0
-                loadPrices()
+                fetchPrices()
             }
             return
         }
-        logKeyEvent("premium_cta_${plan.kind.name.lowercase()}")
+        trackEvent("premium_cta_${plan.kind.name.lowercase()}")
         if (!ProStoreBilling.purchase(this, plan)) {
             Toast.makeText(this, R.string.ds_premium_unavailable, Toast.LENGTH_LONG).show()
             return
@@ -280,7 +280,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         setBuying(false)
         when (outcome) {
             ProStoreBilling.PurchaseOutcome.PURCHASED -> {
-                logKeyEvent("premium_purchased")
+                trackEvent("premium_purchased")
                 Toast.makeText(this, R.string.ds_premium_welcome, Toast.LENGTH_SHORT).show()
                 leave()
             }
@@ -325,7 +325,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
     // ── Shine ─────────────────────────────────────────────────────────────
 
     /** The light streak sweeping across the CTA every 3 s (design `shine`). */
-    private fun startShine() {
+    private fun kickShine() {
         if (VisualTweens.animationsDisabled(this)) {
             binding.shineVw.isVisible = false
             return

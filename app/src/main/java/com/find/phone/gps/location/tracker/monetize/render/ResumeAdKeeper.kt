@@ -13,7 +13,7 @@ import io.lighthouse.push.extended.LightHouseRichPush
 import com.find.phone.gps.location.tracker.monetize.model.AdFormatKind
 import com.find.phone.gps.location.tracker.monetize.engine.EarningsTracker
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnExit
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnAction
 import com.find.phone.gps.location.tracker.BuildConfig
@@ -81,7 +81,7 @@ object ResumeAdKeeper {
                             override fun onAdLoaded(ad: AppOpenAd) {
 
                                 try {
-                                    context.logKeyEvent("appopen_ad_loaded")
+                                    context.trackEvent("appopen_ad_loaded")
                                 } catch (e: Exception) {
                                 }
 
@@ -96,7 +96,7 @@ object ResumeAdKeeper {
                                 )
 
                                 try {
-                                    context.logKeyEvent("appopen_ad_fail")
+                                    context.trackEvent("appopen_ad_fail")
                                 } catch (e: Exception) {
                                 }
                                 isLoadingAd = false
@@ -110,7 +110,7 @@ object ResumeAdKeeper {
         }
     }
 
-    fun showAdIfAvailable(
+    fun presentAdIfAvailable(
         activity: Activity, onShowAdCompleteListener: OnAdDoneCallback
     ) {
         if (!AdPrefsStore.getInstance(activity).getBoolean("IsAdsON")) {
@@ -167,7 +167,7 @@ object ResumeAdKeeper {
                 )
 
                 try {
-                    activity.logKeyEvent("appopen_ad_dismissed")
+                    activity.trackEvent("appopen_ad_dismissed")
                 } catch (_: Exception) {
                 }
 
@@ -185,7 +185,7 @@ object ResumeAdKeeper {
                     LOG_TAG, adError.message
                 )
                 try {
-                    activity.logKeyEvent("appopen_ad_fail")
+                    activity.trackEvent("appopen_ad_fail")
                 } catch (_: Exception) {
                 }
                 appOpenAd = null
@@ -204,12 +204,12 @@ object ResumeAdKeeper {
         }
 
         // Log load
-        activity.logKeyEvent("appopen_ad_shown")
+        activity.trackEvent("appopen_ad_shown")
 
         if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
 
         appOpenAd!!.setOnPaidEventListener {
-            EarningsTracker.logPaidEvent(activity, it)
+            EarningsTracker.trackPaidEvent(activity, it)
         }
 
         isShowingAd = true

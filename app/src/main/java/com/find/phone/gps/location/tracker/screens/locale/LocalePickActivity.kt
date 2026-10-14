@@ -65,7 +65,7 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         viewModel.init(current)
 
         // Big native under the list, `launcher_ads.onboarding.language.slot`.
-        HomeAdsSettings.showSlot(
+        HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.LANGUAGE),
             container = binding.adNativeFrameVw,
@@ -80,7 +80,7 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         }
 
         // Resolve the region FIRST, so the Suggested list is right on the very first frame.
-        resolveRegion()
+        settleRegion()
 
         val onPick: (LanguageEntry) -> Unit = { viewModel.select(it.tag) }
         suggestedAdapter = LanguageListAdapter(onPick).apply { setCurrent(current) }
@@ -90,7 +90,7 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         binding.rollLanguages.layoutManager = LinearLayoutManager(this)
         binding.rollLanguages.adapter = allAdapter
 
-        binding.padInfo.setOnClickListener { showInfoDialog() }
+        binding.padInfo.setOnClickListener { presentInfoDialog() }
         VisualTweens.pressScale(binding.padContinue)
         binding.padContinue.setOnClickListener { onContinue() }
 
@@ -128,11 +128,11 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         }
     }
 
-    private fun resolveRegion() {
+    private fun settleRegion() {
         val device = deviceCountry()
-        SafeLogger.log(TAG, "resolveRegion: device=$device (sync seed)")
-        viewModel.applyCountry(device)
-        detectCountryByIp()
+        SafeLogger.log(TAG, "settleRegion: device=$device (sync seed)")
+        viewModel.imprintCountry(device)
+        senseCountryByIp()
     }
 
     private fun deviceCountry(): String? {
@@ -143,14 +143,14 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         return (sim ?: network ?: locale)?.uppercase()
     }
 
-    private fun detectCountryByIp() {
+    private fun senseCountryByIp() {
         lifecycleScope.launch {
-            val geo = TerritoryFinder.detectCountry(this@LocalePickActivity) ?: run {
+            val geo = TerritoryFinder.senseCountry(this@LocalePickActivity) ?: run {
                 SafeLogger.log(TAG, "IP geo unavailable → keeping device seed")
                 return@launch
             }
             SafeLogger.log(TAG, "IP refine → country=${geo.iso}")
-            viewModel.applyCountry(geo.iso)
+            viewModel.imprintCountry(geo.iso)
         }
     }
 
@@ -166,7 +166,7 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
             .start()
     }
 
-    private fun showInfoDialog() {
+    private fun presentInfoDialog() {
         val view = layoutInflater.inflate(R.layout.overlay_language_info, binding.languageRootVw, false)
         val dialog = MaterialAlertDialogBuilder(this).setView(view).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)

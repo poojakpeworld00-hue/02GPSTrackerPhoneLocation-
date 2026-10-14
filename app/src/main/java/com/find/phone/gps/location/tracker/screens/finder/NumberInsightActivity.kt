@@ -89,14 +89,14 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         binding.padBack.setOnClickListener { goBack() }
         binding.padShare.setOnClickListener { share() }
         binding.padRetry.setOnClickListener { retry() }
-        binding.mapTapVw.setOnClickListener { openFullMap() }
-        binding.padFullMap.setOnClickListener { openFullMap() }
+        binding.mapTapVw.setOnClickListener { unfoldFullMap() }
+        binding.padFullMap.setOnClickListener { unfoldFullMap() }
         VisualTweens.pressScale(binding.padFullMap)
         binding.identityCardVw.clipToOutline = false
 
         action(binding.actCallVw, R.drawable.vs_ic_call, R.string.ds_act_call, lead = true) { placeCall(report.e164) }
         action(binding.actSmsVw, R.drawable.vs_ic_message, R.string.ds_act_sms) { sendSms() }
-        action(binding.actMapVw, R.drawable.vs_ic_navigation, R.string.ds_act_map) { openFullMap() }
+        action(binding.actMapVw, R.drawable.vs_ic_navigation, R.string.ds_act_map) { unfoldFullMap() }
         action(binding.actCopyVw, R.drawable.vs_ic_copy, R.string.ds_act_copy) { copyNumber() }
 
         OpenStreetTiles.style(binding.mapViewVw, interactive = false)
@@ -128,7 +128,7 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         cell(binding.cellCarrierVw, R.string.ds_fact_carrier, r.carrier)
         cell(binding.cellLineVw, R.string.ds_fact_line, line)
 
-        bindNames()
+        wireNames()
     }
 
     private fun chip(@StringRes text: Int, @DrawableRes pill: Int, color: Int) {
@@ -162,7 +162,7 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
     private fun isRevealed(index: Int, name: String): Boolean =
         index == 0 && report.name != null || ProStoreBilling.isPremium(this) || UnveiledLabels.isRevealed(this, report.e164, name)
 
-    private fun bindNames() {
+    private fun wireNames() {
         val all = names
         binding.namesBlockVw.isVisible = all.isNotEmpty()
         binding.namesListVw.removeAllViews()
@@ -172,20 +172,20 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         binding.padShowAllNames.text = getString(R.string.ds_names_show_all, all.size)
         binding.padShowAllNames.setOnClickListener {
             allNamesShown = true
-            bindNames()
+            wireNames()
         }
         shown.forEachIndexed { i, name ->
             val item = CardDetailNameBinding.inflate(LayoutInflater.from(this), binding.namesListVw, true)
             item.lblName.text = name
             item.nameDividerVw.isVisible = i < shown.lastIndex
-            showName(item, name, isRevealed(i, name))
+            presentName(item, name, isRevealed(i, name))
             item.padReveal.setOnClickListener { revealName(item, name) }
         }
         updateRevealedCount()
         if (all.indices.any { !isRevealed(it, all[it]) }) BonusAdSponsor.preload(this)
     }
 
-    private fun showName(item: CardDetailNameBinding, name: String, revealed: Boolean) {
+    private fun presentName(item: CardDetailNameBinding, name: String, revealed: Boolean) {
         item.lblName.setBlurred(!revealed)
         item.lblRevealed.isVisible = revealed
         item.padReveal.isVisible = !revealed
@@ -227,7 +227,7 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
                 return@show
             }
             UnveiledLabels.reveal(this, report.e164, name)
-            showName(item, name, revealed = true)
+            presentName(item, name, revealed = true)
             updateRevealedCount()
         }
     }
@@ -284,7 +284,7 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
     }
 
     /** The area on a full-screen, interactive map (header Full view, a tap on the header, Map). */
-    private fun openFullMap() = startActivity(MapExpandedActivity.intent(this, report))
+    private fun unfoldFullMap() = startActivity(MapExpandedActivity.intent(this, report))
 
     private fun share() {
         val r = report

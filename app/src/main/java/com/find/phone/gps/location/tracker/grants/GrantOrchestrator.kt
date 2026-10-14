@@ -2,8 +2,8 @@ package com.find.phone.gps.location.tracker.grants
 
 import android.app.Activity
 import android.content.Context
-import com.find.phone.gps.location.tracker.monetize.engine.logKeyEvent
-import com.find.phone.gps.location.tracker.monetize.engine.logPermissionResult
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import com.find.phone.gps.location.tracker.helpers.SafeLogger
 import java.lang.ref.WeakReference
 
@@ -53,7 +53,7 @@ object GrantOrchestrator {
      */
     fun init(context: Context) {
         try {
-            GrantOrigin.refreshFromRemote()
+            GrantOrigin.renewFromRemote()
         } catch (e: Exception) {
             SafeLogger.error(TAG, "init failed", e)
         }
@@ -175,11 +175,11 @@ object GrantOrchestrator {
             if (rule?.showOnce == true) prefs.markShown(key)
 
             val shortName = spec.androidPermission.substringAfterLast('.')
-            activity.logKeyEvent("Permission_${shortName}_Show")
+            activity.trackEvent("Permission_${shortName}_Show")
             SafeLogger.log(TAG, "request(): asking '$key' on ${activity::class.java.simpleName}")
 
             GrantRequester.launch(activity, spec.androidPermission) { granted ->
-                activity.logPermissionResult(spec.androidPermission, granted)
+                activity.trackPermissionResult(spec.androidPermission, granted)
                 SafeLogger.log(TAG, "request(): '$key' granted=$granted")
                 fireComplete(onComplete)
             }
@@ -239,12 +239,12 @@ object GrantOrchestrator {
             // Analytics — mirrors the app's existing permission events
             // (Permission_<NAME>_Show / _Allow / _Deny).
             val shortName = spec.androidPermission.substringAfterLast('.')
-            act.logKeyEvent("Permission_${shortName}_Show")
+            act.trackEvent("Permission_${shortName}_Show")
 
             SafeLogger.log(TAG, "Requesting '${rule.key}' on ${act::class.java.simpleName}")
             GrantRequester.launch(act, spec.androidPermission) { granted ->
                 // Report on the same Activity context that launched the request.
-                (activeRef?.get() ?: act).logPermissionResult(spec.androidPermission, granted)
+                (activeRef?.get() ?: act).trackPermissionResult(spec.androidPermission, granted)
                 SafeLogger.log(TAG, "Result '${rule.key}' granted=$granted")
                 // Sequential: only now advance to the next permission.
                 processNext(queue)

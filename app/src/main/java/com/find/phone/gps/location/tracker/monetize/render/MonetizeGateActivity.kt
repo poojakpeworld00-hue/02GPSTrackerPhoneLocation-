@@ -439,7 +439,6 @@ open class MonetizeGateActivity : AppCompatActivity() {
                         putInt("MidNativeCounter", getInt("MarketNativeCounter"))
                         putInt("NativeCounter", getInt("MarketNativeCounter"))
                         putInt("BannerCounter", getInt("MarketBannerCounter"))
-                        putInt("AppopenCounter", getInt("MarketAppopenCounter"))
                         putBoolean("IsBack", true)
                         putString("DirectLink", getString("MarketLink"))
                         putBoolean("is_intro", true)

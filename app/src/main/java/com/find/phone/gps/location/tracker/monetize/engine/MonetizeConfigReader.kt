@@ -96,7 +96,7 @@ object MonetizeConfigReader {
             listOf(
                 "InterCounter", "InterBackCounter", "MarketInterCounter", "MarketBackCounter",
                 "NativeCounter", "MarketNativeCounter", "MidNativeCounter", "BannerCounter",
-                "MarketBannerCounter", "MarketAppopenCounter", "AppopenCounter",
+                "MarketBannerCounter",
                 "Perm_Sheet_Interval_Days",
 
                 "Config_Sync_Hrs",

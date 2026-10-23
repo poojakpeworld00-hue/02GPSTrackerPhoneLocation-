@@ -226,6 +226,45 @@
                     </LinearLayout>
                 </FrameLayout>
 
+                <FrameLayout
+                    android:id="@+id/quotaRowVw"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp">
+
+                    <LinearLayout
+                        android:id="@+id/quotaTileVw"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/hb_quota_r16"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/lblQuota"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito_extrabold"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/hb_amber_ink"
+                            android:textSize="15sp"
+                            tools:text="2/3" />
+
+                        <ProgressBar
+                            android:id="@+id/quotaBarVw"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:max="100"
+                            android:visibility="gone" />
+                    </LinearLayout>
+                </FrameLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
@@ -278,40 +317,6 @@
                         </LinearLayout>
                     </FrameLayout>
 
-                    <FrameLayout
-                        android:id="@+id/quotaRowVw"
-                        android:layout_width="92dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp">
-
-                        <LinearLayout
-                            android:id="@+id/quotaTileVw"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/hb_quota_r16"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/lblQuota"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito_extrabold"
-                                android:includeFontPadding="false"
-                                android:textColor="@color/hb_amber_ink"
-                                android:textSize="16sp"
-                                tools:text="2/3" />
-
-                            <ProgressBar
-                                android:id="@+id/quotaBarVw"
-                                style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="0dp"
-                                android:layout_height="0dp"
-                                android:max="100"
-                                android:visibility="gone" />
-                        </LinearLayout>
-                    </FrameLayout>
                 </LinearLayout>
             </LinearLayout>
 

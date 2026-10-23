@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.ViewTreeObserver
 import android.webkit.WebSettings
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -276,10 +278,24 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
         }
     }
 
-    override fun onActivityCreated(p0: Activity, p1: Bundle?) {}
+    override fun onActivityCreated(activity: Activity, p1: Bundle?) {
+        // re-hide after dialogs / keyboard / system UI steal focus
+        activity.window.decorView.viewTreeObserver.addOnWindowFocusChangeListener { focused ->
+            if (focused) hideNavigationBar(activity)
+        }
+    }
+
+    private fun hideNavigationBar(activity: Activity) {
+        val window = activity.window
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            hide(WindowInsetsCompat.Type.navigationBars())
+        }
+    }
 
     override fun onActivityResumed(activity: Activity) {
         currentActivity = activity
+        hideNavigationBar(activity)
         if (ResumeAdKeeper.pendingGameCloseAd && activity !is SponsorBrowserActivity) {
             ResumeAdKeeper.pendingGameCloseAd = false
             HomeAdsSettings.runSurface(activity, HomeAdsSettings.HomeDeskFragment.GAME_CLOSE) {}

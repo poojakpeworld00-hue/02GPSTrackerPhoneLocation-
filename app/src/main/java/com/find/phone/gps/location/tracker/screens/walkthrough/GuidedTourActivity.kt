@@ -175,7 +175,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
 
             HomeAdsSettings.runOnboardingInter(this, HomeAdsSettings.OnboardScreen.INTRO) {
 
-                if (ProUpgradeActivity.showsAfterIntro(this)) {
+                if (!HomeRoleJourney.placesPremium(this) && ProUpgradeActivity.showsAfterIntro(this)) {
                     startActivity(AlarmIntroActivity.wrap(this, ProUpgradeActivity.afterIntro(this, HomeRoleJourney.isOnboarding(this))))
                     finish()
                 } else if (HomeRoleJourney.isOnboardingActive(this)) {

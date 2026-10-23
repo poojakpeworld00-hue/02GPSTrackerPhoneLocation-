@@ -18,6 +18,13 @@ val lhBaseUrl: String = lhProps.getProperty("lighthouse.baseUrl", "")
 
 val lookupApiKey: String = lhProps.getProperty("lookup.apiKey", "")
 
+// release signing from git-ignored local.properties; without it the release stays unsigned
+val releaseStoreFile: String = lhProps.getProperty("release.storeFile", "")
+val releaseStorePassword: String = lhProps.getProperty("release.storePassword", "")
+val releaseKeyAlias: String = lhProps.getProperty("release.keyAlias", "")
+val releaseKeyPassword: String = lhProps.getProperty("release.keyPassword", "")
+val hasReleaseKeystore: Boolean = releaseStoreFile.isNotEmpty() && rootProject.file(releaseStoreFile).exists()
+
 fun xorByteArrayLiteral(value: String, key: Int = 0x5A): String {
     if (value.isEmpty()) return "new byte[]{}"
     val parts = value.toByteArray(Charsets.UTF_8)
@@ -49,13 +56,26 @@ android {
         buildConfigField("byte[]", "LOOKUP_API_KEY", xorByteArrayLiteral(lookupApiKey))
     }
 
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            create("release") {
+                storeFile = rootProject.file(releaseStoreFile)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
 
-            if (project.findProperty("debugSignRelease") == "true") {
-                signingConfig = signingConfigs.getByName("debug")
+            signingConfig = when {
+                hasReleaseKeystore -> signingConfigs.getByName("release")
+                project.findProperty("debugSignRelease") == "true" -> signingConfigs.getByName("debug")
+                else -> null
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

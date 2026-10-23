@@ -209,10 +209,8 @@ class InlineSponsorStrip {
 
         context.trackEvent("NativeBanner_Show_Google")
 
-        if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(context)
-
         nativeAd.setOnPaidEventListener {
-            EarningsTracker.trackPaidEvent(context, it)
+            EarningsTracker.trackPaidEvent(context, it, "native_banner", AdPrefsStore.getInstance(context).getString("googleNative"), nativeAd.responseInfo)
         }
 
         binding.apply {

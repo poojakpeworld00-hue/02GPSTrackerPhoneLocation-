@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">搜索未能完成</string>
+    <string name="ds_lookup_failed_body">目前无法连接定位服务。请检查网络连接后重试。</string>
+    <string name="ds_lookup_failed_retry">重试</string>
+    <string name="ds_lookup_failed_cancel">取消</string>
+</resources>

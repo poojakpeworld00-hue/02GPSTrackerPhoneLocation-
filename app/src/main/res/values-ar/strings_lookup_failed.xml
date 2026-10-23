@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">تعذّر إكمال البحث</string>
+    <string name="ds_lookup_failed_body">تعذّر الوصول إلى خدمة الموقع الآن. يُرجى التحقق من اتصالك والمحاولة مرة أخرى.</string>
+    <string name="ds_lookup_failed_retry">حاول مجددًا</string>
+    <string name="ds_lookup_failed_cancel">إلغاء</string>
+</resources>

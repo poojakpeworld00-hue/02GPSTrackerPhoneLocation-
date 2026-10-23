@@ -174,10 +174,8 @@ class StripSponsor {
 
                 activity.trackEvent("Banner_Load")
 
-                if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
-
                 googleBanner!!.setOnPaidEventListener {
-                    EarningsTracker.trackPaidEvent(activity, it)
+                    EarningsTracker.trackPaidEvent(activity, it, "banner", googleBanner?.adUnitId, googleBanner?.responseInfo)
                 }
 
                 shimmer?.stopShimmer()

@@ -190,7 +190,7 @@
     <string name="ds_default_body">このアプリをホームにすると、位置の検索や最近の検索にスワイプ一つでいつでもアクセスできます。</string>
     <string name="ds_set_default">標準に設定</string>
     <string name="ds_default_home_app">標準のホームアプリ</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">GPSトラッカー 電話の位置</string>
     <string name="ds_system_launcher">システムのランチャー</string>
     <string name="ds_swipe_right_to_search">右へスワイプして検索</string>
     <string name="ds_default_footnote">標準のホームアプリは、スマホの設定からいつでも変更できます。</string>
@@ -384,14 +384,11 @@
     <string name="ds_invalid_body">%1$s は %2$s の番号形式に合いません。数字や国番号をご確認ください。</string>
     <string name="ds_invalid_edit">番号を修正</string>
     <string name="ds_invalid_country">国・地域を変更</string>
-    <string name="ds_quota_label">本日の無料検索</string>
     <string name="ds_quota_left">残り %1$d / %2$d 回</string>
     <string name="ds_quota_unlimited">無制限</string>
     <string name="ds_limit_used">使用済み</string>
-    <string name="ds_limit_title">本日の検索回数の上限です</string>
-    <string name="ds_limit_body">本日の無料検索%1$d回を使い切りました。短い広告を見てあと1回検索するか、プレミアムで無制限に検索できます。</string>
+    <string name="ds_limit_title">無料検索の上限に達しました</string>
     <string name="ds_limit_body_premium">本日の無料検索%1$d回を使い切りました。プレミアムなら無制限に検索でき、明日になればまた無料でご利用いただけます。</string>
-    <string name="ds_limit_watch">広告を見る · 検索+1回</string>
     <string name="ds_limit_premium">プレミアムで無制限に</string>
     <string name="ds_limit_reset">無料の検索回数は午前0時にリセットされます</string>
     <string name="ds_history_title">検索の履歴</string>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">عمليات بحث جديدة خلال %1$s</string>
+    <string name="ds_limit_body_timer">لقد استخدمت كل عمليات البحث المجانية (%1$d). ستُفتح المزيد عند انتهاء المؤقّت.</string>
+    <string name="ds_limit_timer_label">عمليات بحث جديدة خلال</string>
+</resources>

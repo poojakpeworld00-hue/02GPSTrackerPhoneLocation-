@@ -121,7 +121,7 @@ class OwnNumberTile private constructor(
         views.padMyNumber.isVisible = !showing
 
         views.padManage.isVisible = showing
-        views.padMyNumber.setText(if (isPermanentlyDenied()) R.string.my_number_settings else R.string.my_number_show)
+        views.padMyNumber.setText(R.string.my_number_show)
 
         views.lblMyNumberSub.isVisible = !showing
         views.prompt?.isVisible = !showing
@@ -155,21 +155,9 @@ class OwnNumberTile private constructor(
         }
     }
 
-    private fun isPermanentlyDenied(): Boolean {
-        val permission = OwnSimLines.PERMISSIONS.first()
-        return !OwnSimLines.isGranted(activity) &&
-            prefs.hasRequestedPermission(permission) &&
-            !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
-    }
-
+    // denied twice: tell the user the feature is unavailable; never send them to Settings (R08)
     private fun unfoldAppSettings(context: Context) {
         Toast.makeText(context, R.string.my_number_denied, Toast.LENGTH_LONG).show()
-        ResumeAdKeeper.skipNextAppOpenAd = true
-        runCatching {
-            activity.startActivity(
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null))
-            )
-        }
     }
 
     private fun wireRow(inflater: LayoutInflater, context: Context, line: OwnSimLines.SimSlotLine): View {

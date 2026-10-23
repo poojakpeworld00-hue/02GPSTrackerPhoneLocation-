@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">ค้นหาไม่สำเร็จ</string>
+    <string name="ds_lookup_failed_body">ไม่สามารถเชื่อมต่อบริการระบุตำแหน่งได้ในขณะนี้ โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</string>
+    <string name="ds_lookup_failed_retry">ลองอีกครั้ง</string>
+    <string name="ds_lookup_failed_cancel">ยกเลิก</string>
+</resources>

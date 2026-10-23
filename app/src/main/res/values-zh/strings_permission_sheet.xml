@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ps_allow_fmt">允许%1$s</string>
+    <string name="ps_allowed">已允许</string>
+    <string name="ps_trust">你随时可以在设置中更改</string>
+</resources>

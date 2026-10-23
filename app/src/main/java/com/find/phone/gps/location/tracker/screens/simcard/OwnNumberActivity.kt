@@ -94,7 +94,7 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         binding.simCardsVw.isVisible = showing
         binding.simToolsSectionVw.isVisible = showing
         binding.emptyStateVw.isVisible = !showing
-        binding.padShow.setText(if (isPermanentlyDenied()) R.string.my_number_settings else R.string.my_number_show)
+        binding.padShow.setText(R.string.my_number_show)
 
         binding.simCardsVw.removeAllViews()
         if (!showing) {
@@ -242,19 +242,9 @@ class OwnNumberActivity : FoundationActivity<PageMyNumberBinding>() {
         }
     }
 
-    private fun isPermanentlyDenied(): Boolean {
-        val permission = OwnSimLines.PERMISSIONS.first()
-        return !OwnSimLines.isGranted(this) &&
-            prefs.hasRequestedPermission(permission) &&
-            !androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
-    }
-
+    // denied twice: tell the user the feature is unavailable; never send them to Settings (R08)
     private fun unfoldPhoneSettings() {
         Toast.makeText(this, R.string.my_number_denied, Toast.LENGTH_LONG).show()
-        ResumeAdKeeper.skipNextAppOpenAd = true
-        runCatching {
-            startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)))
-        }
     }
 
     private fun copy(number: String) {

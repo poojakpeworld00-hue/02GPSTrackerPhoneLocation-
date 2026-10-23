@@ -10,152 +10,152 @@
     android:orientation="vertical"
     android:paddingHorizontal="20dp"
     android:paddingTop="10dp"
-    android:paddingBottom="22dp">
+    android:paddingBottom="24dp">
 
     <View
-        android:layout_width="32dp"
-        android:layout_height="4dp"
+        android:layout_width="36dp"
+        android:layout_height="5dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/gp_bg_grabber" />
 
-    <FrameLayout
+    <!-- segmented progress + skip -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="28dp"
-        android:layout_marginTop="14dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/counterPillVw"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
-            android:layout_gravity="start|center_vertical"
-            android:background="@drawable/gp_bg_pill_tonal"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="10dp">
-
-            <TextView
-                android:id="@+id/lblCounterCurrent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/figtree_bold"
-                android:textColor="@color/ps_accent_ink"
-                android:textSize="12sp"
-                tools:text="1" />
-
-            <TextView
-                android:id="@+id/lblCounterTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:fontFamily="@font/figtree_bold"
-                android:textColor="@color/ps_muted"
-                android:textSize="12sp"
-                tools:text="/ 4" />
-        </LinearLayout>
+            android:id="@+id/segVw"
+            android:layout_width="0dp"
+            android:layout_height="6dp"
+            android:layout_weight="1"
+            android:orientation="horizontal" />
 
         <TextView
             android:id="@+id/padSkip"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end|center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:fontFamily="@font/figtree_bold"
-            android:gravity="center"
             android:paddingHorizontal="6dp"
+            android:paddingVertical="4dp"
             android:text="@string/ps_skip"
             android:textColor="@color/ps_muted"
-            android:textSize="14sp" />
-    </FrameLayout>
+            android:textSize="13sp" />
+    </LinearLayout>
 
+    <!-- hero (per permission) -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pagerVw"
         android:layout_width="match_parent"
-        android:layout_height="320dp"
+        android:layout_height="206dp"
         android:layout_marginTop="14dp" />
 
+    <!-- step rail -->
     <LinearLayout
-        android:id="@+id/statusChipVw"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:background="@drawable/gp_bg_status_success"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="10dp"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <ImageView
-            android:id="@+id/picStatus"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/gp_ic_check"
-            app:tint="@color/ps_success" />
-
-        <TextView
-            android:id="@+id/lblStatus"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:accessibilityLiveRegion="polite"
-            android:fontFamily="@font/figtree_semibold"
-            android:lineSpacingExtra="2dp"
-            android:textColor="@color/ps_success_ink"
-            android:textSize="13sp"
-            tools:text="Contacts allowed. Moving on…" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/dotsVw"
+        android:id="@+id/railVw"
         android:layout_width="wrap_content"
-        android:layout_height="6dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/lblTitle"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_marginTop="14dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:accessibilityHeading="true"
+        android:fontFamily="@font/nunito_extrabold"
+        android:letterSpacing="-0.01"
+        android:textColor="@color/ps_ink"
+        android:textSize="23sp"
+        tools:text="Enable notifications" />
 
-        <FrameLayout
-            android:id="@+id/padPrimary"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_weight="1"
-            android:background="@drawable/gp_bg_btn_gradient"
-            android:foreground="?attr/selectableItemBackground">
+    <TextView
+        android:id="@+id/lblBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:fontFamily="@font/figtree_regular"
+        android:lineSpacingExtra="4dp"
+        android:textColor="@color/ps_muted"
+        android:textSize="14sp"
+        tools:text="Be alerted when a lookup completes or a saved number changes. No promo spam." />
 
-            <LinearLayout
-                android:id="@+id/primaryContentVw"
+    <!-- primary -->
+    <FrameLayout
+        android:id="@+id/padPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/gp_bg_btn_gradient"
+        android:foreground="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:id="@+id/primaryContentVw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                android:id="@+id/pbPrimaryVw"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="9dp"
+                android:indeterminateTint="@android:color/white"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/picPrimary"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="8dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/gp_ic_check"
+                app:tint="@android:color/white"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/lblPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:fontFamily="@font/figtree_bold"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                tools:text="Allow notifications" />
+        </LinearLayout>
+    </FrameLayout>
 
-                <ProgressBar
-                    android:id="@+id/pbPrimaryVw"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:indeterminateTint="@android:color/white"
-                    android:visibility="gone" />
+    <!-- trust line -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="14dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/lblPrimary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/figtree_bold"
-                    android:textColor="@android:color/white"
-                    android:textSize="15sp"
-                    tools:text="Allow Notifications" />
-            </LinearLayout>
-        </FrameLayout>
+        <ImageView
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:layout_marginEnd="6dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/gp_ic_lock"
+            app:tint="@color/ps_dot_past" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/figtree_medium"
+            android:text="@string/ps_trust"
+            android:textColor="@color/ps_dot_past"
+            android:textSize="11.5sp" />
     </LinearLayout>
 
 </LinearLayout>

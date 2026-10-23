@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ps_allow_fmt">%1$s izni ver</string>
+    <string name="ps_allowed">İzin verildi</string>
+    <string name="ps_trust">Bunu istediğin zaman Ayarlar\'dan değiştirebilirsin</string>
+</resources>

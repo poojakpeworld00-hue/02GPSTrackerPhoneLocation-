@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">New searches in %1$s</string>
+    <string name="ds_limit_body_timer">You\'ve used all %1$d free searches. More will unlock when the timer ends.</string>
+    <string name="ds_limit_timer_label">New searches in</string>
+</resources>

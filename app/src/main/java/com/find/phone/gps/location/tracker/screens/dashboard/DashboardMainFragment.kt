@@ -12,6 +12,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.LayoutInflater
@@ -174,7 +176,8 @@ class DashboardMainFragment : Fragment() {
 
     private var pendingSearch: PastLookup? = null
 
-    private var nextSearchPrepaid = false
+    private val quotaHandler = Handler(Looper.getMainLooper())
+    private val quotaTicker = Runnable { wireQuota() }
 
     private val limitPremiumLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         wireQuota()
@@ -307,6 +310,7 @@ class DashboardMainFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        quotaHandler.removeCallbacks(quotaTicker)
         proShine = null
         myNumberTile = null
         VisualTweens.cancelAll(animators)
@@ -394,7 +398,6 @@ class DashboardMainFragment : Fragment() {
     private fun setTypingState(typing: Boolean) {
         binding.phoneFieldVw.setBackgroundResource(if (typing) R.drawable.hb_field_focus_r16 else R.drawable.hb_field_r16)
         binding.fieldHaloVw.isInvisible = !typing
-        binding.capGps.isVisible = !typing
         binding.lblHeadline.textSize = if (typing) 22f else 24f
     }
 
@@ -420,12 +423,8 @@ class DashboardMainFragment : Fragment() {
                 context.trackPermissionShow(permission)
                 contactPermission.launch(permission)
             }
-            else -> {
-                Toast.makeText(context, R.string.ds_contacts_denied, Toast.LENGTH_SHORT).show()
-                runCatching {
-                    startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null)))
-                }
-            }
+            // denied twice: tell the user, but never send them to Settings (R08)
+            else -> Toast.makeText(context, R.string.ds_contacts_denied, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -461,9 +460,8 @@ class DashboardMainFragment : Fragment() {
             requireContext().trackEvent("search_limit_reached")
             LookupCapSheet(
                 requireActivity(),
-                onExtraSearch = {
+                onReady = {
                     wireQuota()
-                    nextSearchPrepaid = true
                     kickSearch()
                 },
                 onPremium = { limitPremiumLauncher.launch(ProUpgradeActivity.intent(requireContext())) },
@@ -492,20 +490,26 @@ class DashboardMainFragment : Fragment() {
             wireQuota()
         }
 
-        val unlockedBefore = store.all().any { it.digits == search.digits && it.dial == search.dial && it.unlocked } ||
-
-            (saved == null && nextSearchPrepaid)
-        if (saved == null) nextSearchPrepaid = false
+        val unlockedBefore = store.all().any { it.digits == search.digits && it.dial == search.dial && it.unlocked }
         locatingPage.launch(PinpointingActivity.intent(activity, search, saved, unlockedBefore))
     }
 
     private fun wireQuota() {
         val b = _binding ?: return
         val context = requireContext()
+        quotaHandler.removeCallbacks(quotaTicker)
         val unlimited = LookupAllowance.isUnlimited(context)
         b.quotaRowVw.isVisible = !unlimited
         if (unlimited) return
         val limit = LookupAllowance.limit(context)
+        val cooldown = LookupAllowance.cooldownRemainingMs(context)
+        if (cooldown > 0L) {
+            b.lblQuota.text = getString(R.string.ds_quota_cooldown, LookupAllowance.formatRemaining(cooldown))
+            b.padUnlimited.contentDescription = b.lblQuota.text.toString() + ". " + getString(R.string.ds_quota_unlimited)
+            b.quotaBarVw.progress = 0
+            quotaHandler.postDelayed(quotaTicker, 1_000L)
+            return
+        }
         val left = LookupAllowance.remaining(context)
         b.lblQuota.text = getString(R.string.hb_quota_short, left, limit)
         b.padUnlimited.contentDescription =

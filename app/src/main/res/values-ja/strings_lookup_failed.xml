@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">検索を完了できませんでした</string>
+    <string name="ds_lookup_failed_body">現在、位置情報サービスに接続できません。接続を確認して、もう一度お試しください。</string>
+    <string name="ds_lookup_failed_retry">再試行</string>
+    <string name="ds_lookup_failed_cancel">キャンセル</string>
+</resources>

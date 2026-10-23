@@ -194,7 +194,7 @@
     <string name="ds_default_body">Назначьте приложение главным экраном, и поиск местоположения с последними запросами будут доступны одним свайпом.</string>
     <string name="ds_set_default">Назначить</string>
     <string name="ds_default_home_app">Приложение главного экрана</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">GPS-трекер: местоположение телефона</string>
     <string name="ds_system_launcher">Системный рабочий стол</string>
     <string name="ds_swipe_right_to_search">Смахните вправо, чтобы искать</string>
     <string name="ds_default_footnote">Сменить главный экран можно в любой момент в настройках телефона.</string>
@@ -388,14 +388,11 @@
     <string name="ds_invalid_body">%1$s не подходит под формат номеров %2$s. Перепроверьте цифры или код страны.</string>
     <string name="ds_invalid_edit">Исправить номер</string>
     <string name="ds_invalid_country">Другая страна</string>
-    <string name="ds_quota_label">Бесплатные проверки на сегодня</string>
     <string name="ds_quota_left">Остаётся %1$d из %2$d</string>
     <string name="ds_quota_unlimited">Без ограничений</string>
     <string name="ds_limit_used">потрачено</string>
-    <string name="ds_limit_title">Суточный лимит проверок исчерпан</string>
-    <string name="ds_limit_body">Все %1$d бесплатных проверок на сегодня потрачены. Посмотрите короткую рекламу ради ещё одной либо подключите Премиум для поиска без ограничений.</string>
+    <string name="ds_limit_title">Лимит бесплатных поисков исчерпан</string>
     <string name="ds_limit_body_premium">Все %1$d бесплатных проверок на сегодня потрачены. Подключите Premium для поиска без ограничений или приходите завтра.</string>
-    <string name="ds_limit_watch">Реклама · +1 проверка</string>
     <string name="ds_limit_premium">Премиум · Без ограничений</string>
     <string name="ds_limit_reset">Бесплатные проверки возобновляются в полночь</string>
     <string name="ds_history_title">Журнал проверок</string>

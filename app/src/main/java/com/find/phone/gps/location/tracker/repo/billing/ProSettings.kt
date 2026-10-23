@@ -22,10 +22,6 @@ data class ProSettings(
     val closeDelaySec: Int,
     val plans: List<ProTier>,
 
-    val freeSearchLimit: Int = 3,
-
-    val rewardedExtraSearches: Int = 0,
-
     val closeButtonOpacity: Float = 1f,
 ) {
     companion object {
@@ -62,8 +58,6 @@ data class ProSettings(
                 showAfterIntro = o.optBoolean("show_after_intro", true),
                 closeDelaySec = o.optInt("close_delay_sec", 5).coerceIn(0, 30),
                 plans = plans,
-                freeSearchLimit = o.optInt("free_search_limit", 3),
-                rewardedExtraSearches = o.optInt("rewarded_extra_searches", 0).coerceAtLeast(0),
                 closeButtonOpacity = o.optDouble("close_button_opacity", 1.0)
                     .let { if (it.isNaN()) 1.0 else it }.coerceIn(MIN_CLOSE_OPACITY, 1.0).toFloat(),
             )

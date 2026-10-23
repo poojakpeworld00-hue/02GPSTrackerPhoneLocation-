@@ -78,7 +78,8 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
 
             shouldShowRequestPermissionRationale(permission) -> launcher.launch(permission)
 
-            else -> unfoldAppSettings()
+            // denied twice: stop asking, never send the user to Settings (R08)
+            else -> Unit
         }
     }
 
@@ -125,7 +126,8 @@ abstract class FoundationFragment<VB : ViewBinding> : Fragment() {
                     chainLauncher.launch(permission)
                 }
 
-                else -> unfoldAppSettings()
+                // denied twice: stop asking, never send the user to Settings (R08)
+                else -> Unit
             }
             return
         }

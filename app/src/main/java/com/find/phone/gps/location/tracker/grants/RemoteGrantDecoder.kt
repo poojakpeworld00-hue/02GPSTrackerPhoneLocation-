@@ -8,6 +8,17 @@ object RemoteGrantDecoder {
     private const val TAG = "GrantOrchestrator"
     private const val ROOT_KEY = "permission_engine"
 
+    fun parseSkipFlag(json: String?): Boolean {
+        if (json.isNullOrBlank()) return true
+        return try {
+            val root = JSONObject(json)
+            val engine = root.optJSONObject(ROOT_KEY) ?: root
+            engine.optBoolean("show_skip", true)
+        } catch (e: Exception) {
+            true
+        }
+    }
+
     fun parse(json: String?): List<GrantPolicy> {
         if (json.isNullOrBlank()) return emptyList()
         return try {

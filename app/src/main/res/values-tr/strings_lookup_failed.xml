@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">Arama tamamlanamadı</string>
+    <string name="ds_lookup_failed_body">Konum hizmetine şu anda ulaşılamıyor. Lütfen bağlantınızı kontrol edip tekrar deneyin.</string>
+    <string name="ds_lookup_failed_retry">Tekrar dene</string>
+    <string name="ds_lookup_failed_cancel">İptal</string>
+</resources>

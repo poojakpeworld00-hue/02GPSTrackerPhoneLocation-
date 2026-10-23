@@ -11,6 +11,8 @@ import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import com.find.phone.gps.location.tracker.monetize.render.DeepLinkRouter
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsor
+import com.find.phone.gps.location.tracker.monetize.render.SponsorBrowserActivity
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.TrackerPhoneApp
 import com.google.android.gms.ads.nativead.NativeAdView
 import io.homedeck.grid.bridge.HomeAdsPort
@@ -101,7 +103,14 @@ class TrackerHomeAds : HomeAdsPort {
     override fun openSponsored(activity: Activity, url: String) {
         val mode = DeepLinkRouter.modeOf(AdPrefsStore.getInstance(activity).getString("link_open_in"))
             ?: DeepLinkRouter.Mode.WEBVIEW
-        DeepLinkRouter.open(activity, url, mode)
+        activity.trackEvent("game_icon_click")
+        HomeAdsSettings.runSurface(activity, HomeAdsSettings.HomeDeskFragment.GAME_CLICK) {
+            if (mode == DeepLinkRouter.Mode.WEBVIEW && !DeepLinkRouter.isStoreLink(url)) {
+                SponsorBrowserActivity.openGame(activity, url)
+            } else {
+                DeepLinkRouter.open(activity, url, mode)
+            }
+        }
     }
 
     private companion object {

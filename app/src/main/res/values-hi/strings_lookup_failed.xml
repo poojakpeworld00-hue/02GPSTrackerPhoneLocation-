@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">खोज पूरी नहीं हो सकी</string>
+    <string name="ds_lookup_failed_body">अभी लोकेशन सेवा से कनेक्ट नहीं हो पाया। कृपया अपना कनेक्शन जांचें और फिर से कोशिश करें।</string>
+    <string name="ds_lookup_failed_retry">फिर से कोशिश करें</string>
+    <string name="ds_lookup_failed_cancel">रद्द करें</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">次の無料検索まで %1$s</string>
+    <string name="ds_limit_body_timer">無料検索 %1$d 回をすべて使いました。タイマー終了後にまた使えます。</string>
+    <string name="ds_limit_timer_label">次の無料検索まで</string>
+</resources>

@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.content.pm.PackageManager
 import android.graphics.Outline
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +59,6 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     private var current = 0
     private var requestingIndex = -1
     private var pageAnimator: ValueAnimator? = null
-    private val dotAnimators = mutableListOf<ValueAnimator>()
 
     private var sequenceRunning = false
     private var lastAsked = -1
@@ -98,7 +98,8 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
 
         pager.post { fitPagerHeight() }
 
-        composeDots(view.findViewById(R.id.dotsVw))
+        composeSeg(view.findViewById(R.id.segVw))
+        composeRail(view.findViewById(R.id.railVw))
         view.findViewById<View>(R.id.padPrimary).apply {
             VisualTweens.pressScale(this)
             setOnClickListener { onPrimaryClicked() }
@@ -140,7 +141,6 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         root?.removeCallbacks(continueSequence)
         pageAnimator?.cancel()
-        dotAnimators.forEach { it.cancel() }
         if (::pageViews.isInitialized) {
             pageViews.forEachIndexed { i, v -> PanelArtwork.stop(pages[i], v, running.getOrPut(i) { mutableListOf() }) }
         }
@@ -152,8 +152,6 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     private fun composePage(inflater: LayoutInflater, page: PanelSlide): View {
         val v = inflater.inflate(R.layout.gp_page, null, false)
         v.layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        v.findViewById<TextView>(R.id.lblTitle).setText(page.title)
-        v.findViewById<TextView>(R.id.lblBody).setText(page.body)
         val host = v.findViewById<FrameLayout>(R.id.illHostVw)
         val ill = inflater.inflate(page.illustration, host, false)
         host.addView(ill, 0)
@@ -201,6 +199,16 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         current = position
         if (statuses[position] == Status.IDLE && pages[position].isGranted(ctx)) statuses[position] = Status.ALREADY
         render(animate)
+        if (animate && !VisualTweens.animationsDisabled(ctx)) crossfadeText()
+    }
+
+    private fun crossfadeText() {
+        val view = root ?: return
+        listOf<View>(view.findViewById(R.id.lblTitle), view.findViewById(R.id.lblBody)).forEach { t ->
+            t.alpha = 0f
+            t.translationY = view.context.dp(6f)
+            t.animate().alpha(1f).translationY(0f).setDuration(220L).start()
+        }
     }
 
     private fun goTo(target: Int) {
@@ -303,7 +311,10 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         statuses[i] = if (granted) Status.ALLOWED else Status.DENIED
         if (i == current) {
             render(animate = true)
-            if (granted) popCheck(pageViews[i].findViewById(R.id.checkBadgeVw))
+            if (granted) {
+                popCheck(pageViews[i].findViewById(R.id.checkBadgeVw))
+                burstRailCheck(i)
+            }
         }
 
         root?.removeCallbacks(continueSequence)
@@ -324,10 +335,16 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         val page = pages[i]
         val status = statuses[i]
 
-        view.findViewById<TextView>(R.id.lblCounterCurrent).text = (i + 1).toString()
-        view.findViewById<TextView>(R.id.lblCounterTotal).text = getString(R.string.ps_counter_total, pages.size)
-        view.findViewById<View>(R.id.padSkip).visibility = if (sequenceRunning) View.INVISIBLE else View.VISIBLE
-        paintDots(view.findViewById(R.id.dotsVw), animate)
+        view.findViewById<TextView>(R.id.lblTitle).setText(page.title)
+        view.findViewById<TextView>(R.id.lblBody).setText(page.body)
+        view.findViewById<View>(R.id.padSkip).visibility = when {
+            !GrantOrigin.skipVisible() -> View.GONE
+            sequenceRunning -> View.INVISIBLE
+            else -> View.VISIBLE
+        }
+
+        drawSeg(view.findViewById(R.id.segVw))
+        drawRail(view.findViewById(R.id.railVw))
 
         pageViews.forEachIndexed { idx, pv ->
             val badge = pv.findViewById<View>(R.id.checkBadgeVw)
@@ -336,55 +353,21 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
             else if (badge.visibility != View.VISIBLE) { badge.visibility = View.VISIBLE; badge.scaleX = 1f; badge.scaleY = 1f }
         }
 
-        val name = getString(page.shortName)
-        when (status) {
-            Status.IDLE, Status.REQUESTING -> presentChip(null)
-            Status.ALLOWED -> presentChip(
-                Chip.SUCCESS,
-                getString(if (nextToAsk(i) != null) R.string.ps_allowed_moving_on else R.string.ps_allowed_done, name),
-            )
-            Status.DENIED -> presentChip(Chip.WARNING, getString(R.string.ps_not_allowed, name))
-            Status.ALREADY -> presentChip(Chip.INFO, getString(R.string.ps_already_allowed))
-        }
-
-        paintPrimary(
-            label = getString(if (sequenceRunning) R.string.ps_requesting else R.string.ps_allow),
-            spinner = sequenceRunning,
+        val granted = status == Status.ALLOWED || status == Status.ALREADY
+        drawPrimary(
+            label = when {
+                sequenceRunning && !granted -> getString(R.string.ps_requesting)
+                granted -> getString(R.string.ps_allowed)
+                else -> getString(R.string.ps_allow_fmt, getString(page.shortName))
+            },
+            spinner = sequenceRunning && !granted,
+            check = granted,
+            green = granted,
             animate = animate && !VisualTweens.animationsDisabled(ctx),
         )
     }
 
-    private enum class Chip(val bg: Int, val icon: Int, val iconTint: Int, val text: Int) {
-        SUCCESS(R.drawable.gp_bg_status_success, R.drawable.gp_ic_check, R.color.ps_success, R.color.ps_success_ink),
-        WARNING(R.drawable.gp_bg_status_warning, R.drawable.gp_ic_warning, R.color.ps_warning, R.color.ps_warning_ink),
-        INFO(R.drawable.gp_bg_status_info, R.drawable.gp_ic_check, R.color.ps_accent_ink, R.color.ps_info_ink),
-    }
-
-    private fun presentChip(kind: Chip?, text: String? = null) {
-        val view = root ?: return
-        val chip = view.findViewById<LinearLayout>(R.id.statusChipVw)
-        if (kind == null || text == null) { chip.isVisible = false; return }
-        val ctx = view.context
-        chip.setBackgroundResource(kind.bg)
-        view.findViewById<ImageView>(R.id.picStatus).apply {
-            setImageResource(kind.icon)
-            imageTintList = ContextCompat.getColorStateList(ctx, kind.iconTint)
-        }
-        view.findViewById<TextView>(R.id.lblStatus).apply {
-            setTextColor(ContextCompat.getColor(ctx, kind.text))
-            this.text = text
-        }
-        if (!chip.isVisible) {
-            chip.isVisible = true
-            if (!VisualTweens.animationsDisabled(ctx)) {
-                chip.alpha = 0f
-                chip.translationY = ctx.dp(6f)
-                chip.animate().alpha(1f).translationY(0f).setDuration(200L).start()
-            }
-        }
-    }
-
-    private fun paintPrimary(label: String, spinner: Boolean, animate: Boolean) {
+    private fun drawPrimary(label: String, spinner: Boolean, check: Boolean, green: Boolean, animate: Boolean) {
         val view = root ?: return
         val btn = view.findViewById<View>(R.id.padPrimary)
         val content = view.findViewById<View>(R.id.primaryContentVw)
@@ -392,10 +375,12 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         val apply = {
             tv.text = label
             view.findViewById<ProgressBar>(R.id.pbPrimaryVw).isVisible = spinner
+            view.findViewById<ImageView>(R.id.picPrimary).isVisible = check
+            btn.setBackgroundResource(if (green) R.drawable.gp_bg_btn_success else R.drawable.gp_bg_btn_gradient)
         }
 
         btn.isEnabled = !spinner
-        btn.alpha = if (spinner) 0.8f else 1f
+        btn.alpha = if (spinner) 0.85f else 1f
         if (!animate || tv.text.isNullOrEmpty() || tv.text == label) {
             content.animate().cancel()
             content.alpha = 1f
@@ -405,53 +390,106 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
 
         content.animate().alpha(0f).setDuration(100L).withEndAction {
             apply()
-            content.animate().alpha(1f).setDuration(100L).start()
+            content.animate().alpha(1f).setDuration(120L).start()
         }.start()
     }
 
-    private fun composeDots(container: LinearLayout) {
+    private fun composeSeg(container: LinearLayout) {
         val ctx = container.context
         container.removeAllViews()
         pages.indices.forEach { i ->
             container.addView(View(ctx).apply {
-                layoutParams = LinearLayout.LayoutParams(ctx.dp(6f).toInt(), ViewGroup.LayoutParams.MATCH_PARENT).apply {
+                layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f).apply {
                     if (i > 0) marginStart = ctx.dp(6f).toInt()
                 }
             })
         }
     }
 
-    private fun paintDots(container: LinearLayout, animate: Boolean) {
-        val ctx = container.context
-        val small = ctx.dp(6f).toInt()
-        val wide = ctx.dp(22f).toInt()
-        dotAnimators.forEach { it.cancel() }
-        dotAnimators.clear()
+    private fun drawSeg(container: LinearLayout) {
         for (i in 0 until container.childCount) {
-            val dot = container.getChildAt(i)
-            if (i == current) {
-                dot.setBackgroundResource(R.drawable.gp_bg_gradient_r3)
-                dot.backgroundTintList = null
-            } else {
-                dot.setBackgroundResource(R.drawable.gp_bg_dot)
-                dot.backgroundTintList = ContextCompat.getColorStateList(
-                    ctx, if (i < current) R.color.ps_dot_past else R.color.ps_dot_future,
-                )
+            val filled = i <= current || statuses[i] == Status.ALLOWED || statuses[i] == Status.ALREADY
+            container.getChildAt(i).setBackgroundResource(
+                if (filled) R.drawable.gp_bg_gradient_r3 else R.drawable.gp_bg_seg_idle,
+            )
+        }
+    }
+
+    private fun composeRail(container: LinearLayout) {
+        val ctx = container.context
+        container.removeAllViews()
+        val tile = ctx.dp(38f).toInt()
+        pages.forEachIndexed { i, page ->
+            val cell = FrameLayout(ctx).apply {
+                layoutParams = LinearLayout.LayoutParams(tile, tile).apply {
+                    if (i > 0) marginStart = ctx.dp(10f).toInt()
+                }
             }
-            val target = if (i == current) wide else small
-            val from = dot.layoutParams.width
-            if (from == target) continue
-            if (!animate || VisualTweens.animationsDisabled(ctx)) {
-                dot.layoutParams = dot.layoutParams.apply { width = target }
-                continue
-            }
-            dotAnimators += ValueAnimator.ofInt(from, target).apply {
-                duration = 250L
-                interpolator = VisualTweens.EASE
-                addUpdateListener { a -> dot.layoutParams = dot.layoutParams.apply { width = a.animatedValue as Int } }
-                start()
+            cell.addView(ImageView(ctx).apply {
+                id = R.id.railIconVw
+                layoutParams = FrameLayout.LayoutParams(ctx.dp(18f).toInt(), ctx.dp(18f).toInt()).apply {
+                    gravity = Gravity.CENTER
+                }
+                setImageResource(page.railIcon)
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            })
+            val checkSize = ctx.dp(15f).toInt()
+            cell.addView(FrameLayout(ctx).apply {
+                id = R.id.railCheckVw
+                layoutParams = FrameLayout.LayoutParams(checkSize, checkSize).apply {
+                    gravity = Gravity.END or Gravity.BOTTOM
+                }
+                background = ContextCompat.getDrawable(ctx, R.drawable.gp_bg_rail_check)
+                elevation = ctx.dp(2f)
+                visibility = View.GONE
+                addView(ImageView(ctx).apply {
+                    layoutParams = FrameLayout.LayoutParams(ctx.dp(8f).toInt(), ctx.dp(8f).toInt()).apply {
+                        gravity = Gravity.CENTER
+                    }
+                    setImageResource(R.drawable.gp_ic_check)
+                    imageTintList = ContextCompat.getColorStateList(ctx, android.R.color.white)
+                })
+            })
+            container.addView(cell)
+        }
+    }
+
+    private fun drawRail(container: LinearLayout) {
+        val ctx = container.context
+        for (i in 0 until container.childCount) {
+            val cell = container.getChildAt(i) as FrameLayout
+            val icon = cell.findViewById<ImageView>(R.id.railIconVw)
+            val check = cell.findViewById<View>(R.id.railCheckVw)
+            val done = statuses[i] == Status.ALLOWED || statuses[i] == Status.ALREADY
+            when {
+                done -> {
+                    cell.setBackgroundResource(R.drawable.gp_bg_rail_done)
+                    icon.imageTintList = ContextCompat.getColorStateList(ctx, R.color.ps_success)
+                    if (check.visibility != View.VISIBLE) { check.visibility = View.VISIBLE; check.scaleX = 1f; check.scaleY = 1f }
+                }
+                i == current -> {
+                    cell.setBackgroundResource(R.drawable.gp_bg_rail_grad)
+                    icon.imageTintList = ContextCompat.getColorStateList(ctx, android.R.color.white)
+                    check.visibility = View.GONE
+                }
+                else -> {
+                    cell.setBackgroundResource(R.drawable.gp_bg_rail_idle)
+                    icon.imageTintList = ContextCompat.getColorStateList(ctx, R.color.ps_dot_past)
+                    check.visibility = View.GONE
+                }
             }
         }
+    }
+
+    private fun burstRailCheck(index: Int) {
+        val rail = root?.findViewById<LinearLayout>(R.id.railVw) ?: return
+        val cell = rail.getChildAt(index) as? FrameLayout ?: return
+        val check = cell.findViewById<View>(R.id.railCheckVw) ?: return
+        check.visibility = View.VISIBLE
+        if (VisualTweens.animationsDisabled(check.context)) return
+        check.scaleX = 0f
+        check.scaleY = 0f
+        check.animate().scaleX(1f).scaleY(1f).setDuration(420L).setInterpolator(OvershootInterpolator(3f)).start()
     }
 
     private fun popCheck(badge: View) {

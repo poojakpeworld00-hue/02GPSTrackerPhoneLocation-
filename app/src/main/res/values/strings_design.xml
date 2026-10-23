@@ -249,14 +249,11 @@
     <string name="ds_invalid_edit">Fix number</string>
     <string name="ds_invalid_country">Switch country</string>
 
-    <string name="ds_quota_label">Today\'s free searches</string>
     <string name="ds_quota_left">%1$d of %2$d remaining</string>
     <string name="ds_quota_unlimited">No limit</string>
     <string name="ds_limit_used">spent</string>
-    <string name="ds_limit_title">You\'ve hit today\'s search limit</string>
-    <string name="ds_limit_body">All %1$d free searches for today are used up. Watch a quick ad for another one, or upgrade to Premium for no limits.</string>
+    <string name="ds_limit_title">Free searches used up</string>
     <string name="ds_limit_body_premium">All %1$d free searches for today are used up. Upgrade to Premium for no limits, or try again tomorrow.</string>
-    <string name="ds_limit_watch">Watch Ad · 1 more search</string>
     <string name="ds_limit_premium">Get Premium · No limits</string>
     <string name="ds_limit_reset">Free searches refresh at midnight</string>
 

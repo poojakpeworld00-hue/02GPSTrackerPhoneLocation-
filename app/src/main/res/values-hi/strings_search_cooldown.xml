@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">नई खोजें %1$s में</string>
+    <string name="ds_limit_body_timer">आपने सभी %1$d मुफ़्त खोजें इस्तेमाल कर लीं। टाइमर खत्म होने पर और मिलेंगी।</string>
+    <string name="ds_limit_timer_label">नई खोजें मिलने में</string>
+</resources>

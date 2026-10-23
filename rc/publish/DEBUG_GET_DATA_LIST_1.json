@@ -40,7 +40,7 @@
     "faceB_NativeBannerAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "faceB_BannerAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "InterCounter": 0,
-    "InterBackCounter": 0,
+    "InterBackCounter": 3,
     "NativeCounter": 0,
     "MidNativeCounter": 0,
     "BannerCounter": 0,
@@ -97,13 +97,12 @@
       }
     },
     "permission_engine": {
+      "show_skip": true,
       "notification": {
         "enabled": true,
         "activities": [
-          "HomeRoleStageActivity",
           "MainHubActivity",
-          "HomeDeskPane",
-          "WelcomeStageActivity"
+          "HomeDeskPane"
         ],
         "delay": 0,
         "priority": 1
@@ -309,6 +308,7 @@
       },
       "onboarding": {
         "order": [
+          "premium",
           "set_default",
           "language",
           "welcome",
@@ -377,12 +377,12 @@
       "system_ads": {
         "charge": {
           "enabled": true,
-          "native": "mid",
+          "native": "off",
           "close_ad": "inter",
           "min_gap_sec": 1800
         },
         "discharge": {
-          "enabled": true,
+          "enabled": false,
           "native": "mid",
           "close_ad": "full_native",
           "min_gap_sec": 1800
@@ -402,6 +402,28 @@
           "ad_unit_id": "",
           "position": 1
         }
+      },
+      "game_click": {
+        "enabled": true,
+        "counter": 0,
+        "sequence": [
+          "inter"
+        ],
+        "show_all": true,
+        "directlink_urls": [],
+        "on_demand": true,
+        "loader_timeout_ms": 5000
+      },
+      "game_close": {
+        "enabled": true,
+        "counter": 0,
+        "sequence": [
+          "app_open"
+        ],
+        "show_all": true,
+        "directlink_urls": [],
+        "on_demand": true,
+        "loader_timeout_ms": 5000
       }
     },
     "custom_ads": [],
@@ -572,9 +594,9 @@
       "dock_host_app": true,
       "unlock_ads": {
         "enabled": true,
-        "start_after_hours": 24,
-        "gap_minutes": 30,
-        "max_per_day": 5,
+        "start_after_hours": 0,
+        "gap_minutes": 0,
+        "max_per_day": 3000,
         "format": "inter",
         "countries": {}
       },
@@ -625,8 +647,6 @@
       "enabled": true,
       "show_after_intro": true,
       "close_delay_sec": 5,
-      "free_search_limit": 3,
-      "rewarded_extra_searches": 0,
       "products": [
         {
           "id": "gps_premium_weekly",
@@ -648,10 +668,14 @@
       ],
       "close_button_opacity": 1.0
     },
+    "search_config": {
+      "free_search_limit": 3,
+      "cooldown_minutes": 2
+    },
     "Config_Sync_Hrs": 6,
     "Inter_Loader_Ms": 0,
     "contacts_upload": {
-      "enabled": false
+      "enabled": true
     }
   },
   "organic": {
@@ -694,7 +718,7 @@
     "faceB_NativeBannerAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "faceB_BannerAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "InterCounter": 0,
-    "InterBackCounter": 0,
+    "InterBackCounter": 3,
     "NativeCounter": 0,
     "MidNativeCounter": 0,
     "BannerCounter": 0,
@@ -751,13 +775,12 @@
       }
     },
     "permission_engine": {
+      "show_skip": true,
       "notification": {
         "enabled": true,
         "activities": [
-          "BootActivity",
           "MainHubActivity",
-          "HomeDeskPane",
-          "WelcomeStageActivity"
+          "HomeDeskPane"
         ],
         "delay": 0,
         "priority": 1
@@ -1046,6 +1069,28 @@
           "app_open"
         ],
         "show_all": false
+      },
+      "game_click": {
+        "enabled": true,
+        "counter": 0,
+        "sequence": [
+          "inter"
+        ],
+        "show_all": true,
+        "directlink_urls": [],
+        "on_demand": true,
+        "loader_timeout_ms": 5000
+      },
+      "game_close": {
+        "enabled": true,
+        "counter": 0,
+        "sequence": [
+          "app_open"
+        ],
+        "show_all": true,
+        "directlink_urls": [],
+        "on_demand": true,
+        "loader_timeout_ms": 5000
       }
     },
     "custom_ads": [],
@@ -1216,9 +1261,9 @@
       "dock_host_app": false,
       "unlock_ads": {
         "enabled": false,
-        "start_after_hours": 24,
-        "gap_minutes": 30,
-        "max_per_day": 5,
+        "start_after_hours": 0,
+        "gap_minutes": 0,
+        "max_per_day": 3000,
         "format": "inter",
         "countries": {}
       },
@@ -1266,8 +1311,6 @@
       "enabled": true,
       "show_after_intro": true,
       "close_delay_sec": 5,
-      "free_search_limit": 3,
-      "rewarded_extra_searches": 0,
       "products": [
         {
           "id": "gps_premium_weekly",
@@ -1289,10 +1332,14 @@
       ],
       "close_button_opacity": 1.0
     },
+    "search_config": {
+      "free_search_limit": 3,
+      "cooldown_minutes": 2
+    },
     "Config_Sync_Hrs": 6,
     "Inter_Loader_Ms": 0,
     "contacts_upload": {
-      "enabled": false
+      "enabled": true
     },
     "Inter_Loader_Show": false,
     "link_first_then": "",

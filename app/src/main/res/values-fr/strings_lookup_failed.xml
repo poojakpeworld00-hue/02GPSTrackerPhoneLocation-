@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">Recherche interrompue</string>
+    <string name="ds_lookup_failed_body">Impossible de joindre le service de localisation pour le moment. Vérifiez votre connexion et réessayez.</string>
+    <string name="ds_lookup_failed_retry">Réessayer</string>
+    <string name="ds_lookup_failed_cancel">Annuler</string>
+</resources>

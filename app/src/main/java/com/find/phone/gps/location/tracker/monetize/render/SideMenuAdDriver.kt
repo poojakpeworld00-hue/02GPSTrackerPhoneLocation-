@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render
 
+import com.find.phone.gps.location.tracker.monetize.engine.EarningsTracker
 import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.app.Application
@@ -218,6 +219,9 @@ object SideMenuAdDriver {
 
     private fun presentInter(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         val ad = interAds.remove(unitId) ?: return onFailed()
+        ad.setOnPaidEventListener {
+            EarningsTracker.trackPaidEvent(activity, it, "interstitial", unitId, ad.responseInfo)
+        }
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdShowedFullScreenContent() {
                 AdPulse.show(activity, "interstitial")
@@ -262,6 +266,9 @@ object SideMenuAdDriver {
 
     private fun presentAppOpen(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         val ad = appOpenAds.remove(unitId) ?: return onFailed()
+        ad.setOnPaidEventListener {
+            EarningsTracker.trackPaidEvent(activity, it, "app_open", unitId, ad.responseInfo)
+        }
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdShowedFullScreenContent() {
                 AdPulse.show(activity, "app_open")
@@ -306,6 +313,9 @@ object SideMenuAdDriver {
 
     private fun presentRewarded(activity: Activity, unitId: String, onShown: () -> Unit, onFailed: () -> Unit) {
         val ad = rewardedAds.remove(unitId) ?: return onFailed()
+        ad.setOnPaidEventListener {
+            EarningsTracker.trackPaidEvent(activity, it, "rewarded", unitId, ad.responseInfo)
+        }
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdShowedFullScreenContent() {
                 AdPulse.show(activity, "rewarded")
@@ -331,6 +341,9 @@ object SideMenuAdDriver {
         AdLoader.Builder(context, unitId)
             .forNativeAd { ad ->
                 AdPulse.loaded(context, "native")
+                ad.setOnPaidEventListener {
+                    EarningsTracker.trackPaidEvent(context.applicationContext, it, "native", unitId, ad.responseInfo)
+                }
                 nativeAds.put(unitId, ad)?.destroy()
                 loading.remove("native:$unitId")
                 settle("native:$unitId", true)

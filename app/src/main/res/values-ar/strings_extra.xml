@@ -198,7 +198,7 @@
     <string name="ds_default_body">اجعل هذا التطبيق شاشتك الرئيسية لتبقى ميزة البحث عن المكان واستعلاماتك السابقة على بعد سحبة واحدة دائمًا.</string>
     <string name="ds_set_default">اجعله الأساسي</string>
     <string name="ds_default_home_app">تطبيق الشاشة الرئيسية الأساسي</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">متتبع GPS لموقع الهاتف</string>
     <string name="ds_system_launcher">واجهة النظام</string>
     <string name="ds_swipe_right_to_search">مرّر نحو اليمين للبحث</string>
     <string name="ds_default_footnote">تستطيع تبديل الشاشة الرئيسية الأساسية متى شئت من ضبط الهاتف.</string>
@@ -392,14 +392,11 @@
     <string name="ds_invalid_body">%1$s لا يوافق نمط الترقيم المعتمد في %2$s. راجع الأرقام أو مفتاح البلد.</string>
     <string name="ds_invalid_edit">عدّل الرقم</string>
     <string name="ds_invalid_country">بدّل البلد</string>
-    <string name="ds_quota_label">استعلامات اليوم المجانية</string>
     <string name="ds_quota_left">بقي %1$d من %2$d</string>
     <string name="ds_quota_unlimited">بلا سقف</string>
     <string name="ds_limit_used">مستهلكة</string>
-    <string name="ds_limit_title">بلغت سقف الاستعلامات لهذا اليوم</string>
-    <string name="ds_limit_body">استنفدت استعلامات اليوم المجانية (%1$d). شاهد إعلانًا موجزًا لتحصل على استعلام إضافي، أو انتقل إلى النسخة المميزة لتستعلم دون حدود.</string>
+    <string name="ds_limit_title">انتهت عمليات البحث المجانية</string>
     <string name="ds_limit_body_premium">استنفدت استعلامات اليوم المجانية (%1$d). اشترك في Premium لتستعلم دون حدود، أو عد غدًا.</string>
-    <string name="ds_limit_watch">شاهد إعلانًا · استعلام إضافي</string>
     <string name="ds_limit_premium">انتقل إلى المميزة · بلا حدود</string>
     <string name="ds_limit_reset">تتجدد الاستعلامات المجانية عند منتصف الليل</string>
     <string name="ds_history_title">تاريخ الاستعلامات</string>

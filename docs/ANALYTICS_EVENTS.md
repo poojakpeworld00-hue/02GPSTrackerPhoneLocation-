@@ -8,7 +8,7 @@ Debug builds log to logcat (tag `AdEvents`) only; release builds send to Firebas
 Tokens: `splash`, `language`, `welcome`, `onboarding`, `reminder_intro`, `default_home`, `default_home_tip`, `terms`, `premium`, `home`, `home_search`, `locating`, `number_detail`, `map_full`, `history`, `contact_picker`, `my_number`, `share_number`, `dual_sim`, `carrier_codes`, `reminder_list`, `reminder_alert`, `package_result`, `charging_status`, `overlay_perm`, `overlay_guide`, `promo_web`, `crash_restart`, `launcher_home`, `launcher_panel`, `launcher_settings`, `launcher_hidden_apps`, `default_home_hint`
 
 ## Ad lifecycle (`insights/AdPulse.kt`) — params `screen`, `network`, `error_code`
-`ad_{type}_{phase}` · type: banner, native, native_banner, interstitial, back_interstitial, app_open, rewarded, splash_app_open, splash_interstitial · phase: req, loaded, no_fill, failed, impression, clicked (language screen natives only), show, close. Revenue: reserved `ad_impression` (EarningsTracker).
+`ad_{type}_{phase}` · type: banner, native, native_banner, interstitial, interstitial_back, app_open, rewarded, splash_app_open, splash_interstitial · phase: req, loaded, no_fill, failed, impression, clicked (language screen natives only), show, show_failed (interstitial_back), close. Revenue: reserved `ad_impression` from AdMob `OnPaidEventListener` on every Google placement (EarningsTracker.trackPaidEvent) with params `ad_platform`, `ad_source`, `ad_format`, `ad_unit_name`, `value`, `currency`, `precision`, `placement` (screen token, or `splash`), `segment` (paid/organic).
 
 ## Permissions
 `Permission_<NAME>_Show` / `_Allow` / `_Deny` / `_Bypass` (no prompt needed), plus `PermissionSheet_*`.
@@ -53,7 +53,7 @@ Tokens: `splash`, `language`, `welcome`, `onboarding`, `reminder_intro`, `defaul
 | `Interstitial_Splash_Loaded` | monetize/render/MonetizeGateActivity.kt |
 | `recent_playstore_open` | monetize/render/RecentsAdObserver.kt |
 | `appopen_ad_loaded` | monetize/render/ResumeAdKeeper.kt |
-| `appopen_ad_fail` | monetize/render/ResumeAdKeeper.kt |
+| `appopen_ad_show_fail` | monetize/render/ResumeAdKeeper.kt |
 | `appopen_ad_dismissed` | monetize/render/ResumeAdKeeper.kt |
 | `appopen_ad_shown` | monetize/render/ResumeAdKeeper.kt |
 | `Banner_Load` | monetize/render/StripAdLoader.kt |
@@ -61,13 +61,12 @@ Tokens: `splash`, `language`, `welcome`, `onboarding`, `reminder_intro`, `defaul
 | `google_banner` | monetize/render/StripAdLoader.kt |
 | `facebook_banner_load` | monetize/render/StripAdLoader.kt |
 | `google_inter_show_attempt` | monetize/render/fullscreen/FullscreenOnAction.kt |
-| `Reminders_Open` | screens/alerts/AlarmListActivity.kt |
 | `Reminder_Delete` | screens/alerts/AlarmListActivity.kt |
 | `Reminder_Alert_Show` | screens/alerts/AlarmPopupActivity.kt |
 | `Reminder_Alert_Done` | screens/alerts/AlarmPopupActivity.kt |
 | `Reminder_Alert_Ad` | screens/alerts/AlarmPopupActivity.kt |
 | `Reminder_Alert_Call` | screens/alerts/AlarmPopupActivity.kt |
-| `Reminder_Alert_Open` | screens/alerts/AlarmPopupActivity.kt |
+| `Reminder_Alert_Open_List_Click` | screens/alerts/AlarmPopupActivity.kt |
 | `Reminder_Alert_Snooze_$snoozeMinutes` | screens/alerts/AlarmPopupActivity.kt |
 | `home_quota_unlimited` | screens/dashboard/DashboardMainFragment.kt |
 | `home_pro_chip` | screens/dashboard/DashboardMainFragment.kt |

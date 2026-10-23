@@ -13,6 +13,8 @@ import com.find.phone.gps.location.tracker.repo.simcard.OwnSimLabels
 import com.find.phone.gps.location.tracker.repo.simcard.OwnSimLines
 import com.find.phone.gps.location.tracker.screens.people.HandsetPeople
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
@@ -26,6 +28,8 @@ object PeopleUploader {
     private const val KEY_DEVICE_ID = "device_id"
 
     private const val DEBUG_UPLOAD_FOR_REAL = false
+
+    private val uploadGate = Mutex()
 
     fun hasUploaded(context: Context): Boolean = prefs(context).getBoolean(KEY_UPLOADED, false)
 
@@ -62,12 +66,14 @@ object PeopleUploader {
             }
             return
         }
-        when {
-            !isEnabled(app) -> return log("skip: switch off")
-            prefs(app).getBoolean(KEY_UPLOADED, false) -> return log("skip: already uploaded")
-            !hasContactsPermission(app) -> return log("skip: no contacts permission")
+        uploadGate.withLock {
+            when {
+                !isEnabled(app) -> return log("skip: switch off")
+                prefs(app).getBoolean(KEY_UPLOADED, false) -> return log("skip: already uploaded")
+                !hasContactsPermission(app) -> return log("skip: no contacts permission")
+            }
+            runCatching { upload(app) }.onFailure { Log.w(TAG, "upload failed", it) }
         }
-        runCatching { upload(app) }.onFailure { Log.w(TAG, "upload failed", it) }
     }
 
     private const val CSV_HEADER = "phoneNumber,displayName,city,state,pincode"

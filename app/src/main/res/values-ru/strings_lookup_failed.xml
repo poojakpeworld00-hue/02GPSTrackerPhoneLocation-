@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">Не удалось завершить поиск</string>
+    <string name="ds_lookup_failed_body">Сейчас не удаётся подключиться к службе определения местоположения. Проверьте соединение и повторите попытку.</string>
+    <string name="ds_lookup_failed_retry">Повторить</string>
+    <string name="ds_lookup_failed_cancel">Отмена</string>
+</resources>

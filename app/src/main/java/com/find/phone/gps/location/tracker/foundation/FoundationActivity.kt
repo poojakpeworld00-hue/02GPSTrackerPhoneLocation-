@@ -100,7 +100,8 @@ abstract class FoundationActivity<DB : ViewDataBinding> : MonetizeGateActivity()
             }
             ActivityCompat.shouldShowRequestPermissionRationale(this, permission) ->
                 launcher.launch(permission)
-            else -> unfoldAppSettings()
+            // denied twice: stop asking, never send the user to Settings (R08)
+            else -> Unit
         }
     }
 

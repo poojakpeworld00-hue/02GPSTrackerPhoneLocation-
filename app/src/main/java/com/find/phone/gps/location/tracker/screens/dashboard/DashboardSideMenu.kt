@@ -1,6 +1,10 @@
 package com.find.phone.gps.location.tracker.screens.dashboard
 
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -92,6 +96,25 @@ class DashboardSideMenu(
                 }
             }
             .show()
+    }
+
+    fun watch(drawer: DrawerLayout) {
+        drawer.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
+            override fun onDrawerStateChanged(newState: Int) {
+                if (newState != DrawerLayout.STATE_IDLE && !drawer.isDrawerOpen(GravityCompat.START)) {
+                    dismissKeyboard(drawer)
+                    refresh()
+                }
+            }
+        })
+    }
+
+    // the number field keeps the IME up; hide it as the drawer slides in so it doesn't cover the menu
+    private fun dismissKeyboard(drawer: DrawerLayout) {
+        val focused = activity.currentFocus
+        val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow((focused ?: drawer).windowToken, 0)
+        focused?.clearFocus()
     }
 
     fun refresh() {

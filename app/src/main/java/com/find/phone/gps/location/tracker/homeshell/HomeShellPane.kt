@@ -54,7 +54,7 @@ class HomeShellPane : Fragment(), HomeDeskContent, DashboardMainFragment.MenuHos
                 activity,
                 binding.drawerMenuVw,
                 requestPhonePermission = { phonePermission.launch(it) },
-            ) { shutMenu() }.also { it.bind() }
+            ) { shutMenu() }.also { it.bind(); it.watch(binding.panelDrawerVw) }
         }
     }
 

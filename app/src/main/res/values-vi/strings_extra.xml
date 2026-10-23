@@ -190,7 +190,7 @@
     <string name="ds_default_body">Chọn ứng dụng này làm màn hình chính để tra vị trí và các lần tìm gần đây luôn nằm sau một cú vuốt.</string>
     <string name="ds_set_default">Chọn làm mặc định</string>
     <string name="ds_default_home_app">Ứng dụng màn hình chính mặc định</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">Định vị GPS vị trí điện thoại</string>
     <string name="ds_system_launcher">Màn hình chính của hệ thống</string>
     <string name="ds_swipe_right_to_search">Trượt sang phải để tìm</string>
     <string name="ds_default_footnote">Bạn có thể đổi màn hình chính mặc định bất kỳ lúc nào trong phần cài đặt của điện thoại.</string>
@@ -384,14 +384,11 @@
     <string name="ds_invalid_body">%1$s không đúng với dạng số điện thoại của %2$s. Hãy xem lại các chữ số hoặc mã quốc gia.</string>
     <string name="ds_invalid_edit">Chỉnh lại số</string>
     <string name="ds_invalid_country">Đổi quốc gia</string>
-    <string name="ds_quota_label">Lượt tra miễn phí hôm nay</string>
     <string name="ds_quota_left">Còn %1$d trên %2$d</string>
     <string name="ds_quota_unlimited">Vô hạn</string>
     <string name="ds_limit_used">đã hết</string>
-    <string name="ds_limit_title">Đã chạm mức tra cứu tối đa trong ngày</string>
-    <string name="ds_limit_body">Bạn đã tiêu hết %1$d lượt tra miễn phí hôm nay. Xem một quảng cáo ngắn để thêm một lượt, hoặc lên Premium để tra không hạn chế.</string>
+    <string name="ds_limit_title">Đã dùng hết lượt tìm miễn phí</string>
     <string name="ds_limit_body_premium">Bạn đã tiêu hết %1$d lượt tra miễn phí hôm nay. Hãy lên Premium để tra không hạn chế, hoặc quay lại vào ngày mai.</string>
-    <string name="ds_limit_watch">Xem quảng cáo · thêm 1 lượt</string>
     <string name="ds_limit_premium">Lên Premium · Không hạn chế</string>
     <string name="ds_limit_reset">Lượt tra miễn phí làm mới vào nửa đêm</string>
     <string name="ds_history_title">Lịch sử tra cứu</string>

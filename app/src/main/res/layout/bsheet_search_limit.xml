@@ -76,37 +76,41 @@
         android:lineSpacingMultiplier="1.2"
         android:textColor="@color/ds_muted"
         android:textSize="14sp"
-        tools:text="You've used today's 3 free searches. Watch a short ad for one more, or go Premium for unlimited searches." />
+        tools:text="You've used today's 3 free searches. More will unlock when the timer ends." />
 
-    <FrameLayout
-        android:id="@+id/padWatch"
+    <LinearLayout
+        android:id="@+id/countdownBox"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@drawable/vs_btn_primary_selector_r18"
-        android:elevation="6dp">
+        android:background="@drawable/vs_card_border_r18"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="16dp"
+        android:visibility="gone">
 
         <TextView
-            android:id="@+id/lblWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawablePadding="10dp"
-            android:fontFamily="@font/figtree_bold"
-            android:text="@string/ds_limit_watch"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:drawableStartCompat="@drawable/vs_ic_play"
-            app:drawableTint="@color/white" />
+            android:fontFamily="@font/figtree_semibold"
+            android:letterSpacing="0.04"
+            android:text="@string/ds_limit_timer_label"
+            android:textAllCaps="true"
+            android:textColor="@color/ds_muted"
+            android:textSize="11sp" />
 
-        <ProgressBar
-            android:id="@+id/pbWatchVw"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/white"
-            android:visibility="gone" />
-    </FrameLayout>
+        <TextView
+            android:id="@+id/lblCountdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/nunito_extrabold"
+            android:includeFontPadding="false"
+            android:letterSpacing="0.02"
+            android:textColor="@color/ds_primary"
+            android:textSize="34sp"
+            tools:text="59:59" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/padPremium"
@@ -141,20 +145,14 @@
             app:drawableTint="@color/ds_gold_ink" />
     </FrameLayout>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/lblReset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:fontFamily="@font/figtree_medium"
-            android:text="@string/ds_limit_reset"
-            android:textColor="@color/ds_muted"
-            android:textSize="12sp" />
-    </LinearLayout>
+        android:fontFamily="@font/figtree_medium"
+        android:gravity="center"
+        android:text="@string/ds_limit_reset"
+        android:textColor="@color/ds_muted"
+        android:textSize="12sp" />
 </LinearLayout>

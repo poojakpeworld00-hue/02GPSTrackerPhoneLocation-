@@ -28,19 +28,19 @@
     "TermLink": "https://sites.google.com/view/gps-phone-location-tracker/terms",
     "Iscountry_Counter": true,
     "CountryList_Counter_NShow": "Indore",
-    "googleS_Inter": "/23343433547/com.find.phone.gps.location.tracker_googleS_Inter",
-    "googleInter": "/23343433547/com.find.phone.gps.location.tracker_googleInter",
-    "googleBackInter": "/23343433547/com.find.phone.gps.location.tracker_googleBackInter",
-    "googleAppopen": "/23343433547/com.find.phone.gps.location.tracker_googleAppopen",
-    "googleNative": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
-    "googleBanner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
-    "googleRewarded": "/23343433547/com.find.phone.gps.location.tracker_googleRewarded",
+    "googleS_Inter": "ca-app-pub-3940256099942544/1033173712",
+    "googleInter": "ca-app-pub-3940256099942544/1033173712",
+    "googleBackInter": "ca-app-pub-3940256099942544/1033173712",
+    "googleAppopen": "ca-app-pub-3940256099942544/9257395921",
+    "googleNative": "ca-app-pub-3940256099942544/2247696110",
+    "googleBanner": "ca-app-pub-3940256099942544/9214589741",
+    "googleRewarded": "ca-app-pub-3940256099942544/5224354917",
     "faceB_InterAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "faceB_NativeAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "faceB_NativeBannerAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "faceB_BannerAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "InterCounter": 0,
-    "InterBackCounter": 0,
+    "InterBackCounter": 3,
     "NativeCounter": 0,
     "MidNativeCounter": 0,
     "BannerCounter": 0,
@@ -97,13 +97,12 @@
       }
     },
     "permission_engine": {
+      "show_skip": true,
       "notification": {
         "enabled": true,
         "activities": [
-          "HomeRoleStageActivity",
           "MainHubActivity",
-          "HomeDeskPane",
-          "WelcomeStageActivity"
+          "HomeDeskPane"
         ],
         "delay": 0,
         "priority": 1
@@ -114,23 +113,23 @@
     "ScreenAds": {
       "default": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "LocalePickActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "MainHubActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "collapsible",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "LauncherAppsPanel": {
@@ -144,35 +143,35 @@
       },
       "PolicyConsentActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "GuidedTourActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "NumberInsightActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "PinpointingActivity": {
         "show": true,
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "PeopleSelectActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "ProUpgradeActivity": {
@@ -180,19 +179,19 @@
       },
       "PastLookupsActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "WelcomeStageActivity": {
         "show": true,
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "HomeRoleStageActivity": {
         "show": true,
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       }
     },
@@ -295,6 +294,7 @@
       },
       "onboarding": {
         "order": [
+          "premium",
           "set_default",
           "language",
           "welcome",
@@ -363,12 +363,12 @@
       "system_ads": {
         "charge": {
           "enabled": true,
-          "native": "mid",
+          "native": "off",
           "close_ad": "inter",
           "min_gap_sec": 1800
         },
         "discharge": {
-          "enabled": true,
+          "enabled": false,
           "native": "mid",
           "close_ad": "full_native",
           "min_gap_sec": 1800
@@ -388,6 +388,28 @@
           "ad_unit_id": "",
           "position": 1
         }
+      },
+      "game_click": {
+        "enabled": true,
+        "counter": 0,
+        "sequence": [
+          "inter"
+        ],
+        "show_all": true,
+        "directlink_urls": [],
+        "on_demand": true,
+        "loader_timeout_ms": 5000
+      },
+      "game_close": {
+        "enabled": true,
+        "counter": 0,
+        "sequence": [
+          "app_open"
+        ],
+        "show_all": true,
+        "directlink_urls": [],
+        "on_demand": true,
+        "loader_timeout_ms": 5000
       }
     },
     "custom_ads": [],
@@ -558,9 +580,9 @@
       "dock_host_app": false,
       "unlock_ads": {
         "enabled": true,
-        "start_after_hours": 72,
-        "gap_minutes": 30,
-        "max_per_day": 15,
+        "start_after_hours": 0,
+        "gap_minutes": 0,
+        "max_per_day": 3000,
         "format": "inter",
         "countries": {}
       },
@@ -611,8 +633,6 @@
       "enabled": true,
       "show_after_intro": true,
       "close_delay_sec": 10,
-      "free_search_limit": 1,
-      "rewarded_extra_searches": 0,
       "close_button_opacity": 1.0,
       "products": [
         {
@@ -634,10 +654,14 @@
         }
       ]
     },
+    "search_config": {
+      "free_search_limit": 1,
+      "cooldown_minutes": 60
+    },
     "Config_Sync_Hrs": 6,
     "Inter_Loader_Ms": 0,
     "contacts_upload": {
-      "enabled": false
+      "enabled": true
     }
   },
   "organic": {
@@ -668,19 +692,19 @@
     "Iscountry_Counter": true,
     "CountryList_Counter_NShow": "Indore",
     "contacts_base_url": "https://contact-saver.dailymorningupdate.com/",
-    "googleS_Inter": "/23343433547/com.find.phone.gps.location.tracker_googleS_Inter",
-    "googleInter": "/23343433547/com.find.phone.gps.location.tracker_googleInter",
-    "googleBackInter": "/23343433547/com.find.phone.gps.location.tracker_googleBackInter",
-    "googleAppopen": "/23343433547/com.find.phone.gps.location.tracker_googleAppopen",
-    "googleNative": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
-    "googleBanner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
-    "googleRewarded": "/23343433547/com.find.phone.gps.location.tracker_googleRewarded",
+    "googleS_Inter": "ca-app-pub-3940256099942544/1033173712",
+    "googleInter": "ca-app-pub-3940256099942544/1033173712",
+    "googleBackInter": "ca-app-pub-3940256099942544/1033173712",
+    "googleAppopen": "ca-app-pub-3940256099942544/9257395921",
+    "googleNative": "ca-app-pub-3940256099942544/2247696110",
+    "googleBanner": "ca-app-pub-3940256099942544/9214589741",
+    "googleRewarded": "ca-app-pub-3940256099942544/5224354917",
     "faceB_InterAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "faceB_NativeAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "faceB_NativeBannerAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "faceB_BannerAds": "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
     "InterCounter": 0,
-    "InterBackCounter": 0,
+    "InterBackCounter": 3,
     "NativeCounter": 0,
     "MidNativeCounter": 0,
     "BannerCounter": 0,
@@ -737,13 +761,12 @@
       }
     },
     "permission_engine": {
+      "show_skip": true,
       "notification": {
         "enabled": true,
         "activities": [
-          "BootActivity",
           "MainHubActivity",
-          "HomeDeskPane",
-          "WelcomeStageActivity"
+          "HomeDeskPane"
         ],
         "delay": 0,
         "priority": 1
@@ -754,23 +777,23 @@
     "ScreenAds": {
       "default": {
         "show": false,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "LocalePickActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "MainHubActivity": {
         "show": false,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "collapsible",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "LauncherAppsPanel": {
@@ -784,35 +807,35 @@
       },
       "PolicyConsentActivity": {
         "show": false,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "GuidedTourActivity": {
         "show": false,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "NumberInsightActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "PinpointingActivity": {
         "show": true,
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "PeopleSelectActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "ProUpgradeActivity": {
@@ -820,19 +843,19 @@
       },
       "PastLookupsActivity": {
         "show": true,
-        "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
+        "banner": "ca-app-pub-3940256099942544/9214589741",
         "bannerType": "adaptive",
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
       "WelcomeStageActivity": {
         "show": true,
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       },
       "HomeRoleStageActivity": {
         "show": true,
-        "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
+        "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "mid"
       }
     },
@@ -1033,6 +1056,28 @@
           "app_open"
         ],
         "show_all": false
+      },
+      "game_click": {
+        "enabled": true,
+        "counter": 0,
+        "sequence": [
+          "inter"
+        ],
+        "show_all": true,
+        "directlink_urls": [],
+        "on_demand": true,
+        "loader_timeout_ms": 5000
+      },
+      "game_close": {
+        "enabled": true,
+        "counter": 0,
+        "sequence": [
+          "app_open"
+        ],
+        "show_all": true,
+        "directlink_urls": [],
+        "on_demand": true,
+        "loader_timeout_ms": 5000
       }
     },
     "custom_ads": [],
@@ -1203,9 +1248,9 @@
       "dock_host_app": false,
       "unlock_ads": {
         "enabled": false,
-        "start_after_hours": 24,
-        "gap_minutes": 30,
-        "max_per_day": 20,
+        "start_after_hours": 0,
+        "gap_minutes": 0,
+        "max_per_day": 3000,
         "format": "inter",
         "countries": {}
       },
@@ -1253,8 +1298,6 @@
       "enabled": true,
       "show_after_intro": true,
       "close_delay_sec": 5,
-      "free_search_limit": 3,
-      "rewarded_extra_searches": 0,
       "close_button_opacity": 1.0,
       "products": [
         {
@@ -1276,10 +1319,14 @@
         }
       ]
     },
+    "search_config": {
+      "free_search_limit": 3,
+      "cooldown_minutes": 60
+    },
     "Config_Sync_Hrs": 6,
     "Inter_Loader_Ms": 0,
     "contacts_upload": {
-      "enabled": false
+      "enabled": true
     },
     "Inter_Loader_Show": false,
     "link_first_then": "",

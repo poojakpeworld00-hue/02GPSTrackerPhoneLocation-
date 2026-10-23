@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">ค้นหาใหม่ได้ใน %1$s</string>
+    <string name="ds_limit_body_timer">คุณใช้การค้นหาฟรีครบ %1$d ครั้งแล้ว จะปลดล็อกเพิ่มเมื่อหมดเวลา</string>
+    <string name="ds_limit_timer_label">ค้นหาใหม่ได้ใน</string>
+</resources>

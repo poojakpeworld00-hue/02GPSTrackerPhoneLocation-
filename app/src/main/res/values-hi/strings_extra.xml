@@ -190,7 +190,7 @@
     <string name="ds_default_body">इस ऐप को अपना होम स्क्रीन बनाइए ताकि लोकेशन खोज और पिछली खोजें हमेशा बस एक स्वाइप दूर रहें।</string>
     <string name="ds_set_default">डिफ़ॉल्ट तय करें</string>
     <string name="ds_default_home_app">मुख्य होम ऐप</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">जीपीएस ट्रैकर फ़ोन लोकेशन</string>
     <string name="ds_system_launcher">सिस्टम का लॉन्चर</string>
     <string name="ds_swipe_right_to_search">ढूँढने के लिए दाईं ओर सरकाएँ</string>
     <string name="ds_default_footnote">डिफ़ॉल्ट होम स्क्रीन आप जब चाहें फ़ोन की सेटिंग में बदल सकते हैं।</string>
@@ -384,14 +384,11 @@
     <string name="ds_invalid_body">%1$s, %2$s के नंबर के रूप से मेल नहीं खाता। अंकों या देश के कोड की जाँच कीजिए।</string>
     <string name="ds_invalid_edit">नंबर सुधारें</string>
     <string name="ds_invalid_country">दूसरा देश चुनें</string>
-    <string name="ds_quota_label">आज की मुफ़्त खोजें</string>
     <string name="ds_quota_left">%2$d में से %1$d शेष</string>
     <string name="ds_quota_unlimited">बेहिसाब</string>
     <string name="ds_limit_used">ख़र्च हो चुकी</string>
-    <string name="ds_limit_title">आज की खोजों की हद पूरी हुई</string>
-    <string name="ds_limit_body">आज की आपकी %1$d मुफ़्त खोजें पूरी हो चुकी हैं। एक और खोज के लिए छोटा विज्ञापन देखिए, या बेहिसाब खोजों के लिए Premium लीजिए।</string>
+    <string name="ds_limit_title">मुफ़्त खोज सीमा पूरी हो गई</string>
     <string name="ds_limit_body_premium">आज की आपकी %1$d मुफ़्त खोजें पूरी हो चुकी हैं। बेहिसाब खोजों के लिए Premium लीजिए, या कल दोबारा आइए।</string>
-    <string name="ds_limit_watch">विज्ञापन चलाएँ · एक खोज और</string>
     <string name="ds_limit_premium">Premium लीजिए · बिना हद</string>
     <string name="ds_limit_reset">मुफ़्त खोजें आधी रात को फिर से मिल जाती हैं</string>
     <string name="ds_history_title">खोजों का रिकॉर्ड</string>

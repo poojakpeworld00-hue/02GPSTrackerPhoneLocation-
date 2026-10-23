@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ps_allow_fmt">السماح بـ %1$s</string>
+    <string name="ps_allowed">تم السماح</string>
+    <string name="ps_trust">يمكنك تغيير هذا في الإعدادات في أي وقت</string>
+</resources>

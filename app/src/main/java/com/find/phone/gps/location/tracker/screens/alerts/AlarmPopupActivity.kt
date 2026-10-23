@@ -164,7 +164,7 @@ class AlarmPopupActivity : AppCompatActivity() {
     }
 
     private fun unfoldList() {
-        trackEvent("Reminder_Alert_Open")
+        trackEvent("Reminder_Alert_Open_List_Click")
         afterUnlock {
             startActivity(AlarmListActivity.intent(this).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             finishAndRemoveTask()

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ps_allow_fmt">Cho phép %1$s</string>
+    <string name="ps_allowed">Đã cho phép</string>
+    <string name="ps_trust">Bạn có thể thay đổi bất cứ lúc nào trong Cài đặt</string>
+</resources>

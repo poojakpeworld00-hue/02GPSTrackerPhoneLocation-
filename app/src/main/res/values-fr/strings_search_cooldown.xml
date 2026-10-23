@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">Nouvelles recherches dans %1$s</string>
+    <string name="ds_limit_body_timer">Vous avez utilisé vos %1$d recherches gratuites. D\'autres seront disponibles à la fin du minuteur.</string>
+    <string name="ds_limit_timer_label">Nouvelles recherches dans</string>
+</resources>

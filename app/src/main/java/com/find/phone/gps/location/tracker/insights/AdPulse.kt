@@ -15,6 +15,7 @@ object AdPulse {
     fun clicked(context: Context?, type: String, network: String = GOOGLE) = log(context, type, "clicked", network)
     fun show(context: Context?, type: String, network: String = GOOGLE) = log(context, type, "show", network)
     fun close(context: Context?, type: String, network: String = GOOGLE) = log(context, type, "close", network)
+    fun showFailed(context: Context?, type: String, errorCode: Int?, network: String = GOOGLE) = log(context, type, "show_failed", network, errorCode)
 
     fun loadFailed(context: Context?, type: String, errorCode: Int?, network: String = GOOGLE) {
         val noFill = (network == GOOGLE && errorCode == 3) || (network == FACEBOOK && errorCode == 1001)

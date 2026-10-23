@@ -25,6 +25,8 @@ import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper.isAdAv
 import com.find.phone.gps.location.tracker.monetize.render.RecentsAdObserver
 import com.find.phone.gps.location.tracker.setupflow.WalkthroughHomeAdvance
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnAction
+import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnExit
+import com.find.phone.gps.location.tracker.monetize.render.SponsorBrowserActivity
 import com.find.phone.gps.location.tracker.repo.peoplesync.PeopleUploader
 import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
 import com.find.phone.gps.location.tracker.homeshell.TrackerHomeAds
@@ -117,6 +119,7 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
                 baseUrl = Obscured.s(BuildConfig.LH_BASE_URL),
                 attributionWaitMs = MonetizeGateActivity.ATTRIBUTION_WAIT_MS,
                 richPushActivity = MainHubActivity::class.java,
+                onRemoteConfigSync = { version -> RemoteValuesObserver.applyPushed(this, version) },
             ),
         )
 
@@ -175,6 +178,19 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
         SafeLogger.log("AppOpen", "Activity = ${activity::class.java.simpleName}")
         if (activity.isFinishing || activity.isDestroyed) {
             SafeLogger.log("AppOpen", "❌ Activity invalid")
+            return
+        }
+
+        // never stack app-open over an interstitial; the flags miss Facebook and the pre-callback window
+        if (FullscreenOnAction.isInterShow || FullscreenOnExit.isInterBAckShow) {
+            SafeLogger.log("AppOpen", "⛔ Interstitial showing — skip app-open")
+            return
+        }
+        val foregroundClass = activity.javaClass.name
+        if (foregroundClass == "com.google.android.gms.ads.AdActivity" ||
+            foregroundClass == "com.facebook.ads.AudienceNetworkActivity"
+        ) {
+            SafeLogger.log("AppOpen", "⛔ Ad activity in foreground — skip app-open")
             return
         }
 
@@ -250,6 +266,10 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
 
     override fun onActivityResumed(activity: Activity) {
         currentActivity = activity
+        if (ResumeAdKeeper.pendingGameCloseAd && activity !is SponsorBrowserActivity) {
+            ResumeAdKeeper.pendingGameCloseAd = false
+            HomeAdsSettings.runSurface(activity, HomeAdsSettings.HomeDeskFragment.GAME_CLOSE) {}
+        }
     }
 
     override fun onActivityDestroyed(activity: Activity) {

@@ -3,6 +3,7 @@ package com.find.phone.gps.location.tracker.screens.people
 import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionShow
 import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import android.Manifest
+import android.widget.Toast
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -95,8 +96,10 @@ class PeopleSelectActivity : FoundationActivity<PageContactPickerBinding>() {
                 trackPermissionShow(perm)
                 permission.launch(perm)
             }
-            else -> runCatching {
-                startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)))
+            // denied twice: stop asking, never send the user to Settings (R08)
+            else -> {
+                Toast.makeText(this, R.string.ds_contacts_denied, Toast.LENGTH_SHORT).show()
+                finish()
             }
         }
     }

@@ -77,7 +77,6 @@ class AlarmListActivity : FoundationActivity<PageReminderListBinding>() {
         binding.padBack.setOnClickListener { goBack() }
         VisualTweens.pressScale(binding.padNewReminder)
         binding.padNewReminder.setOnClickListener { unfoldSheet(null) }
-        trackEvent("Reminders_Open")
 
         InlineSponsor().presentMidNative(this, binding.adNativeFrameVw, binding.adShimmerVw)
         binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)

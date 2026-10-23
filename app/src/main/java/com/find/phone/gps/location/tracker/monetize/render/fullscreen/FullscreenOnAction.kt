@@ -355,10 +355,8 @@ class FullscreenOnAction {
 
         activity.trackEvent("admob_inter_show_attempt")
 
-        if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
-
         inter.setOnPaidEventListener {
-            EarningsTracker.trackPaidEvent(activity, it)
+            EarningsTracker.trackPaidEvent(activity, it, "interstitial", inter.adUnitId, inter.responseInfo)
         }
 
         inter.fullScreenContentCallback = object : FullScreenContentCallback() {

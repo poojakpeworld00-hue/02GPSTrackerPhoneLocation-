@@ -41,6 +41,10 @@ object HomeAdsSettings {
         RECENT_CLICK("recent_click", "__launcher_recent_click_count", "__launcher_recent_click_ptr"),
 
         HOME_PRESS("home_press", "__launcher_home_press_count", "__launcher_home_press_ptr"),
+
+        GAME_CLICK("game_click", "__launcher_game_click_count", "__launcher_game_click_ptr"),
+
+        GAME_CLOSE("game_close", "__launcher_game_close_count", "__launcher_game_close_ptr"),
     }
 
     private fun surfaceBlock(context: Context, surface: HomeDeskFragment): JSONObject? {
@@ -55,6 +59,8 @@ object HomeAdsSettings {
             HomeDeskFragment.HOME_BACK -> root.optJSONObject("home_back")
             HomeDeskFragment.RECENT_CLICK -> root.optJSONObject("recent_click")
             HomeDeskFragment.HOME_PRESS -> root.optJSONObject("home_press")
+            HomeDeskFragment.GAME_CLICK -> root.optJSONObject("game_click")
+            HomeDeskFragment.GAME_CLOSE -> root.optJSONObject("game_close")
         }
     }
 
@@ -107,7 +113,7 @@ object HomeAdsSettings {
     }
 
     private val CLICK_SURFACES = setOf(
-        HomeDeskFragment.APP_CLICK, HomeDeskFragment.HOME_CLICK, HomeDeskFragment.DRAWER_CLICK,
+        HomeDeskFragment.APP_CLICK, HomeDeskFragment.HOME_CLICK, HomeDeskFragment.DRAWER_CLICK, HomeDeskFragment.GAME_CLICK,
     )
 
     fun prefetchLauncherAds(context: Context) {
@@ -569,7 +575,9 @@ object HomeAdsSettings {
         INTRO("intro", true, "mid2"),
         LANGUAGE("language", true, "big"),
 
-        REMINDERS("reminders", false, "mid");
+        REMINDERS("reminders", false, "mid"),
+
+        PREMIUM("premium", false, "mid");
 
         val counterKey: String get() = "__launcher_ads_onboarding_${key}_count"
 

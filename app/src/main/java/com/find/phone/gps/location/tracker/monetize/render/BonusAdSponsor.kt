@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render
 
+import com.find.phone.gps.location.tracker.monetize.engine.EarningsTracker
 import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.app.Dialog
@@ -182,6 +183,10 @@ class BonusAdSponsor {
 
         loadedAd = null
         var earned = false
+
+        ad.setOnPaidEventListener {
+            EarningsTracker.trackPaidEvent(activity, it, "rewarded", ad.adUnitId, ad.responseInfo)
+        }
 
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdShowedFullScreenContent() {

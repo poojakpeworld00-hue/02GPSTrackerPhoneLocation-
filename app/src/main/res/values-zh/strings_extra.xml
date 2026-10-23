@@ -190,7 +190,7 @@
     <string name="ds_default_body">把本应用设为桌面，位置搜索和近期搜索随时一滑即到。</string>
     <string name="ds_set_default">设为默认</string>
     <string name="ds_default_home_app">默认桌面应用</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">GPS追踪器 手机定位</string>
     <string name="ds_system_launcher">系统桌面</string>
     <string name="ds_swipe_right_to_search">右滑即可搜索</string>
     <string name="ds_default_footnote">之后随时可以在手机设置中更换默认桌面。</string>
@@ -384,14 +384,11 @@
     <string name="ds_invalid_body">%1$s 与 %2$s 的号码格式不符。请核对数字或国家区号。</string>
     <string name="ds_invalid_edit">修改号码</string>
     <string name="ds_invalid_country">更换国家或地区</string>
-    <string name="ds_quota_label">今日免费搜索次数</string>
     <string name="ds_quota_left">还剩 %1$d/%2$d</string>
     <string name="ds_quota_unlimited">不限次数</string>
     <string name="ds_limit_used">已经用完</string>
-    <string name="ds_limit_title">今日搜索次数已达上限</string>
-    <string name="ds_limit_body">今天的 %1$d 次免费搜索已经用完。看一条简短广告可以再搜一次，也可以升级高级版无限次搜索。</string>
+    <string name="ds_limit_title">免费搜索次数已用完</string>
     <string name="ds_limit_body_premium">今天的 %1$d 次免费搜索已经用完。升级高级版即可无限次搜索，或者明天再来。</string>
-    <string name="ds_limit_watch">看广告 · 多搜 1 次</string>
     <string name="ds_limit_premium">升级高级版 · 不限次数</string>
     <string name="ds_limit_reset">免费次数会在午夜刷新</string>
     <string name="ds_history_title">查询历史</string>

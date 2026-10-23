@@ -26,6 +26,8 @@ open class HomeFoundationPane : BaseSimpleActivity() {
 
     private var builtLocale: String? = null
 
+    private var recreateScheduled = false
+
     override fun attachBaseContext(newBase: Context) {
         HomeServiceLocator.ensure(newBase)
         val localized = HomeServiceLocator.bridge.localizeContext(newBase)
@@ -42,7 +44,12 @@ open class HomeFoundationPane : BaseSimpleActivity() {
 
         val now = HomeServiceLocator.bridge.localizeContext(applicationContext)
             .resources.configuration.locales[0]?.toString()
-        if (now != builtLocale) recreate()
+        if (now != builtLocale && !recreateScheduled) {
+            recreateScheduled = true
+            window.decorView.post {
+                if (!isFinishing && !isDestroyed) recreate()
+            }
+        }
     }
 
     override fun getPackageName(): String {

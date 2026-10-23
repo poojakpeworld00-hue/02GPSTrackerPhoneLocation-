@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">Novas buscas em %1$s</string>
+    <string name="ds_limit_body_timer">Você usou todas as %1$d buscas grátis. Mais serão liberadas quando o cronômetro terminar.</string>
+    <string name="ds_limit_timer_label">Novas buscas em</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">Yeni aramalar %1$s sonra</string>
+    <string name="ds_limit_body_timer">%1$d ücretsiz aramanın hepsini kullandın. Süre dolunca yenileri açılacak.</string>
+    <string name="ds_limit_timer_label">Yeni aramalara kalan</string>
+</resources>

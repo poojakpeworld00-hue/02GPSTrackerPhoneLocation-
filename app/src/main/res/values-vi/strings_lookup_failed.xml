@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">Không thể hoàn tất tìm kiếm</string>
+    <string name="ds_lookup_failed_body">Hiện không thể kết nối với dịch vụ định vị. Vui lòng kiểm tra kết nối và thử lại.</string>
+    <string name="ds_lookup_failed_retry">Thử lại</string>
+    <string name="ds_lookup_failed_cancel">Hủy</string>
+</resources>

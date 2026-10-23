@@ -29,6 +29,8 @@ object ResumeAdKeeper {
 
     var skipNextAppOpenAd: Boolean = false
 
+    var pendingGameCloseAd: Boolean = false
+
     private var expectReturnAd: Boolean = false
 
     fun expectReturnAd() {
@@ -178,7 +180,7 @@ object ResumeAdKeeper {
                     LOG_TAG, adError.message
                 )
                 try {
-                    activity.trackEvent("appopen_ad_fail")
+                    activity.trackEvent("appopen_ad_show_fail")
                 } catch (_: Exception) {
                 }
                 appOpenAd = null
@@ -199,10 +201,8 @@ object ResumeAdKeeper {
 
         activity.trackEvent("appopen_ad_shown")
 
-        if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
-
         appOpenAd!!.setOnPaidEventListener {
-            EarningsTracker.trackPaidEvent(activity, it)
+            EarningsTracker.trackPaidEvent(activity, it, "app_open", appOpenAd?.adUnitId, appOpenAd?.responseInfo)
         }
 
         isShowingAd = true

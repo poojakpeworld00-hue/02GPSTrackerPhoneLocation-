@@ -23,11 +23,22 @@ object GrantOrigin {
     @Volatile
     private var cached: List<GrantPolicy>? = null
 
+    @Volatile
+    private var skipVisible: Boolean = true
+
     fun rules(): List<GrantPolicy> = cached ?: reload()
+
+    /** Whether the permission bottom sheet shows the "Skip" control (RC: permission_engine.show_skip). */
+    fun skipVisible(): Boolean {
+        if (cached == null) reload()
+        return skipVisible
+    }
 
     @Synchronized
     fun reload(): List<GrantPolicy> {
-        val parsed = RemoteGrantDecoder.parse(rawConfig())
+        val raw = rawConfig()
+        val parsed = RemoteGrantDecoder.parse(raw)
+        skipVisible = RemoteGrantDecoder.parseSkipFlag(raw)
         cached = parsed
         return parsed
     }

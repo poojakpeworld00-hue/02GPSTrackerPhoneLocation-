@@ -104,7 +104,9 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         kickShine()
     }
 
-    private val afterIntro: Boolean get() = intent.getBooleanExtra(EXTRA_AFTER_INTRO, false)
+    // opened by onboarding: after the intro slides, or as the `premium` step of onboarding.order
+    private val afterIntro: Boolean
+        get() = intent.getBooleanExtra(EXTRA_AFTER_INTRO, false) || HomeRoleJourney.isOnboarding(this)
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).roundToInt()
 
@@ -330,10 +332,11 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         private const val PRICE_AUTO_ATTEMPTS = 3
         private const val PRICE_RETRY_MS = 1_500L
 
-        fun showsAfterIntro(context: Context): Boolean {
-            val config = ProSettings.read(context)
-            return config.enabled && config.showAfterIntro && !ProStoreBilling.isPremium(context)
-        }
+        fun showsAfterIntro(context: Context): Boolean =
+            ProSettings.read(context).showAfterIntro && offeredInWelcome(context)
+
+        fun offeredInWelcome(context: Context): Boolean =
+            ProSettings.read(context).enabled && !ProStoreBilling.isPremium(context)
 
         fun afterIntro(context: Context, onboarding: Boolean): Intent {
             val intent = if (onboarding) HomeRoleJourney.onboardingIntent(context, ProUpgradeActivity::class.java)

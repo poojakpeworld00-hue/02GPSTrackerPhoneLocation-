@@ -190,7 +190,7 @@
     <string name="ds_default_body">Konum sorgusu ve geçmiş aramalarınız hep tek çekiş ötenizde olsun diye bu uygulamayı ana ekranınız olarak belirleyin.</string>
     <string name="ds_set_default">Varsayılan olarak belirle</string>
     <string name="ds_default_home_app">Varsayılan ana ekran uygulaması</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">GPS Takip: Telefon Konumu</string>
     <string name="ds_system_launcher">Sistemin ana ekranı</string>
     <string name="ds_swipe_right_to_search">Bulmak için sağa çekin</string>
     <string name="ds_default_footnote">Varsayılan ana ekranı dilediğiniz an telefon ayarlarından değiştirebilirsiniz.</string>
@@ -384,14 +384,11 @@
     <string name="ds_invalid_body">%1$s, %2$s numara biçimine uymuyor. Rakamları ya da ülke kodunu gözden geçirin.</string>
     <string name="ds_invalid_edit">Numarayı değiştir</string>
     <string name="ds_invalid_country">Ülkeyi değiştir</string>
-    <string name="ds_quota_label">Bugünün bedava sorguları</string>
     <string name="ds_quota_left">%2$d sorgudan %1$d kaldı</string>
     <string name="ds_quota_unlimited">Sınırsız</string>
     <string name="ds_limit_used">harcandı</string>
-    <string name="ds_limit_title">Günlük sorgu sınırına varıldı</string>
-    <string name="ds_limit_body">Bugünkü %1$d bedava sorgunun hepsini harcadınız. Bir sorgu daha için kısa bir reklam seyredin ya da sınırsız sorgu için Premium\'a yükselin.</string>
+    <string name="ds_limit_title">Ücretsiz arama sınırı doldu</string>
     <string name="ds_limit_body_premium">Bugünkü %1$d bedava sorgunun hepsini harcadınız. Sınırsız sorgu için Premium\'a yükselin ya da yarın yeniden gelin.</string>
-    <string name="ds_limit_watch">Reklam seyret · +1 sorgu</string>
     <string name="ds_limit_premium">Premium\'a yüksel · Sınırsız</string>
     <string name="ds_limit_reset">Bedava sorgular gece yarısı yenilenir</string>
     <string name="ds_history_title">Sorgu geçmişi</string>

@@ -190,7 +190,7 @@
     <string name="ds_default_body">Haz de esta app tu pantalla principal y ten siempre a un gesto la búsqueda de ubicación y tus consultas recientes.</string>
     <string name="ds_set_default">Hacer predeterminada</string>
     <string name="ds_default_home_app">App de pantalla principal predeterminada</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">Rastreador GPS de ubicación del teléfono</string>
     <string name="ds_system_launcher">Launcher del sistema</string>
     <string name="ds_swipe_right_to_search">Desplázate a la derecha para buscar</string>
     <string name="ds_default_footnote">Podrás cambiar la pantalla principal predeterminada cuando quieras desde los ajustes del teléfono.</string>
@@ -384,14 +384,11 @@
     <string name="ds_invalid_body">%1$s no se ajusta al formato de numeración de %2$s. Comprueba las cifras o el prefijo del país.</string>
     <string name="ds_invalid_edit">Modificar número</string>
     <string name="ds_invalid_country">Cambiar de país</string>
-    <string name="ds_quota_label">Consultas gratuitas de hoy</string>
     <string name="ds_quota_left">Te quedan %1$d de %2$d</string>
     <string name="ds_quota_unlimited">Sin tope</string>
     <string name="ds_limit_used">consumidas</string>
-    <string name="ds_limit_title">Llegaste al tope diario de consultas</string>
-    <string name="ds_limit_body">Ya aprovechaste las %1$d consultas gratuitas de hoy. Reproduce un anuncio corto para obtener una más, o pásate a Premium y consulta sin límites.</string>
+    <string name="ds_limit_title">Has agotado las búsquedas gratis</string>
     <string name="ds_limit_body_premium">Ya aprovechaste las %1$d consultas gratuitas de hoy. Pásate a Premium para consultar sin límites o regresa mañana.</string>
-    <string name="ds_limit_watch">Ver anuncio · +1 consulta</string>
     <string name="ds_limit_premium">Pásate a Premium · Sin límites</string>
     <string name="ds_limit_reset">Las consultas gratuitas se renuevan a la medianoche</string>
     <string name="ds_history_title">Registro de consultas</string>

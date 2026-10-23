@@ -190,7 +190,7 @@
     <string name="ds_default_body">Faça desta app o seu ecrã principal e tenha a pesquisa de localização e as pesquisas recentes sempre a um deslize.</string>
     <string name="ds_set_default">Tornar predefinida</string>
     <string name="ds_default_home_app">App de ecrã principal predefinida</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">Rastreador GPS de localização do telefone</string>
     <string name="ds_system_launcher">Launcher do sistema</string>
     <string name="ds_swipe_right_to_search">Deslize para a direita para procurar</string>
     <string name="ds_default_footnote">Pode alterar o ecrã principal predefinido quando quiser, nas definições do telemóvel.</string>
@@ -384,14 +384,11 @@
     <string name="ds_invalid_body">%1$s não corresponde ao formato dos números de %2$s. Confira os dígitos ou o indicativo do país.</string>
     <string name="ds_invalid_edit">Corrigir número</string>
     <string name="ds_invalid_country">Trocar de país</string>
-    <string name="ds_quota_label">Pesquisas grátis de hoje</string>
     <string name="ds_quota_left">Restam %1$d de %2$d</string>
     <string name="ds_quota_unlimited">Ilimitadas</string>
     <string name="ds_limit_used">usadas</string>
-    <string name="ds_limit_title">Atingiu o limite diário de pesquisas</string>
-    <string name="ds_limit_body">Gastou as %1$d pesquisas grátis de hoje. Veja um anúncio breve para ganhar mais uma, ou passe a Premium e pesquise sem limites.</string>
+    <string name="ds_limit_title">O limite de buscas grátis acabou</string>
     <string name="ds_limit_body_premium">Gastou as %1$d pesquisas grátis de hoje. Passe a Premium para pesquisar sem limites ou regresse amanhã.</string>
-    <string name="ds_limit_watch">Ver anúncio · +1 pesquisa</string>
     <string name="ds_limit_premium">Passar a Premium · Sem limites</string>
     <string name="ds_limit_reset">As pesquisas grátis são renovadas à meia-noite</string>
     <string name="ds_history_title">Histórico de pesquisas</string>

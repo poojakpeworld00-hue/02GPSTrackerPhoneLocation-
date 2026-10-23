@@ -731,10 +731,8 @@ open class MonetizeGateActivity : AppCompatActivity() {
 
             activity.trackEvent("AppOpen_Loaded")
 
-            if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
-
             appOpenAd?.setOnPaidEventListener {
-                EarningsTracker.trackPaidEvent(activity, it)
+                EarningsTracker.trackPaidEvent(activity, it, "app_open", ad.adUnitId, ad.responseInfo, "splash")
             }
             ad.show(activity)
         } ?: run {
@@ -788,10 +786,8 @@ open class MonetizeGateActivity : AppCompatActivity() {
 
             activity.trackEvent("Interstitial_Splash_Loaded")
 
-            if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(activity)
-
             interstitialAd?.setOnPaidEventListener {
-                EarningsTracker.trackPaidEvent(activity, it)
+                EarningsTracker.trackPaidEvent(activity, it, "interstitial", ad.adUnitId, ad.responseInfo, "splash")
             }
             ad.show(activity)
         } ?: run { onDismissed?.invoke() }

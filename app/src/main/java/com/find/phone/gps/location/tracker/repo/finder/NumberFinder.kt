@@ -42,10 +42,11 @@ data class NumberSummary(
 
     val serverReached: Boolean,
     val pin: MapMarkerPoint?,
+    val mapPrecision: ZoneAccuracy? = null,
 ) : Serializable {
 
     val precision: ZoneAccuracy
-        get() = when {
+        get() = mapPrecision ?: when {
             !pincode.isNullOrBlank() -> ZoneAccuracy.PINCODE
             !city.isNullOrBlank() -> ZoneAccuracy.CITY
             !state.isNullOrBlank() -> ZoneAccuracy.STATE
@@ -100,8 +101,11 @@ object NumberFinder {
         val state = area?.state?.trim()?.takeIf(String::isNotEmpty) ?: facts.area
         val pincode = area?.pincode?.trim()?.takeIf(String::isNotEmpty)
 
-        val pin = ZoneGeocoder.locate(app, pincode, city, state, countryName)
-        Log.i(TAG, "report: place=[${listOfNotNull(city, state, pincode, countryName).joinToString()}], pin=${pin ?: "none"}")
+        val exactPin = ZoneGeocoder.locate(app, pincode, city, state, countryName)
+        val fallback = if (exactPin == null) RegionCentroids.fallback(facts.iso2, city, state, countryName) else null
+        val pin = exactPin ?: fallback?.first
+        val mapPrecision = fallback?.second
+        Log.i(TAG, "report: place=[${listOfNotNull(city, state, pincode, countryName).joinToString()}], pin=${pin ?: "none"}${if (fallback != null) " (fallback ${fallback.second})" else ""}")
 
         NumberSummary(
             e164 = facts.e164,
@@ -121,6 +125,7 @@ object NumberFinder {
 
             serverReached = response != null && (response.isSuccessful || response.code() == 404),
             pin = pin,
+            mapPrecision = mapPrecision,
         )
     }
 

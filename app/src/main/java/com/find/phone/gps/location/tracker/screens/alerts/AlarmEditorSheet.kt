@@ -1,8 +1,6 @@
 package com.find.phone.gps.location.tracker.screens.alerts
 
 import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -10,6 +8,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentActivity
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.databinding.BsheetReminderEditBinding
 import com.find.phone.gps.location.tracker.alarms.AlarmEntry
@@ -17,7 +16,13 @@ import com.find.phone.gps.location.tracker.alarms.Repeat
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import java.util.Calendar
+import java.util.TimeZone
 
 class AlarmEditorSheet(
     private val activity: Activity,
@@ -101,22 +106,44 @@ class AlarmEditorSheet(
         return ((millis + step - 1) / step) * step
     }
 
+    // framework Date/TimePickerDialog render cramped under the Material3 theme
     private fun pickDate(thenTime: Boolean) {
-        DatePickerDialog(themed, { _, y, m, d ->
-            pick.set(y, m, d)
+        val fm = (activity as? FragmentActivity)?.supportFragmentManager ?: return
+        // MaterialDatePicker works in UTC-midnight millis
+        val utcSelection = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            clear()
+            set(pick.get(Calendar.YEAR), pick.get(Calendar.MONTH), pick.get(Calendar.DAY_OF_MONTH))
+        }.timeInMillis
+        val picker = MaterialDatePicker.Builder.datePicker()
+            .setSelection(utcSelection)
+            .setCalendarConstraints(
+                CalendarConstraints.Builder()
+                    .setValidator(DateValidatorPointForward.now())
+                    .build(),
+            )
+            .build()
+        picker.addOnPositiveButtonClickListener { selection ->
+            val chosen = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply { timeInMillis = selection }
+            pick.set(chosen.get(Calendar.YEAR), chosen.get(Calendar.MONTH), chosen.get(Calendar.DAY_OF_MONTH))
             paintWhen()
             if (thenTime) pickTime()
-        }, pick.get(Calendar.YEAR), pick.get(Calendar.MONTH), pick.get(Calendar.DAY_OF_MONTH)).apply {
-            datePicker.minDate = System.currentTimeMillis() - 1000
-        }.show()
+        }
+        picker.show(fm, "rem_date")
     }
 
     private fun pickTime() {
-        TimePickerDialog(themed, { _, h, min ->
-            pick.set(Calendar.HOUR_OF_DAY, h); pick.set(Calendar.MINUTE, min)
+        val fm = (activity as? FragmentActivity)?.supportFragmentManager ?: return
+        val picker = MaterialTimePicker.Builder()
+            .setTimeFormat(if (DateFormat.is24HourFormat(themed)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H)
+            .setHour(pick.get(Calendar.HOUR_OF_DAY))
+            .setMinute(pick.get(Calendar.MINUTE))
+            .build()
+        picker.addOnPositiveButtonClickListener {
+            pick.set(Calendar.HOUR_OF_DAY, picker.hour); pick.set(Calendar.MINUTE, picker.minute)
             pick.set(Calendar.SECOND, 0); pick.set(Calendar.MILLISECOND, 0)
             paintWhen()
-        }, pick.get(Calendar.HOUR_OF_DAY), pick.get(Calendar.MINUTE), DateFormat.is24HourFormat(themed)).show()
+        }
+        picker.show(fm, "rem_time")
     }
 
     private fun setRepeat(value: String) {

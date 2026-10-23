@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">Lượt tìm mới sau %1$s</string>
+    <string name="ds_limit_body_timer">Bạn đã dùng hết %1$d lượt tìm miễn phí. Sẽ có thêm khi hết giờ.</string>
+    <string name="ds_limit_timer_label">Lượt tìm mới sau</string>
+</resources>

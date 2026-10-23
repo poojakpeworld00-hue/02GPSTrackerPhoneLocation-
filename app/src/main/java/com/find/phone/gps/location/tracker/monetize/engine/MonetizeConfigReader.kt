@@ -78,6 +78,8 @@ object MonetizeConfigReader {
 
                 "premium",
 
+                "search_config",
+
                 "rewarded",
 
                 "launcher_config",

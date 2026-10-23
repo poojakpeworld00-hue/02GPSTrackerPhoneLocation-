@@ -3,15 +3,14 @@ package com.find.phone.gps.location.tracker.screens.dashboard
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.render.BonusAdSponsor
-import com.find.phone.gps.location.tracker.repo.billing.ProSettings
+import com.find.phone.gps.location.tracker.repo.SearchConfig
 import com.find.phone.gps.location.tracker.repo.billing.LookupAllowance
 import com.find.phone.gps.location.tracker.databinding.BsheetSearchLimitBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
@@ -20,14 +19,27 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class LookupCapSheet(
     private val activity: Activity,
-    private val onExtraSearch: () -> Unit,
+    private val onReady: () -> Unit,
     private val onPremium: () -> Unit,
 ) {
     private val themed = ContextThemeWrapper(activity, R.style.Theme_GpsTracker)
     private val binding = BsheetSearchLimitBinding.inflate(LayoutInflater.from(themed))
     private val dialog = BottomSheetDialog(themed, R.style.Ds_BottomSheetDialog)
+    private val handler = Handler(Looper.getMainLooper())
     private var shine: ValueAnimator? = null
-    private var watching = false
+    private var fired = false
+
+    private val ticker = object : Runnable {
+        override fun run() {
+            val left = LookupAllowance.cooldownRemainingMs(activity)
+            if (left <= 0L) {
+                finishReady()
+                return
+            }
+            binding.lblCountdown.text = LookupAllowance.formatRemaining(left)
+            handler.postDelayed(this, 1_000L)
+        }
+    }
 
     fun show() {
         val limit = LookupAllowance.limit(activity)
@@ -35,50 +47,40 @@ class LookupCapSheet(
         binding.lblUsed.text = "$used/$limit"
         binding.ringVw.fraction = if (limit > 0) used.toFloat() / limit else 1f
 
-        val offersAd = ProSettings.read(activity).rewardedExtraSearches > 0
+        val hasTimer = SearchConfig.read(activity).cooldownMinutes > 0 && LookupAllowance.onCooldown(activity)
         binding.lblBody.text = themed.getString(
-            if (offersAd) R.string.ds_limit_body else R.string.ds_limit_body_premium, limit,
+            if (hasTimer) R.string.ds_limit_body_timer else R.string.ds_limit_body_premium, limit,
         )
-        binding.padWatch.isVisible = offersAd
+        binding.countdownBox.isVisible = hasTimer
+        binding.lblReset.isVisible = !hasTimer
+        if (hasTimer) {
+            binding.lblCountdown.text = LookupAllowance.formatRemaining(LookupAllowance.cooldownRemainingMs(activity))
+            handler.post(ticker)
+        }
 
-        VisualTweens.pressScale(binding.padWatch)
         VisualTweens.pressScale(binding.padPremium)
-        binding.padWatch.setOnClickListener { watch() }
         binding.padPremium.clipToOutline = true
         binding.padPremium.setOnClickListener {
             dialog.dismiss()
             onPremium()
         }
-        if (offersAd) BonusAdSponsor.preload(activity)
 
         dialog.setContentView(binding.root)
         dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         dialog.behavior.skipCollapsed = true
-        dialog.setOnDismissListener { shine?.cancel() }
+        dialog.setOnDismissListener {
+            handler.removeCallbacks(ticker)
+            shine?.cancel()
+        }
         dialog.show()
         kickShine()
     }
 
-    private fun watch() {
-        if (watching) return
-        watching = true
-        binding.lblWatch.isInvisible = true
-        binding.pbWatchVw.isVisible = true
-        BonusAdSponsor().show(activity) { result ->
-            watching = false
-            binding.lblWatch.isInvisible = false
-            binding.pbWatchVw.isVisible = false
-            when (result) {
-                BonusAdSponsor.Result.EARNED -> {
-                    LookupAllowance.grantRewarded(activity)
-                    dialog.dismiss()
-                    onExtraSearch()
-                }
-                BonusAdSponsor.Result.NOT_EARNED ->
-                    Toast.makeText(activity, R.string.ds_reward_not_earned, Toast.LENGTH_SHORT).show()
-                BonusAdSponsor.Result.CANCELED -> Unit
-            }
-        }
+    private fun finishReady() {
+        if (fired) return
+        fired = true
+        runCatching { dialog.dismiss() }
+        if (!activity.isFinishing) onReady()
     }
 
     private fun kickShine() {

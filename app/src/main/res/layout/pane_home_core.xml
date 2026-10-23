@@ -150,32 +150,6 @@
                 app:layout_constraintTop_toBottomOf="@id/crest" />
 
             <LinearLayout
-                android:id="@+id/capGps"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lblHeadline">
-
-                <View
-                    android:layout_width="7dp"
-                    android:layout_height="7dp"
-                    android:background="@drawable/hb_gps_dot" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:fontFamily="@font/figtree_semibold"
-                    android:text="@string/ds_chip_gps_ready"
-                    android:textColor="@color/hb_on_band_soft"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/searchCardVw"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -190,7 +164,7 @@
                 android:padding="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/capGps"
+                app:layout_constraintTop_toBottomOf="@id/lblHeadline"
                 tools:targetApi="p">
 
                 <FrameLayout

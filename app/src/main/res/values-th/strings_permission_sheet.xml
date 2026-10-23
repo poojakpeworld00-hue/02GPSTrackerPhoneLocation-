@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ps_allow_fmt">อนุญาต %1$s</string>
+    <string name="ps_allowed">อนุญาตแล้ว</string>
+    <string name="ps_trust">คุณเปลี่ยนได้ทุกเมื่อในการตั้งค่า</string>
+</resources>

@@ -190,7 +190,7 @@
     <string name="ds_default_body">ตั้งแอปนี้เป็นหน้าจอหลัก แล้วการค้นหาตำแหน่งและรายการที่เพิ่งค้นจะอยู่แค่ปัดเดียว</string>
     <string name="ds_set_default">ตั้งเป็นหลัก</string>
     <string name="ds_default_home_app">แอปหน้าจอหลักประจำเครื่อง</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">GPS ติดตามตำแหน่งโทรศัพท์</string>
     <string name="ds_system_launcher">ตัวจัดการหน้าจอของระบบ</string>
     <string name="ds_swipe_right_to_search">ปัดขวาเพื่อค้นหา</string>
     <string name="ds_default_footnote">เปลี่ยนหน้าจอหลักประจำเครื่องได้ทุกเมื่อในการตั้งค่าโทรศัพท์</string>
@@ -384,14 +384,11 @@
     <string name="ds_invalid_body">%1$s ไม่ตรงกับรูปแบบเบอร์ของ %2$s กรุณาเช็กตัวเลขหรือรหัสประเทศอีกครั้ง</string>
     <string name="ds_invalid_edit">ปรับแก้เบอร์</string>
     <string name="ds_invalid_country">เปลี่ยนประเทศ</string>
-    <string name="ds_quota_label">สิทธิ์ค้นหาฟรีของวันนี้</string>
     <string name="ds_quota_left">คงเหลือ %1$d จาก %2$d</string>
     <string name="ds_quota_unlimited">ไม่อั้น</string>
     <string name="ds_limit_used">ใช้ไปแล้ว</string>
-    <string name="ds_limit_title">ใช้สิทธิ์ค้นหารายวันหมดแล้ว</string>
-    <string name="ds_limit_body">วันนี้คุณใช้สิทธิ์ค้นหาฟรีครบ %1$d ครั้งแล้ว ดูโฆษณาสั้น ๆ เพื่อค้นหาเพิ่มอีกหนึ่งครั้ง หรือสมัครพรีเมียมเพื่อค้นหาแบบไม่จำกัด</string>
+    <string name="ds_limit_title">ใช้การค้นหาฟรีครบแล้ว</string>
     <string name="ds_limit_body_premium">วันนี้คุณใช้สิทธิ์ค้นหาฟรีครบ %1$d ครั้งแล้ว สมัคร Premium เพื่อค้นหาแบบไม่จำกัด หรือกลับมาใหม่พรุ่งนี้</string>
-    <string name="ds_limit_watch">ดูโฆษณา · ได้เพิ่ม 1 ครั้ง</string>
     <string name="ds_limit_premium">สมัครพรีเมียม · ไม่จำกัด</string>
     <string name="ds_limit_reset">สิทธิ์ค้นหาฟรีจะกลับมาใหม่ตอนเที่ยงคืน</string>
     <string name="ds_history_title">ประวัติที่ค้นหา</string>

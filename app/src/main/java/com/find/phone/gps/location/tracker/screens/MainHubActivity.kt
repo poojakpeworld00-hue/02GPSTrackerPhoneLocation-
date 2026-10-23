@@ -69,7 +69,7 @@ class MainHubActivity : FoundationActivity<PageMainBinding>(), DashboardShellOwn
             requestPhonePermission = { phonePermission.launch(it) },
         ) {
             binding.mainVw.closeDrawer(GravityCompat.START)
-        }.also { it.bind() }
+        }.also { it.bind(); it.watch(binding.mainVw) }
 
         onBackPressedDispatcher.addCallback(this) {
             if (binding.mainVw.isDrawerOpen(GravityCompat.START)) binding.mainVw.closeDrawer(GravityCompat.START)

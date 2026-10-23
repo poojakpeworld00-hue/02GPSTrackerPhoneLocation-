@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_lookup_failed_title">Não foi possível concluir a busca</string>
+    <string name="ds_lookup_failed_body">Não conseguimos acessar o serviço de localização agora. Verifique sua conexão e tente novamente.</string>
+    <string name="ds_lookup_failed_retry">Tentar novamente</string>
+    <string name="ds_lookup_failed_cancel">Cancelar</string>
+</resources>

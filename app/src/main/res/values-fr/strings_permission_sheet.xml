@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ps_allow_fmt">Autoriser %1$s</string>
+    <string name="ps_allowed">Autorisé</string>
+    <string name="ps_trust">Vous pouvez modifier ceci à tout moment dans les Réglages</string>
+</resources>

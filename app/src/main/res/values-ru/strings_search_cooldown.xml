@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">Новые поиски через %1$s</string>
+    <string name="ds_limit_body_timer">Вы использовали все %1$d бесплатных поисков. Новые появятся, когда закончится таймер.</string>
+    <string name="ds_limit_timer_label">Новые поиски через</string>
+</resources>

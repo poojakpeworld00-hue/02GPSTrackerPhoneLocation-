@@ -212,6 +212,10 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         delay(at(minMs * 3 / 10))
 
         val result = lookup.await()
+        if (!result.serverReached) {
+            showLookupFailed()
+            return@launch
+        }
         report = result
         onFound(result)
 
@@ -229,6 +233,25 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         delay(at(minMs))
 
         presentResult(result)
+    }
+
+    private fun showLookupFailed() {
+        if (isFinishing || isDestroyed) return
+        progressAnim?.cancel()
+        LookupFailedSheet(
+            this,
+            onRetry = { restartLookup() },
+            onCancel = { finish() },
+        ).show()
+    }
+
+    private fun restartLookup() {
+        if (isFinishing || isDestroyed) return
+        progressAnim?.cancel()
+        binding.prog.progress = 0
+        binding.lblPercent.text = getString(R.string.ds_locating_percent, 0)
+        binding.flagState.setText(R.string.ds_step_state)
+        locate(if (ProStoreBilling.isPremium(this)) MIN_SEARCH_PREMIUM_MS else MIN_SEARCH_MS)
     }
 
     private fun stage(text: String, toPercent: Int, overMs: Long, step: Step) {

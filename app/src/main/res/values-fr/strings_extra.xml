@@ -190,7 +190,7 @@
     <string name="ds_default_body">Faites de cette application votre écran d\'accueil afin de garder la recherche de position et vos dernières recherches à portée de doigt.</string>
     <string name="ds_set_default">Choisir par défaut</string>
     <string name="ds_default_home_app">Écran d\'accueil par défaut</string>
-    <string name="ds_app_short_name">GPS Tracker Phone Location</string>
+    <string name="ds_app_short_name">Traceur GPS de position du téléphone</string>
     <string name="ds_system_launcher">Lanceur du système</string>
     <string name="ds_swipe_right_to_search">Glissez vers la droite pour chercher</string>
     <string name="ds_default_footnote">L\'écran d\'accueil par défaut peut être modifié quand vous le voulez dans les réglages du téléphone.</string>
@@ -384,14 +384,11 @@
     <string name="ds_invalid_body">%1$s ne respecte pas le format des numéros de %2$s. Contrôlez les chiffres ou le préfixe du pays.</string>
     <string name="ds_invalid_edit">Corriger le numéro</string>
     <string name="ds_invalid_country">Choisir un autre pays</string>
-    <string name="ds_quota_label">Recherches gratuites du jour</string>
     <string name="ds_quota_left">%1$d / %2$d disponibles</string>
     <string name="ds_quota_unlimited">Sans limite</string>
     <string name="ds_limit_used">consommées</string>
-    <string name="ds_limit_title">Plafond de recherches du jour atteint</string>
-    <string name="ds_limit_body">Vous avez épuisé vos %1$d recherches gratuites du jour. Visionnez une courte publicité pour en obtenir une de plus, ou passez à Premium pour ne plus avoir de limite.</string>
+    <string name="ds_limit_title">Limite de recherches gratuites atteinte</string>
     <string name="ds_limit_body_premium">Vous avez épuisé vos %1$d recherches gratuites du jour. Passez à Premium pour ne plus avoir de limite, ou revenez demain.</string>
-    <string name="ds_limit_watch">Voir la publicité · 1 recherche en plus</string>
     <string name="ds_limit_premium">Passer à Premium · Sans limite</string>
     <string name="ds_limit_reset">Les recherches gratuites reviennent à minuit</string>
     <string name="ds_history_title">Journal des recherches</string>

@@ -252,12 +252,8 @@ class InlineSponsor() {
 
                             context.trackEvent("NativeAds_showBigNative_Google")
 
-                            if (BuildConfig.DEBUG) {
-                                EarningsTracker.simulateDebugRevenue(context)
-                            }
-
                             nativeAd?.setOnPaidEventListener {
-                                EarningsTracker.trackPaidEvent(context, it)
+                                EarningsTracker.trackPaidEvent(context, it, "native", PageSponsorSettings.nativeAdUnitId(context), nativeAd?.responseInfo)
                             }
 
                             nativeAd = null
@@ -572,10 +568,8 @@ class InlineSponsor() {
 
                             context.trackEvent("NativeAds_showMidNative_Google")
 
-                            if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(context)
-
                             nativeAd!!.setOnPaidEventListener {
-                                EarningsTracker.trackPaidEvent(context, it)
+                                EarningsTracker.trackPaidEvent(context, it, "native", PageSponsorSettings.nativeAdUnitId(context), nativeAd?.responseInfo)
                             }
 
                             nativeAd = null
@@ -866,10 +860,8 @@ class InlineSponsor() {
 
                             context.trackEvent("NativeAds_showMidNative2_Google")
 
-                            if (BuildConfig.DEBUG) EarningsTracker.simulateDebugRevenue(context)
-
                             nativeAd!!.setOnPaidEventListener {
-                                EarningsTracker.trackPaidEvent(context, it)
+                                EarningsTracker.trackPaidEvent(context, it, "native", PageSponsorSettings.nativeAdUnitId(context), nativeAd?.responseInfo)
                             }
 
                             nativeAd = null

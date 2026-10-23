@@ -209,6 +209,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         private const val ANIMATION_DURATION = 150L
         private const val APP_DRAWER_CLOSE_DELAY = 300L
         private const val APP_DRAWER_STATE = "app_drawer_state"
+        private const val HOST_PANEL_STATE = "host_panel_state"
         private const val SWIPE_HINT_ANIMATION_DURATION = 900L
 
         private const val PERMISSION_SHEET_DELAY = 500L
@@ -301,7 +302,11 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         prepareDefaultLauncherBanner(savedInstanceState)
         prepareWallpaperColorListener()
 
-        if (savedInstanceState == null) unfoldHostPanelIfAsked(intent)
+        if (savedInstanceState == null) {
+            unfoldHostPanelIfAsked(intent)
+        } else if (savedInstanceState.getBoolean(HOST_PANEL_STATE)) {
+            preExpandHostPanelForRestore()
+        }
 
         binding.mainHolderView.post { perhapsShowGuide() }
 
@@ -923,6 +928,7 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(APP_DRAWER_STATE, isAllAppsFragmentExpanded())
+        outState.putBoolean(HOST_PANEL_STATE, isHostPanelExpanded())
         defaultLauncherRequester.persistState(outState)
     }
 
@@ -1214,6 +1220,25 @@ class HomeDeskPane : HomeFoundationPane(), SwipeCallback {
         presentSidePanel(binding.hostPanelView.root)
 
         binding.hostPanelView.root.setPanelVisible(true)
+    }
+
+    // Positions the restored host panel before the first frame so the home grid does not flash after a theme recreate.
+    private fun preExpandHostPanelForRestore() {
+        if (!HomeAdsSettings.panelEnabled(HomeAdsSettings.RIGHT_SWIPE)) return
+        val panel = binding.hostPanelView.root
+        panel.x = 0f
+        mOpenSidePanel = panel
+        binding.homeScreenGridView.root.fragmentExpanded()
+        binding.homeScreenGridView.root.animate().cancel()
+        binding.homeScreenGridView.root.alpha = 0f
+        window.navigationBarColor = resources.getColor(R.color.launcher_semitransparent_navigation)
+        updateDefaultLauncherBannerVisibility()
+        binding.mainHolderView.post {
+            if (isFinishing || isDestroyed) return@post
+            panel.refresh()
+            panel.setPanelVisible(true)
+            updateStatusBarIcons(sidePanelBackgroundColor(panel))
+        }
     }
 
     fun concealHostPanel() {

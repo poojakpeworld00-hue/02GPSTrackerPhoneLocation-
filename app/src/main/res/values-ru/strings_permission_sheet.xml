@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ps_allow_fmt">Разрешить %1$s</string>
+    <string name="ps_allowed">Разрешено</string>
+    <string name="ps_trust">Это можно изменить в любой момент в Настройках</string>
+</resources>

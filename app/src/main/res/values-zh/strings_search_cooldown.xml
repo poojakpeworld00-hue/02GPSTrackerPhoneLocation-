@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_quota_cooldown">%1$s 后可再次搜索</string>
+    <string name="ds_limit_body_timer">你已用完 %1$d 次免费搜索，计时结束后将解锁更多。</string>
+    <string name="ds_limit_timer_label">新的搜索将在</string>
+</resources>

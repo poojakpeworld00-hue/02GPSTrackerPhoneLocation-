@@ -102,6 +102,8 @@ class TrackerHomeBridge : HomeHostPort {
         TrackerPhoneApp.appContext.trackEvent(name)
     }
 
+    override fun localizeContext(base: Context): Context = LanguageKeeper.localized(base)
+
     override fun isOrganicAudience(): Boolean =
         !AdPrefsStore.getInstance(TrackerPhoneApp.appContext).getBoolean("OnMaketing")
 

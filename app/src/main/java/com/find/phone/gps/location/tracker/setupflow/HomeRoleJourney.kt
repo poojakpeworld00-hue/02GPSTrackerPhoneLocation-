@@ -27,6 +27,7 @@ import org.fossify.commons.extensions.getSharedPrefs
 import io.homedeck.grid.ext.isDefaultLauncher
 import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
 import com.find.phone.gps.location.tracker.screens.walkthrough.GuidedTourActivity
+import com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity
 import com.find.phone.gps.location.tracker.homeshell.HomeModeToggle
 
 object HomeRoleJourney {
@@ -220,8 +221,14 @@ object HomeRoleJourney {
             HomeModeToggle.isEnabled(context) && step.enabled && !(step.skipIfDefault && context.isDefaultLauncher())
         }
 
+        OnboardScreen.PREMIUM -> ProUpgradeActivity.offeredInWelcome(context)
+
         else -> true
     }
+
+    // onboarding.order places the paywall itself, so the intro slides must not open it too
+    fun placesPremium(context: Context): Boolean =
+        OnboardScreen.PREMIUM in HomeAdsSettings.onboardingOrder(context)
 
     private fun alreadyGranted(context: Context): Boolean {
         val step = HomeAdsSettings.defaultHomeStep(context)
@@ -235,6 +242,7 @@ object HomeRoleJourney {
         OnboardScreen.INTRO -> GuidedTourActivity::class.java
         OnboardScreen.LANGUAGE -> LocalePickActivity::class.java
         OnboardScreen.REMINDERS -> AlarmIntroActivity::class.java
+        OnboardScreen.PREMIUM -> ProUpgradeActivity::class.java
     }
 
     private fun log(message: String) {

@@ -10,6 +10,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -93,8 +94,15 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
 
         VisualTweens.pressScale(binding.padContinue)
         binding.padContinue.clipToOutline = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            binding.padContinue.outlineSpotShadowColor = getColor(R.color.pw_brand)
+            binding.padContinue.outlineAmbientShadowColor = getColor(R.color.pw_brand)
+        }
         binding.padContinue.setOnClickListener { buy() }
         binding.padRestore.setOnClickListener { restore() }
+        // single-plan design keeps the legal links in the consent line only
+        binding.padTerms.isVisible = !afterIntro
+        binding.padPrivacy.isVisible = !afterIntro
         binding.padTerms.setOnClickListener { unfoldTermLink() }
         binding.padPrivacy.setOnClickListener { unfoldPolicyLink() }
         closeView.setOnClickListener { if (closeView.closable) leave(withInter = true) }
@@ -181,18 +189,22 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
             binding.pbCtaVw.isVisible = false
         }
         binding.lblCta.text = when {
-            trial > 0 -> getString(R.string.ds_premium_cta_trial, trial)
+            trial > 0 -> getString(R.string.ds_premium_cta_start)
             plan.kind == ProTier.Kind.WEEKLY -> getString(R.string.ds_premium_cta_week, price)
             plan.kind == ProTier.Kind.MONTHLY -> getString(R.string.ds_premium_cta_month, price)
             else -> getString(R.string.ds_premium_cta_year, price)
         }
-        binding.lblPriceLine.text = when (plan.kind) {
+        val line = when (plan.kind) {
             ProTier.Kind.WEEKLY -> if (trial > 0) getString(R.string.ds_premium_price_trial_week, price, trial)
             else getString(R.string.ds_premium_price_week, price)
             ProTier.Kind.MONTHLY -> if (trial > 0) getString(R.string.ds_premium_price_trial_month, price, trial)
             else getString(R.string.ds_premium_price_month, price)
             ProTier.Kind.YEARLY -> if (trial > 0) getString(R.string.ds_premium_price_trial_year, price, trial)
             else getString(R.string.ds_premium_price_year, price)
+        }
+        binding.lblPriceLine.text = SpannableString(line).apply {
+            val at = line.indexOf(price)
+            if (at >= 0) setSpan(ForegroundColorSpan(getColor(R.color.pw_brand)), at, at + price.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
 

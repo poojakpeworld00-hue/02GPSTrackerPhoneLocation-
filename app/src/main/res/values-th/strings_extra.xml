@@ -347,6 +347,7 @@
     <string name="ds_premium_cta_month">ไปต่อ · %1$s / เดือน</string>
     <string name="ds_premium_cta_year">ไปต่อ · %1$s / ปี</string>
     <string name="ds_premium_cta_trial">เริ่มทดลองใช้ฟรี %1$d วัน</string>
+    <string name="ds_premium_cta_start">เริ่มทดลองใช้ฟรี</string>
     <string name="ds_premium_price_trial_week">ฟรี %2$d วัน จากนั้น %1$s/สัปดาห์</string>
     <string name="ds_premium_price_trial_month">ฟรี %2$d วัน จากนั้น %1$s/เดือน</string>
     <string name="ds_premium_price_week">%1$s/สัปดาห์ ต่ออายุเองอัตโนมัติ</string>

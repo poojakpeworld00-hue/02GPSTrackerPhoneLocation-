@@ -347,6 +347,7 @@
     <string name="ds_premium_cta_month">İlerle · %1$s / ay</string>
     <string name="ds_premium_cta_year">İlerle · %1$s / yıl</string>
     <string name="ds_premium_cta_trial">%1$d günlük bedava denemeyi başlat</string>
+    <string name="ds_premium_cta_start">Ücretsiz denemeyi başlat</string>
     <string name="ds_premium_price_trial_week">%2$d gün BEDAVA denemeden sonra haftada %1$s</string>
     <string name="ds_premium_price_trial_month">%2$d gün BEDAVA denemeden sonra ayda %1$s</string>
     <string name="ds_premium_price_week">Haftada %1$s, kendiliğinden yenilenir</string>

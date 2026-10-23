@@ -347,6 +347,7 @@
     <string name="ds_premium_cta_month">次へ進む · %1$s / 月</string>
     <string name="ds_premium_cta_year">次へ進む · %1$s / 年</string>
     <string name="ds_premium_cta_trial">%1$d日間の無料体験を始める</string>
+    <string name="ds_premium_cta_start">無料トライアルを開始</string>
     <string name="ds_premium_price_trial_week">%2$d日間の無料体験のあと %1$s/週</string>
     <string name="ds_premium_price_trial_month">%2$d日間の無料体験のあと %1$s/月</string>
     <string name="ds_premium_price_week">%1$s/週 · 自動で更新</string>

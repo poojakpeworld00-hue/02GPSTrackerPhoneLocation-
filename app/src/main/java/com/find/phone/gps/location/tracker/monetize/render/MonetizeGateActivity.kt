@@ -115,10 +115,10 @@ open class MonetizeGateActivity : AppCompatActivity() {
 
         const val DEBUG_AUDIENCE_MARKETING = true
 
-        const val FORCE_AUDIENCE_IN_RELEASE = false
+        const val FORCE_AUDIENCE_IN_RELEASE = true
 
         val isAudienceForced: Boolean
-            get() =BuildConfig.DEBUG || FORCE_AUDIENCE_IN_RELEASE
+            get() =/*BuildConfig.DEBUG ||*/ FORCE_AUDIENCE_IN_RELEASE
 
         const val ATTRIBUTION_WAIT_MS = 5_000L
 

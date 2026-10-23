@@ -347,6 +347,7 @@
     <string name="ds_premium_cta_month">आगे बढ़ें · %1$s हर महीने</string>
     <string name="ds_premium_cta_year">आगे बढ़ें · %1$s हर साल</string>
     <string name="ds_premium_cta_trial">%1$d दिन का मुफ़्त ट्रायल आरंभ करें</string>
+    <string name="ds_premium_cta_start">मुफ़्त ट्रायल शुरू करें</string>
     <string name="ds_premium_price_trial_week">%2$d दिन के मुफ़्त ट्रायल के बाद हर हफ़्ते %1$s</string>
     <string name="ds_premium_price_trial_month">%2$d दिन के मुफ़्त ट्रायल के बाद हर महीने %1$s</string>
     <string name="ds_premium_price_week">हर हफ़्ते %1$s, ख़ुद ही नया हो जाता है</string>

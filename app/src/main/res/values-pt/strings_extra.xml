@@ -347,6 +347,7 @@
     <string name="ds_premium_cta_month">Prosseguir · %1$s / mês</string>
     <string name="ds_premium_cta_year">Prosseguir · %1$s / ano</string>
     <string name="ds_premium_cta_trial">Começar %1$d dias de teste gratuito</string>
+    <string name="ds_premium_cta_start">Iniciar teste grátis</string>
     <string name="ds_premium_price_trial_week">%1$s/semana depois de %2$d dias de teste GRATUITOS</string>
     <string name="ds_premium_price_trial_month">%1$s/mês depois de %2$d dias de teste GRATUITOS</string>
     <string name="ds_premium_price_week">%1$s/semana, com renovação automática</string>

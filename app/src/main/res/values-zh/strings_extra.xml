@@ -347,6 +347,7 @@
     <string name="ds_premium_cta_month">继续 · 每月 %1$s</string>
     <string name="ds_premium_cta_year">继续 · 每年 %1$s</string>
     <string name="ds_premium_cta_trial">开启 %1$d 天免费试用</string>
+    <string name="ds_premium_cta_start">开始免费试用</string>
     <string name="ds_premium_price_trial_week">免费试用 %2$d 天，之后每周 %1$s</string>
     <string name="ds_premium_price_trial_month">免费试用 %2$d 天，之后每月 %1$s</string>
     <string name="ds_premium_price_week">每周 %1$s，到期自动续费</string>

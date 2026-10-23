@@ -6,4 +6,7 @@
     <color name="pw_plan_off_stroke">#FF27324A</color>
     <color name="pw_plan_name_on">#FF9DB3FF</color>
     <color name="pw_plan_price_on">#FFFFFFFF</color>
+    <color name="pw_brand">#FF7C74FF</color>
+    <color name="pw_tint">#FF262A52</color>
+    <color name="pw_cross">#FF5A5F73</color>
 </resources>

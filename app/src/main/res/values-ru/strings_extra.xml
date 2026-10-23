@@ -351,6 +351,7 @@
     <string name="ds_premium_cta_month">Далее · %1$s / мес.</string>
     <string name="ds_premium_cta_year">Далее · %1$s / год</string>
     <string name="ds_premium_cta_trial">Начать бесплатный период (%1$d дн.)</string>
+    <string name="ds_premium_cta_start">Начать бесплатный период</string>
     <string name="ds_premium_price_trial_week">БЕСПЛАТНО %2$d дн., затем %1$s/нед.</string>
     <string name="ds_premium_price_trial_month">БЕСПЛАТНО %2$d дн., затем %1$s/мес.</string>
     <string name="ds_premium_price_week">%1$s/нед., автопродление</string>

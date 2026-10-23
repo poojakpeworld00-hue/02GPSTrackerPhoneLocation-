@@ -355,6 +355,7 @@
     <string name="ds_premium_cta_month">تابع · %1$s شهريًا</string>
     <string name="ds_premium_cta_year">تابع · %1$s سنويًا</string>
     <string name="ds_premium_cta_trial">ابدأ فترة تجريبية مجانية مدتها %1$d أيام</string>
+    <string name="ds_premium_cta_start">ابدأ التجربة المجانية</string>
     <string name="ds_premium_price_trial_week">%1$s أسبوعيًا عقب %2$d أيام تجريبية مجانية</string>
     <string name="ds_premium_price_trial_month">%1$s شهريًا عقب %2$d أيام تجريبية مجانية</string>
     <string name="ds_premium_price_week">%1$s أسبوعيًا، مع تجديد تلقائي</string>

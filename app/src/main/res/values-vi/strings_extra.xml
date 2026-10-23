@@ -347,6 +347,7 @@
     <string name="ds_premium_cta_month">Đi tiếp · %1$s / tháng</string>
     <string name="ds_premium_cta_year">Đi tiếp · %1$s / năm</string>
     <string name="ds_premium_cta_trial">Bắt đầu %1$d ngày dùng thử không mất phí</string>
+    <string name="ds_premium_cta_start">Bắt đầu dùng thử miễn phí</string>
     <string name="ds_premium_price_trial_week">Sau %2$d ngày dùng thử MIỄN PHÍ, %1$s mỗi tuần</string>
     <string name="ds_premium_price_trial_month">Sau %2$d ngày dùng thử MIỄN PHÍ, %1$s mỗi tháng</string>
     <string name="ds_premium_price_week">%1$s mỗi tuần, tự động gia hạn</string>

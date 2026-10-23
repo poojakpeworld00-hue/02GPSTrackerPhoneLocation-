@@ -32,6 +32,7 @@ import com.find.phone.gps.location.tracker.databinding.CardPremiumPlanBinding
 import com.find.phone.gps.location.tracker.databinding.PagePremiumBinding
 import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
+import com.find.phone.gps.location.tracker.helpers.isNightMode
 import com.find.phone.gps.location.tracker.helpers.unfoldPolicyLink
 import com.find.phone.gps.location.tracker.helpers.unfoldTermLink
 import kotlin.math.roundToInt
@@ -61,7 +62,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
-        WindowCompat.getInsetsController(window, binding.root).isAppearanceLightStatusBars = true
+        WindowCompat.getInsetsController(window, binding.root).isAppearanceLightStatusBars = !isNightMode(this)
         binding.scrl.isVisible = !afterIntro
         binding.singleVw.isVisible = afterIntro
         binding.padContinueFree.isVisible = !afterIntro

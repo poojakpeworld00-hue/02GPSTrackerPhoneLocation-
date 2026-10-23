@@ -30,7 +30,7 @@
 | `GET_DATA_LIST_1.*.intro_display.reminders_intro.{enabled,prompt_frequency,prompt_interval}` | enabled=true, once, 0 | add for explicit control |
 | `GET_DATA_LIST_1.*.launcher_ads.home_press` | surface off (no Home-press ad) | `_all_fixes` variants add it |
 | `GET_DATA_LIST_1.*.launcher_ads.home_click` / `drawer_click` | fall back to the `app_click` block (`clickSurface`) | benign |
-| `GET_DATA_LIST_1.*.premium.products[]` | DEFAULT_PLANS `gps_premium_weekly` (SUGGESTED, 3-day trial), `gps_premium_monthly`, `gps_premium_lifetime` | **these product IDs must exist in the new app's Play Console**, or publish `products[]` (the DEBUG_* variants have the shape) |
+| `GET_DATA_LIST_1.*.premium.products[]` | DEFAULT_PLANS `gps_premium_weekly` (SUGGESTED, 3-day trial), `gps_premium_monthly`, `gps_premium_yearly` | **these product IDs must exist in the new app's Play Console**, or publish `products[]` (the DEBUG_* variants have the shape) |
 | `GET_DATA_LIST_1.*.premium.close_button_opacity` | 1.0 (range 0.3..1) | fine |
 | `GET_DATA_LIST_1.*.launcher_config.should_show_time_widget` / `should_show_search_widget` | true, also supplied by the top-level `launcher_config` base | harmless if `launcher_config` is published |
 | `launcher_config.*.unlock_ads.*` (top-level file) | unlock ad off. **Supplied by the GET_DATA_LIST_1 overlay** (marketing: enabled, 72h, 30min, 15/day, inter) | harmless; the overlay wins |
@@ -351,9 +351,9 @@ No `setDefaultsAsync`/XML defaults exist anywhere: every fallback below is a cod
 | `premium.free_search_limit` | int | 3 | repo/billing/ProSettings.kt:65 | marketing,organic | WIRED |  |
 | `premium.rewarded_extra_searches` | int >=0 | 0 | repo/billing/ProSettings.kt:66 | marketing,organic | WIRED |  |
 | `premium.close_button_opacity` | double 0.3..1 | 1.0 | repo/billing/ProSettings.kt:67 | no | MISSING_IN_TEMPLATE |  |
-| `premium.products` | array | DEFAULT_PLANS: gps_premium_weekly (SUGGESTED, 3-day trial), gps_premium_monthly, gps_premium_lifetime | repo/billing/ProSettings.kt:45<br>repo/billing/ProSettings.kt:36 | no | MISSING_IN_TEMPLATE | Product IDs must exist in the NEW app's Play Console (either publish products[] or create the three default IDs). |
+| `premium.products` | array | DEFAULT_PLANS: gps_premium_weekly (SUGGESTED, 3-day trial), gps_premium_monthly, gps_premium_yearly | repo/billing/ProSettings.kt:45<br>repo/billing/ProSettings.kt:36 | no | MISSING_IN_TEMPLATE | Product IDs must exist in the NEW app's Play Console (either publish products[] or create the three default IDs). |
 | `premium.products[].id` | string (required) | entry dropped | repo/billing/ProSettings.kt:48 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
-| `premium.products[].type` | string "inapp" = lifetime | subscription | repo/billing/ProSettings.kt:50 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
+| `premium.products[].period` | string "P1W" / "P1M" / "P1Y" (all subscriptions) | repo/billing/ProSettings.kt:50 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
 | `premium.products[].period` | string P1M = monthly | weekly | repo/billing/ProSettings.kt:51 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
 | `premium.products[].tag` | string | "" | repo/billing/ProSettings.kt:55 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
 | `premium.products[].default` | bool | false | repo/billing/ProSettings.kt:55 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |

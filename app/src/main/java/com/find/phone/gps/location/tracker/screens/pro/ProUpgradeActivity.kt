@@ -23,6 +23,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
+import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
@@ -46,6 +47,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
     private var plans: List<ProTier> = emptyList()
     private var selected = 0
     private var buying = false
+    private var leaving = false
     private var priceState = PriceState.LOADING
     private var priceAttempts = 0
 
@@ -93,18 +95,18 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         binding.padRestore.setOnClickListener { restore() }
         binding.padTerms.setOnClickListener { unfoldTermLink() }
         binding.padPrivacy.setOnClickListener { unfoldPolicyLink() }
-        closeView.setOnClickListener { if (closeView.closable) leave() }
+        closeView.setOnClickListener { if (closeView.closable) leave(withInter = true) }
         closeView.start(config.closeDelaySec, config.closeButtonOpacity) {}
         binding.padContinueFree.paintFlags = binding.padContinueFree.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
         binding.padContinueFree.setOnClickListener {
             trackEvent("premium_continue_free")
-            leave()
+            leave(withInter = true)
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (closeView.closable) leave()
+                if (closeView.closable) leave(withInter = true)
             }
         })
 
@@ -157,8 +159,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         wireConsent(
             when {
                 trial > 0 -> R.string.ds_premium_consent_trial
-                plan.isSubscription -> R.string.ds_premium_consent_subs
-                else -> R.string.ds_premium_consent_lifetime
+                else -> R.string.ds_premium_consent_subs
             }
         )
         val price = ProStoreBilling.price(plan)
@@ -181,14 +182,15 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
             trial > 0 -> getString(R.string.ds_premium_cta_trial, trial)
             plan.kind == ProTier.Kind.WEEKLY -> getString(R.string.ds_premium_cta_week, price)
             plan.kind == ProTier.Kind.MONTHLY -> getString(R.string.ds_premium_cta_month, price)
-            else -> getString(R.string.ds_premium_cta_lifetime, price)
+            else -> getString(R.string.ds_premium_cta_year, price)
         }
         binding.lblPriceLine.text = when (plan.kind) {
             ProTier.Kind.WEEKLY -> if (trial > 0) getString(R.string.ds_premium_price_trial_week, price, trial)
             else getString(R.string.ds_premium_price_week, price)
             ProTier.Kind.MONTHLY -> if (trial > 0) getString(R.string.ds_premium_price_trial_month, price, trial)
             else getString(R.string.ds_premium_price_month, price)
-            ProTier.Kind.LIFETIME -> getString(R.string.ds_premium_price_lifetime, price)
+            ProTier.Kind.YEARLY -> if (trial > 0) getString(R.string.ds_premium_price_trial_year, price, trial)
+            else getString(R.string.ds_premium_price_year, price)
         }
     }
 
@@ -236,13 +238,13 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
     private fun nameOf(plan: ProTier) = when (plan.kind) {
         ProTier.Kind.WEEKLY -> R.string.ds_premium_week
         ProTier.Kind.MONTHLY -> R.string.ds_premium_month
-        ProTier.Kind.LIFETIME -> R.string.ds_premium_lifetime
+        ProTier.Kind.YEARLY -> R.string.ds_premium_year
     }
 
     private fun periodOf(plan: ProTier) = when (plan.kind) {
         ProTier.Kind.WEEKLY -> R.string.ds_premium_per_week
         ProTier.Kind.MONTHLY -> R.string.ds_premium_per_week_billed_monthly
-        ProTier.Kind.LIFETIME -> R.string.ds_premium_one_time
+        ProTier.Kind.YEARLY -> R.string.ds_premium_per_year
     }
 
     private fun buy() {
@@ -303,10 +305,14 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         binding.pbCtaVw.isVisible = on
     }
 
-    private fun leave() {
-        if (isFinishing) return
+    // withInter: dismissed without buying → RC onboarding.premium decides whether an interstitial runs first
+    private fun leave(withInter: Boolean = false) {
+        if (isFinishing || leaving) return
         if (!afterIntro) return finish()
-        if (HomeRoleJourney.isOnboardingActive(this)) HomeRoleJourney.advance(this) else HomeRoleJourney.goHome(this)
+        val next = { if (HomeRoleJourney.isOnboardingActive(this)) HomeRoleJourney.advance(this) else HomeRoleJourney.goHome(this) }
+        if (!withInter) return next()
+        leaving = true
+        HomeAdsSettings.runOnboardingInter(this, HomeAdsSettings.OnboardScreen.PREMIUM) { next() }
     }
 
     private fun kickShine() {

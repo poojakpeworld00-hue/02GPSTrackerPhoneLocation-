@@ -17,6 +17,8 @@ import com.find.phone.gps.location.tracker.monetize.render.InlineSponsorStrip
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnAction
 import com.find.phone.gps.location.tracker.BuildConfig
 import io.homedeck.grid.ext.isDefaultLauncher
+import com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity
+import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import org.json.JSONObject
 
 object HomeAdsSettings {
@@ -633,6 +635,13 @@ object HomeAdsSettings {
         }
         log("onboarding.${screen.key}: showing interstitial")
         FullscreenOnAction().presentInterAds(activity) { proceed() }
+    }
+
+    // paywall in the order: no ads anywhere until onboarding reaches Home (RC onboarding.premium.no_ads_until_home)
+    fun adsHeldUntilHome(context: Context): Boolean {
+        if (HomeRoleJourney.wasOnboardingCompleted(context)) return false
+        if (OnboardScreen.PREMIUM !in onboardingOrder(context) || !ProUpgradeActivity.offeredInWelcome(context)) return false
+        return onboardingBlock(context, OnboardScreen.PREMIUM)?.optBoolean("no_ads_until_home", true) ?: true
     }
 
     fun onboardingOrder(context: Context): List<OnboardScreen> {

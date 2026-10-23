@@ -16,7 +16,7 @@ Publish these **4 parameters** in the new Firebase project (Remote Config → pa
 - All 52 Google ad unit IDs `/23343433547/com.find.phone.gps.location.tracker_*` (keys `google*` and every `ScreenAds.*.banner/native`) with this app's real AdMob/GAM units.
 - `faceB_*` placement IDs, `FbAppId`, `FbClientToken` (empty / placeholders).
 - `PrivacyPolicy`, `TermLink`, `contacts_base_url`, `drawerAppAds` tiles — review for the new brand.
-- `premium.products[].id` (`gps_premium_weekly`, `gps_premium_monthly`, `gps_premium_lifetime`) must exist in the new app's Play Console.
+- `premium.products[].id` (`gps_premium_weekly`, `gps_premium_monthly`, `gps_premium_yearly`) must exist in the new app's Play Console.
 - Screen names in `ScreenAds` / `permission_engine.activities` use the clone's class names; old source names (e.g. `StartupActivity`, `AppCoreActivity`) also still match through `PageMatcher` aliases.
 
 ## Wiring verification

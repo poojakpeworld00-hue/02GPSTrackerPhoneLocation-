@@ -118,7 +118,7 @@ object ProStoreBilling {
     fun fetchDetails(context: Context, plans: List<ProTier>, onLoaded: (Map<String, ProductDetails>) -> Unit) {
         connected(context) { c ->
             if (c == null) return@connected onLoaded(HashMap(details))
-            val groups = plans.groupBy { if (it.isSubscription) BillingClient.ProductType.SUBS else BillingClient.ProductType.INAPP }
+            val groups = mapOf(BillingClient.ProductType.SUBS to plans)
             val pending = AtomicInteger(groups.size)
             for ((type, group) in groups) {
                 val products = group.map {
@@ -149,11 +149,7 @@ object ProStoreBilling {
 
     fun price(plan: ProTier): String? {
         val d = detailsOf(plan) ?: return null
-        return if (plan.isSubscription) {
-            basePlan(d)?.pricingPhases?.pricingPhaseList?.lastOrNull()?.formattedPrice
-        } else {
-            d.oneTimePurchaseOfferDetails?.formattedPrice
-        }
+        return basePlan(d)?.pricingPhases?.pricingPhaseList?.lastOrNull()?.formattedPrice
     }
 
     fun weeklyPrice(plan: ProTier): String? {
@@ -166,7 +162,6 @@ object ProStoreBilling {
     }
 
     fun trialDays(plan: ProTier): Int? {
-        if (!plan.isSubscription) return 0
         val d = detailsOf(plan) ?: return null
         val phase = trialOffer(d)?.pricingPhases?.pricingPhaseList?.firstOrNull { it.priceAmountMicros == 0L } ?: return 0
         return days(phase.billingPeriod) * phase.billingCycleCount.coerceAtLeast(1)
@@ -184,11 +179,8 @@ object ProStoreBilling {
     fun purchase(activity: Activity, plan: ProTier): Boolean {
         val d = detailsOf(plan) ?: return false
         val params = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(d)
-        if (plan.isSubscription) {
-
-            val token = (trialOffer(d) ?: basePlan(d))?.offerToken ?: return false
-            params.setOfferToken(token)
-        }
+        val token = (trialOffer(d) ?: basePlan(d))?.offerToken ?: return false
+        params.setOfferToken(token)
         val c = client?.takeIf { it.isReady } ?: return false
         val result = c.launchBillingFlow(activity, BillingFlowParams.newBuilder().setProductDetailsParamsList(listOf(params.build())).build())
         Log.i(TAG, "launchBillingFlow(${plan.productId}): ${result.responseCode} ${result.debugMessage}")

@@ -319,6 +319,11 @@
           "reminders",
           "intro"
         ],
+        "premium": {
+          "inter_enabled": true,
+          "ads_counter": 0,
+          "no_ads_until_home": true
+        },
         "set_default": {
           "inter_enabled": true,
           "ads_counter": 0,
@@ -665,8 +670,9 @@
           "period": "P1M"
         },
         {
-          "id": "gps_premium_lifetime",
-          "type": "inapp"
+          "id": "gps_premium_yearly",
+          "type": "subs",
+          "period": "P1Y"
         }
       ],
       "close_button_opacity": 1.0
@@ -1042,6 +1048,11 @@
             "ad_unit_id": ""
           }
         },
+        "premium": {
+          "inter_enabled": true,
+          "ads_counter": 0,
+          "no_ads_until_home": true
+        },
         "set_default": {
           "inter_enabled": false,
           "ads_counter": 0,
@@ -1371,8 +1382,9 @@
           "period": "P1M"
         },
         {
-          "id": "gps_premium_lifetime",
-          "type": "inapp"
+          "id": "gps_premium_yearly",
+          "type": "subs",
+          "period": "P1Y"
         }
       ],
       "close_button_opacity": 1.0

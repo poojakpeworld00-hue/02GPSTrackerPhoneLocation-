@@ -10,9 +10,7 @@ data class ProTier(
     val tag: String,
     val preselected: Boolean,
 ) {
-    enum class Kind { WEEKLY, MONTHLY, LIFETIME }
-
-    val isSubscription: Boolean get() = kind != Kind.LIFETIME
+    enum class Kind { WEEKLY, MONTHLY, YEARLY }
 }
 
 data class ProSettings(
@@ -30,7 +28,7 @@ data class ProSettings(
         private val DEFAULT_PLANS = listOf(
             ProTier("gps_premium_weekly", ProTier.Kind.WEEKLY, "SUGGESTED", preselected = true),
             ProTier("gps_premium_monthly", ProTier.Kind.MONTHLY, "", preselected = false),
-            ProTier("gps_premium_lifetime", ProTier.Kind.LIFETIME, "", preselected = false),
+            ProTier("gps_premium_yearly", ProTier.Kind.YEARLY, "", preselected = false),
         )
 
         fun read(context: Context): ProSettings {
@@ -42,7 +40,7 @@ data class ProSettings(
                     val p = arr.optJSONObject(i) ?: return@mapNotNull null
                     val id = p.optString("id").takeIf { it.isNotBlank() } ?: return@mapNotNull null
                     val kind = when {
-                        p.optString("type") == "inapp" -> ProTier.Kind.LIFETIME
+                        p.optString("period").equals("P1Y", ignoreCase = true) -> ProTier.Kind.YEARLY
                         p.optString("period").equals("P1M", ignoreCase = true) -> ProTier.Kind.MONTHLY
                         else -> ProTier.Kind.WEEKLY
                     }

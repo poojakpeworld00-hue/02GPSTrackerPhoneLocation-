@@ -9,7 +9,6 @@ data class ProTier(
     val kind: Kind,
     val tag: String,
     val preselected: Boolean,
-    val fallbackTrialDays: Int = 0,
 ) {
     enum class Kind { WEEKLY, MONTHLY, LIFETIME }
 
@@ -29,7 +28,7 @@ data class ProSettings(
         private const val MIN_CLOSE_OPACITY = 0.3
 
         private val DEFAULT_PLANS = listOf(
-            ProTier("gps_premium_weekly", ProTier.Kind.WEEKLY, "SUGGESTED", preselected = true, fallbackTrialDays = 3),
+            ProTier("gps_premium_weekly", ProTier.Kind.WEEKLY, "SUGGESTED", preselected = true),
             ProTier("gps_premium_monthly", ProTier.Kind.MONTHLY, "", preselected = false),
             ProTier("gps_premium_lifetime", ProTier.Kind.LIFETIME, "", preselected = false),
         )
@@ -47,10 +46,7 @@ data class ProSettings(
                         p.optString("period").equals("P1M", ignoreCase = true) -> ProTier.Kind.MONTHLY
                         else -> ProTier.Kind.WEEKLY
                     }
-                    ProTier(
-                        id, kind, p.optString("tag"), p.optBoolean("default"),
-                        fallbackTrialDays = if (kind == ProTier.Kind.LIFETIME) 0 else p.optInt("trial_days", 0),
-                    )
+                    ProTier(id, kind, p.optString("tag"), p.optBoolean("default"))
                 }
             }?.takeIf { it.isNotEmpty() } ?: DEFAULT_PLANS
             return ProSettings(

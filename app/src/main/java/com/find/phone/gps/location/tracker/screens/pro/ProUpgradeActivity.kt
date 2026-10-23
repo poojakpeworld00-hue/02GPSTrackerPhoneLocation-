@@ -202,7 +202,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         }
     }
 
-    private fun trialOf(plan: ProTier): Int = ProStoreBilling.trialDays(plan) ?: plan.fallbackTrialDays
+    private fun trialOf(plan: ProTier): Int = ProStoreBilling.trialDays(plan) ?: 0
 
     private fun wireConsent(tail: Int) {
         val terms = getString(R.string.ds_premium_terms)

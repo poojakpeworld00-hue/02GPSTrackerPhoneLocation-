@@ -175,6 +175,9 @@
         "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
+      "AlarmPopupActivity": {
+        "show": false
+      },
       "ProUpgradeActivity": {
         "show": false
       },
@@ -641,8 +644,7 @@
           "type": "subs",
           "period": "P1W",
           "tag": "SUGGESTED",
-          "default": true,
-          "trial_days": 3
+          "default": true
         },
         {
           "id": "gps_premium_monthly",
@@ -878,6 +880,9 @@
         "bannerType": "adaptive",
         "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
+      },
+      "AlarmPopupActivity": {
+        "show": false
       },
       "ProUpgradeActivity": {
         "show": false
@@ -1346,8 +1351,7 @@
           "type": "subs",
           "period": "P1W",
           "tag": "SUGGESTED",
-          "default": true,
-          "trial_days": 3
+          "default": true
         },
         {
           "id": "gps_premium_monthly",

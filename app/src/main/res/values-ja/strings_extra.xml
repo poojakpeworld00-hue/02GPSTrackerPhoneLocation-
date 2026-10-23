@@ -332,6 +332,8 @@
     <string name="ds_premium_subtitle">1日の回数制限はありません。再検索のために広告を待つ必要もなくなります。</string>
     <string name="ds_premium_feature_1">毎日、回数を気にせず検索</string>
     <string name="ds_premium_feature_2">検索の履歴をすべて保存</string>
+    <string name="ds_premium_feature_3">次の検索の前に広告なし</string>
+    <string name="ds_premium_basic">ベーシック</string>
     <string name="ds_premium_restore">復元</string>
     <string name="ds_premium_continue_free">Premiumを使わずに続ける</string>
     <string name="ds_premium_week">1週間</string>

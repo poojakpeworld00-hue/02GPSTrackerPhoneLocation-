@@ -332,6 +332,8 @@
     <string name="ds_premium_subtitle">没有每日次数限制，再次搜索也不必等广告。</string>
     <string name="ds_premium_feature_1">每天搜索不限次数</string>
     <string name="ds_premium_feature_2">保留全部搜索历史</string>
+    <string name="ds_premium_feature_3">下次搜索前无需观看广告</string>
+    <string name="ds_premium_basic">基础版</string>
     <string name="ds_premium_restore">找回已购项目</string>
     <string name="ds_premium_continue_free">不订阅，继续免费使用</string>
     <string name="ds_premium_week">一周</string>

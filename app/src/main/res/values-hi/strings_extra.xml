@@ -332,6 +332,8 @@
     <string name="ds_premium_subtitle">रोज़ की कोई सीमा नहीं। दोबारा खोजने के लिए विज्ञापन की राह देखने की ज़रूरत नहीं।</string>
     <string name="ds_premium_feature_1">हर रोज़ चाहे जितनी खोजें</string>
     <string name="ds_premium_feature_2">खोजों का पूरा रिकॉर्ड</string>
+    <string name="ds_premium_feature_3">अगली खोज से पहले कोई विज्ञापन नहीं</string>
+    <string name="ds_premium_basic">बेसिक</string>
     <string name="ds_premium_restore">वापस पाएँ</string>
     <string name="ds_premium_continue_free">Premium लिए बिना आगे बढ़ें</string>
     <string name="ds_premium_week">एक हफ़्ता</string>

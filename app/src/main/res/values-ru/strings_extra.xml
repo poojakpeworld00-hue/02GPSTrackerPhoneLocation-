@@ -336,6 +336,8 @@
     <string name="ds_premium_subtitle">Никаких суточных лимитов и просмотра рекламы перед новым поиском.</string>
     <string name="ds_premium_feature_1">Неограниченное число поисков в день</string>
     <string name="ds_premium_feature_2">Вся история запросов</string>
+    <string name="ds_premium_feature_3">Без рекламы перед следующим поиском</string>
+    <string name="ds_premium_basic">Базовый</string>
     <string name="ds_premium_restore">Вернуть покупки</string>
     <string name="ds_premium_continue_free">Остаться без Premium</string>
     <string name="ds_premium_week">1 неделя</string>

@@ -332,6 +332,8 @@
     <string name="ds_premium_subtitle">Không giới hạn mỗi ngày. Khỏi phải chờ quảng cáo mới tra lại được.</string>
     <string name="ds_premium_feature_1">Tra bao nhiêu lần cũng được mỗi ngày</string>
     <string name="ds_premium_feature_2">Lịch sử tra cứu đầy đủ</string>
+    <string name="ds_premium_feature_3">Không quảng cáo trước lần tra cứu tiếp theo</string>
+    <string name="ds_premium_basic">Cơ bản</string>
     <string name="ds_premium_restore">Phục hồi giao dịch</string>
     <string name="ds_premium_continue_free">Đi tiếp mà không dùng Premium</string>
     <string name="ds_premium_week">1 tuần</string>

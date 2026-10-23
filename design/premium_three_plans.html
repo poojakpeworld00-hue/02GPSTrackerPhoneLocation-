@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPS Tracker Phone Location – Premium, 3 plans (design preview)</title>
+<style>
+  :root{
+    --ink:#0d0f1a; --muted:#6b7280; --line:#e3e5ee;
+    --primary:#4f46e5; --tint:#ecebfd; --gold:#f5b301;
+    --bg:#fff; --card:#fff; --stage:#e9eaf0;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--ink:#f4f5fa;--muted:#9aa0b4;--line:#2a2d3c;--tint:#262a52;--bg:#101220;--card:#171a2e;--stage:#05060b}
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--stage);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);
+       display:flex;justify-content:center;padding:24px 0}
+  .phone{width:390px;min-height:820px;background:var(--bg);border-radius:28px;overflow:hidden;
+         display:flex;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.18)}
+  .hero{position:relative;padding:22px 20px 26px;color:#fff;
+        background:linear-gradient(160deg,#4f46e5 0%,#7c3aed 70%)}
+  .close{position:absolute;top:16px;right:14px;width:36px;height:36px;border:0;border-radius:50%;
+         background:rgba(255,255,255,.18);color:#fff;font-size:22px;line-height:1;cursor:pointer}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border-radius:999px;
+         padding:6px 12px;font-size:12px;font-weight:800;letter-spacing:.08em}
+  .hero h1{font-size:26px;line-height:1.2;margin-top:18px;font-weight:800;letter-spacing:-.01em}
+  .hero p{margin-top:8px;font-size:14px;line-height:1.45;opacity:.9}
+  .body{padding:18px 20px 0;flex:1}
+  .plans{display:grid;gap:10px}
+  .plan{position:relative;display:flex;align-items:center;gap:12px;background:var(--card);
+        border:2px solid var(--line);border-radius:20px;padding:16px;cursor:pointer;transition:.18s}
+  .plan.on{border-color:var(--primary);background:var(--tint);transform:scale(1.02);
+           box-shadow:0 8px 20px rgba(79,70,229,.22)}
+  .plan .l{flex:1}
+  .plan .name{font-size:15px;font-weight:800}
+  .plan .per{font-size:12px;color:var(--muted);margin-top:2px}
+  .plan .price{font-size:17px;font-weight:800;text-align:right}
+  .plan .tok{background:var(--tint);color:var(--primary);border-radius:6px;padding:1px 6px}
+  .plan.on .tok{background:#fff}
+  .tag{position:absolute;top:-10px;left:16px;background:var(--gold);color:#3a2a00;border-radius:999px;
+       font-size:10px;font-weight:800;letter-spacing:.06em;padding:3px 9px}
+  .check{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;
+         font-size:13px;color:transparent;flex:none}
+  .plan.on .check{background:var(--primary);border-color:var(--primary);color:#fff}
+  .feat{margin-top:18px;display:grid;gap:9px;font-size:14px;font-weight:600}
+  .feat div::before{content:"✓";color:var(--primary);font-weight:800;margin-right:9px}
+  .foot{padding:16px 20px 22px}
+  .line{text-align:center;font-size:14px;font-weight:600;margin-bottom:12px;min-height:20px}
+  .line .tok{background:var(--tint);color:var(--primary);border-radius:6px;padding:1px 6px;font-weight:700}
+  .cta{position:relative;overflow:hidden;display:block;width:100%;border:0;border-radius:999px;background:var(--primary);
+       color:#fff;font-size:17px;font-weight:800;letter-spacing:.03em;padding:17px 0;cursor:pointer;
+       box-shadow:0 8px 20px rgba(79,70,229,.35)}
+  .cta::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+       background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
+       transform:skewX(-20deg);animation:shine 2.4s ease-in-out infinite}
+  @keyframes shine{0%{left:-60%}60%,100%{left:130%}}
+  @media (prefers-reduced-motion:reduce){.cta::after{display:none}}
+  .free{display:block;text-align:center;margin-top:14px;font-size:14px;color:var(--muted);text-decoration:underline;cursor:pointer}
+  .note{margin-top:10px;text-align:center;font-size:12px;color:var(--muted)}
+  .links{margin-top:12px;display:flex;justify-content:center;gap:18px;font-size:12px;color:var(--muted)}
+  .links span{text-decoration:underline;cursor:pointer}
+  .fine{max-width:390px;margin:14px auto 0;font-size:12px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div>
+  <div class="phone">
+    <div class="hero">
+      <button class="close" aria-label="Close">×</button>
+      <span class="badge">♛ PREMIUM</span>
+      <h1>Search locations<br>without limits</h1>
+      <p>No cap per day. No ad to watch before your next search.</p>
+    </div>
+
+    <div class="body">
+      <div class="plans" id="plans">
+        <div class="plan on" data-k="week" data-trial="1">
+          <span class="tag">SUGGESTED</span>
+          <div class="l"><div class="name">Weekly</div><div class="per">each week</div></div>
+          <div class="price"><span class="tok">{price}</span></div><div class="check">✓</div>
+        </div>
+        <div class="plan" data-k="month">
+          <div class="l"><div class="name">Monthly</div><div class="per">each week, charged monthly</div></div>
+          <div class="price"><span class="tok">{weekly price}</span></div><div class="check">✓</div>
+        </div>
+        <div class="plan" data-k="life">
+          <div class="l"><div class="name">Forever</div><div class="per">single payment</div></div>
+          <div class="price"><span class="tok">{price}</span></div><div class="check">✓</div>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div>Limitless searches daily</div>
+        <div>Complete search history</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="line" id="line"></div>
+      <button class="cta" id="cta"></button>
+      <span class="free">Keep using the free version</span>
+      <div class="note" id="note"></div>
+      <div class="links"><span>Restore purchase</span><span>Terms</span><span>Privacy Policy</span></div>
+    </div>
+  </div>
+  <p class="fine">Design preview only. Every <b>{price}</b>, the weekly price on Monthly and the trial length come from Google Play at runtime. Tap a plan to see the button and price line change.</p>
+</div>
+<script>
+  const T = {
+    week:  {cta:'Try free for 3 days', line:'FREE for 3 days, then <span class="tok">{price}</span>/week', note:'Renews automatically after the trial; cancel whenever.'},
+    month: {cta:'Subscribe · {price} / month', line:'<span class="tok">{price}</span>/month, auto-renewing', note:'Renews automatically; cancel whenever.'},
+    life:  {cta:'Get Lifetime · {price}', line:'<span class="tok">{price}</span> one time, access forever', note:'Pay once, never renews.'}
+  };
+  const cards=[...document.querySelectorAll('.plan')];
+  function pick(k){
+    cards.forEach(c=>c.classList.toggle('on',c.dataset.k===k));
+    const t=T[k];
+    document.getElementById('cta').textContent=t.cta;
+    document.getElementById('line').innerHTML=t.line;
+    document.getElementById('note').textContent=t.note;
+  }
+  cards.forEach(c=>c.addEventListener('click',()=>pick(c.dataset.k)));
+  pick('week');
+</script>
+</body>
+</html>

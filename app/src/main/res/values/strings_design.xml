@@ -195,6 +195,8 @@
     <string name="ds_premium_subtitle">No cap per day. No ad to watch before your next search.</string>
     <string name="ds_premium_feature_1">Limitless searches daily</string>
     <string name="ds_premium_feature_2">Complete search history</string>
+    <string name="ds_premium_feature_3">No ad before your next search</string>
+    <string name="ds_premium_basic">Basic</string>
     <string name="ds_premium_restore">Restore purchase</string>
     <string name="ds_premium_continue_free">Keep using the free version</string>
     <string name="ds_premium_week">Weekly</string>

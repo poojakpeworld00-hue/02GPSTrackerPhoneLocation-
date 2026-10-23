@@ -332,6 +332,8 @@
     <string name="ds_premium_subtitle">Sin cupo diario. Sin tener que ver un anuncio para consultar de nuevo.</string>
     <string name="ds_premium_feature_1">Consultas sin tope todos los días</string>
     <string name="ds_premium_feature_2">Registro íntegro de consultas</string>
+    <string name="ds_premium_feature_3">Sin anuncios antes de tu próxima búsqueda</string>
+    <string name="ds_premium_basic">Básico</string>
     <string name="ds_premium_restore">Recuperar</string>
     <string name="ds_premium_continue_free">Seguir sin Premium</string>
     <string name="ds_premium_week">1 semana</string>

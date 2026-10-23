@@ -332,6 +332,8 @@
     <string name="ds_premium_subtitle">ไม่มีโควตารายวัน และไม่ต้องรอดูโฆษณาก่อนค้นหาครั้งต่อไป</string>
     <string name="ds_premium_feature_1">ค้นหาได้ไม่จำกัดทุกวัน</string>
     <string name="ds_premium_feature_2">เก็บประวัติการค้นหาครบทั้งหมด</string>
+    <string name="ds_premium_feature_3">ไม่มีโฆษณาก่อนค้นหาครั้งถัดไป</string>
+    <string name="ds_premium_basic">พื้นฐาน</string>
     <string name="ds_premium_restore">เรียกคืนการซื้อ</string>
     <string name="ds_premium_continue_free">ใช้งานต่อโดยไม่สมัคร Premium</string>
     <string name="ds_premium_week">1 สัปดาห์</string>

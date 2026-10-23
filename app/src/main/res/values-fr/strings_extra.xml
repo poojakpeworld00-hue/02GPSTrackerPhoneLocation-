@@ -332,6 +332,8 @@
     <string name="ds_premium_subtitle">Plus de plafond journalier. Plus besoin de patienter devant une pub pour relancer une recherche.</string>
     <string name="ds_premium_feature_1">Un nombre illimité de recherches par jour</string>
     <string name="ds_premium_feature_2">Historique intégral des recherches</string>
+    <string name="ds_premium_feature_3">Aucune pub avant ta prochaine recherche</string>
+    <string name="ds_premium_basic">Basique</string>
     <string name="ds_premium_restore">Récupérer</string>
     <string name="ds_premium_continue_free">Poursuivre sans Premium</string>
     <string name="ds_premium_week">7 jours</string>

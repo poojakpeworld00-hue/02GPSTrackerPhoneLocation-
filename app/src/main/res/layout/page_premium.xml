@@ -150,6 +150,205 @@
         </androidx.core.widget.NestedScrollView>
 
         <LinearLayout
+            android:id="@+id/singleVw"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/figtree_bold"
+                    android:letterSpacing="0.06"
+                    android:text="@string/ds_premium_badge"
+                    android:textColor="@color/ds_ink"
+                    android:textSize="15sp" />
+
+                <com.find.phone.gps.location.tracker.screens.pro.DismissTimerView
+                    android:id="@+id/padCloseSingle"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="@font/nunito_extrabold"
+                android:letterSpacing="-0.01"
+                android:text="@string/ds_premium_title"
+                android:textColor="@color/ds_ink"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/lblSingleTrial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_extrabold"
+                android:textColor="@color/ds_ink"
+                android:textSize="30sp"
+                android:visibility="gone"
+                tools:text="Try free for 3 days" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="76dp"
+                    android:layout_height="44dp"
+                    android:fontFamily="@font/figtree_bold"
+                    android:gravity="center"
+                    android:letterSpacing="0.05"
+                    android:text="@string/ds_premium_basic"
+                    android:textAllCaps="true"
+                    android:textColor="@color/ds_muted"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="92dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/pw_col_head"
+                    android:fontFamily="@font/figtree_bold"
+                    android:gravity="center"
+                    android:letterSpacing="0.05"
+                    android:text="@string/ds_premium_badge"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/figtree_semibold"
+                    android:text="@string/ds_premium_feature_1"
+                    android:textColor="@color/ds_ink"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="76dp"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/figtree_bold"
+                    android:gravity="center"
+                    android:text="✕"
+                    android:textColor="@color/ds_muted"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="92dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/pw_col_mid"
+                    android:fontFamily="@font/figtree_bold"
+                    android:gravity="center"
+                    android:text="✓"
+                    android:textColor="@color/ds_primary"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/figtree_semibold"
+                    android:text="@string/ds_premium_feature_2"
+                    android:textColor="@color/ds_ink"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="76dp"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/figtree_bold"
+                    android:gravity="center"
+                    android:text="✕"
+                    android:textColor="@color/ds_muted"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="92dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/pw_col_mid"
+                    android:fontFamily="@font/figtree_bold"
+                    android:gravity="center"
+                    android:text="✓"
+                    android:textColor="@color/ds_primary"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/figtree_semibold"
+                    android:text="@string/ds_premium_feature_3"
+                    android:textColor="@color/ds_ink"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="76dp"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/figtree_bold"
+                    android:gravity="center"
+                    android:text="✕"
+                    android:textColor="@color/ds_muted"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="92dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/pw_col_foot"
+                    android:fontFamily="@font/figtree_bold"
+                    android:gravity="center"
+                    android:text="✓"
+                    android:textColor="@color/ds_primary"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/footerBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

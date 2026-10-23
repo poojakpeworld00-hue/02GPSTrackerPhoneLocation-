@@ -340,6 +340,8 @@
     <string name="ds_premium_subtitle">لا حصة يومية. ولا حاجة لمشاهدة إعلان كي تستعلم من جديد.</string>
     <string name="ds_premium_feature_1">استعلامات بلا سقف كل يوم</string>
     <string name="ds_premium_feature_2">سجل استعلامات متكامل</string>
+    <string name="ds_premium_feature_3">بدون إعلان قبل بحثك التالي</string>
+    <string name="ds_premium_basic">الأساسية</string>
     <string name="ds_premium_restore">استرجع</string>
     <string name="ds_premium_continue_free">أكمل دون Premium</string>
     <string name="ds_premium_week">7 أيام</string>

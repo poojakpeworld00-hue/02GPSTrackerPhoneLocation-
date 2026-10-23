@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPS Tracker Phone Location – Premium (design preview)</title>
+<style>
+  :root{
+    --ink:#0d0f1a; --muted:#6b7280; --line:#e5e7eb;
+    --primary:#4f46e5; --primary-ink:#fff; --tint:#ecebfd;
+    --bg:#fff; --stage:#e9eaf0;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--ink:#f4f5fa;--muted:#9aa0b4;--line:#2a2d3c;--tint:#262a52;--bg:#101220;--stage:#05060b}
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--stage);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);
+       display:flex;justify-content:center;padding:24px 0}
+  .phone{width:390px;min-height:820px;background:var(--bg);border-radius:28px;padding:20px 20px 24px;
+         display:flex;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.18)}
+  .top{display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.04em;font-size:15px}
+  .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#4f46e5,#7c3aed);
+        display:grid;place-items:center}
+  .logo svg{width:20px;height:20px}
+  .close{width:36px;height:36px;border:0;background:none;color:var(--muted);font-size:26px;line-height:1;cursor:pointer}
+  h1{font-size:30px;line-height:1.22;font-weight:700;margin:26px 0 0;letter-spacing:-.01em}
+  h1 .hl{font-weight:800}
+  .table{margin-top:34px;display:grid;grid-template-columns:1fr 76px 92px;align-items:center}
+  .th{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-align:center;padding-bottom:10px}
+  .th.pro{background:var(--primary);color:var(--primary-ink);border-radius:14px 14px 0 0;padding:11px 0}
+  .row{display:contents}
+  .row>div{height:54px;display:flex;align-items:center}
+  .row .name{font-size:15px;font-weight:600}
+  .row .basic{justify-content:center;color:#b6bac6;font-size:20px}
+  .row .pro{justify-content:center;background:var(--tint);color:var(--primary);font-size:20px;font-weight:800}
+  .row:last-child .pro{border-radius:0 0 14px 14px}
+  .spacer{flex:1;min-height:40px}
+  .cta{display:block;width:100%;border:0;border-radius:999px;background:var(--primary);color:#fff;
+       font-size:17px;font-weight:800;letter-spacing:.04em;padding:18px 0;cursor:pointer;
+       box-shadow:0 8px 20px rgba(79,70,229,.35);position:relative;overflow:hidden}
+  .cta::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+       background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
+       transform:skewX(-20deg);animation:shine 2.4s ease-in-out infinite}
+  @keyframes shine{0%{left:-60%}60%,100%{left:130%}}
+  @media (prefers-reduced-motion:reduce){.cta::after{animation:none;display:none}}
+  .price{margin-top:14px;text-align:center;font-size:15px;font-weight:600}
+  .price .tok{background:var(--tint);color:var(--primary);border-radius:6px;padding:1px 6px;font-weight:700}
+  .fine{margin-top:10px;text-align:center;font-size:12px;line-height:1.5;color:var(--muted)}
+  .fine a{color:var(--muted);text-decoration:underline}
+  .restore{margin-top:8px;text-align:center;font-size:13px;color:var(--primary);font-weight:600}
+  .note{max-width:390px;margin:14px auto 0;font-size:12px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div>
+  <div class="phone">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        </div>
+        PREMIUM
+      </div>
+      <button class="close" aria-label="Close">×</button>
+    </div>
+
+    <h1>Search locations<br>without limits.<br><span class="hl">Try free for 3 days</span></h1>
+
+    <div class="table">
+      <div></div><div class="th">BASIC</div><div class="th pro">PREMIUM</div>
+
+      <div class="row"><div class="name">Limitless searches daily</div><div class="basic">✕</div><div class="pro">✓</div></div>
+      <div class="row"><div class="name">Complete search history</div><div class="basic">✕</div><div class="pro">✓</div></div>
+      <div class="row"><div class="name">No ad before your next search</div><div class="basic">✕</div><div class="pro">✓</div></div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <button class="cta">START FREE TRIAL</button>
+    <div class="price"><span class="tok">{price}</span>/week after FREE 3-days trial</div>
+    <div class="fine">By continuing, you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.<br>Subscription will auto-renew. Cancel anytime.</div>
+    <div class="restore">Restore purchase</div>
+  </div>
+  <p class="note">Design preview only. <b>{price}</b> and the trial length come from Google Play at runtime, not from this page. Text comes from the app's own Premium strings: limitless searches daily, complete search history, no ad before your next search.</p>
+</div>
+</body>
+</html>

@@ -332,6 +332,8 @@
     <string name="ds_premium_subtitle">Sem limite por dia e sem esperar por um anúncio para voltar a pesquisar.</string>
     <string name="ds_premium_feature_1">Pesquisas sem limite todos os dias</string>
     <string name="ds_premium_feature_2">Histórico de pesquisas completo</string>
+    <string name="ds_premium_feature_3">Sem anúncio antes da próxima pesquisa</string>
+    <string name="ds_premium_basic">Básico</string>
     <string name="ds_premium_restore">Recuperar compra</string>
     <string name="ds_premium_continue_free">Prosseguir sem Premium</string>
     <string name="ds_premium_week">1 semana</string>

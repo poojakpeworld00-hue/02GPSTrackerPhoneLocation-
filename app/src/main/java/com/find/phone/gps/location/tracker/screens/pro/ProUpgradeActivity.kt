@@ -53,19 +53,27 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
 
     override fun initView() {
         config = ProSettings.read(this)
-        plans = config.plans.take(3)
+        // onboarding shows one plan (weekly + trial); the in-app page keeps all three
+        plans = if (afterIntro) config.plans.filter { it.kind == ProTier.Kind.WEEKLY }.take(1).ifEmpty { config.plans.take(1) }
+        else config.plans.take(3)
         selected = plans.indexOfFirst { it.preselected }.coerceAtLeast(0)
         trackEvent(if (afterIntro) "premium_view_after_intro" else "premium_view")
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         WindowCompat.getInsetsController(window, binding.root).isAppearanceLightStatusBars = true
+        binding.scrl.isVisible = !afterIntro
+        binding.singleVw.isVisible = afterIntro
+        binding.padContinueFree.isVisible = !afterIntro
+        val closeView = if (afterIntro) binding.padCloseSingle else binding.padClose
         val closeTop = (binding.padClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+        val singleTop = binding.singleVw.paddingTop
         val bottomPad = binding.footerBar.paddingBottom
         ViewCompat.setOnApplyWindowInsetsListener(binding.premiumRootVw) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             binding.padClose.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = closeTop + bars.top }
             binding.heroVw.updateLayoutParams { height = dp(300) + bars.top }
+            binding.singleVw.updatePadding(top = singleTop + bars.top)
             binding.footerBar.updatePadding(bottom = bottomPad + bars.bottom)
             binding.premiumRootVw.updatePadding(left = bars.left, right = bars.right)
             insets
@@ -84,8 +92,8 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         binding.padRestore.setOnClickListener { restore() }
         binding.padTerms.setOnClickListener { unfoldTermLink() }
         binding.padPrivacy.setOnClickListener { unfoldPolicyLink() }
-        binding.padClose.setOnClickListener { if (binding.padClose.closable) leave() }
-        binding.padClose.start(config.closeDelaySec, config.closeButtonOpacity) {}
+        closeView.setOnClickListener { if (closeView.closable) leave() }
+        closeView.start(config.closeDelaySec, config.closeButtonOpacity) {}
         binding.padContinueFree.paintFlags = binding.padContinueFree.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
         binding.padContinueFree.setOnClickListener {
@@ -95,7 +103,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (binding.padClose.closable) leave()
+                if (closeView.closable) leave()
             }
         })
 
@@ -143,6 +151,8 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         }
         val plan = plans.getOrNull(selected) ?: return
         val trial = trialOf(plan)
+        binding.lblSingleTrial.isVisible = trial > 0
+        if (trial > 0) binding.lblSingleTrial.text = getString(R.string.ds_premium_cta_trial, trial)
         wireConsent(
             when {
                 trial > 0 -> R.string.ds_premium_consent_trial

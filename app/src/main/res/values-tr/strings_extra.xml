@@ -332,6 +332,8 @@
     <string name="ds_premium_subtitle">Günlük kota yok. Yeniden sorgu için reklam beklemek yok.</string>
     <string name="ds_premium_feature_1">Her gün sınırsız sorgu</string>
     <string name="ds_premium_feature_2">Eksiksiz sorgu geçmişi</string>
+    <string name="ds_premium_feature_3">Sonraki aramadan önce reklam yok</string>
+    <string name="ds_premium_basic">Temel</string>
     <string name="ds_premium_restore">Satın alımı geri getir</string>
     <string name="ds_premium_continue_free">Premium\'suz ilerle</string>
     <string name="ds_premium_week">1 hafta</string>

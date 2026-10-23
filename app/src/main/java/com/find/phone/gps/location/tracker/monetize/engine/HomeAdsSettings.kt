@@ -639,7 +639,7 @@ object HomeAdsSettings {
 
     const val PREMIUM_GATE_SEEN = "__premium_gate_seen"
 
-    // once the onboarding paywall has been shown, no ads until Home (RC onboarding.premium.no_ads_until_home)
+    // while the user is on the onboarding paywall (cleared when they skip it), no ads until Home (RC onboarding.premium.no_ads_until_home)
     fun adsHeldUntilHome(context: Context): Boolean {
         if (HomeRoleJourney.wasOnboardingCompleted(context)) return false
         if (!AdPrefsStore.getInstance(context).getBoolean(PREMIUM_GATE_SEEN) || !ProUpgradeActivity.offeredInWelcome(context)) return false

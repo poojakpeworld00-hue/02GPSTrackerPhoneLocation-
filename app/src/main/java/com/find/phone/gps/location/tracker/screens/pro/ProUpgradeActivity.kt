@@ -314,6 +314,8 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         val next = { if (HomeRoleJourney.isOnboardingActive(this)) HomeRoleJourney.advance(this) else HomeRoleJourney.goHome(this) }
         if (!withInter) return next()
         leaving = true
+        // skipping the paywall lifts the hold, so the exit inter and the onboarding ads after it show
+        AdPrefsStore.getInstance(this).putBoolean(HomeAdsSettings.PREMIUM_GATE_SEEN, false)
         HomeAdsSettings.runOnboardingInter(this, HomeAdsSettings.OnboardScreen.PREMIUM) { next() }
     }
 

@@ -259,6 +259,27 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="Ds.Text.PremiumCheck" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawableStart">@drawable/vs_ic_tick_success</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:fontFamily">@font/figtree_semibold</item>
+        <item name="android:textColor">@color/ds_ink2</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="Ds.Text.PremiumLink" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:fontFamily">@font/figtree_semibold</item>
+        <item name="android:textColor">@color/ds_primary</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
     <style name="Ds.Text.ResultChip" parent="android:Widget.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

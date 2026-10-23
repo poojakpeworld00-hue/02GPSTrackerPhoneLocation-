@@ -27,6 +27,7 @@ import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.finder.NumberFinder
 import com.find.phone.gps.location.tracker.repo.finder.NumberSummary
 import com.find.phone.gps.location.tracker.repo.finder.UnveiledLabels
+import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
 import com.find.phone.gps.location.tracker.databinding.CardDetailActionBinding
 import com.find.phone.gps.location.tracker.databinding.CardDetailCellBinding
 import com.find.phone.gps.location.tracker.databinding.CardDetailNameBinding
@@ -148,7 +149,7 @@ class NumberInsightActivity : FoundationActivity<PageNumberDetailBinding>() {
         get() = listOfNotNull(report.name) + report.otherNames
 
     private fun isRevealed(index: Int, name: String): Boolean =
-        index == 0 && report.name != null || UnveiledLabels.isRevealed(this, report.e164, name)
+        index == 0 && report.name != null || ProStoreBilling.isPremium(this) || UnveiledLabels.isRevealed(this, report.e164, name)
 
     private fun wireNames() {
         val all = names

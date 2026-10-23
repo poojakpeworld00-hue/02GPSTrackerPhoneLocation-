@@ -175,6 +175,9 @@
         "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
+      "ProUpgradeActivity": {
+        "show": false
+      },
       "PastLookupsActivity": {
         "show": true,
         "banner": "ca-app-pub-3940256099942544/9214589741",
@@ -292,6 +295,7 @@
       },
       "onboarding": {
         "order": [
+          "premium",
           "set_default",
           "language",
           "welcome",
@@ -626,6 +630,31 @@
         "ads_on": true
       }
     },
+    "premium": {
+      "enabled": true,
+      "show_after_intro": true,
+      "close_delay_sec": 10,
+      "close_button_opacity": 1.0,
+      "products": [
+        {
+          "id": "gps_premium_weekly",
+          "type": "subs",
+          "period": "P1W",
+          "tag": "SUGGESTED",
+          "default": true,
+          "trial_days": 3
+        },
+        {
+          "id": "gps_premium_monthly",
+          "type": "subs",
+          "period": "P1M"
+        },
+        {
+          "id": "gps_premium_lifetime",
+          "type": "inapp"
+        }
+      ]
+    },
     "search_config": {
       "free_search_limit": 1,
       "cooldown_minutes": 60
@@ -849,6 +878,9 @@
         "bannerType": "adaptive",
         "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
+      },
+      "ProUpgradeActivity": {
+        "show": false
       },
       "PastLookupsActivity": {
         "show": true,
@@ -1302,6 +1334,31 @@
       "discharge": {
         "ads_on": false
       }
+    },
+    "premium": {
+      "enabled": true,
+      "show_after_intro": true,
+      "close_delay_sec": 5,
+      "close_button_opacity": 1.0,
+      "products": [
+        {
+          "id": "gps_premium_weekly",
+          "type": "subs",
+          "period": "P1W",
+          "tag": "SUGGESTED",
+          "default": true,
+          "trial_days": 3
+        },
+        {
+          "id": "gps_premium_monthly",
+          "type": "subs",
+          "period": "P1M"
+        },
+        {
+          "id": "gps_premium_lifetime",
+          "type": "inapp"
+        }
+      ]
     },
     "search_config": {
       "free_search_limit": 3,

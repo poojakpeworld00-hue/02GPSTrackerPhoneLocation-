@@ -149,6 +149,11 @@
 
         <activity
             android:screenOrientation="portrait"
+            android:name="com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity"
+            android:exported="false" />
+
+        <activity
+            android:screenOrientation="portrait"
             android:name="com.find.phone.gps.location.tracker.screens.people.PeopleSelectActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

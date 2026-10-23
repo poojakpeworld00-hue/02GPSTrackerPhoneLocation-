@@ -1,7 +1,8 @@
-package com.find.phone.gps.location.tracker.repo
+package com.find.phone.gps.location.tracker.repo.billing
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.find.phone.gps.location.tracker.repo.SearchConfig
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -32,7 +33,10 @@ object LookupAllowance {
             .apply()
     }
 
-    fun isUnlimited(context: Context): Boolean = SearchConfig.read(context).freeSearchLimit <= 0
+    fun isUnlimited(context: Context): Boolean {
+        if (ProStoreBilling.isPremium(context)) return true
+        return SearchConfig.read(context).freeSearchLimit <= 0
+    }
 
     fun limit(context: Context): Int = SearchConfig.read(context).freeSearchLimit
 

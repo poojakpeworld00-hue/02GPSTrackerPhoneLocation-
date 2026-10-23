@@ -18,7 +18,8 @@
 4. `launcher_config.{organic,marketing}.panels.*` (launcher/remote-config/launcher_config.json): always overwritten by `TrackerHomeBridge.imprintLauncherAds` from `launcher_ads.left_panel/right_panel.enabled`.
 5. `launcher_config.{organic,marketing}.gestures.*`: always overwritten by the host from `launcher_ads` (left_swipe, right_swipe, drawer_open, app_launch, home_launch, drawer_launch, home_back, home_press).
 6. `launcher/remote-config/ads_config_launcher_entries.json` (whole file): `ads_config` is never read from Remote Config. The host synthesises `screenWiseAds.app_drawer.ad_row_position` from `launcher_ads.app_drawer.bottom_native.position`.
-7. Shadowed, not dead: `marketing.isLoaderForFB` is ignored because marketing also carries `Inter_Loader_Show`. In organic it is the effective loader switch.
+7. Variants only: `premium.products[].price` (DEBUG_* variants) is never read.
+8. Shadowed, not dead: `marketing.isLoaderForFB` is ignored because marketing also carries `Inter_Loader_Show`. In organic it is the effective loader switch.
 
 ### C. MISSING in template (read by code, so the code default applies)
 | Key | Default when absent | Comment |
@@ -29,6 +30,8 @@
 | `GET_DATA_LIST_1.*.intro_display.reminders_intro.{enabled,prompt_frequency,prompt_interval}` | enabled=true, once, 0 | add for explicit control |
 | `GET_DATA_LIST_1.*.launcher_ads.home_press` | surface off (no Home-press ad) | `_all_fixes` variants add it |
 | `GET_DATA_LIST_1.*.launcher_ads.home_click` / `drawer_click` | fall back to the `app_click` block (`clickSurface`) | benign |
+| `GET_DATA_LIST_1.*.premium.products[]` | DEFAULT_PLANS `gps_premium_weekly` (SUGGESTED, 3-day trial), `gps_premium_monthly`, `gps_premium_lifetime` | **these product IDs must exist in the new app's Play Console**, or publish `products[]` (the DEBUG_* variants have the shape) |
+| `GET_DATA_LIST_1.*.premium.close_button_opacity` | 1.0 (range 0.3..1) | fine |
 | `GET_DATA_LIST_1.*.launcher_config.should_show_time_widget` / `should_show_search_widget` | true, also supplied by the top-level `launcher_config` base | harmless if `launcher_config` is published |
 | `launcher_config.*.unlock_ads.*` (top-level file) | unlock ad off. **Supplied by the GET_DATA_LIST_1 overlay** (marketing: enabled, 72h, 30min, 15/day, inter) | harmless; the overlay wins |
 | `launcher_config.*.dock_host_app` (top-level file) | true. Supplied by the overlay (false in the blob) | harmless |
@@ -49,7 +52,7 @@ None found. Every template key exists as an exact-case string literal in code, e
 
 ### F. Screen names (PageMatcher)
 Every screen name in every rc/*GET_DATA_LIST_1*.json resolves; none is unresolved.
-- ScreenAds keys: default, LocalePickActivity, MainHubActivity, PolicyConsentActivity, GuidedTourActivity, NumberInsightActivity, PinpointingActivity, PeopleSelectActivity, PastLookupsActivity, WelcomeStageActivity and HomeRoleStageActivity are current classes. LauncherAppsPanel, LauncherAppsPanelMid and LauncherAppDrawer are virtual keys mapped in `TrackerHomeAds.screenAdsKey`.
+- ScreenAds keys: default, LocalePickActivity, MainHubActivity, PolicyConsentActivity, GuidedTourActivity, NumberInsightActivity, PinpointingActivity, PeopleSelectActivity, ProUpgradeActivity, PastLookupsActivity, WelcomeStageActivity and HomeRoleStageActivity are current classes. LauncherAppsPanel, LauncherAppsPanelMid and LauncherAppDrawer are virtual keys mapped in `TrackerHomeAds.screenAdsKey`.
 - permission_engine.notification.activities: BootActivity, WelcomeStageActivity, HomeRoleStageActivity, MainHubActivity and HomeDeskPane are all current classes.
 - Effectiveness caveats:
   - `activities` only matters for screens that call `GrantOrchestrator.check()`: WelcomeStageActivity, HomeRoleStageActivity, LocalePickActivity and GuidedTourActivity, plus the splash prime on BootActivity. `MainHubActivity` and `HomeDeskPane` never call check(); MainHub's permission sheet uses `request()`, which ignores `activities`. Listing them has no effect.
@@ -78,10 +81,11 @@ Every screen name in every rc/*GET_DATA_LIST_1*.json resolves; none is unresolve
 - `_setdefault_native_off`: home_press plus the slot tweak; it keeps home_open.
 - `organic`: organic block only.
 - All 7 variants except `_organic` (that is, `_fix`, `_all_fixes`, `_setdefault_native_off` and the three DEBUG_* files) drop `organic.launcher_ads.onboarding.intro`, so organic intro falls back to inter ON, mid2 native.
-- DEBUG_* variants also swap in Google test ad units.
+- DEBUG_* variants also add `premium.products[]` and swap in Google test ad units.
 - **Recommendation:** publish `GET_DATA_LIST_1_all_fixes.json`-equivalent content as `GET_DATA_LIST_1`, after you:
   - restore `organic.launcher_ads.onboarding.intro`,
   - add `marketing.launcher_ads.app_drawer.bottom_native`,
+  - add `premium.products` (or create the default product IDs),
   - delete MarketLink and AppopenCounter,
   - replace every ad ID.
 
@@ -340,6 +344,21 @@ No `setDefaultsAsync`/XML defaults exist anywhere: every fallback below is a cod
 | `launcher_ads.app_drawer.promo` | object | n/a | monetize/engine/HomeAdsSettings.kt:223 | no | DEAD_CODE | Parser exists (drawerPromoItems) but nothing calls it; do not publish. |
 | `launcher_ads.home_open` | object | n/a | - | marketing | UNUSED_IN_TEMPLATE | No HomeDeskFragment surface named home_open (surfaces: app_click, app_close, left_panel.open_ad, right_panel.open_ad, home_click, drawer_click, home_back, recent_click, home_press). Dropped in the *_fix variants. |
 | `launcher_ads.reminders` | object | n/a | monetize/engine/HomeAdsSettings.kt:659 | marketing | MISMATCH | MISPLACED: code reads launcher_ads.onboarding.reminders.*, not launcher_ads.reminders.*. Move it under onboarding (the *_fix variants do). Today reminders falls back to defaults (inter off, mid native slot) - same as the template values, so no behaviour change, but edits to it would be ignored. |
+| `premium` | object | absent -> enabled, show_after_intro, close 5s, default plans | monetize/engine/MonetizeConfigReader.kt:79<br>repo/billing/ProSettings.kt:32 | marketing,organic | WIRED |  |
+| `premium.enabled` | bool | true | repo/billing/ProSettings.kt:61 | marketing,organic | WIRED |  |
+| `premium.show_after_intro` | bool | true | repo/billing/ProSettings.kt:62 | marketing,organic | WIRED |  |
+| `premium.close_delay_sec` | int 0..30 | 5 | repo/billing/ProSettings.kt:63 | marketing,organic | WIRED |  |
+| `premium.free_search_limit` | int | 3 | repo/billing/ProSettings.kt:65 | marketing,organic | WIRED |  |
+| `premium.rewarded_extra_searches` | int >=0 | 0 | repo/billing/ProSettings.kt:66 | marketing,organic | WIRED |  |
+| `premium.close_button_opacity` | double 0.3..1 | 1.0 | repo/billing/ProSettings.kt:67 | no | MISSING_IN_TEMPLATE |  |
+| `premium.products` | array | DEFAULT_PLANS: gps_premium_weekly (SUGGESTED, 3-day trial), gps_premium_monthly, gps_premium_lifetime | repo/billing/ProSettings.kt:45<br>repo/billing/ProSettings.kt:36 | no | MISSING_IN_TEMPLATE | Product IDs must exist in the NEW app's Play Console (either publish products[] or create the three default IDs). |
+| `premium.products[].id` | string (required) | entry dropped | repo/billing/ProSettings.kt:48 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
+| `premium.products[].type` | string "inapp" = lifetime | subscription | repo/billing/ProSettings.kt:50 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
+| `premium.products[].period` | string P1M = monthly | weekly | repo/billing/ProSettings.kt:51 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
+| `premium.products[].tag` | string | "" | repo/billing/ProSettings.kt:55 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
+| `premium.products[].default` | bool | false | repo/billing/ProSettings.kt:55 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
+| `premium.products[].trial_days` | int | 0 | repo/billing/ProSettings.kt:56 | no | MISSING_OPTIONAL | Optional override / alternate form; default is fine. |
+| `premium.products[].price` | string | n/a | - | no | UNUSED_NOT_IN_TEMPLATE | Not read (price comes from Play Billing). Present only in DEBUG_* variants. |
 | `rewarded` | object | absent -> FREE mode, 120s cooldown, backoff on, max 900s, 2 retries | monetize/engine/MonetizeConfigReader.kt:81<br>monetize/engine/BonusAdSettings.kt:17 | marketing,organic | WIRED |  |
 | `rewarded.nofill_mode` | string wait\|free | free | monetize/engine/BonusAdSettings.kt:26 | marketing,organic | WIRED |  |
 | `rewarded.nofill_cooldown_sec` | int | 120 | monetize/engine/BonusAdSettings.kt:24 | marketing,organic | WIRED |  |

@@ -91,6 +91,17 @@
                         android:text="@string/app_name"
                         android:textColor="@color/white"
                         android:textSize="9sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/vs_pill_gold"
+                        android:fontFamily="@font/figtree_bold"
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="1dp"
+                        android:text="@string/ds_pro"
+                        android:textColor="#5A3A00"
+                        android:textSize="6sp" />
                 </LinearLayout>
 
                 <TextView

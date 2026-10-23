@@ -72,6 +72,53 @@
                     android:textColor="@color/hb_on_band"
                     android:textSize="17sp" />
 
+                <FrameLayout
+                    android:id="@+id/padPro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/hb_pro_r16"
+                    android:clickable="true"
+                    android:contentDescription="@string/ds_cd_pro"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="12dp">
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/vs_ic_crown"
+                            app:tint="@color/hb_pro_crown" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="@font/figtree_bold"
+                            android:includeFontPadding="false"
+                            android:letterSpacing="0.06"
+                            android:text="@string/ds_pro"
+                            android:textColor="@color/hb_primary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/proShineVw"
+                        android:layout_width="16dp"
+                        android:layout_height="match_parent"
+                        android:alpha="0.6"
+                        android:background="@drawable/vs_shine"
+                        android:rotation="20"
+                        android:scaleY="1.6" />
+                </FrameLayout>
+
                 <ImageButton
                     android:id="@+id/padHistory"
                     android:layout_width="44dp"
@@ -233,16 +280,16 @@
                     android:layout_marginTop="12dp">
 
                     <LinearLayout
-                        android:id="@+id/quotaTileVw"
+                        android:id="@+id/padUnlimited"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/hb_quota_r16"
+                        android:clickable="true"
                         android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
-                        android:minHeight="40dp"
+
                         android:orientation="vertical"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="8dp">
+                        android:paddingHorizontal="12dp">
 
                         <TextView
                             android:id="@+id/lblQuota"
@@ -254,6 +301,16 @@
                             android:textColor="@color/hb_amber_ink"
                             android:textSize="15sp"
                             tools:text="2/3" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/figtree_bold"
+                            android:includeFontPadding="false"
+                            android:text="@string/ds_quota_unlimited"
+                            android:textColor="@color/hb_amber_ink"
+                            android:textSize="11sp" />
 
                         <ProgressBar
                             android:id="@+id/quotaBarVw"

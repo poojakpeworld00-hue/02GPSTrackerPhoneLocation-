@@ -75,6 +75,8 @@ object StoreUpdateKeeper {
         this.callback = callback
         this.updateType = if (isForceUpdate) AppUpdateType.IMMEDIATE else AppUpdateType.FLEXIBLE
 
+        // a repeat init() must not leave the old manager holding our listener (double callbacks)
+        runCatching { updateManager?.unregisterListener(installStateUpdatedListener) }
         this.updateManager = AppUpdateManagerFactory.create(activity.applicationContext)
 
         if (updateType == AppUpdateType.FLEXIBLE) {
@@ -92,11 +94,13 @@ object StoreUpdateKeeper {
             }
             InstallStatus.INSTALLED -> {
                 Log.d(TAG, "Update installed successfully.")
+                note("inapp_update_installed")
                 callback?.onUpdateSuccess()
                 cleanup()
             }
             InstallStatus.FAILED, InstallStatus.CANCELED -> {
                 Log.e(TAG, "Flexible update ended without installing: ${state.installStatus()}")
+                note("inapp_update_failed")
                 callback?.onUpdateFailed()
             }
             else -> {
@@ -154,6 +158,7 @@ object StoreUpdateKeeper {
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "Update check failed: ${e.message}")
+                note("inapp_update_check_failed")
                 callback?.onUpdateFailed()
             }
     }

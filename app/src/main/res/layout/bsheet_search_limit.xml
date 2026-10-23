@@ -112,6 +112,39 @@
             tools:text="59:59" />
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/padPremium"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/vs_btn_gold_r18"
+        android:elevation="6dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:outlineSpotShadowColor="@color/ds_gold_end"
+        tools:targetApi="p">
+
+        <View
+            android:id="@+id/shineVw"
+            android:layout_width="26dp"
+            android:layout_height="match_parent"
+            android:alpha="0.9"
+            android:background="@drawable/vs_shine"
+            android:rotation="20"
+            android:scaleY="1.6" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/figtree_bold"
+            android:text="@string/ds_limit_premium"
+            android:textColor="@color/ds_gold_ink"
+            android:textSize="16sp"
+            app:drawableStartCompat="@drawable/vs_ic_crown"
+            app:drawableTint="@color/ds_gold_ink" />
+    </FrameLayout>
+
     <TextView
         android:id="@+id/lblReset"
         android:layout_width="wrap_content"

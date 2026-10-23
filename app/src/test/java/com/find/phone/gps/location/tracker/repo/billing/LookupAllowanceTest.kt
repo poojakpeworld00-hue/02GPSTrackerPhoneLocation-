@@ -1,4 +1,4 @@
-package com.find.phone.gps.location.tracker.repo
+package com.find.phone.gps.location.tracker.repo.billing
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

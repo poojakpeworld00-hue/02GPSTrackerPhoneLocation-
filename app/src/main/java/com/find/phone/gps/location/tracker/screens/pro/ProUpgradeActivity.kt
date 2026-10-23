@@ -23,6 +23,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.find.phone.gps.location.tracker.R
+import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
@@ -61,6 +62,7 @@ class ProUpgradeActivity : FoundationActivity<PagePremiumBinding>() {
         else config.plans.take(3)
         selected = plans.indexOfFirst { it.preselected }.coerceAtLeast(0)
         trackEvent(if (afterIntro) "premium_view_after_intro" else "premium_view")
+        if (afterIntro) AdPrefsStore.getInstance(this).putBoolean(HomeAdsSettings.PREMIUM_GATE_SEEN, true)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT

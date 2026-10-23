@@ -637,10 +637,12 @@ object HomeAdsSettings {
         FullscreenOnAction().presentInterAds(activity) { proceed() }
     }
 
-    // paywall in the order: no ads anywhere until onboarding reaches Home (RC onboarding.premium.no_ads_until_home)
+    const val PREMIUM_GATE_SEEN = "__premium_gate_seen"
+
+    // once the onboarding paywall has been shown, no ads until Home (RC onboarding.premium.no_ads_until_home)
     fun adsHeldUntilHome(context: Context): Boolean {
         if (HomeRoleJourney.wasOnboardingCompleted(context)) return false
-        if (OnboardScreen.PREMIUM !in onboardingOrder(context) || !ProUpgradeActivity.offeredInWelcome(context)) return false
+        if (!AdPrefsStore.getInstance(context).getBoolean(PREMIUM_GATE_SEEN) || !ProUpgradeActivity.offeredInWelcome(context)) return false
         return onboardingBlock(context, OnboardScreen.PREMIUM)?.optBoolean("no_ads_until_home", true) ?: true
     }
 

@@ -2,7 +2,6 @@ package com.find.phone.gps.location.tracker.screens.dashboard
 
 import android.content.Context
 import com.find.phone.gps.location.tracker.repo.finder.NumberSummary
-import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
 import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
@@ -53,7 +52,7 @@ class PastLookupStore(context: Context) {
     fun add(search: PastLookup) {
         val next = listOf(search) + all().filterNot { it.digits == search.digits && it.dial == search.dial }
 
-        save(next.take(if (ProStoreBilling.isPremium(app)) MAX_PREMIUM else MAX))
+        save(next.take(MAX))
     }
 
     fun clear() = prefs.edit().remove(KEY).apply()
@@ -84,6 +83,5 @@ class PastLookupStore(context: Context) {
         const val PREFS = "recent_searches"
         const val KEY = "items"
         const val MAX = 20
-        const val MAX_PREMIUM = 500
     }
 }

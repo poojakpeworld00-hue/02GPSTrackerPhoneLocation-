@@ -4,8 +4,6 @@ import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionShow
 import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
 import android.animation.Animator
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.Manifest
 import android.content.Intent
@@ -49,11 +47,8 @@ import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
 import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
-import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
-import com.find.phone.gps.location.tracker.repo.billing.ProSettings
-import com.find.phone.gps.location.tracker.repo.billing.LookupAllowance
+import com.find.phone.gps.location.tracker.repo.LookupAllowance
 import com.find.phone.gps.location.tracker.databinding.PaneHomeCoreBinding
-import com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity
 import com.find.phone.gps.location.tracker.repo.peoplesync.PeopleUploader
 import com.find.phone.gps.location.tracker.screens.people.PeopleSelectActivity
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
@@ -75,7 +70,6 @@ class DashboardMainFragment : Fragment() {
     private lateinit var recentsAdapter: PastLookupAdapter
     private val animators = mutableListOf<Animator>()
     private var glowAnimator: Animator? = null
-    private var proShine: Animator? = null
     private var myNumberTile: OwnNumberTile? = null
 
     private val phonePermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
@@ -179,16 +173,10 @@ class DashboardMainFragment : Fragment() {
     private val quotaHandler = Handler(Looper.getMainLooper())
     private val quotaTicker = Runnable { wireQuota() }
 
-    private val limitPremiumLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        wireQuota()
-        if (ProStoreBilling.isPremium(requireContext())) kickSearch()
-    }
-
     private val locatingPage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.data?.getBooleanExtra(PinpointingActivity.EXTRA_FOUND, false) == true) _binding?.phoneInputVw?.setText("")
         renewRecents()
         wireQuota()
-        wireProChip()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -219,19 +207,8 @@ class DashboardMainFragment : Fragment() {
         binding.padMenu.setOnClickListener { menuHost?.openHomeMenu() }
         binding.padHistory.setOnClickListener { historyPage.launch(PastLookupsActivity.intent(requireContext())) }
 
-        binding.padUnlimited.setOnClickListener {
-            requireContext().trackEvent("home_quota_unlimited")
-            startActivity(ProUpgradeActivity.intent(requireContext()))
-        }
         wireQuota()
 
-        VisualTweens.pressScale(binding.padPro)
-        binding.padPro.clipToOutline = true
-        binding.padPro.setOnClickListener {
-            requireContext().trackEvent("home_pro_chip")
-            startActivity(ProUpgradeActivity.intent(requireContext()))
-        }
-        wireProChip()
         binding.countryChipVw.setOnClickListener {
             NationSelectSheet.newInstance(countryIso).show(childFragmentManager, "country")
         }
@@ -277,41 +254,12 @@ class DashboardMainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        wireProChip()
         wireQuota()
         myNumberTile?.render()
     }
 
-    private fun wireProChip() {
-        val b = _binding ?: return
-        val context = requireContext()
-        val show = ProSettings.read(context).enabled && !ProStoreBilling.isPremium(context)
-        b.padPro.isVisible = show
-        if (!show) {
-            proShine?.cancel()
-            proShine = null
-            return
-        }
-        if (proShine != null || VisualTweens.animationsDisabled(context)) {
-            b.proShineVw.isVisible = proShine != null
-            return
-        }
-        b.padPro.post {
-            val chip = _binding?.padPro ?: return@post
-            val w = chip.width.toFloat()
-            proShine = ObjectAnimator.ofFloat(_binding?.proShineVw, View.TRANSLATION_X, -0.4f * w, 1.2f * w).apply {
-                duration = 1_800L
-                startDelay = 1_200L
-                repeatCount = ValueAnimator.INFINITE
-                interpolator = VisualTweens.EASE_IN_OUT
-                start()
-            }.also { animators += it }
-        }
-    }
-
     override fun onDestroyView() {
         quotaHandler.removeCallbacks(quotaTicker)
-        proShine = null
         myNumberTile = null
         VisualTweens.cancelAll(animators)
         glowAnimator = null
@@ -464,7 +412,6 @@ class DashboardMainFragment : Fragment() {
                     wireQuota()
                     kickSearch()
                 },
-                onPremium = { limitPremiumLauncher.launch(ProUpgradeActivity.intent(requireContext())) },
             ).show()
             return
         }
@@ -505,15 +452,14 @@ class DashboardMainFragment : Fragment() {
         val cooldown = LookupAllowance.cooldownRemainingMs(context)
         if (cooldown > 0L) {
             b.lblQuota.text = getString(R.string.ds_quota_cooldown, LookupAllowance.formatRemaining(cooldown))
-            b.padUnlimited.contentDescription = b.lblQuota.text.toString() + ". " + getString(R.string.ds_quota_unlimited)
+            b.quotaTileVw.contentDescription = b.lblQuota.text
             b.quotaBarVw.progress = 0
             quotaHandler.postDelayed(quotaTicker, 1_000L)
             return
         }
         val left = LookupAllowance.remaining(context)
         b.lblQuota.text = getString(R.string.hb_quota_short, left, limit)
-        b.padUnlimited.contentDescription =
-            getString(R.string.ds_quota_left, left, limit) + ". " + getString(R.string.ds_quota_unlimited)
+        b.quotaTileVw.contentDescription = getString(R.string.ds_quota_left, left, limit)
         b.quotaBarVw.progress = (100 * left.coerceAtMost(limit) / limit.coerceAtLeast(1))
     }
 

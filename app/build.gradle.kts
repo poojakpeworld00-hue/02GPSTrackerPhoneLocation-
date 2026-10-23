@@ -156,7 +156,6 @@ dependencies {
     implementation(libs.libphonenumber.carrier)
     implementation(libs.osmdroid)
 
-    implementation(libs.billing)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

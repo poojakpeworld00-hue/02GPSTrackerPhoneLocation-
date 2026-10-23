@@ -11,7 +11,6 @@ import android.os.SystemClock
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
@@ -23,7 +22,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.find.phone.gps.location.tracker.R
-import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.engine.PageSponsorSettings
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsor
 import com.find.phone.gps.location.tracker.monetize.render.InlineSponsorStrip
@@ -34,13 +32,11 @@ import com.find.phone.gps.location.tracker.repo.finder.ZoneAccuracy
 import com.find.phone.gps.location.tracker.repo.finder.MapMarkerPoint
 import com.find.phone.gps.location.tracker.repo.finder.NumberFinder
 import com.find.phone.gps.location.tracker.repo.finder.NumberSummary
-import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
 import com.find.phone.gps.location.tracker.databinding.CardResultCellBinding
 import com.find.phone.gps.location.tracker.databinding.PageLocatingBinding
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.screens.dashboard.PastLookup
 import com.find.phone.gps.location.tracker.screens.dashboard.PastLookupStore
-import com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,11 +55,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
     private val animators = mutableListOf<Animator>()
     private var progressAnim: ObjectAnimator? = null
     private var watching = false
-
-    private val premiumPage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        val result = report ?: return@registerForActivityResult
-        if (ProStoreBilling.isPremium(this)) unlock(result)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -94,19 +85,11 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         binding.padNotNow.setOnClickListener { finish() }
         VisualTweens.pressScale(binding.padWatchAd)
         binding.padWatchAd.setOnClickListener { reveal() }
-        binding.padSkipPro.setOnClickListener {
-            if (report == null) return@setOnClickListener
-            trackEvent("result_skip_pro")
-            premiumPage.launch(ProUpgradeActivity.intent(this))
-        }
         binding.mapCardVw.clipToOutline = true
         OpenStreetTiles.style(binding.bigMapVw, interactive = false)
 
-        val premium = ProStoreBilling.isPremium(this)
-        if (!premium) {
-            BonusAdSponsor.preload(this)
-            presentNative()
-        }
+        BonusAdSponsor.preload(this)
+        presentNative()
 
         val given = saved
         if (given != null) {
@@ -116,7 +99,7 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         } else {
             binding.flagCountry.text = RegionZones.byIso(search.iso2)?.name ?: search.iso2
             binding.flagState.setText(R.string.ds_step_state)
-            locate(if (premium) MIN_SEARCH_PREMIUM_MS else MIN_SEARCH_MS)
+            locate(MIN_SEARCH_MS)
         }
     }
 
@@ -251,7 +234,7 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         binding.prog.progress = 0
         binding.lblPercent.text = getString(R.string.ds_locating_percent, 0)
         binding.flagState.setText(R.string.ds_step_state)
-        locate(if (ProStoreBilling.isPremium(this)) MIN_SEARCH_PREMIUM_MS else MIN_SEARCH_MS)
+        locate(MIN_SEARCH_MS)
     }
 
     private fun stage(text: String, toPercent: Int, overMs: Long, step: Step) {
@@ -295,7 +278,7 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
 
     private fun presentResult(result: NumberSummary) {
         report = result
-        if (alreadyUnlocked || ProStoreBilling.isPremium(this)) return unlock(result)
+        if (alreadyUnlocked) return unlock(result)
 
         binding.lblTitle.setText(R.string.ds_location_found)
         binding.lblSearchNumber.setText(R.string.ds_locating_complete)
@@ -416,8 +399,6 @@ class PinpointingActivity : FoundationActivity<PageLocatingBinding>() {
         const val EXTRA_FOUND = "found"
 
         private const val MIN_SEARCH_MS = 10_000L
-
-        private const val MIN_SEARCH_PREMIUM_MS = 4_000L
 
         private val NATIVE_RECHECK_MS = longArrayOf(2_500L, 5_000L, 8_000L)
 

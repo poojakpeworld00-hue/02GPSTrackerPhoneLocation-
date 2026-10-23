@@ -5,7 +5,7 @@ Debug builds log to logcat (tag `AdEvents`) only; release builds send to Firebas
 ## Screen events (all screens, automatic — `insights/ScreenInsights.kt`)
 `{token}_open` (once per creation), `{token}_back_press`, `{token}_home_press`, `{token}_recents_press`.
 
-Tokens: `splash`, `language`, `welcome`, `onboarding`, `reminder_intro`, `default_home`, `default_home_tip`, `terms`, `premium`, `home`, `home_search`, `locating`, `number_detail`, `map_full`, `history`, `contact_picker`, `my_number`, `share_number`, `dual_sim`, `carrier_codes`, `reminder_list`, `reminder_alert`, `package_result`, `charging_status`, `overlay_perm`, `overlay_guide`, `promo_web`, `crash_restart`, `launcher_home`, `launcher_panel`, `launcher_settings`, `launcher_hidden_apps`, `default_home_hint`
+Tokens: `splash`, `language`, `welcome`, `onboarding`, `reminder_intro`, `default_home`, `default_home_tip`, `terms`, `home`, `home_search`, `locating`, `number_detail`, `map_full`, `history`, `contact_picker`, `my_number`, `share_number`, `dual_sim`, `carrier_codes`, `reminder_list`, `reminder_alert`, `package_result`, `charging_status`, `overlay_perm`, `overlay_guide`, `promo_web`, `crash_restart`, `launcher_home`, `launcher_panel`, `launcher_settings`, `launcher_hidden_apps`, `default_home_hint`
 
 ## Ad lifecycle (`insights/AdPulse.kt`) — params `screen`, `network`, `error_code`
 `ad_{type}_{phase}` · type: banner, native, native_banner, interstitial, interstitial_back, app_open, rewarded, splash_app_open, splash_interstitial · phase: req, loaded, no_fill, failed, impression, clicked (language screen natives only), show, show_failed (interstitial_back), close. Revenue: reserved `ad_impression` from AdMob `OnPaidEventListener` on every Google placement (EarningsTracker.trackPaidEvent) with params `ad_platform`, `ad_source`, `ad_format`, `ad_unit_name`, `value`, `currency`, `precision`, `placement` (screen token, or `splash`), `segment` (paid/organic).
@@ -68,20 +68,13 @@ Tokens: `splash`, `language`, `welcome`, `onboarding`, `reminder_intro`, `defaul
 | `Reminder_Alert_Call` | screens/alerts/AlarmPopupActivity.kt |
 | `Reminder_Alert_Open_List_Click` | screens/alerts/AlarmPopupActivity.kt |
 | `Reminder_Alert_Snooze_$snoozeMinutes` | screens/alerts/AlarmPopupActivity.kt |
-| `home_quota_unlimited` | screens/dashboard/DashboardMainFragment.kt |
-| `home_pro_chip` | screens/dashboard/DashboardMainFragment.kt |
 | `search_limit_reached` | screens/dashboard/DashboardMainFragment.kt |
 | `search_invalid_number` | screens/dashboard/DashboardMainFragment.kt |
 | `MyNumber_Manage_Click` | screens/dashboard/OwnNumberTile.kt |
 | `MyNumber_Show_Click` | screens/dashboard/OwnNumberTile.kt |
 | `MyNumber_Copy` | screens/dashboard/OwnNumberTile.kt |
-| `result_skip_pro` | screens/finder/PinpointingActivity.kt |
 | `language_info_click` | screens/locale/LocalePickActivity.kt |
 | `language_done_click` | screens/locale/LocalePickActivity.kt |
-| `premium_continue_free` | screens/pro/ProUpgradeActivity.kt |
-| `premium_price_unavailable` | screens/pro/ProUpgradeActivity.kt |
-| `premium_cta_${plan.kind.name.lowercase()}` | screens/pro/ProUpgradeActivity.kt |
-| `premium_purchased` | screens/pro/ProUpgradeActivity.kt |
 | `CarrierCodes_Dial` | screens/simcard/OperatorDialCodesActivity.kt |
 | `MyNumberPage_Show_Click` | screens/simcard/OwnNumberActivity.kt |
 | `MyNumberPage_Copy` | screens/simcard/OwnNumberActivity.kt |

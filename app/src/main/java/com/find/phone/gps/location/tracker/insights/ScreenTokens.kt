@@ -19,7 +19,6 @@ import com.find.phone.gps.location.tracker.screens.finder.NumberInsightActivity
 import com.find.phone.gps.location.tracker.screens.finder.PinpointingActivity
 import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
 import com.find.phone.gps.location.tracker.screens.people.PeopleSelectActivity
-import com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity
 import com.find.phone.gps.location.tracker.screens.simcard.OperatorDialCodesActivity
 import com.find.phone.gps.location.tracker.screens.simcard.OwnNumberActivity
 import com.find.phone.gps.location.tracker.screens.simcard.SendNumberActivity
@@ -46,7 +45,6 @@ object ScreenTokens {
         HomeRoleStageActivity::class.java to "default_home",
         HomeRoleTipActivity::class.java to "default_home_tip",
         PolicyConsentActivity::class.java to "terms",
-        ProUpgradeActivity::class.java to "premium",
         MainHubActivity::class.java to "home",
         DashboardMainFragment::class.java to "home_search",
         PinpointingActivity::class.java to "locating",

@@ -188,50 +188,12 @@
     <string name="ds_contacts_refresh">Reload</string>
     <string name="ds_contacts_no_app">No contacts app available</string>
 
-    <string name="ds_pro">PRO</string>
-    <string name="ds_cd_pro">Upgrade to Premium</string>
-    <string name="ds_premium_badge">PREMIUM</string>
-    <string name="ds_premium_title">Search locations without limits</string>
-    <string name="ds_premium_subtitle">No cap per day. No ad to watch before your next search.</string>
-    <string name="ds_premium_feature_1">Limitless searches daily</string>
-    <string name="ds_premium_feature_2">Complete search history</string>
-    <string name="ds_premium_restore">Restore purchase</string>
-    <string name="ds_premium_continue_free">Keep using the free version</string>
-    <string name="ds_premium_week">Weekly</string>
-    <string name="ds_premium_month">Monthly</string>
-    <string name="ds_premium_lifetime">Forever</string>
-    <string name="ds_premium_per_week">each week</string>
-    <string name="ds_premium_per_month">each month</string>
-    <string name="ds_premium_per_week_billed_monthly">each week, charged monthly</string>
-    <string name="ds_premium_one_time">single payment</string>
-    <string name="ds_premium_cta_week">Subscribe · %1$s / week</string>
-    <string name="ds_premium_cta_month">Subscribe · %1$s / month</string>
-    <string name="ds_premium_cta_lifetime">Get Lifetime · %1$s</string>
-    <string name="ds_premium_cta_trial">Try free for %1$d days</string>
-    <string name="ds_premium_price_trial_week">FREE for %2$d days, then %1$s/week</string>
-    <string name="ds_premium_price_trial_month">FREE for %2$d days, then %1$s/month</string>
-    <string name="ds_premium_price_week">%1$s/week, auto-renewing</string>
-    <string name="ds_premium_price_month">%1$s/month, auto-renewing</string>
-    <string name="ds_premium_price_lifetime">%1$s one time, access forever</string>
-    <string name="ds_premium_consent">Continuing means you accept our %1$s &amp; %2$s.</string>
-    <string name="ds_premium_consent_trial">Renews automatically after the trial; cancel whenever.</string>
-    <string name="ds_premium_consent_subs">Renews automatically; cancel whenever.</string>
-    <string name="ds_premium_consent_lifetime">Pay once, never renews.</string>
-    <string name="ds_premium_terms">Terms</string>
-    <string name="ds_premium_privacy">Privacy Policy</string>
-    <string name="ds_premium_unavailable">Premium can\'t be reached at the moment. Please try again later.</string>
-    <string name="ds_premium_welcome">You\'re now Premium!</string>
-    <string name="ds_premium_pending">Purchase in progress. Premium activates as soon as it finishes.</string>
-    <string name="ds_premium_failed">Your purchase wasn\'t completed. Please try once more.</string>
-    <string name="ds_premium_restored">Premium is back</string>
-    <string name="ds_premium_nothing_to_restore">This account has no Premium purchase</string>
 
     <string name="ds_result_approx_area">ESTIMATED AREA</string>
     <string name="ds_result_valid">● Number is valid</string>
     <string name="ds_result_valid_short">Number is valid</string>
     <string name="ds_result_watch_ad">Watch Ad · See all details</string>
     <string name="ds_result_not_now">Maybe later</string>
-    <string name="ds_result_skip_pro">Skip it with PRO</string>
     <string name="ds_reveal_title">Show all details</string>
     <string name="ds_reveal_body">View a quick ad to see the name, city, network and location on the map.</string>
     <string name="ds_reveal_watch">Play Ad</string>
@@ -250,11 +212,9 @@
     <string name="ds_invalid_country">Switch country</string>
 
     <string name="ds_quota_left">%1$d of %2$d remaining</string>
-    <string name="ds_quota_unlimited">No limit</string>
     <string name="ds_limit_used">spent</string>
     <string name="ds_limit_title">Free searches used up</string>
-    <string name="ds_limit_body_premium">All %1$d free searches for today are used up. Upgrade to Premium for no limits, or try again tomorrow.</string>
-    <string name="ds_limit_premium">Get Premium · No limits</string>
+    <string name="ds_limit_body">All %1$d free searches are used.</string>
     <string name="ds_limit_reset">Free searches refresh at midnight</string>
 
     <string name="ds_history_title">Past searches</string>

@@ -105,7 +105,6 @@ object PageMatcher {
         "PackageResultActivity" to listOf("InstallOutcomeActivity"),
         "PowerGaugeActivity" to listOf("ChargeToolActivity"),
         "PreferencesActivity" to listOf("PrefsHubActivity"),
-        "PremiumActivity" to listOf("ProUpgradeActivity"),
         "PrimerActivity" to listOf("GuidedTourActivity"),
         "PromoWebActivity" to listOf("SponsorBrowserActivity"),
         "RegionPickerActivity" to listOf("CountryDeckActivity"),

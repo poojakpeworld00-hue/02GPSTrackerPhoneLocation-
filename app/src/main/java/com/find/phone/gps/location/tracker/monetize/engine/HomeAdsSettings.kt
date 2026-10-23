@@ -575,9 +575,7 @@ object HomeAdsSettings {
         INTRO("intro", true, "mid2"),
         LANGUAGE("language", true, "big"),
 
-        REMINDERS("reminders", false, "mid"),
-
-        PREMIUM("premium", false, "mid");
+        REMINDERS("reminders", false, "mid");
 
         val counterKey: String get() = "__launcher_ads_onboarding_${key}_count"
 

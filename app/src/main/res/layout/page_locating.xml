@@ -482,29 +482,6 @@
                             android:text="@string/ds_result_not_now"
                             android:textColor="@color/ds_ink"
                             android:textSize="14sp" />
-
-                        <FrameLayout
-                            android:id="@+id/padSkipPro"
-                            android:layout_width="0dp"
-                            android:layout_height="44dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/vs_btn_gold_soft_r14"
-                            android:foreground="?attr/selectableItemBackground">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:drawablePadding="6dp"
-                                android:fontFamily="@font/figtree_bold"
-                                android:gravity="center_vertical"
-                                android:text="@string/ds_result_skip_pro"
-                                android:textColor="@color/ds_gold_soft_ink"
-                                android:textSize="14sp"
-                                app:drawableStartCompat="@drawable/vs_ic_crown_small"
-                                app:drawableTint="@color/ds_gold_soft_ink" />
-                        </FrameLayout>
                     </LinearLayout>
                 </LinearLayout>
 

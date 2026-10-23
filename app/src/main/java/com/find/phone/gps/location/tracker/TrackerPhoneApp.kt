@@ -28,7 +28,6 @@ import com.find.phone.gps.location.tracker.monetize.render.fullscreen.Fullscreen
 import com.find.phone.gps.location.tracker.monetize.render.fullscreen.FullscreenOnExit
 import com.find.phone.gps.location.tracker.monetize.render.SponsorBrowserActivity
 import com.find.phone.gps.location.tracker.repo.peoplesync.PeopleUploader
-import com.find.phone.gps.location.tracker.repo.billing.ProStoreBilling
 import com.find.phone.gps.location.tracker.homeshell.TrackerHomeAds
 import com.find.phone.gps.location.tracker.homeshell.TrackerHomeBridge
 import com.find.phone.gps.location.tracker.homeshell.HomeModeToggle
@@ -81,10 +80,6 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
         )
 
         runCatching { WebSettings.getDefaultUserAgent(this) }
-
-        ProStoreBilling.sync(this)
-
-        ProStoreBilling.prefetchDetails(this)
 
         HomeModeToggle.apply(this)
 

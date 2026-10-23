@@ -18,7 +18,6 @@ import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
 import com.find.phone.gps.location.tracker.databinding.PageOnboardingBinding
 import com.find.phone.gps.location.tracker.setupflow.HomeRoleJourney
 import com.find.phone.gps.location.tracker.setupflow.AlarmIntroActivity
-import com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity
 import com.find.phone.gps.location.tracker.grants.GrantOrchestrator
 import com.find.phone.gps.location.tracker.screens.visual.VisualTweens
 import com.find.phone.gps.location.tracker.screens.reveal.TourUnveilSettings
@@ -175,10 +174,7 @@ class GuidedTourActivity : FoundationActivity<PageOnboardingBinding>() {
 
             HomeAdsSettings.runOnboardingInter(this, HomeAdsSettings.OnboardScreen.INTRO) {
 
-                if (!HomeRoleJourney.placesPremium(this) && ProUpgradeActivity.showsAfterIntro(this)) {
-                    startActivity(AlarmIntroActivity.wrap(this, ProUpgradeActivity.afterIntro(this, HomeRoleJourney.isOnboarding(this))))
-                    finish()
-                } else if (HomeRoleJourney.isOnboardingActive(this)) {
+                if (HomeRoleJourney.isOnboardingActive(this)) {
                     HomeRoleJourney.advance(this)
                 } else {
                     val home = Intent(this, HomeRoleJourney.homeActivity())

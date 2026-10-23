@@ -172,9 +172,6 @@
         "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
       },
-      "ProUpgradeActivity": {
-        "show": false
-      },
       "PastLookupsActivity": {
         "show": true,
         "banner": "ca-app-pub-3940256099942544/9214589741",
@@ -615,35 +612,6 @@
       "discharge": {
         "ads_on": true
       }
-    },
-    "premium": {
-      "enabled": true,
-      "show_after_intro": true,
-      "close_delay_sec": 5,
-      "free_search_limit": 3,
-      "rewarded_extra_searches": 0,
-      "products": [
-        {
-          "id": "gps_premium_weekly",
-          "type": "subs",
-          "period": "P1W",
-          "price": "$9.99",
-          "tag": "SUGGESTED",
-          "default": true,
-          "trial_days": 3
-        },
-        {
-          "id": "gps_premium_monthly",
-          "type": "subs",
-          "period": "P1M",
-          "price": "$19.99"
-        },
-        {
-          "id": "gps_premium_lifetime",
-          "type": "inapp",
-          "price": "$99.99"
-        }
-      ]
     }
   },
   "organic": {
@@ -817,9 +785,6 @@
         "bannerType": "adaptive",
         "native": "ca-app-pub-3940256099942544/2247696110",
         "nativeType": "small"
-      },
-      "ProUpgradeActivity": {
-        "show": false
       },
       "PastLookupsActivity": {
         "show": true,
@@ -1227,35 +1192,6 @@
       "discharge": {
         "ads_on": false
       }
-    },
-    "premium": {
-      "enabled": true,
-      "show_after_intro": true,
-      "close_delay_sec": 5,
-      "free_search_limit": 3,
-      "rewarded_extra_searches": 0,
-      "products": [
-        {
-          "id": "gps_premium_weekly",
-          "type": "subs",
-          "period": "P1W",
-          "price": "$9.99",
-          "tag": "SUGGESTED",
-          "default": true,
-          "trial_days": 3
-        },
-        {
-          "id": "gps_premium_monthly",
-          "type": "subs",
-          "period": "P1M",
-          "price": "$19.99"
-        },
-        {
-          "id": "gps_premium_lifetime",
-          "type": "inapp",
-          "price": "$99.99"
-        }
-      ]
     }
   }
 }

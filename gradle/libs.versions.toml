@@ -7,7 +7,6 @@ viewpager2 = "1.1.0"
 okhttp = "4.12.0"
 retrofit = "2.11.0"
 osmdroid = "6.1.20"
-billing = "9.1.0"
 gson = "2.11.0"
 coreKtx = "1.18.0"
 junit = "4.13.2"
@@ -71,7 +70,6 @@ androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", vers
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-billing = { group = "com.android.billingclient", name = "billing", version.ref = "billing" }
 osmdroid = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroid" }
 retrofit-gson ={ group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }

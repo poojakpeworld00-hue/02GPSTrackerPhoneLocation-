@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
 import com.find.phone.gps.location.tracker.screens.walkthrough.GuidedTourActivity
-import com.find.phone.gps.location.tracker.screens.pro.ProUpgradeActivity
 import com.find.phone.gps.location.tracker.screens.consent.PolicyConsentActivity
 import io.homedeck.grid.ext.isDefaultLauncher
 import java.lang.ref.WeakReference
@@ -38,7 +37,6 @@ object WalkthroughHomeAdvance : Application.ActivityLifecycleCallbacks {
         WelcomeStageActivity::class.java,
         AlarmIntroActivity::class.java,
         GuidedTourActivity::class.java,
-        ProUpgradeActivity::class.java,
         PolicyConsentActivity::class.java,
     )
 
@@ -64,12 +62,6 @@ object WalkthroughHomeAdvance : Application.ActivityLifecycleCallbacks {
         if (step < 0) {
             clear(context)
             return null
-        }
-        if (screen == ProUpgradeActivity::class.java.name) {
-
-            clear(context)
-            log("home on ProUpgradeActivity → resuming after step $step")
-            return HomeRoleJourney.resumeScreen(context, step + 1)
         }
         log("home on ${screen.substringAfterLast('.')} → resuming at step $step")
         return HomeRoleJourney.resumeScreen(context, step)

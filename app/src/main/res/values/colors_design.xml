@@ -93,7 +93,6 @@
     
     <color name="ds_gold_start">#FFD466</color>
     <color name="ds_gold_end">#F5A524</color>
-    <color name="ds_gold_ink">#5A3A00</color>
     <color name="ds_plan_selected">#F1F8FC</color>
     <color name="ds_success18">#2E1E8E5A</color>
     
@@ -124,7 +123,6 @@
     <color name="ds_white85">#D9FFFFFF</color>
     
     <color name="ds_gold_soft">#FFF4DC</color>
-    <color name="ds_gold_soft_ink">#8A5A00</color>
     <color name="ds_white90_surface">#E6FFFFFF</color>
     
     <color name="ds_amber_ink">#B77400</color>

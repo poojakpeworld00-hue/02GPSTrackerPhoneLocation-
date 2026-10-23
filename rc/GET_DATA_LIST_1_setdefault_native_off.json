@@ -172,9 +172,6 @@
         "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
         "nativeType": "small"
       },
-      "ProUpgradeActivity": {
-        "show": false
-      },
       "PastLookupsActivity": {
         "show": true,
         "banner": "/23343433547/com.find.phone.gps.location.tracker_googleBanner",
@@ -600,13 +597,6 @@
       "discharge": {
         "ads_on": true
       }
-    },
-    "premium": {
-      "enabled": true,
-      "show_after_intro": true,
-      "close_delay_sec": 10,
-      "free_search_limit": 1,
-      "rewarded_extra_searches": 0
     }
   },
   "organic": {
@@ -780,9 +770,6 @@
         "bannerType": "adaptive",
         "native": "/23343433547/com.find.phone.gps.location.tracker_googleNative",
         "nativeType": "small"
-      },
-      "ProUpgradeActivity": {
-        "show": false
       },
       "PastLookupsActivity": {
         "show": true,
@@ -1191,13 +1178,6 @@
       "discharge": {
         "ads_on": false
       }
-    },
-    "premium": {
-      "enabled": true,
-      "show_after_intro": true,
-      "close_delay_sec": 5,
-      "free_search_limit": 3,
-      "rewarded_extra_searches": 0
     }
   }
 }

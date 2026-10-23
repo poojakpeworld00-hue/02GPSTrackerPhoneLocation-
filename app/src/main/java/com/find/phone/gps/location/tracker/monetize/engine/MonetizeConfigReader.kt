@@ -76,8 +76,6 @@ object MonetizeConfigReader {
 
                 "intro_display", "ScreenAds", "launcher_ads",
 
-                "premium",
-
                 "search_config",
 
                 "rewarded",

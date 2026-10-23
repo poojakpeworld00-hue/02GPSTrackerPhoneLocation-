@@ -198,7 +198,7 @@
 }
 
 # ===== GPS Tracker Phone Location: app data models read by Gson / reflection =====
-# PastLookupStore keeps NumberSummary as a Gson string; the lookup, premium and vault models
+# PastLookupStore keeps NumberSummary as a Gson string; the lookup and vault models
 # are (de)serialised by field name, so their names must survive R8.
 -keep class com.find.phone.gps.location.tracker.repo.** { *; }
 -keep class com.find.phone.gps.location.tracker.screens.dashboard.PastLookup { *; }

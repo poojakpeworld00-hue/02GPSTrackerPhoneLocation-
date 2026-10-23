@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="un_sorry_title">असुविधा के लिए खेद है</string>
+    <string name="un_sorry_sub">क्या कुछ ठीक से काम नहीं कर रहा? इनमें से कोई उपाय मदद कर सकता है।</string>
+    <string name="un_quick_fixes">त्वरित समाधान</string>
+    <string name="un_fix1_title">नंबर खोजें</string>
+    <string name="un_fix1_sub">कोई भी नंबर कहाँ का है, सेकंडों में जानें</string>
+    <string name="un_fix2_title">मेरा नंबर देखें</string>
+    <string name="un_fix2_sub">अपने SIM नंबर और ऑपरेटर देखें</string>
+    <string name="un_fix3_title">रिमाइंडर सेट करें</string>
+    <string name="un_fix3_sub">अलर्ट पाएं ताकि वापस कॉल करना न भूलें</string>
+    <string name="un_try">आज़माएं</string>
+    <string name="un_dont_uninstall">अभी अनइंस्टॉल न करें</string>
+    <string name="un_still_uninstall">फिर भी अनइंस्टॉल करना है</string>
+    <string name="un_reason_title">आप अनइंस्टॉल क्यों करना चाहते हैं?</string>
+    <string name="un_reason_sub">आपका जवाब ऐप को बेहतर बनाने में मदद करता है।</string>
+    <string name="un_reason_1">लोकेशन सही नहीं है या काम नहीं कर रही</string>
+    <string name="un_reason_2">बहुत ज़्यादा सूचनाएं</string>
+    <string name="un_reason_3">बहुत ज़्यादा विज्ञापन</string>
+    <string name="un_reason_4">अब मुझे इसकी ज़रूरत नहीं</string>
+    <string name="un_reason_5">बैटरी ज़्यादा खर्च होती है</string>
+    <string name="un_reason_6">मैं दूसरा ऐप इस्तेमाल कर रहा हूँ</string>
+    <string name="un_tip_location_title">लोकेशन की अनुमति दें।</string>
+    <string name="un_tip_location_text">मैप पर सटीक नतीजे दिखाने के लिए ऐप को आपकी लोकेशन चाहिए।</string>
+    <string name="un_tip_location_btn">अनुमति दें</string>
+    <string name="un_tip_notif_title">इसके बजाय सूचनाएं बंद करें।</string>
+    <string name="un_tip_notif_text">इन्हें सिस्टम सेटिंग में बंद करें। बाकी सब चलता रहेगा।</string>
+    <string name="un_tip_notif_btn">सेटिंग</string>
+    <string name="un_keep_app">ऐप रखें</string>
+    <string name="un_uninstall_anyway">फिर भी अनइंस्टॉल करें</string>
+    <string name="un_progress_title">%1$s बंद हो रहा है…</string>
+    <string name="un_progress_sub">आप फ़ोन की सेटिंग से कभी भी अनइंस्टॉल कर सकते हैं।</string>
+    <string name="un_progress_done">हो गया</string>
+    <string name="un_step_1">आपका फ़ीडबैक सेव हो रहा है</string>
+    <string name="un_step_2">समाप्त हो रहा है</string>
+    <string name="un_step_3">ऐप बंद हो रहा है</string>
+    <string name="un_thanks_title">आपके फ़ीडबैक के लिए धन्यवाद!</string>
+    <string name="un_thanks_sub">ऐप जानकारी खुल रही है, जहाँ आप अनइंस्टॉल पूरा कर सकते हैं।</string>
+    <string name="un_thanks_sub_close">ऐप अब बंद हो जाएगा। आप इसे कभी भी सेटिंग से अनइंस्टॉल कर सकते हैं।</string>
+    <string name="un_you_said">आपने कहा: %1$s</string>
+    <string name="un_continue">जारी रखें</string>
+</resources>

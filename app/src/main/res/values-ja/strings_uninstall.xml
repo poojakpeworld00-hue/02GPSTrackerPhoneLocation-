@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="un_sorry_title">ご不便をおかけして申し訳ありません</string>
+    <string name="un_sorry_sub">うまく動きませんか？次の方法で解決できるかもしれません。</string>
+    <string name="un_quick_fixes">クイック解決</string>
+    <string name="un_fix1_title">番号を検索</string>
+    <string name="un_fix1_sub">どの番号の発信地も数秒で確認</string>
+    <string name="un_fix2_title">自分の番号を見る</string>
+    <string name="un_fix2_sub">SIM の番号と通信事業者を確認</string>
+    <string name="un_fix3_title">リマインダーを設定</string>
+    <string name="un_fix3_sub">通知を受け取って折り返しを忘れずに</string>
+    <string name="un_try">試す</string>
+    <string name="un_dont_uninstall">まだアンインストールしない</string>
+    <string name="un_still_uninstall">それでもアンインストールする</string>
+    <string name="un_reason_title">アンインストールする理由は何ですか？</string>
+    <string name="un_reason_sub">ご回答はアプリの改善に役立ちます。</string>
+    <string name="un_reason_1">位置情報が不正確、または動作しない</string>
+    <string name="un_reason_2">通知が多すぎる</string>
+    <string name="un_reason_3">広告が多すぎる</string>
+    <string name="un_reason_4">もう必要ない</string>
+    <string name="un_reason_5">電池の消耗が激しい</string>
+    <string name="un_reason_6">別のアプリを使っている</string>
+    <string name="un_tip_location_title">位置情報へのアクセスを許可してください。</string>
+    <string name="un_tip_location_text">地図に正確な結果を表示するには位置情報が必要です。</string>
+    <string name="un_tip_location_btn">許可</string>
+    <string name="un_tip_notif_title">代わりに通知をオフに。</string>
+    <string name="un_tip_notif_text">システム設定でオフにできます。その他の機能はそのまま使えます。</string>
+    <string name="un_tip_notif_btn">設定</string>
+    <string name="un_keep_app">アプリを残す</string>
+    <string name="un_uninstall_anyway">それでもアンインストール</string>
+    <string name="un_progress_title">%1$s を終了しています…</string>
+    <string name="un_progress_sub">アンインストールはスマートフォンの設定からいつでもできます。</string>
+    <string name="un_progress_done">完了</string>
+    <string name="un_step_1">フィードバックを保存中</string>
+    <string name="un_step_2">仕上げ中</string>
+    <string name="un_step_3">アプリを終了中</string>
+    <string name="un_thanks_title">フィードバックありがとうございます！</string>
+    <string name="un_thanks_sub">アプリ情報を開きます。そこでアンインストールを完了できます。</string>
+    <string name="un_thanks_sub_close">アプリを終了します。アンインストールは設定からいつでもできます。</string>
+    <string name="un_you_said">あなたの回答：%1$s</string>
+    <string name="un_continue">続ける</string>
+</resources>

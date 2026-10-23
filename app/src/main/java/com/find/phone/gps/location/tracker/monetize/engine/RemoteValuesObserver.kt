@@ -3,8 +3,10 @@ package com.find.phone.gps.location.tracker.monetize.engine
 import android.content.Context
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.grants.GrantOrigin
+import com.find.phone.gps.location.tracker.alarms.AlarmPlanner
 import com.find.phone.gps.location.tracker.alarms.AlarmSettings
 import com.find.phone.gps.location.tracker.helpers.SafeLogger
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallFlow
 import com.google.firebase.remoteconfig.ConfigUpdate
 import com.google.firebase.remoteconfig.ConfigUpdateListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -112,6 +114,8 @@ object RemoteValuesObserver {
     }
 
     private fun apply(context: Context) {
+        // feature_config is read live from RC, so re-check the reminder gate even when the ad blob is unchanged
+        runCatching { AlarmPlanner.applyGate(context) }.onFailure { SafeLogger.error(TAG, "reminder gate failed", it) }
         val (blobKey, raw) = MonetizeConfigReader.readBlob(FirebaseRemoteConfig.getInstance())
         if (raw.isBlank()) {
             SafeLogger.log(TAG, "$blobKey empty after update — keeping the values already in use")
@@ -139,6 +143,7 @@ object RemoteValuesObserver {
             )
 
             GrantOrigin.reload()
+            UninstallFlow.syncShortcut(context)
 
             vault.putLong(LAST_SYNC_KEY, System.currentTimeMillis())
             SafeLogger.log(TAG, "applied live config (marketing=$onMarketing)")

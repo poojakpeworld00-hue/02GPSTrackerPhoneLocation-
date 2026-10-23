@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.lang.ref.WeakReference
 
 object ScreenInsights : Application.ActivityLifecycleCallbacks {
@@ -85,6 +86,7 @@ object ScreenInsights : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityResumed(activity: Activity) {
         current = WeakReference(activity)
+        runCatching { FirebaseCrashlytics.getInstance().setCustomKey("current_screen", ScreenTokens.of(activity)) }
     }
 
     override fun onActivityPaused(activity: Activity) {

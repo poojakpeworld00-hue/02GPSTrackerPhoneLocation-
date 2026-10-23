@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="un_sorry_title">很抱歉给您带来不便</string>
+    <string name="un_sorry_sub">遇到问题了吗？以下方法或许能帮到您。</string>
+    <string name="un_quick_fixes">快速解决</string>
+    <string name="un_fix1_title">查询号码</string>
+    <string name="un_fix1_sub">几秒钟查出任意号码的归属地</string>
+    <string name="un_fix2_title">查看本机号码</string>
+    <string name="un_fix2_sub">查看您的 SIM 卡号码和运营商</string>
+    <string name="un_fix3_title">设置提醒</string>
+    <string name="un_fix3_sub">接收提醒，不再忘记回电</string>
+    <string name="un_try">试试</string>
+    <string name="un_dont_uninstall">暂不卸载</string>
+    <string name="un_still_uninstall">仍要卸载</string>
+    <string name="un_reason_title">您为什么要卸载？</string>
+    <string name="un_reason_sub">您的回答可帮助我们改进应用。</string>
+    <string name="un_reason_1">定位不准确或无法使用</string>
+    <string name="un_reason_2">通知太多</string>
+    <string name="un_reason_3">广告太多</string>
+    <string name="un_reason_4">我不再需要它了</string>
+    <string name="un_reason_5">耗电太快</string>
+    <string name="un_reason_6">我在用其他应用</string>
+    <string name="un_tip_location_title">请允许位置权限。</string>
+    <string name="un_tip_location_text">应用需要您的位置才能在地图上显示准确结果。</string>
+    <string name="un_tip_location_btn">允许</string>
+    <string name="un_tip_notif_title">不如关闭通知。</string>
+    <string name="un_tip_notif_text">在系统设置中关闭即可，其他功能照常使用。</string>
+    <string name="un_tip_notif_btn">设置</string>
+    <string name="un_keep_app">保留应用</string>
+    <string name="un_uninstall_anyway">仍然卸载</string>
+    <string name="un_progress_title">正在关闭 %1$s…</string>
+    <string name="un_progress_sub">您可以随时在手机设置中卸载。</string>
+    <string name="un_progress_done">完成</string>
+    <string name="un_step_1">正在保存您的反馈</string>
+    <string name="un_step_2">正在收尾</string>
+    <string name="un_step_3">正在关闭应用</string>
+    <string name="un_thanks_title">感谢您的反馈！</string>
+    <string name="un_thanks_sub">正在打开应用信息页，您可在此完成卸载。</string>
+    <string name="un_thanks_sub_close">应用即将关闭。您可以随时在设置中卸载。</string>
+    <string name="un_you_said">您的选择：%1$s</string>
+    <string name="un_continue">继续</string>
+</resources>

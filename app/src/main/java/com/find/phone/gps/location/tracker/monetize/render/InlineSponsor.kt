@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render
 
+import com.find.phone.gps.location.tracker.helpers.SafeLogger
 import android.R.attr.visibility
 import android.app.Activity
 import android.content.res.ColorStateList
@@ -278,7 +279,7 @@ class InlineSponsor() {
                         }
 
                     } catch (e: Exception) {
-                        Log.e("NativeAds", "Google BigNative crash", e)
+                        SafeLogger.error("NativeAds", "Google BigNative crash", e)
                         wipeToEmpty(layout, shimmer)
                     }
                 }
@@ -590,7 +591,7 @@ class InlineSponsor() {
                             )
                         }
                     } catch (e: Exception) {
-                        Log.e("MidNativeAds", "Google MidNative failed: ${e.message}")
+                        SafeLogger.error("MidNativeAds", "Google MidNative failed: ${e.message}", e)
                         wipeToEmpty(layout, shimmer)
                     }
                 }
@@ -878,7 +879,7 @@ class InlineSponsor() {
                             OwnAdsKeeper.OwnAdFormat.MID_NATIVE
                         )
                     } catch (e: Exception) {
-                        Log.e("MidNativeAds", "Google MidNative failed: ${e.message}")
+                        SafeLogger.error("MidNativeAds", "Google MidNative failed: ${e.message}", e)
                         wipeToEmpty(layout, shimmer)
                     }
                 }

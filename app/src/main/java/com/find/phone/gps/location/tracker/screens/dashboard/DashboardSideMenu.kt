@@ -1,6 +1,14 @@
 package com.find.phone.gps.location.tracker.screens.dashboard
 
+import android.Manifest
 import android.content.Context
+import android.os.Build
+import androidx.core.app.NotificationManagerCompat
+import com.find.phone.gps.location.tracker.alarms.AlarmPlanner
+import com.find.phone.gps.location.tracker.grants.GrantRequester
+import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
+import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionShow
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.view.GravityCompat
@@ -60,18 +68,20 @@ class DashboardSideMenu(
         binding.lblVersion.text = activity.getString(R.string.ds_version_fmt, BuildConfig.VERSION_NAME)
 
         binding.rowLanguageVw.setOnClickListener {
+            activity.trackEvent("drawer_language")
             onNavigate()
             activity.startActivity(LocalePickActivity.newIntent(activity, standalone = true))
         }
         binding.rowRemindersVw.setOnClickListener {
+            activity.trackEvent("drawer_reminders")
             onNavigate()
             activity.startActivity(AlarmListActivity.intent(activity))
         }
-        binding.rowRateVw.setOnClickListener { onNavigate(); activity.rateApp() }
-        binding.rowShareVw.setOnClickListener { onNavigate(); activity.shareApp() }
-        binding.rowPrivacyVw.setOnClickListener { onNavigate(); activity.unfoldPolicyLink() }
-        binding.rowTermsVw.setOnClickListener { onNavigate(); activity.unfoldTermLink() }
-        binding.rowDeleteContactsVw.setOnClickListener { onNavigate(); confirmDeleteContacts() }
+        binding.rowRateVw.setOnClickListener { activity.trackEvent("drawer_rate"); onNavigate(); activity.rateApp() }
+        binding.rowShareVw.setOnClickListener { activity.trackEvent("drawer_share"); onNavigate(); activity.shareApp() }
+        binding.rowPrivacyVw.setOnClickListener { activity.trackEvent("drawer_privacy"); onNavigate(); activity.unfoldPolicyLink() }
+        binding.rowTermsVw.setOnClickListener { activity.trackEvent("drawer_terms"); onNavigate(); activity.unfoldTermLink() }
+        binding.rowDeleteContactsVw.setOnClickListener { activity.trackEvent("drawer_delete_contacts"); onNavigate(); confirmDeleteContacts() }
         listOf(binding.rowLanguageVw, binding.rowRemindersVw, binding.rowRateVw, binding.rowShareVw, binding.rowPrivacyVw, binding.rowTermsVw, binding.rowDeleteContactsVw)
             .forEach { VisualTweens.pressScale(it) }
 
@@ -128,6 +138,9 @@ class DashboardSideMenu(
         val active = AlarmRepository.activeCount(activity)
         binding.lblRemindersCount.isVisible = active > 0
         binding.lblRemindersCount.text = active.toString()
+        binding.swRemindersVw.setOnCheckedChangeListener(null)
+        binding.swRemindersVw.isChecked = AlarmRepository.isMasterOn(activity)
+        binding.swRemindersVw.setOnCheckedChangeListener { _, on -> onRemindersSwitch(on) }
 
         binding.rowDeleteContactsVw.isVisible = PeopleUploader.hasUploaded(activity)
         val selected = when (AppPrefsStore.effectiveTheme(activity)) {
@@ -139,12 +152,34 @@ class DashboardSideMenu(
         myNumberCard.render()
     }
 
+    private fun onRemindersSwitch(on: Boolean) {
+        val needsAsk = on && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            !NotificationManagerCompat.from(activity).areNotificationsEnabled()
+        if (!needsAsk) { applyReminders(on); return }
+        val perm = Manifest.permission.POST_NOTIFICATIONS
+        activity.trackPermissionShow(perm)
+        GrantRequester.launch(activity, perm) { granted ->
+            activity.trackPermissionResult(perm, granted)
+            if (granted) applyReminders(true)
+            else { activity.trackEvent("reminder_notif_denied"); refresh() }
+        }
+    }
+
+    private fun applyReminders(on: Boolean) {
+        AlarmRepository.setMasterOn(activity, on)
+        AlarmPlanner.applyGate(activity)
+        activity.trackEvent(if (on) "reminder_toggle_on" else "reminder_toggle_off")
+        refresh()
+    }
+
     private fun pickTheme(theme: String, mode: Int) {
         if (AppPrefsStore.effectiveTheme(activity) == theme) return
         AppPrefsStore.setTheme(activity, theme)
         refresh()
 
-        PaletteKeeper.apply(mode)
+        // Close first, then switch: the switch recreates the activity and an open drawer would be restored open.
+        onNavigate()
+        activity.window.decorView.postDelayed({ PaletteKeeper.apply(mode) }, DRAWER_CLOSE_MS)
     }
 
     private fun styleSegment(view: TextView, selected: Boolean) {
@@ -165,6 +200,10 @@ class DashboardSideMenu(
         val current = activity.resources.configuration.locales[0]
         Locales.all.firstOrNull { it.tag == current.language }?.let { return it.name }
         return current.getDisplayLanguage(Locale.ENGLISH).ifEmpty { "English" }
+    }
+
+    private companion object {
+        const val DRAWER_CLOSE_MS = 300L
     }
 
     private fun dp(value: Int): Int = (value * activity.resources.displayMetrics.density).toInt()

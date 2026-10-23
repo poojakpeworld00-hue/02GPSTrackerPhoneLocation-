@@ -35,8 +35,10 @@ class DashboardShellDriver(private val host: DashboardShellOwner) {
         stopOverlayGrantPoll()
     }
 
-    fun onHostCreated() {
+    /** [restored]: the host is being recreated (theme/locale change), so the permission sheet is not re-offered. */
+    fun onHostCreated(restored: Boolean = false) {
         hostCreated = true
+        if (restored) primingStarted = true
         StoreUpdateKeeper.enrollLauncher(activity)
         perhapsCheckForUpdate()
     }

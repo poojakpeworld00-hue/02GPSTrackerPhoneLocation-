@@ -1,4 +1,5 @@
 package com.find.phone.gps.location.tracker.monetize.render
+import com.find.phone.gps.location.tracker.helpers.SafeLogger
 import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.os.Bundle
@@ -194,7 +195,8 @@ class StripSponsor {
                 shimmer?.visibility = View.GONE
                 try {
                     activity.trackEvent("Banner_fail_Load")
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    SafeLogger.error("StripSponsor", "banner event logging failed", e)
                 }
                 Log.e("StripSponsor", "Google Banner Failed: ${error.message}")
                 observer?.onAdFailed()

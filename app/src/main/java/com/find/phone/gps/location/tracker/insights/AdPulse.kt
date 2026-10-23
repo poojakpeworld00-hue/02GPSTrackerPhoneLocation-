@@ -15,6 +15,7 @@ object AdPulse {
     fun clicked(context: Context?, type: String, network: String = GOOGLE) = log(context, type, "clicked", network)
     fun show(context: Context?, type: String, network: String = GOOGLE) = log(context, type, "show", network)
     fun close(context: Context?, type: String, network: String = GOOGLE) = log(context, type, "close", network)
+    fun timeout(context: Context?, type: String, network: String = GOOGLE) = log(context, type, "timeout", network)
     fun showFailed(context: Context?, type: String, errorCode: Int?, network: String = GOOGLE) = log(context, type, "show_failed", network, errorCode)
 
     fun loadFailed(context: Context?, type: String, errorCode: Int?, network: String = GOOGLE) {

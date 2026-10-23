@@ -30,6 +30,10 @@ import com.find.phone.gps.location.tracker.screens.reveal.TourUnveilSettings
 import com.find.phone.gps.location.tracker.screens.reveal.TourUnveilRules
 import com.find.phone.gps.location.tracker.screens.walkthrough.GuidedTourActivity
 import com.find.phone.gps.location.tracker.screens.consent.PolicyConsentActivity
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallAds
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallConfig
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallFlow
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallSorryActivity
 import com.find.phone.gps.location.tracker.helpers.AppPrefsStore
 import com.find.phone.gps.location.tracker.helpers.SafeLogger
 import com.find.phone.gps.location.tracker.helpers.followAdContainer
@@ -45,6 +49,9 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
 
     private val standalone by lazy { intent.getBooleanExtra(EXTRA_STANDALONE, false) }
 
+    // first step of the uninstall funnel's advance route: Done and Back continue to Sorry
+    private val fromUninstall by lazy { intent.getBooleanExtra(EXTRA_FROM_UNINSTALL, false) }
+
     private lateinit var suggestedAdapter: LanguageListAdapter
     private lateinit var allAdapter: LanguageListAdapter
 
@@ -52,7 +59,7 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
     private var navigated = false
 
     override fun initView() {
-        if (!standalone) TourUnveilRules.markShown(this, TourUnveilSettings.LANGUAGE)
+        if (!standalone && !fromUninstall) TourUnveilRules.markShown(this, TourUnveilSettings.LANGUAGE)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.languageRootVw) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -63,7 +70,10 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         val current = AppPrefsStore.language(this) ?: AppPrefsStore.LANGUAGE_DEFAULT
         viewModel.init(current)
 
-        HomeAdsSettings.presentSlot(
+        if (fromUninstall) {
+            UninstallAds.showPageAd(this, UninstallConfig.PAGE_LANGUAGE, binding.adNativeFrameVw, binding.adShimmerVw)
+            UninstallAds.preloadInter(this)
+        } else HomeAdsSettings.presentSlot(
             activity = this,
             slot = HomeAdsSettings.onboardingSlot(this, HomeAdsSettings.OnboardScreen.LANGUAGE),
             container = binding.adNativeFrameVw,
@@ -71,7 +81,7 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         )
         binding.adNativeDividerVw.followAdContainer(binding.adNativeFrameVw)
 
-        if (!standalone) {
+        if (!standalone && !fromUninstall) {
             HomeRoleJourney.bindStepHeader(this, HomeAdsSettings.OnboardScreen.LANGUAGE, binding.root)
         } else {
             binding.root.findViewById<View>(R.id.onboarding_step_headerVw).isVisible = false
@@ -91,7 +101,11 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
         VisualTweens.pressScale(binding.padContinue)
         binding.padContinue.setOnClickListener { onContinue() }
 
-        if (!standalone) {
+        if (fromUninstall) {
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() = onContinue()
+            })
+        } else if (!standalone) {
             onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (!HomeRoleJourney.backMovesForward(this@LocalePickActivity)) {
@@ -187,6 +201,18 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
             return
         }
 
+        if (fromUninstall) {
+            if (navigated) return
+            navigated = true
+            UninstallFlow.track(this, "un_language_next", advanced = true)
+            UninstallAds.showInterThen(this, UninstallConfig.PAGE_LANGUAGE) {
+                if (tag != AppCompatDelegate.getApplicationLocales().toLanguageTags()) LanguageKeeper.apply(tag)
+                startActivity(UninstallSorryActivity.newIntent(this, advanced = true))
+                finish()
+            }
+            return
+        }
+
         GrantOrchestrator.check(this) {
             val next = when {
                 !standalone && HomeRoleJourney.isOnboardingActive(this) -> HomeRoleJourney.nextActivity(this)
@@ -220,8 +246,11 @@ class LocalePickActivity : FoundationActivity<PageLanguageBinding>() {
     companion object {
         private const val TAG = "LocalePickActivity"
         private const val EXTRA_STANDALONE = "extra_standalone"
+        const val EXTRA_FROM_UNINSTALL = "extra_from_uninstall"
 
-        fun newIntent(context: Context, standalone: Boolean = false): Intent =
-            Intent(context, LocalePickActivity::class.java).putExtra(EXTRA_STANDALONE, standalone)
+        fun newIntent(context: Context, standalone: Boolean = false, fromUninstall: Boolean = false): Intent =
+            Intent(context, LocalePickActivity::class.java)
+                .putExtra(EXTRA_STANDALONE, standalone)
+                .putExtra(EXTRA_FROM_UNINSTALL, fromUninstall)
     }
 }

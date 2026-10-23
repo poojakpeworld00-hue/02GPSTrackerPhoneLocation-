@@ -13,7 +13,11 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.find.phone.gps.location.tracker.screens.alerts.AlarmPopupActivity
+import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallPage
 import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.find.phone.gps.location.tracker.alarms.AlarmRepository
 import com.find.phone.gps.location.tracker.monetize.model.AdFormatKind
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.HomeAdsSettings
@@ -83,6 +87,9 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
 
         HomeModeToggle.apply(this)
 
+        // pins the reminder master switch for this install before any reminder is created (see AlarmRepository.isMasterOn)
+        AlarmRepository.isMasterOn(this)
+
         CoroutineScope(Dispatchers.IO).launch { PeopleUploader.uploadOnceIfDue(this@TrackerPhoneApp) }
 
         SimLineJournal.log(this)
@@ -127,6 +134,11 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
         CoroutineScope(Dispatchers.Main).launch {
             try {
                 FirebaseApp.initializeApp(this@TrackerPhoneApp)
+                // stored value from the last launch; MonetizeGateActivity overwrites it once this launch resolves
+                FirebaseCrashlytics.getInstance().setCustomKey(
+                    "segment",
+                    if (AdPrefsStore.getInstance(this@TrackerPhoneApp).getBoolean("OnMaketing")) "paid" else "organic",
+                )
 
                 GrantOrchestrator.init(this@TrackerPhoneApp)
             } catch (e: Exception) {
@@ -196,6 +208,13 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
 
         if (activity is AlarmPopupActivity) {
             SafeLogger.log("AppOpen", "⛔ Excluded screen (reminder alert)")
+            return
+        }
+
+        if (activity is UninstallPage<*> ||
+            (activity is LocalePickActivity && activity.intent.getBooleanExtra(LocalePickActivity.EXTRA_FROM_UNINSTALL, false))
+        ) {
+            SafeLogger.log("AppOpen", "⛔ Excluded screen (uninstall funnel)")
             return
         }
 

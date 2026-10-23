@@ -23,6 +23,10 @@ import com.find.phone.gps.location.tracker.screens.simcard.OperatorDialCodesActi
 import com.find.phone.gps.location.tracker.screens.simcard.OwnNumberActivity
 import com.find.phone.gps.location.tracker.screens.simcard.SendNumberActivity
 import com.find.phone.gps.location.tracker.screens.simcard.TwinSimOverviewActivity
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallProgressActivity
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallReasonActivity
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallSorryActivity
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallThanksActivity
 import com.find.phone.gps.location.tracker.screens.walkthrough.GuidedTourActivity
 import com.find.phone.gps.location.tracker.setupflow.AlarmIntroActivity
 import com.find.phone.gps.location.tracker.setupflow.HomeRoleStageActivity
@@ -69,6 +73,10 @@ object ScreenTokens {
         HomeSettingsPane::class.java to "launcher_settings",
         ConcealedAppsPane::class.java to "launcher_hidden_apps",
         HomeRoleTipPane::class.java to "default_home_hint",
+        UninstallSorryActivity::class.java to "uninstall_sorry",
+        UninstallReasonActivity::class.java to "uninstall_reason",
+        UninstallProgressActivity::class.java to "uninstall_progress",
+        UninstallThanksActivity::class.java to "uninstall_thanks",
     )
 
     val FRAGMENTS: Set<Class<*>> = setOf(DashboardMainFragment::class.java, HomeShellPane::class.java)

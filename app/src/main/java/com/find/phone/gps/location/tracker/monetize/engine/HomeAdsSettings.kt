@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.engine
 
+import com.find.phone.gps.location.tracker.helpers.SafeLogger
 import android.app.Activity
 import android.content.Context
 import android.util.Log
@@ -691,7 +692,9 @@ object HomeAdsSettings {
         val cacheKey = "${isDefaultHome}|$raw"
         cache?.let { (key, value) -> if (key == cacheKey) return value }
 
-        val base = runCatching { JSONObject(raw) }.getOrNull() ?: return JSONObject()
+        val base = runCatching { JSONObject(raw) }
+            .onFailure { SafeLogger.error("HomeAdsSettings", "launcher_ads parse failed", it) }
+            .getOrNull() ?: return JSONObject()
         val variantKey = if (isDefaultHome) VARIANT_DEFAULT_HOME else VARIANT_NOT_DEFAULT_HOME
         val variant = base.optJSONObject(variantKey)
 

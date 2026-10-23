@@ -11,6 +11,7 @@ object AlarmRepository {
     private const val PREFS = "reminder_prefs"
     private const val KEY = "reminders"
     private const val KEY_SEEDED = "reminder_defaults_seeded"
+    private const val KEY_MASTER = "reminders_master_on"
 
     fun load(context: Context): MutableList<AlarmEntry> {
         val json = prefs(context).getString(KEY, null)
@@ -35,6 +36,17 @@ object AlarmRepository {
     }
 
     fun activeCount(context: Context): Int = load(context).count { it.isActive }
+
+    // first read pins the value: installs that already had active reminders keep them on, fresh installs start off
+    fun isMasterOn(context: Context): Boolean {
+        val prefs = prefs(context)
+        if (!prefs.contains(KEY_MASTER)) setMasterOn(context, activeCount(context) > 0)
+        return prefs.getBoolean(KEY_MASTER, false)
+    }
+
+    fun setMasterOn(context: Context, on: Boolean) {
+        prefs(context).edit().putBoolean(KEY_MASTER, on).apply()
+    }
 
     private fun save(context: Context, list: List<AlarmEntry>) {
         prefs(context).edit().putString(KEY, Gson().toJson(list)).apply()

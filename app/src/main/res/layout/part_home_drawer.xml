@@ -162,6 +162,15 @@
                         android:visibility="gone"
                         tools:text="2"
                         tools:visibility="visible" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/swRemindersVw"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="@string/rem_menu"
+                        app:thumbTint="@color/white"
+                        app:trackTint="@color/ds_reminder_switch_track" />
                 </LinearLayout>
 
                 <LinearLayout

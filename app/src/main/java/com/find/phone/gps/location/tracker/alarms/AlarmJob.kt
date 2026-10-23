@@ -24,6 +24,7 @@ class AlarmJob(context: Context, params: WorkerParameters) : Worker(context, par
     override fun doWork(): Result {
         val ctx = applicationContext
         val id = inputData.getLong(KEY_ID, -1L)
+        if (!AlarmPlanner.isAllowed(ctx)) return Result.success()
         val item = AlarmRepository.get(ctx, id)?.takeIf { it.isActive } ?: return Result.success()
 
         advance(ctx, item)
@@ -74,7 +75,7 @@ class AlarmJob(context: Context, params: WorkerParameters) : Worker(context, par
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setContentIntent(pending)
+            .setContentIntent(if (fullScreen) tapIntent(ctx, target, notifId) else pending)
             .setAutoCancel(true)
         if (fullScreen) AlarmGrant.linkAlertIntent(builder, pending)
 
@@ -84,6 +85,12 @@ class AlarmJob(context: Context, params: WorkerParameters) : Worker(context, par
             }
             .onFailure { SafeLogger.error(TAG, "notify failed", it) }
     }
+
+    // own action so a notification tap is told apart from the full-screen launch (extras don't split PendingIntents)
+    private fun tapIntent(ctx: Context, target: Intent, notifId: Int): PendingIntent = PendingIntent.getActivity(
+        ctx, notifId, Intent(target).setAction(AlarmPopupActivity.ACTION_TAP),
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
 
     private fun guaranteeChannel(ctx: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return

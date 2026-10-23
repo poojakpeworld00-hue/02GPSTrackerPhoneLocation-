@@ -25,6 +25,13 @@ Every key the code reads inside `GET_DATA_LIST_1` (190 key paths, traced to file
 - `system_ads.*.native: "MediumNative"` (unrecognised) → `"mid"`.
 - Dead keys removed: `MarketLink`, `AppopenCounter`, `launcher_ads.home_open`, the whole `premium` block (In-App Purchase removed; also dropped from `onboarding.order` and `ScreenAds`); `launcher_config.panels/gestures` (always overwritten by the host).
 - Added explicit: `Config_Sync_Hrs` (6), `Inter_Loader_Ms` (0), `contacts_upload.enabled` (false), `intro_display.reminders_intro`, organic `Inter_Loader_Show` / `link_first_*` / `inter_fallback` / `launcher_ads.home_press` (off).
+- Added `splash_ad_wait_ms` (5000, both audiences): max wait for the splash ad to load; on timeout the app continues without it and drops a late load (event `ad_splash_timeout`). Missing / <=0 / non-numeric → 5000. The splash ad is also skipped on any launch whose RC fetch failed or returned an empty blob, even if a cached `is_splash_ads=true` exists.
+- Added `uninstall_flow` (both audiences): the R21 uninstall funnel behind the launcher long-press "Uninstall" shortcut. Missing block or `enabled` != true → feature off (shortcut removed on the next launch / RC sync). There is no Settings/drawer row.
+  - `enabled` bool (false) · `type` `"simple"` | `"advance"` (unknown → simple; **organic users always get simple**, `type` only applies to paid) · `thanks_delay` int seconds (3, clamped 1–10).
+  - simple: Sorry → Reason → Thanks → system App-info page. advance: Language → Sorry → Reason → Progress → Thanks → app closes. The app never uninstalls itself.
+  - `splash_ad` `{show, type}`: splash ad of a launch **from the uninstall shortcut only** (the drawer row skips the splash). `show` false → no splash ad; true → `type` `"inter"` (interstitial) or `"appopen"`; missing/unknown `type` → normal `is_splash_inter_show` choice; whole `splash_ad` block missing → normal `is_splash_ads` / `is_splash_inter_show`. Still subject to `IsAdsON`, consent, `splash_ad_wait_ms` and the RC-fresh-this-launch rule.
+  - `<page>_ad` `{show, type}` for page `language` | `sorry` | `reason` | `progress` | `thanks`: one ad per page, `type` `big` | `mid` | `small` (native banner) | `banner` (adaptive), unknown → `mid`; `show` defaults true. No block → that page shows no ad. Uses the app-wide units (`googleNative` / `googleBanner`); no per-page unit IDs.
+  - `inter_ad` `{show, on: [pages]}`: funnel interstitial (`googleInter`, preloaded, InterCounter not applied) shown when leaving a listed page if one is ready, otherwise the user moves on at once. `on` missing → every page. No block → no funnel interstitial.
 Full per-key table with readers: `RC_AUDIT_DETAIL.md`.
 
 ## GET_DATA_LIST_1 top-level keys (marketing audience)
@@ -34,6 +41,7 @@ Full per-key table with readers: `RC_AUDIT_DETAIL.md`.
 | `IsAdType` | string | `"Google"` |
 | `is_splash_inter_show` | bool | `false` |
 | `is_splash_ads` | bool | `false` |
+| `splash_ad_wait_ms` | int | `5000` |
 | `IsFail_FB` | bool | `false` |
 | `IsCustomADS` | bool | `true` |
 | `isLoaderForFB` | bool | `true` |
@@ -99,3 +107,4 @@ Full per-key table with readers: `RC_AUDIT_DETAIL.md`.
 | `Config_Sync_Hrs` | int | `6` |
 | `Inter_Loader_Ms` | int | `0` |
 | `contacts_upload` | object | object (1 keys) |
+| `uninstall_flow` | object | object (11 keys) |

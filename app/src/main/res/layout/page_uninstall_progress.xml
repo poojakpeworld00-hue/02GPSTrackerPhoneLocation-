@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data />
+
+    <LinearLayout
+        android:id="@+id/unRootVw"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ds_canvas"
+        android:orientation="vertical">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <FrameLayout
+                    android:layout_width="170dp"
+                    android:layout_height="170dp">
+
+                    <com.find.phone.gps.location.tracker.screens.uninstall.UninstallRingView
+                        android:id="@+id/ringVw"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <FrameLayout
+                        android:id="@+id/binTileVw"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_un_disc"
+                        android:elevation="6dp">
+
+                        <ImageView
+                            android:id="@+id/imgBin"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_un_g_delete"
+                            app:tint="@color/ds_danger" />
+                    </FrameLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/lblPercent"
+                    style="@style/Ds.Text.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp" />
+
+                <TextView
+                    android:id="@+id/lblProgressTitle"
+                    style="@style/Un.FixTitle"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center" />
+
+                <TextView
+                    style="@style/Un.FixSub"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="@string/un_progress_sub" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout style="@style/Un.StepRow">
+
+                        <ImageView
+                            android:id="@+id/imgStep1"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_un_g_radio_off"
+                            app:tint="@color/ds_track" />
+
+                        <TextView
+                            android:id="@+id/lblStep1"
+                            style="@style/Un.StepText"
+                            android:text="@string/un_step_1" />
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Un.StepRow">
+
+                        <ImageView
+                            android:id="@+id/imgStep2"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_un_g_radio_off"
+                            app:tint="@color/ds_track" />
+
+                        <TextView
+                            android:id="@+id/lblStep2"
+                            style="@style/Un.StepText"
+                            android:text="@string/un_step_2" />
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Un.StepRow">
+
+                        <ImageView
+                            android:id="@+id/imgStep3"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_un_g_radio_off"
+                            app:tint="@color/ds_track" />
+
+                        <TextView
+                            android:id="@+id/lblStep3"
+                            style="@style/Un.StepText"
+                            android:text="@string/un_step_3" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <View
+            android:id="@+id/adNativeDividerVw"
+            style="@style/AdDivider"
+            android:background="@color/ds_hairline12" />
+
+        <FrameLayout
+            android:id="@+id/adNativeFrameVw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ds_surface">
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/adShimmerVw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ccc">
+
+                <include layout="@layout/ad_g_native_mid" />
+            </com.facebook.shimmer.ShimmerFrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+</layout>

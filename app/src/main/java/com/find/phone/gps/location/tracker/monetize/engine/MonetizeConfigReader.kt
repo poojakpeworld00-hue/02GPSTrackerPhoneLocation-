@@ -6,7 +6,9 @@ import com.find.phone.gps.location.tracker.monetize.render.OwnAdsKeeper
 import com.find.phone.gps.location.tracker.monetize.render.DeepLinkRouter
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.homeshell.HomeModeToggle
+import com.find.phone.gps.location.tracker.helpers.SafeLogger
 import com.find.phone.gps.location.tracker.helpers.imprintNativeAdTheme
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.json.JSONObject
 
@@ -21,9 +23,11 @@ object MonetizeConfigReader {
     fun isBlobKey(key: String): Boolean = key == blobKey || key == legacyBlobKey
 
     fun readBlob(remoteConfig: FirebaseRemoteConfig): Pair<String, String> {
-        val raw = runCatching { remoteConfig.getString(blobKey) }.getOrDefault("")
+        val raw = runCatching { remoteConfig.getString(blobKey) }
+            .onFailure { SafeLogger.error(CONFIG_TAG, "reading $blobKey failed", it) }.getOrDefault("")
         if (raw.isNotBlank()) return blobKey to raw
-        val legacy = runCatching { remoteConfig.getString(legacyBlobKey) }.getOrDefault("")
+        val legacy = runCatching { remoteConfig.getString(legacyBlobKey) }
+            .onFailure { SafeLogger.error(CONFIG_TAG, "reading $legacyBlobKey failed", it) }.getOrDefault("")
         if (legacy.isNotBlank()) Log.w(CONFIG_TAG, "$blobKey is empty → falling back to $legacyBlobKey")
         return legacyBlobKey to legacy
     }
@@ -100,6 +104,12 @@ object MonetizeConfigReader {
 
                 "Inter_Loader_Ms"
             ).forEach { key -> if (root.has(key)) putInt(key, root.optInt(key, 0)) }
+
+            // always written: a missing/invalid value reads as 0 → caller falls back to its default
+            putInt("splash_ad_wait_ms", root.optInt("splash_ad_wait_ms", 0))
+
+            // always written: a missing block must switch the uninstall shortcut + drawer row off
+            putString(UninstallConfig.KEY, root.optJSONObject(UninstallConfig.KEY)?.toString() ?: "")
 
             putString(HomeModeToggle.KEY, if (root.has(HomeModeToggle.KEY)) root.optString(HomeModeToggle.KEY, "") else "")
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="52dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="10dp"
+    android:paddingVertical="6dp">
+
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:contentDescription="@null"
+        android:padding="7dp" />
+
+    <TextView
+        android:id="@+id/lblLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/figtree_semibold"
+        android:textColor="@color/ds_ink"
+        android:textSize="15sp" />
+
+    <View
+        android:id="@+id/radio"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:background="@drawable/vs_radio_off" />
+</LinearLayout>

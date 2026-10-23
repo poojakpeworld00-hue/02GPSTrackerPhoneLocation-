@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="un_sorry_title">نأسف على الإزعاج</string>
+    <string name="un_sorry_sub">هل هناك شيء لا يعمل؟ قد يساعدك أحد هذه الحلول.</string>
+    <string name="un_quick_fixes">حلول سريعة</string>
+    <string name="un_fix1_title">البحث عن رقم</string>
+    <string name="un_fix1_sub">اعرف مصدر أي رقم في ثوانٍ</string>
+    <string name="un_fix2_title">عرض رقمي</string>
+    <string name="un_fix2_sub">تحقق من أرقام شريحتك ومشغّل الشبكة</string>
+    <string name="un_fix3_title">ضبط تذكير</string>
+    <string name="un_fix3_sub">احصل على تنبيه حتى لا تنسى معاودة الاتصال</string>
+    <string name="un_try">جرّب</string>
+    <string name="un_dont_uninstall">لا تُلغِ التثبيت الآن</string>
+    <string name="un_still_uninstall">ما زلت أريد إلغاء التثبيت</string>
+    <string name="un_reason_title">لماذا تريد إلغاء التثبيت؟</string>
+    <string name="un_reason_sub">إجابتك تساعدنا على تحسين التطبيق.</string>
+    <string name="un_reason_1">الموقع غير دقيق أو لا يعمل</string>
+    <string name="un_reason_2">إشعارات كثيرة جدًا</string>
+    <string name="un_reason_3">إعلانات كثيرة جدًا</string>
+    <string name="un_reason_4">لم أعد بحاجة إليه</string>
+    <string name="un_reason_5">يستنزف البطارية</string>
+    <string name="un_reason_6">أستخدم تطبيقًا آخر</string>
+    <string name="un_tip_location_title">اسمح بالوصول إلى الموقع.</string>
+    <string name="un_tip_location_text">يحتاج التطبيق إلى موقعك لعرض نتائج دقيقة على الخريطة.</string>
+    <string name="un_tip_location_btn">سماح</string>
+    <string name="un_tip_notif_title">أوقف الإشعارات بدلًا من ذلك.</string>
+    <string name="un_tip_notif_text">أوقفها من إعدادات النظام. كل شيء آخر يستمر في العمل.</string>
+    <string name="un_tip_notif_btn">الإعدادات</string>
+    <string name="un_keep_app">الاحتفاظ بالتطبيق</string>
+    <string name="un_uninstall_anyway">إلغاء التثبيت على أي حال</string>
+    <string name="un_progress_title">جارٍ إغلاق %1$s…</string>
+    <string name="un_progress_sub">يمكنك إلغاء التثبيت في أي وقت من إعدادات الهاتف.</string>
+    <string name="un_progress_done">تم</string>
+    <string name="un_step_1">جارٍ حفظ ملاحظاتك</string>
+    <string name="un_step_2">جارٍ الإنهاء</string>
+    <string name="un_step_3">جارٍ إغلاق التطبيق</string>
+    <string name="un_thanks_title">شكرًا على ملاحظاتك!</string>
+    <string name="un_thanks_sub">جارٍ فتح معلومات التطبيق حيث يمكنك إكمال إلغاء التثبيت.</string>
+    <string name="un_thanks_sub_close">سيُغلق التطبيق الآن. يمكنك إلغاء تثبيته في أي وقت من الإعدادات.</string>
+    <string name="un_you_said">اخترت: %1$s</string>
+    <string name="un_continue">متابعة</string>
+</resources>

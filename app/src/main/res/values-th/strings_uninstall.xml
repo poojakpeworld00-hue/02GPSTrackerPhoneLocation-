@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="un_sorry_title">ขออภัยในความไม่สะดวก</string>
+    <string name="un_sorry_sub">มีบางอย่างใช้งานไม่ได้ใช่ไหม วิธีเหล่านี้อาจช่วยได้</string>
+    <string name="un_quick_fixes">แก้ไขด่วน</string>
+    <string name="un_fix1_title">ค้นหาหมายเลข</string>
+    <string name="un_fix1_sub">ดูว่าหมายเลขใดมาจากที่ไหนในไม่กี่วินาที</string>
+    <string name="un_fix2_title">ดูหมายเลขของฉัน</string>
+    <string name="un_fix2_sub">ตรวจสอบหมายเลข SIM และผู้ให้บริการ</string>
+    <string name="un_fix3_title">ตั้งการแจ้งเตือน</string>
+    <string name="un_fix3_sub">รับการแจ้งเตือนเพื่อไม่ลืมโทรกลับ</string>
+    <string name="un_try">ลอง</string>
+    <string name="un_dont_uninstall">ยังไม่ถอนการติดตั้ง</string>
+    <string name="un_still_uninstall">ยังต้องการถอนการติดตั้ง</string>
+    <string name="un_reason_title">ทำไมคุณจึงต้องการถอนการติดตั้ง</string>
+    <string name="un_reason_sub">คำตอบของคุณช่วยให้เราปรับปรุงแอป</string>
+    <string name="un_reason_1">ตำแหน่งไม่แม่นยำหรือใช้งานไม่ได้</string>
+    <string name="un_reason_2">การแจ้งเตือนมากเกินไป</string>
+    <string name="un_reason_3">โฆษณามากเกินไป</string>
+    <string name="un_reason_4">ไม่ต้องการใช้แล้ว</string>
+    <string name="un_reason_5">กินแบตเตอรี่</string>
+    <string name="un_reason_6">ใช้แอปอื่นอยู่</string>
+    <string name="un_tip_location_title">อนุญาตการเข้าถึงตำแหน่ง</string>
+    <string name="un_tip_location_text">แอปต้องใช้ตำแหน่งของคุณเพื่อแสดงผลที่แม่นยำบนแผนที่</string>
+    <string name="un_tip_location_btn">อนุญาต</string>
+    <string name="un_tip_notif_title">ปิดการแจ้งเตือนแทน</string>
+    <string name="un_tip_notif_text">ปิดได้ในการตั้งค่าระบบ ส่วนอื่นยังทำงานตามปกติ</string>
+    <string name="un_tip_notif_btn">การตั้งค่า</string>
+    <string name="un_keep_app">เก็บแอปไว้</string>
+    <string name="un_uninstall_anyway">ถอนการติดตั้งต่อ</string>
+    <string name="un_progress_title">กำลังปิด %1$s…</string>
+    <string name="un_progress_sub">คุณถอนการติดตั้งได้ทุกเมื่อจากการตั้งค่าของโทรศัพท์</string>
+    <string name="un_progress_done">เสร็จแล้ว</string>
+    <string name="un_step_1">กำลังบันทึกความคิดเห็นของคุณ</string>
+    <string name="un_step_2">กำลังเสร็จสิ้น</string>
+    <string name="un_step_3">กำลังปิดแอป</string>
+    <string name="un_thanks_title">ขอบคุณสำหรับความคิดเห็น!</string>
+    <string name="un_thanks_sub">กำลังเปิดข้อมูลแอป ซึ่งคุณสามารถถอนการติดตั้งให้เสร็จได้</string>
+    <string name="un_thanks_sub_close">แอปจะปิดเดี๋ยวนี้ คุณถอนการติดตั้งได้ทุกเมื่อจากการตั้งค่า</string>
+    <string name="un_you_said">คุณเลือก: %1$s</string>
+    <string name="un_continue">ดำเนินการต่อ</string>
+</resources>

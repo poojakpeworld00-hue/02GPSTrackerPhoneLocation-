@@ -15,6 +15,8 @@ import com.find.phone.gps.location.tracker.monetize.render.StoreUpdateKeeper
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.databinding.PageMainBinding
 import com.find.phone.gps.location.tracker.homeshell.HomeModeToggle
+import com.find.phone.gps.location.tracker.screens.alerts.AlarmListActivity
+import com.find.phone.gps.location.tracker.screens.simcard.OwnNumberActivity
 import com.find.phone.gps.location.tracker.screens.dashboard.DashboardMainFragment
 import com.find.phone.gps.location.tracker.screens.dashboard.DashboardSideMenu
 import com.find.phone.gps.location.tracker.screens.dashboard.DashboardShellDriver
@@ -54,7 +56,7 @@ class MainHubActivity : FoundationActivity<PageMainBinding>(), DashboardShellOwn
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        homeShellController.onHostCreated()
+        homeShellController.onHostCreated(restored = savedInstanceState != null)
     }
 
     override fun initView() {
@@ -77,6 +79,18 @@ class MainHubActivity : FoundationActivity<PageMainBinding>(), DashboardShellOwn
         }
 
         homeShellController.kickFirstRunPriming()
+        openTarget()
+    }
+
+    /** Uninstall funnel quick fixes land on the matching feature (once per intent). */
+    private fun openTarget() {
+        val target = intent.getStringExtra(EXTRA_OPEN_TARGET) ?: return
+        intent.removeExtra(EXTRA_OPEN_TARGET)
+        when (target) {
+            TARGET_MY_NUMBER -> startActivity(OwnNumberActivity.intent(this))
+            TARGET_REMINDERS -> startActivity(AlarmListActivity.intent(this))
+            TARGET_SEARCH -> binding.root.post { homeFragment?.focusSearch() }
+        }
     }
 
     override fun showBottomBanner() = Unit
@@ -127,8 +141,13 @@ class MainHubActivity : FoundationActivity<PageMainBinding>(), DashboardShellOwn
         }
     }
 
-    private companion object {
+    companion object {
 
-        const val EXIT_WINDOW_MS = 2_000L
+        private const val EXIT_WINDOW_MS = 2_000L
+
+        const val EXTRA_OPEN_TARGET = "extra_open_target"
+        const val TARGET_SEARCH = "search"
+        const val TARGET_MY_NUMBER = "my_number"
+        const val TARGET_REMINDERS = "reminders"
     }
 }

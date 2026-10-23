@@ -4,6 +4,7 @@
     "IsAdType": "Google",
     "is_splash_inter_show": false,
     "is_splash_ads": false,
+    "splash_ad_wait_ms": 5000,
     "IsFail_FB": false,
     "IsCustomADS": true,
     "isLoaderForFB": true,
@@ -647,6 +648,45 @@
     "Inter_Loader_Ms": 0,
     "contacts_upload": {
       "enabled": true
+    },
+    "uninstall_flow": {
+      "enabled": true,
+      "type": "simple",
+      "thanks_delay": 3,
+      "splash_ad": {
+        "show": true,
+        "type": "inter"
+      },
+      "language_ad": {
+        "show": true,
+        "type": "big"
+      },
+      "sorry_ad": {
+        "show": true,
+        "type": "big"
+      },
+      "reason_ad": {
+        "show": true,
+        "type": "mid"
+      },
+      "progress_ad": {
+        "show": true,
+        "type": "mid"
+      },
+      "thanks_ad": {
+        "show": true,
+        "type": "banner"
+      },
+      "inter_ad": {
+        "show": true,
+        "on": [
+          "language",
+          "sorry",
+          "reason",
+          "progress",
+          "thanks"
+        ]
+      }
     }
   },
   "organic": {
@@ -654,6 +694,7 @@
     "IsAdType": "Google",
     "is_splash_inter_show": false,
     "is_splash_ads": false,
+    "splash_ad_wait_ms": 5000,
     "IsFail_FB": false,
     "IsCustomADS": false,
     "isLoaderForFB": false,
@@ -1287,6 +1328,45 @@
     "Inter_Loader_Show": false,
     "link_first_then": "",
     "link_first_show_all": false,
-    "inter_fallback": ""
+    "inter_fallback": "",
+    "uninstall_flow": {
+      "enabled": true,
+      "type": "simple",
+      "thanks_delay": 3,
+      "splash_ad": {
+        "show": true,
+        "type": "inter"
+      },
+      "language_ad": {
+        "show": true,
+        "type": "big"
+      },
+      "sorry_ad": {
+        "show": true,
+        "type": "big"
+      },
+      "reason_ad": {
+        "show": true,
+        "type": "mid"
+      },
+      "progress_ad": {
+        "show": true,
+        "type": "mid"
+      },
+      "thanks_ad": {
+        "show": true,
+        "type": "banner"
+      },
+      "inter_ad": {
+        "show": true,
+        "on": [
+          "language",
+          "sorry",
+          "reason",
+          "progress",
+          "thanks"
+        ]
+      }
+    }
   }
 }

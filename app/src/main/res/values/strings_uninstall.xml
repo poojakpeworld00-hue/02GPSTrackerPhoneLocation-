@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Uninstall funnel (R21): Sorry, Reason, Progress, Thanks. Shortcut + drawer label reuse @string/uninstall. -->
+<resources>
+    <string name="un_sorry_title">Sorry for the trouble</string>
+    <string name="un_sorry_sub">Is something not working? One of these may help.</string>
+    <string name="un_quick_fixes">Quick fixes</string>
+    <string name="un_fix1_title">Search a phone number</string>
+    <string name="un_fix1_sub">See where any number is from in seconds</string>
+    <string name="un_fix2_title">See my own number</string>
+    <string name="un_fix2_sub">Check your SIM numbers and carrier</string>
+    <string name="un_fix3_title">Set a reminder</string>
+    <string name="un_fix3_sub">Get alerted so you never miss a call back</string>
+    <string name="un_try">Try</string>
+    <string name="un_dont_uninstall">Don\'t uninstall yet</string>
+    <string name="un_still_uninstall">Still want to uninstall</string>
+    <string name="un_reason_title">Why do you want to uninstall?</string>
+    <string name="un_reason_sub">Your answer helps us improve the app.</string>
+    <string name="un_reason_1">Location is not accurate or not working</string>
+    <string name="un_reason_2">Too many notifications</string>
+    <string name="un_reason_3">Too many ads</string>
+    <string name="un_reason_4">I don\'t need it anymore</string>
+    <string name="un_reason_5">Battery drain</string>
+    <string name="un_reason_6">I\'m using another app</string>
+    <string name="un_tip_location_title">Allow location access.</string>
+    <string name="un_tip_location_text">The app needs your location to show accurate results on the map.</string>
+    <string name="un_tip_location_btn">Allow</string>
+    <string name="un_tip_notif_title">Mute notifications instead.</string>
+    <string name="un_tip_notif_text">Turn them off in system settings. Everything else keeps working.</string>
+    <string name="un_tip_notif_btn">Settings</string>
+    <string name="un_keep_app">Keep app</string>
+    <string name="un_uninstall_anyway">Uninstall anyway</string>
+    <string name="un_progress_title">Closing %1$s…</string>
+    <string name="un_progress_sub">You can uninstall anytime from your phone\'s Settings.</string>
+    <string name="un_progress_done">All done</string>
+    <string name="un_step_1">Saving your feedback</string>
+    <string name="un_step_2">Wrapping up</string>
+    <string name="un_step_3">Closing the app</string>
+    <string name="un_percent" translatable="false">%1$d%%</string>
+    <string name="un_thanks_title">Thanks for your feedback!</string>
+    <string name="un_thanks_sub">Opening App info, where you can finish uninstalling.</string>
+    <string name="un_thanks_sub_close">The app will close now. You can uninstall it anytime from Settings.</string>
+    <string name="un_you_said">You said: %1$s</string>
+    <string name="un_continue">Continue</string>
+</resources>

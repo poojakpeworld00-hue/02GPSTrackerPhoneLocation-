@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data />
+
+    <LinearLayout
+        android:id="@+id/unRootVw"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ds_canvas"
+        android:orientation="vertical">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:id="@+id/headerTileVw"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/vs_tile_amber_r12">
+
+                        <ImageView
+                            android:id="@+id/headerIconVw"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_un_sad"
+                            app:tint="@color/ds_warn" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Ds.Text.Header"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/un_sorry_title" />
+
+                        <TextView
+                            style="@style/Un.FixSub"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/un_sorry_sub" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/Ds.Text.SectionNunito"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="2dp"
+                    android:paddingHorizontal="2dp"
+                    android:text="@string/un_quick_fixes" />
+
+                <LinearLayout
+                    android:id="@+id/fixCard1Vw"
+                    style="@style/Un.FixCard">
+
+                    <ImageView
+                        style="@style/Un.Tile"
+                        android:background="@drawable/vs_tile_tint_r12"
+                        android:src="@drawable/vs_ic_search"
+                        app:tint="@color/ds_primary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Un.FixTitle"
+                            android:text="@string/un_fix1_title" />
+
+                        <TextView
+                            style="@style/Un.FixSub"
+                            android:text="@string/un_fix1_sub" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/padFix1"
+                        style="@style/Un.SmallButton"
+                        android:text="@string/un_try" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/fixCard2Vw"
+                    style="@style/Un.FixCard">
+
+                    <ImageView
+                        style="@style/Un.Tile"
+                        android:background="@drawable/vs_tile_green_r12"
+                        android:src="@drawable/vs_ic_phone"
+                        app:tint="@color/ds_success" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Un.FixTitle"
+                            android:text="@string/un_fix2_title" />
+
+                        <TextView
+                            style="@style/Un.FixSub"
+                            android:text="@string/un_fix2_sub" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/padFix2"
+                        style="@style/Un.SmallButton"
+                        android:text="@string/un_try" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/fixCard3Vw"
+                    style="@style/Un.FixCard">
+
+                    <ImageView
+                        style="@style/Un.Tile"
+                        android:background="@drawable/vs_tile_purple_r12"
+                        android:src="@drawable/gp_ic_bell"
+                        app:tint="@color/ds_purple" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Un.FixTitle"
+                            android:text="@string/un_fix3_title" />
+
+                        <TextView
+                            style="@style/Un.FixSub"
+                            android:text="@string/un_fix3_sub" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/padFix3"
+                        style="@style/Un.SmallButton"
+                        android:text="@string/un_try" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="20dp" />
+
+                <TextView
+                    android:id="@+id/padDontUninstall"
+                    style="@style/Ds.Button.Primary"
+                    android:layout_width="match_parent"
+                    android:drawableStart="@drawable/ic_un_heart"
+                    android:paddingHorizontal="24dp"
+                    android:text="@string/un_dont_uninstall" />
+
+                <TextView
+                    android:id="@+id/padStillUninstall"
+                    style="@style/Ds.Text.Skip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/un_still_uninstall" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <View
+            android:id="@+id/adNativeDividerVw"
+            style="@style/AdDivider"
+            android:background="@color/ds_hairline12" />
+
+        <FrameLayout
+            android:id="@+id/adNativeFrameVw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ds_surface">
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/adShimmerVw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ccc">
+
+                <include layout="@layout/ad_g_native_mid" />
+            </com.facebook.shimmer.ShimmerFrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+</layout>

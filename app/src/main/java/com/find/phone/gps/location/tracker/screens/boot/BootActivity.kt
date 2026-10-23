@@ -19,6 +19,7 @@ import com.find.phone.gps.location.tracker.monetize.model.OnPayloadReady
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.render.ResumeAdKeeper
 import com.find.phone.gps.location.tracker.monetize.render.presentAppRedirectPopup
+import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.R
 import com.find.phone.gps.location.tracker.foundation.FoundationActivity
 import com.find.phone.gps.location.tracker.repo.SecurePrefsKeeper
@@ -30,6 +31,7 @@ import com.find.phone.gps.location.tracker.screens.reveal.TourUnveilRules
 import com.find.phone.gps.location.tracker.screens.locale.LocalePickActivity
 import com.find.phone.gps.location.tracker.screens.walkthrough.GuidedTourActivity
 import com.find.phone.gps.location.tracker.screens.consent.PolicyConsentActivity
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallFlow
 import com.find.phone.gps.location.tracker.helpers.unfoldActivity
 import java.security.MessageDigest
 import java.util.concurrent.atomic.AtomicBoolean
@@ -62,6 +64,8 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
 
         prefs.appLaunchCount = prefs.appLaunchCount + 1
 
+        if (UninstallFlow.isUninstallLaunch(intent)) UninstallFlow.track(this, "un_open_shortcut")
+
         AskGatekeeper.onAppLaunch(this)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -87,7 +91,8 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
             perhapsProceed()
         }, animMin)
 
-        printHashKey(this)
+        // debug only: signature hashing on the main thread + key hash in logcat has no place in release
+        if (BuildConfig.DEBUG) printHashKey(this)
         Log.d(SPLASH_FLOW_TAG, "SplashActivity.initView → getData()")
 
         getData(this, true, object : OnPayloadReady {
@@ -144,6 +149,15 @@ class BootActivity : FoundationActivity<PageSplashBinding>() {
         LightHouse.ensureDataDisclosure(this) {
             if (isFinishing || isDestroyed) return@ensureDataDisclosure
             LightHouse.subscribeAsync()
+
+            // keep the launcher "Uninstall" shortcut in step with the config just settled
+            UninstallFlow.syncShortcut(this)
+            // the Uninstall shortcut skips onboarding and Home for the funnel
+            if (UninstallFlow.isUninstallLaunch(intent) && UninstallFlow.isEnabled(this)) {
+                unfoldActivity(UninstallFlow.firstScreen(this), isShowAd = false)
+                finish()
+                return@ensureDataDisclosure
+            }
 
             val launcherOnboarding = !HomeRoleJourney.wasOnboardingCompleted(this)
             val next = nextScreen()

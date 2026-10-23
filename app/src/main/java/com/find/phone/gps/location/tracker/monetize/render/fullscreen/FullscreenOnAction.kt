@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render.fullscreen
 
+import com.find.phone.gps.location.tracker.helpers.SafeLogger
 import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.content.ComponentName
@@ -388,6 +389,7 @@ class FullscreenOnAction {
             inter.show(activity)
         } catch (e: Exception) {
             googleInterAd = null
+            SafeLogger.error("FullscreenOnAction", "admob inter show failed", e)
             activity.safeLog("admob_inter_exception")
             processGoogleFail(activity, pref, safeClose)
             fetchInterAds(activity)
@@ -446,6 +448,7 @@ class FullscreenOnAction {
             ad.show()
             activity.safeLog("fb_preloaded_show")
         } catch (e: Exception) {
+            SafeLogger.error("FullscreenOnAction", "fb preloaded inter show failed", e)
             activity.safeLog("fb_preloaded_show_exception")
             fbOnDismissed = null
             fbOnFail = null
@@ -515,6 +518,7 @@ class FullscreenOnAction {
                             inter.show()
                             context.safeLog("facebook_inter_show")
                         } catch (e: Exception) {
+                            SafeLogger.error("FullscreenOnAction", "fb inter show failed", e)
                             context.safeLog("facebook_inter_show_exception")
                             onFail()
                         }

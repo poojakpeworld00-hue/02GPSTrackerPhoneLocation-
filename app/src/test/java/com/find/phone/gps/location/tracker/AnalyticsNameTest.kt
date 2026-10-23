@@ -39,4 +39,21 @@ class AnalyticsNameTest {
         }
         assertEquals("Permission_POST_NOTIFICATIONS_Allow", permissionEventName("android.permission.POST_NOTIFICATIONS", "Allow"))
     }
+
+    @Test
+    fun newFeatureEventNamesPassThroughUnchanged() {
+        val names = listOf(
+            "ad_splash_timeout", "reminder_toggle_on", "reminder_toggle_off", "reminder_notif_denied",
+            "reminder_prompt_dismiss", "reminder_fsi_granted", "reminder_fsi_denied",
+            "reminder_alert_tap", "reminder_alert_dismiss", "PermissionSheet_Close",
+            "drawer_language", "drawer_reminders", "drawer_rate", "drawer_share", "drawer_privacy",
+            "drawer_terms", "drawer_delete_contacts",
+            "un_open_shortcut", "un_language_next", "un_sorry_search",
+            "un_sorry_my_number", "un_sorry_reminders", "un_sorry_keep", "un_sorry_still",
+            "un_reason_1", "un_reason_2", "un_reason_3", "un_reason_4", "un_reason_5", "un_reason_6",
+            "un_tip_location", "un_tip_notif", "un_uninstall_anyway", "un_keep_app",
+            "un_thanks_continue", "un_thanks_auto", "un_app_info_opened", "un_app_closed",
+        )
+        names.forEach { assertEquals(it, analyticsName(it)) }
+    }
 }

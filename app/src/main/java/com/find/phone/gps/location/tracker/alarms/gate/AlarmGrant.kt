@@ -87,10 +87,16 @@ object AlarmGrant {
 
         AskGatekeeper.markShown(activity)
         activity.trackEvent("Reminder_Prompt_Show")
+        var allowed = false
         AlarmAskDialog.show(
             activity, title, desc, button,
-            onDismiss = { onClosed?.invoke() },
+            onDismiss = {
+                // the dialog is also retired after Allow → Settings; only a plain close counts as dismissed
+                if (!allowed) activity.trackEvent("reminder_prompt_dismiss")
+                onClosed?.invoke()
+            },
             onButton = {
+                allowed = true
                 activity.trackEvent("Reminder_Prompt_Allow")
                 val open: () -> Unit = {
                     unfoldSettings(activity)
@@ -114,6 +120,7 @@ object AlarmGrant {
     fun onHostResume(activity: Activity) {
         if (!armed) return
         armed = false
+        activity.trackEvent(if (isGranted(activity)) "reminder_fsi_granted" else "reminder_fsi_denied")
         AlarmGrantObserver.stop(activity)
         AlarmAskDialog.retireIfShowing()
     }

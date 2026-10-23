@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.render
 
+import com.find.phone.gps.location.tracker.helpers.SafeLogger
 import com.find.phone.gps.location.tracker.insights.AdPulse
 import android.app.Activity
 import android.content.Context
@@ -76,6 +77,7 @@ object ResumeAdKeeper {
                                 try {
                                     context.trackEvent("appopen_ad_loaded")
                                 } catch (e: Exception) {
+                                    SafeLogger.error(LOG_TAG, "app open event logging failed", e)
                                 }
 
                                 Log.d(LOG_TAG, "Ad was loaded.")
@@ -92,6 +94,7 @@ object ResumeAdKeeper {
                                 try {
                                     context.trackEvent("appopen_ad_fail")
                                 } catch (e: Exception) {
+                                    SafeLogger.error(LOG_TAG, "app open event logging failed", e)
                                 }
                                 isLoadingAd = false
                             }
@@ -163,7 +166,8 @@ object ResumeAdKeeper {
 
                 try {
                     activity.trackEvent("appopen_ad_dismissed")
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    SafeLogger.error(LOG_TAG, "app open event logging failed", e)
                 }
 
                 appOpenAd = null
@@ -181,7 +185,8 @@ object ResumeAdKeeper {
                 )
                 try {
                     activity.trackEvent("appopen_ad_show_fail")
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    SafeLogger.error(LOG_TAG, "app open event logging failed", e)
                 }
                 appOpenAd = null
                 isShowingAd = false

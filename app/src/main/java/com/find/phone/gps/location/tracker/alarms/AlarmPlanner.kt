@@ -18,8 +18,22 @@ object AlarmPlanner {
         else -> Repeat.nextAfter(entry.repeatOrOnce, entry.baseTime, nowMs)
     }
 
+    // master switch on and the RC gate (same one that shows the drawer row) open
+    fun isAllowed(context: Context): Boolean =
+        AlarmRepository.isMasterOn(context) && AlarmSettings.isSettingsRowAllowed(context)
+
+    fun cancelAll(context: Context) {
+        WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
+    }
+
+    // reschedules every stored reminder when allowed, cancels them all otherwise
+    fun applyGate(context: Context) {
+        if (!isAllowed(context)) { cancelAll(context); return }
+        AlarmRepository.load(context).forEach { sync(context, it) }
+    }
+
     fun sync(context: Context, item: AlarmEntry) {
-        if (!item.isActive) {
+        if (!item.isActive || !isAllowed(context)) {
             cancel(context, item.id)
             return
         }

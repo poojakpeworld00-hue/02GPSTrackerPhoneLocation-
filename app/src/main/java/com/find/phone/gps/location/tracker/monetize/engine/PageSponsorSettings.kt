@@ -1,5 +1,6 @@
 package com.find.phone.gps.location.tracker.monetize.engine
 
+import com.find.phone.gps.location.tracker.helpers.SafeLogger
 import android.app.Activity
 import android.content.Context
 import android.util.Log
@@ -34,7 +35,8 @@ object PageSponsorSettings {
         val screenWise = pref.getBoolean("screen_wise_ad")
         val useDefault = pref.getBoolean("screen_wise_default")
 
-        val root = runCatching { JSONObject(pref.getString("ScreenAds", "{}") ?: "{}") }.getOrNull()
+        val root = runCatching { JSONObject(pref.getString("ScreenAds", "{}") ?: "{}") }
+            .onFailure { SafeLogger.error("PageSponsorSettings", "ScreenAds parse failed", it) }.getOrNull()
 
         val entry = when {
             !screenWise -> null
@@ -109,7 +111,7 @@ object PageSponsorSettings {
         } else {
             val root = runCatching {
                 JSONObject(pref.getString("ScreenAds", "{}") ?: "{}")
-            }.getOrNull()
+            }.onFailure { SafeLogger.error("PageSponsorSettings", "ScreenAds parse failed", it) }.getOrNull()
             val entryNative = root?.optJSONObject("default")?.optString("native").orEmpty()
             if (entryNative.isNotBlank()) {
                 result = entryNative

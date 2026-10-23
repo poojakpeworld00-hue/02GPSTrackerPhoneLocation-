@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="un_sorry_title">Извините за неудобства</string>
+    <string name="un_sorry_sub">Что-то не работает? Возможно, поможет одно из этих решений.</string>
+    <string name="un_quick_fixes">Быстрые решения</string>
+    <string name="un_fix1_title">Найти номер</string>
+    <string name="un_fix1_sub">Узнайте, откуда номер, за секунды</string>
+    <string name="un_fix2_title">Мой номер</string>
+    <string name="un_fix2_sub">Проверьте номера и оператора SIM-карты</string>
+    <string name="un_fix3_title">Создать напоминание</string>
+    <string name="un_fix3_sub">Получайте уведомление, чтобы не забыть перезвонить</string>
+    <string name="un_try">Попробовать</string>
+    <string name="un_dont_uninstall">Пока не удалять</string>
+    <string name="un_still_uninstall">Всё равно удалить</string>
+    <string name="un_reason_title">Почему вы хотите удалить приложение?</string>
+    <string name="un_reason_sub">Ваш ответ поможет нам улучшить приложение.</string>
+    <string name="un_reason_1">Местоположение неточное или не работает</string>
+    <string name="un_reason_2">Слишком много уведомлений</string>
+    <string name="un_reason_3">Слишком много рекламы</string>
+    <string name="un_reason_4">Мне это больше не нужно</string>
+    <string name="un_reason_5">Быстро разряжает батарею</string>
+    <string name="un_reason_6">Пользуюсь другим приложением</string>
+    <string name="un_tip_location_title">Разрешите доступ к местоположению.</string>
+    <string name="un_tip_location_text">Приложению нужно ваше местоположение для точных результатов на карте.</string>
+    <string name="un_tip_location_btn">Разрешить</string>
+    <string name="un_tip_notif_title">Лучше отключите уведомления.</string>
+    <string name="un_tip_notif_text">Выключите их в настройках системы. Всё остальное продолжит работать.</string>
+    <string name="un_tip_notif_btn">Настройки</string>
+    <string name="un_keep_app">Оставить</string>
+    <string name="un_uninstall_anyway">Всё равно удалить</string>
+    <string name="un_progress_title">Закрываем %1$s…</string>
+    <string name="un_progress_sub">Удалить приложение можно в любой момент в настройках телефона.</string>
+    <string name="un_progress_done">Готово</string>
+    <string name="un_step_1">Сохраняем ваш отзыв</string>
+    <string name="un_step_2">Завершаем</string>
+    <string name="un_step_3">Закрываем приложение</string>
+    <string name="un_thanks_title">Спасибо за отзыв!</string>
+    <string name="un_thanks_sub">Открываем сведения о приложении, где можно завершить удаление.</string>
+    <string name="un_thanks_sub_close">Приложение сейчас закроется. Удалить его можно в любой момент в настройках.</string>
+    <string name="un_you_said">Ваш ответ: %1$s</string>
+    <string name="un_continue">Продолжить</string>
+</resources>

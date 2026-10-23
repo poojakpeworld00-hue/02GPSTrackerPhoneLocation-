@@ -506,6 +506,12 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
         runCatching { dismissAllowingStateLoss() }
     }
 
+    // outside tap / swipe-down / back only; the sheet's own buttons close via dismissAllowingStateLoss (no cancel)
+    override fun onCancel(dialog: android.content.DialogInterface) {
+        super.onCancel(dialog)
+        context?.trackEvent("PermissionSheet_Close")
+    }
+
     override fun onDismiss(dialog: android.content.DialogInterface) {
         super.onDismiss(dialog)
 

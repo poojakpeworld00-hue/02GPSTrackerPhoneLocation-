@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="un_sorry_title">Sorun için üzgünüz</string>
+    <string name="un_sorry_sub">Bir şey çalışmıyor mu? Bunlardan biri yardımcı olabilir.</string>
+    <string name="un_quick_fixes">Hızlı çözümler</string>
+    <string name="un_fix1_title">Numara ara</string>
+    <string name="un_fix1_sub">Herhangi bir numaranın nereden olduğunu saniyeler içinde görün</string>
+    <string name="un_fix2_title">Kendi numaram</string>
+    <string name="un_fix2_sub">SIM numaralarınızı ve operatörünüzü kontrol edin</string>
+    <string name="un_fix3_title">Hatırlatıcı kur</string>
+    <string name="un_fix3_sub">Geri aramayı unutmamak için uyarı alın</string>
+    <string name="un_try">Dene</string>
+    <string name="un_dont_uninstall">Henüz kaldırma</string>
+    <string name="un_still_uninstall">Yine de kaldırmak istiyorum</string>
+    <string name="un_reason_title">Neden kaldırmak istiyorsunuz?</string>
+    <string name="un_reason_sub">Yanıtınız uygulamayı geliştirmemize yardımcı olur.</string>
+    <string name="un_reason_1">Konum doğru değil veya çalışmıyor</string>
+    <string name="un_reason_2">Çok fazla bildirim</string>
+    <string name="un_reason_3">Çok fazla reklam</string>
+    <string name="un_reason_4">Artık ihtiyacım yok</string>
+    <string name="un_reason_5">Pili çok tüketiyor</string>
+    <string name="un_reason_6">Başka bir uygulama kullanıyorum</string>
+    <string name="un_tip_location_title">Konum erişimine izin verin.</string>
+    <string name="un_tip_location_text">Uygulamanın haritada doğru sonuçlar gösterebilmesi için konumunuz gerekir.</string>
+    <string name="un_tip_location_btn">İzin ver</string>
+    <string name="un_tip_notif_title">Bunun yerine bildirimleri kapatın.</string>
+    <string name="un_tip_notif_text">Sistem ayarlarından kapatın. Diğer her şey çalışmaya devam eder.</string>
+    <string name="un_tip_notif_btn">Ayarlar</string>
+    <string name="un_keep_app">Uygulamayı tut</string>
+    <string name="un_uninstall_anyway">Yine de kaldır</string>
+    <string name="un_progress_title">%1$s kapatılıyor…</string>
+    <string name="un_progress_sub">Uygulamayı istediğiniz zaman telefonun Ayarlar bölümünden kaldırabilirsiniz.</string>
+    <string name="un_progress_done">Tamamlandı</string>
+    <string name="un_step_1">Geri bildiriminiz kaydediliyor</string>
+    <string name="un_step_2">Tamamlanıyor</string>
+    <string name="un_step_3">Uygulama kapatılıyor</string>
+    <string name="un_thanks_title">Geri bildiriminiz için teşekkürler!</string>
+    <string name="un_thanks_sub">Kaldırma işlemini bitirebileceğiniz Uygulama bilgileri açılıyor.</string>
+    <string name="un_thanks_sub_close">Uygulama şimdi kapanacak. İstediğiniz zaman Ayarlar\'dan kaldırabilirsiniz.</string>
+    <string name="un_you_said">Yanıtınız: %1$s</string>
+    <string name="un_continue">Devam</string>
+</resources>

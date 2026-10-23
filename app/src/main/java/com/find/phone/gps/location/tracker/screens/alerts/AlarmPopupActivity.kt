@@ -44,6 +44,7 @@ class AlarmPopupActivity : AppCompatActivity() {
     private var snoozeMinutes = 0
     private val animators = mutableListOf<Animator>()
     private var adRequested = false
+    private var acted = false
 
     private val unlockReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = loadAdIfUnlocked()
@@ -100,6 +101,7 @@ class AlarmPopupActivity : AppCompatActivity() {
         if (reminder == null) { finishAndRemoveTask(); return }
         item = reminder
         trackEvent("Reminder_Alert_Show")
+        if (intent.action == ACTION_TAP) trackEvent("reminder_alert_tap")
 
         binding.alertTitle.text = reminder.title
         binding.alertNoteVw.text = reminder.note
@@ -115,6 +117,7 @@ class AlarmPopupActivity : AppCompatActivity() {
         binding.padPrimary.setOnClickListener { if (call) callBack(reminder) else unfoldList() }
         binding.padSecondary.setOnClickListener { presentSnooze() }
         binding.padDone.setOnClickListener {
+            acted = true
             trackEvent("Reminder_Alert_Done")
             finishAndRemoveTask()
         }
@@ -156,6 +159,7 @@ class AlarmPopupActivity : AppCompatActivity() {
     }
 
     private fun callBack(reminder: AlarmEntry) {
+        acted = true
         trackEvent("Reminder_Alert_Call")
         afterUnlock {
             runCatching { startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(reminder.number)))) }
@@ -164,6 +168,7 @@ class AlarmPopupActivity : AppCompatActivity() {
     }
 
     private fun unfoldList() {
+        acted = true
         trackEvent("Reminder_Alert_Open_List_Click")
         afterUnlock {
             startActivity(AlarmListActivity.intent(this).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -220,6 +225,7 @@ class AlarmPopupActivity : AppCompatActivity() {
 
     private fun snooze() {
         val reminder = item ?: return finishAndRemoveTask()
+        acted = true
         AlarmPlanner.snooze(this, reminder.id, snoozeMinutes)
         trackEvent("Reminder_Alert_Snooze_$snoozeMinutes")
         val until = AlarmFormatter.time(this, System.currentTimeMillis() + snoozeMinutes * 60_000L)
@@ -251,6 +257,8 @@ class AlarmPopupActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        // closed by back/home without call, open, snooze or done
+        if (isFinishing && item != null && !acted) trackEvent("reminder_alert_dismiss")
         runCatching { unregisterReceiver(unlockReceiver) }
         VisualTweens.cancelAll(animators)
         super.onDestroy()
@@ -261,6 +269,7 @@ class AlarmPopupActivity : AppCompatActivity() {
     companion object {
         private const val EXTRA_ID = "reminder_id"
         private const val EXTRA_NOTIF_ID = "notif_id"
+        const val ACTION_TAP = "com.find.phone.gps.location.tracker.REMINDER_TAP"
 
         fun intent(context: Context, id: Long, notifId: Int): Intent =
             Intent(context, AlarmPopupActivity::class.java)

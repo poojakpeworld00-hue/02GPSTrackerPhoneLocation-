@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -265,6 +266,12 @@ class DashboardMainFragment : Fragment() {
         glowAnimator = null
         _binding = null
         super.onDestroyView()
+    }
+
+    fun focusSearch() {
+        val input = _binding?.phoneInputVw ?: return
+        input.requestFocus()
+        requireContext().getSystemService(InputMethodManager::class.java)?.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT)
     }
 
     fun setOnScreen(visible: Boolean) {

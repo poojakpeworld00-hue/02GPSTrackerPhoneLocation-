@@ -111,7 +111,7 @@ No `setDefaultsAsync`/XML defaults exist anywhere: every fallback below is a cod
 
 | Status | Count | Meaning |
 |---|---|---|
-| WIRED | 196 | read by code and present in the template (both audiences where split) |
+| WIRED | 197 | read by code and present in the template (both audiences where split) |
 | WIRED_PARTIAL | 7 | read by code, present in only one audience branch; the other falls back to the code default |
 | MISSING_IN_TEMPLATE | 19 | read by code, absent from the template -> code default applies (actionable: decide value) |
 | MISSING_OPTIONAL | 36 | read by code, absent, but it is an optional override/alternate form whose default is fine |
@@ -123,7 +123,7 @@ No `setDefaultsAsync`/XML defaults exist anywhere: every fallback below is a cod
 | SUPERSEDED_BY_NativeTheme | 5 | flat key still ingested, but always overwritten from NativeTheme |
 | DEAD_CODE | 3 | parser exists but is never called |
 | OPTIONAL | 5 | legacy/alternate form accepted by code; not needed |
-| **total** | 291 | |
+| **total** | 292 | |
 
 ## 3. `GET_DATA_LIST_1` (per audience block: `marketing.*` / `organic.*`)
 
@@ -141,7 +141,16 @@ No `setDefaultsAsync`/XML defaults exist anywhere: every fallback below is a cod
 | `Iscountry_Counter` | bool | false (country check off) | monetize/engine/MonetizeConfigReader.kt:42<br>monetize/render/MonetizeGateActivity.kt:341 | marketing,organic | WIRED |  |
 | `is_preload_ads` | bool | false | monetize/engine/MonetizeConfigReader.kt:42<br>monetize/render/fullscreen/FullscreenOnAction.kt:47 | marketing,organic | WIRED |  |
 | `is_splash_inter_show` | bool | false | monetize/engine/MonetizeConfigReader.kt:43<br>monetize/render/MonetizeGateActivity.kt:524 | marketing,organic | WIRED |  |
-| `is_splash_ads` | bool | false | monetize/engine/MonetizeConfigReader.kt:43<br>monetize/render/MonetizeGateActivity.kt:456 | marketing,organic | WIRED |  |
+| `is_splash_ads` | bool | false | monetize/engine/MonetizeConfigReader.kt:43<br>monetize/render/MonetizeGateActivity.kt:472 | marketing,organic | WIRED | Only honoured when this launch's RC fetch + ingest succeeded (cached value alone never shows a splash ad). |
+| `splash_ad_wait_ms` | int(ms) | missing/<=0/invalid -> 5000 | monetize/engine/MonetizeConfigReader.kt:108<br>monetize/render/MonetizeGateActivity.kt:492 | marketing,organic | WIRED | Splash ad load deadline (App Open -> interstitial -> FB chain). On timeout: `ad_splash_timeout`, continue, late load never shown. |
+| `uninstall_flow` | object | missing -> feature off | monetize/engine/MonetizeConfigReader.kt (stored raw)<br>screens/uninstall/UninstallConfig.kt | marketing,organic | WIRED | R21 uninstall funnel. Always overwritten on ingest (missing block clears it): shortcut removed + drawer row hidden. |
+| `uninstall_flow.enabled` | bool | false (feature off) | screens/uninstall/UninstallConfig.kt | marketing,organic | WIRED | Launcher shortcut synced on every launch (BootActivity) and RC sync/push (RemoteValuesObserver). |
+| `uninstall_flow.type` | string simple\|advance | simple | screens/uninstall/UninstallConfig.kt | marketing,organic | WIRED | Organic is forced to simple; unknown -> simple. advance = Language -> Sorry -> Reason -> Progress -> Thanks -> close app. |
+| `uninstall_flow.thanks_delay` | int (s) | 3, clamped 1-10 | screens/uninstall/UninstallThanksActivity.kt | marketing,organic | WIRED | Auto-continue delay of the Thanks screen. |
+| `uninstall_flow.splash_ad.show` | bool | true when the block exists; block missing -> is_splash_ads | monetize/render/MonetizeGateActivity.kt (uninstallSplashAd) | marketing,organic | WIRED | Uninstall-shortcut launch only. Still gated by IsAdsON, consent, rcFreshThisLaunch, splash_ad_wait_ms. |
+| `uninstall_flow.splash_ad.type` | string inter\|appopen | missing/unknown -> is_splash_inter_show | monetize/render/MonetizeGateActivity.kt (prefetchAds) | marketing,organic | WIRED | Pins the splash format (also bypasses the `placements.splash` own flow). |
+| `uninstall_flow.<page>_ad.show / .type` | bool / big\|mid\|small\|banner | show true; type unknown -> mid; block missing -> no ad | screens/uninstall/UninstallAds.kt | marketing,organic | WIRED | Pages: language, sorry, reason, progress, thanks. Rendered via HomeAdsSettings.presentSlot with the app-wide units. |
+| `uninstall_flow.inter_ad.show / .on` | bool / array | show true; on missing -> all pages; block missing -> no inter | screens/uninstall/UninstallAds.kt | marketing,organic | WIRED | googleInter, own preload slot, no InterCounter; not ready -> move on immediately. |
 | `InterAds` | bool | false | monetize/engine/MonetizeConfigReader.kt:43<br>monetize/render/fullscreen/FullscreenOnAction.kt:215<br>monetize/render/fullscreen/FullscreenOnExit.kt:39 | marketing,organic | WIRED |  |
 | `AppopenAds` | bool | false | monetize/engine/MonetizeConfigReader.kt:43<br>monetize/render/ResumeAdKeeper.kt:58 | marketing,organic | WIRED |  |
 | `NativeAd` | bool | false | monetize/engine/MonetizeConfigReader.kt:44<br>monetize/render/InlineSponsor.kt:101 | marketing,organic | WIRED |  |

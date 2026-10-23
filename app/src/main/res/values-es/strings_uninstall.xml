@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="un_sorry_title">Sentimos las molestias</string>
+    <string name="un_sorry_sub">¿Algo no funciona? Una de estas opciones puede ayudarte.</string>
+    <string name="un_quick_fixes">Soluciones rápidas</string>
+    <string name="un_fix1_title">Buscar un número</string>
+    <string name="un_fix1_sub">Mira de dónde es cualquier número en segundos</string>
+    <string name="un_fix2_title">Ver mi número</string>
+    <string name="un_fix2_sub">Consulta los números y el operador de tu SIM</string>
+    <string name="un_fix3_title">Crear un recordatorio</string>
+    <string name="un_fix3_sub">Recibe un aviso para no olvidar devolver una llamada</string>
+    <string name="un_try">Probar</string>
+    <string name="un_dont_uninstall">No desinstalar todavía</string>
+    <string name="un_still_uninstall">Aun así quiero desinstalar</string>
+    <string name="un_reason_title">¿Por qué quieres desinstalar?</string>
+    <string name="un_reason_sub">Tu respuesta nos ayuda a mejorar la app.</string>
+    <string name="un_reason_1">La ubicación no es precisa o no funciona</string>
+    <string name="un_reason_2">Demasiadas notificaciones</string>
+    <string name="un_reason_3">Demasiados anuncios</string>
+    <string name="un_reason_4">Ya no la necesito</string>
+    <string name="un_reason_5">Gasta mucha batería</string>
+    <string name="un_reason_6">Uso otra app</string>
+    <string name="un_tip_location_title">Permite el acceso a la ubicación.</string>
+    <string name="un_tip_location_text">La app necesita tu ubicación para mostrar resultados precisos en el mapa.</string>
+    <string name="un_tip_location_btn">Permitir</string>
+    <string name="un_tip_notif_title">Mejor silencia las notificaciones.</string>
+    <string name="un_tip_notif_text">Desactívalas en los ajustes del sistema. Todo lo demás sigue funcionando.</string>
+    <string name="un_tip_notif_btn">Ajustes</string>
+    <string name="un_keep_app">Conservar app</string>
+    <string name="un_uninstall_anyway">Desinstalar igualmente</string>
+    <string name="un_progress_title">Cerrando %1$s…</string>
+    <string name="un_progress_sub">Puedes desinstalarla cuando quieras desde los Ajustes del teléfono.</string>
+    <string name="un_progress_done">Listo</string>
+    <string name="un_step_1">Guardando tus comentarios</string>
+    <string name="un_step_2">Terminando</string>
+    <string name="un_step_3">Cerrando la app</string>
+    <string name="un_thanks_title">¡Gracias por tus comentarios!</string>
+    <string name="un_thanks_sub">Abriendo la información de la app, donde puedes terminar de desinstalar.</string>
+    <string name="un_thanks_sub_close">La app se cerrará ahora. Puedes desinstalarla cuando quieras desde Ajustes.</string>
+    <string name="un_you_said">Dijiste: %1$s</string>
+    <string name="un_continue">Continuar</string>
+</resources>

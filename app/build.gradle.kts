@@ -1,3 +1,4 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -71,6 +72,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            configure<CrashlyticsExtension> { mappingFileUploadEnabled = true }
 
             signingConfig = when {
                 hasReleaseKeystore -> signingConfigs.getByName("release")

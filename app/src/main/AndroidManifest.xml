@@ -92,6 +92,26 @@
 
         <activity
             android:screenOrientation="portrait"
+            android:name="com.find.phone.gps.location.tracker.screens.uninstall.UninstallSorryActivity"
+            android:exported="false" />
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name="com.find.phone.gps.location.tracker.screens.uninstall.UninstallReasonActivity"
+            android:exported="false" />
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name="com.find.phone.gps.location.tracker.screens.uninstall.UninstallProgressActivity"
+            android:exported="false" />
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name="com.find.phone.gps.location.tracker.screens.uninstall.UninstallThanksActivity"
+            android:exported="false" />
+
+        <activity
+            android:screenOrientation="portrait"
             android:name="com.find.phone.gps.location.tracker.screens.consent.PolicyConsentActivity"
             android:exported="false" />
 

@@ -11,6 +11,8 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.RemoteException
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +40,7 @@ import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.ump.FormError
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import io.lighthouse.push.Attribution
 import io.lighthouse.push.LightHouse
@@ -60,6 +63,10 @@ import com.find.phone.gps.location.tracker.grants.GrantOrchestrator
 import com.find.phone.gps.location.tracker.grants.GrantOrigin
 import com.find.phone.gps.location.tracker.grants.PageMatcher
 import com.find.phone.gps.location.tracker.helpers.AppPrefsStore
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallConfig
+import com.find.phone.gps.location.tracker.screens.uninstall.UninstallFlow
+import com.find.phone.gps.location.tracker.helpers.SafeLogger
+import com.find.phone.gps.location.tracker.alarms.AlarmPlanner
 import com.find.phone.gps.location.tracker.helpers.imprintNativeAdTheme
 import com.find.phone.gps.location.tracker.helpers.AppPrefsStore.THEME_DARK
 import com.find.phone.gps.location.tracker.helpers.AppPrefsStore.THEME_LIGHT
@@ -88,6 +95,14 @@ open class MonetizeGateActivity : AppCompatActivity() {
     private val isMobileAdsInitializeCalled = AtomicBoolean(false)
     private val referrerHandoffDone = AtomicBoolean(false)
     private var isGoogleAdsEnabled = true
+
+    // splash ad only on a launch whose RC fetch+ingest succeeded; cached is_splash_ads alone is not enough
+    private var rcFreshThisLaunch = false
+
+    // uninstall-shortcut launch: uninstall_flow.splash_ad replaces is_splash_ads / is_splash_inter_show;
+    // null (normal launch, feature off or no splash_ad block) keeps the normal splash switches
+    private fun uninstallSplashAd(): UninstallConfig.SplashAd? =
+        activity?.takeIf { UninstallFlow.isUninstallLaunch(it.intent) }?.let { UninstallFlow.config(it)?.splashAd }
     private val backgroundExecutor: Executor = Executors.newSingleThreadExecutor()
 
     companion object {
@@ -106,6 +121,8 @@ open class MonetizeGateActivity : AppCompatActivity() {
             get() =BuildConfig.DEBUG || FORCE_AUDIENCE_IN_RELEASE
 
         const val ATTRIBUTION_WAIT_MS = 5_000L
+
+        const val SPLASH_AD_WAIT_DEFAULT_MS = 5_000
     }
 
     open fun getData(
@@ -250,11 +267,12 @@ open class MonetizeGateActivity : AppCompatActivity() {
                 adsPref.putBoolean("__cfg_audience_split", isSplit)
 
                 absorbConfig(this@MonetizeGateActivity, audienceRoot(response, onMarketing))
+                rcFreshThisLaunch = true
 
                 verifyInstallerRefere()
 
             } catch (e: Exception) {
-                Log.e("MonetizeGateActivity", "Failed to update ad preferences: ${e.message}")
+                SafeLogger.error("MonetizeGateActivity", "Failed to update ad preferences: ${e.message}", e)
 
                 runCatching { verifyInstallerRefere() }
             }
@@ -329,6 +347,11 @@ open class MonetizeGateActivity : AppCompatActivity() {
                     Log.d(CONFIG_TAG, "audience → ${if (isMarketingOn) "MARKETING" else "ORGANIC"}")
                 }
                 adsPreference.putBoolean("OnMaketing", isMarketingOn)
+                runCatching {
+                    FirebaseCrashlytics.getInstance().setCustomKey("segment", if (isMarketingOn) "paid" else "organic")
+                }
+                // feature_config is audience-split, so the reminder gate is re-evaluated once the audience is known
+                AlarmPlanner.applyGate(activity)
 
                 val isSplitConfig = adsPreference.getBoolean("__cfg_audience_split")
                 if (isSplitConfig) {
@@ -453,10 +476,12 @@ open class MonetizeGateActivity : AppCompatActivity() {
                                     FullscreenOnExit().fetchBackInterAds(activity)
                                 }
 
-                                val isSplashAdsEnabled = adsPreference.getBoolean("is_splash_ads")
+                                val uninstallSplash = uninstallSplashAd()
+                                val isSplashAdsEnabled = (uninstallSplash?.show ?: adsPreference.getBoolean("is_splash_ads")) && rcFreshThisLaunch
                                 Log.d(
                                     APPOPEN_TAG,
-                                    "gate → IsAdsON=$isAdsOn, isSplash=$isSplash, is_splash_ads=$isSplashAdsEnabled, " +
+                                    "gate → IsAdsON=$isAdsOn, isSplash=$isSplash, is_splash_ads=$isSplashAdsEnabled " +
+                                            "(rcFresh=$rcFreshThisLaunch), " +
                                             "IsAdType=${adsPreference.getString("IsAdType")}, appopenId=${
                                                 adsPreference.getString(
                                                     "googleAppopen"
@@ -472,7 +497,23 @@ open class MonetizeGateActivity : AppCompatActivity() {
                                     onGetData?.onSuccess()
                                 } else {
 
+                                    val waitMs = adsPreference.getInt("splash_ad_wait_ms", 0)
+                                        .takeIf { it > 0 } ?: SPLASH_AD_WAIT_DEFAULT_MS
+                                    val deadline = Handler(Looper.getMainLooper())
+                                    var timedOut = false
+                                    var settled = false
+                                    deadline.postDelayed({
+                                        if (settled) return@postDelayed
+                                        timedOut = true
+                                        Log.w(APPOPEN_TAG, "splash ad not ready within ${waitMs}ms → continuing without it")
+                                        AdPulse.timeout(activity, "splash")
+                                        onGetData?.onSuccess()
+                                    }, waitMs.toLong())
                                     prefetchAds(adsPreference, activity) {
+                                        // a load that lands after the deadline is dropped, never shown
+                                        if (timedOut) return@prefetchAds
+                                        settled = true
+                                        deadline.removeCallbacksAndMessages(null)
                                         presentPreloadedAd(activity, adsPreference) {
                                             onGetData?.onSuccess()
                                         }
@@ -521,7 +562,11 @@ open class MonetizeGateActivity : AppCompatActivity() {
         when (adType) {
             AdFormatKind.GOOGLE -> {
                 if (isGoogleAdsEnabled) {
-                    val showInterstitialOnSplash = adsPreference.getBoolean("is_splash_inter_show")
+                    val showInterstitialOnSplash = when (uninstallSplashAd()?.type) {
+                        UninstallConfig.SPLASH_INTER -> true
+                        UninstallConfig.SPLASH_APP_OPEN -> false
+                        else -> adsPreference.getBoolean("is_splash_inter_show")
+                    }
                     if (showInterstitialOnSplash) {
                         Log.d(
                             APPOPEN_TAG,
@@ -564,7 +609,8 @@ open class MonetizeGateActivity : AppCompatActivity() {
 
     fun presentPreloadedAd(activity: Activity, adsPreference: AdPrefsStore, onDismissed: () -> Unit) {
 
-        if (HomeSlotAds.hasOwnFlow(activity, "splash")) {
+        // a pinned uninstall splash format shows the ad loaded above, not the splash placement flow
+        if (uninstallSplashAd()?.type == null && HomeSlotAds.hasOwnFlow(activity, "splash")) {
             if (!HomeSlotAds.placementEnabled(activity, "splash")) return onDismissed()
             Log.d(APPOPEN_TAG, "showPreloaded() → splash flow (splash_*)")
             HomeSlotAds.showInterstitial(activity, "splash") { onDismissed() }

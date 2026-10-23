@@ -278,12 +278,8 @@ class TrackerPhoneApp : Application(), Application.ActivityLifecycleCallbacks, L
         }
     }
 
-    override fun onActivityCreated(activity: Activity, p1: Bundle?) {
-        // re-hide after dialogs / keyboard / system UI steal focus
-        activity.window.decorView.viewTreeObserver.addOnWindowFocusChangeListener { focused ->
-            if (focused) hideNavigationBar(activity)
-        }
-    }
+    // Don't touch window.decorView here: it installs the decor before AdActivity can drop its title bar.
+    override fun onActivityCreated(activity: Activity, p1: Bundle?) {}
 
     private fun hideNavigationBar(activity: Activity) {
         val window = activity.window

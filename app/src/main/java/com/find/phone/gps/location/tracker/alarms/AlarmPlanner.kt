@@ -59,6 +59,8 @@ object AlarmPlanner {
     }
 
     fun save(context: Context, item: AlarmEntry) {
+        // creating or enabling a reminder is an explicit opt-in; otherwise it is stored but never scheduled
+        if (item.isActive) AlarmRepository.setMasterOn(context, true)
         AlarmRepository.upsert(context, item)
         sync(context, item)
     }

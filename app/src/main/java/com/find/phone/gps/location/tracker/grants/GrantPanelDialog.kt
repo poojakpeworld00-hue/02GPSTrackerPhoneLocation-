@@ -64,6 +64,9 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     private var lastAsked = -1
     private val continueSequence = Runnable { promptNext(after = lastAsked) }
 
+    /** Page whose request was held back because the app was not on screen (e.g. user pressed Home). */
+    private var heldRequest = -1
+
     private val requestPerms = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { result ->
@@ -130,6 +133,9 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
     override fun onResume() {
         super.onResume()
         if (!::pages.isInitialized || pages.isEmpty()) return
+        val held = heldRequest
+        heldRequest = -1
+        if (held in pages.indices && sequenceRunning) request(held)
 
         val ctx = context ?: return
         statuses.indices.forEach { i ->
@@ -284,6 +290,10 @@ class GrantPanelDialog : BottomSheetDialogFragment() {
 
     private fun request(index: Int) {
         val act = activity ?: return
+        if (!isResumed) {
+            heldRequest = index
+            return
+        }
         val page = pages[index]
         statuses[index] = Status.REQUESTING
         requestingIndex = index

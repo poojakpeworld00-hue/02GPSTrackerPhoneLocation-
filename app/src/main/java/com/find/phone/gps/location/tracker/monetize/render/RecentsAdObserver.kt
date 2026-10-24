@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import com.find.phone.gps.location.tracker.BuildConfig
 import com.find.phone.gps.location.tracker.monetize.engine.AdPrefsStore
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
-import io.homedeck.grid.screens.HomeDeskPane
 
 object RecentsAdObserver : Application.ActivityLifecycleCallbacks {
 
@@ -24,10 +23,11 @@ object RecentsAdObserver : Application.ActivityLifecycleCallbacks {
 
     private const val DEBOUNCE_MS = 3_000L
 
+    private const val DONE_KEY = "recent_playstore_done"
+
     private var startedCount = 0
     private var lastStoppedAt = 0L
     private var lastOpenedAt = 0L
-    private var topIsLauncher = false
 
     fun install(app: Application) {
         app.registerActivityLifecycleCallbacks(this)
@@ -52,10 +52,10 @@ object RecentsAdObserver : Application.ActivityLifecycleCallbacks {
         val now = System.currentTimeMillis()
         val ours = startedCount > 0 || now - lastStoppedAt < LEAVE_GRACE_MS
         if (!ours) return
-        if (topIsLauncher) return log("recents on the launcher home — left to recent_click")
 
         val vault = AdPrefsStore.getInstance(context)
         if (!vault.getBoolean("recent_playstore")) return
+        if (vault.getBoolean(DONE_KEY)) return
         val windowSec = vault.getInt("recent_playstore_window_sec")
         if (windowSec > 0) {
             val age = now - firstInstallTime(context)
@@ -68,6 +68,7 @@ object RecentsAdObserver : Application.ActivityLifecycleCallbacks {
             ?: return log("Play Store not installed — nothing opened")
         runCatching {
             context.startActivity(playStore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            vault.putBoolean(DONE_KEY, true)
             context.trackEvent("recent_playstore_open")
             log("recents pressed → Play Store home")
         }.onFailure { log("Play Store not opened: ${it.message}") }
@@ -86,11 +87,8 @@ object RecentsAdObserver : Application.ActivityLifecycleCallbacks {
         lastStoppedAt = System.currentTimeMillis()
     }
 
-    override fun onActivityResumed(activity: Activity) {
-        topIsLauncher = activity is HomeDeskPane
-    }
-
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+    override fun onActivityResumed(activity: Activity) {}
     override fun onActivityPaused(activity: Activity) {}
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
     override fun onActivityDestroyed(activity: Activity) {}

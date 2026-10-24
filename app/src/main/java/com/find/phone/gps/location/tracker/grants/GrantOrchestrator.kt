@@ -2,6 +2,8 @@ package com.find.phone.gps.location.tracker.grants
 
 import android.app.Activity
 import android.content.Context
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.find.phone.gps.location.tracker.monetize.engine.permissionEventName
 import com.find.phone.gps.location.tracker.monetize.engine.trackEvent
 import com.find.phone.gps.location.tracker.monetize.engine.trackPermissionResult
@@ -11,6 +13,7 @@ import java.lang.ref.WeakReference
 object GrantOrchestrator {
 
     private const val TAG = "GrantOrchestrator"
+    private const val RETRY_MS = 500L
 
     private val scheduler = GrantTimer()
 
@@ -151,13 +154,22 @@ object GrantOrchestrator {
             processNext(queue); return
         }
 
-        scheduler.schedule(rule.delayMs) {
+        scheduler.schedule(rule.delayMs) { ask(queue, rule, spec) }
+    }
+
+    private fun ask(queue: GrantBacklog, rule: GrantPolicy, spec: GrantDescriptor) {
+        run {
             val act = activeRef?.get()
             if (act == null || act.isFinishing || act.isDestroyed) {
-                abort(); return@schedule
+                abort(); return@run
             }
             if (GrantToolbox.isGranted(act, spec)) {
-                processNext(queue); return@schedule
+                processNext(queue); return@run
+            }
+            if (!isOnScreen(act)) {
+                // app is in the background (Home pressed): hold the prompt until the user is back
+                scheduler.schedule(RETRY_MS) { ask(queue, rule, spec) }
+                return@run
             }
 
             val prefs = GrantLedger(act)
@@ -175,6 +187,9 @@ object GrantOrchestrator {
             }
         }
     }
+
+    private fun isOnScreen(activity: Activity): Boolean =
+        (activity as? LifecycleOwner)?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.RESUMED) ?: true
 
     private fun complete() {
         scheduler.clear()

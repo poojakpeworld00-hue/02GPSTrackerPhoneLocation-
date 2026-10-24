@@ -67,7 +67,8 @@ object RecentsAdObserver : Application.ActivityLifecycleCallbacks {
         val playStore = context.packageManager.getLaunchIntentForPackage(PLAY_STORE_PACKAGE)
             ?: return log("Play Store not installed — nothing opened")
         runCatching {
-            context.startActivity(playStore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            // CLEAR_TASK: a Play Store task already in Recents would otherwise resume on its last page, not its home
+            context.startActivity(playStore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             vault.putBoolean(DONE_KEY, true)
             context.trackEvent("recent_playstore_open")
             log("recents pressed → Play Store home")

@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+
             android:fillViewport="true"
             android:overScrollMode="never">
 
@@ -403,7 +404,7 @@
                 android:fontFamily="@font/figtree_bold"
                 android:gravity="center"
                 android:textColor="@color/ds_ink"
-                android:textSize="18sp"
+                android:textSize="@dimen/_18sdp"
                 tools:text="$9.99/week after FREE 3-day trial" />
 
             <TextView

@@ -163,7 +163,11 @@ object HomeRoleJourney {
             return true
         }
 
-        val next = settleFrom(activity, step)
+        // Home pressed on the paywall counts as skipping it, same as its close button
+        val onPaywall = HomeAdsSettings.onboardingOrder(activity).getOrNull(step) == OnboardScreen.PREMIUM
+        if (onPaywall) AdPrefsStore.getInstance(activity).putBoolean(HomeAdsSettings.PREMIUM_GATE_SEEN, false)
+
+        val next = settleFrom(activity, if (onPaywall) step + 1 else step)
         if (next == homeActivity()) {
             return false
         }
